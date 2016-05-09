@@ -1,3 +1,13 @@
 about:
   brief: ''
   name: StatisKit-Core
+authors:
+  basename: AUTHORS.rst
+  format: '* {name} <{email}> ({score})'
+  plugin: commit
+license:
+  basename: LICENSE.rst
+  plugin: CeCILL-C
+  width: 78
+rst:
+  plugin: default
