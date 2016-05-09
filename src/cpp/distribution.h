@@ -175,28 +175,106 @@ namespace statiskit
         protected:
             double _theta;
     };
-
+    /** \brief This class BinomialDistribution represents a [binomial distribution](https://en.wikipedia.org/wiki/binomial_distribution)
+     * 
+     * \details The binomial distribution is an univariate discrete distribution of the number of successes in \f$\kappa \in \mathbb{N}\f$ independent [Bernouilli trials](https://en.wikipedia.org/wiki/Bernoulli_trial) with a specified probability \f$\pi \in [0,1]\f$ of success.
+     *          In the particular case of \f$\kappa = 1\f$ the binomial distribution is the [Bernouilli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution).
+     * */
     class BinomialDistribution : public DiscreteUnivariateDistribution
     {
         public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a binomial distribution with
+             *
+             * - \f$\kappa = 1\f$,
+             * - \f$\pi = 0.5\f$. 
+             * */
             BinomialDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for binomial distribution instantiation with specified \f$\kappa\f$ and \f$\pi\f$ parameters.
+             *
+             * \param kappa The specified number of Bernouilli trials.
+             * \param pi The specified probability of success of Bernouilli trials.
+             * */
             BinomialDistribution(const unsigned int& kappa, const double& pi);
+            
+            /** \brief Copy constructor */
             BinomialDistribution(const BinomialDistribution& binomial);
-
+            
+            /** \brief Returns the number of parameters of the binomial distribution
+             *
+             * \details The number of parameters of a binomial distribution is \f$2\f$ (\f$\kappa\f$ and \f$\pi\f$).
+             * */
             virtual unsigned int get_nb_parameters() const;
 
+            /** \brief Get the value of kappa 
+             *
+             * \see \ref statiskit::BinomialDistribution::_kappa
+             * */
             const unsigned int& get_kappa() const;
+            
+            /** \brief Set the value of kappa 
+             *
+             * \see \ref statiskit::BinomialDistribution::_kappa
+             * */
             void set_kappa(const unsigned int& kappa);
-
+			/** \brief Get the value of pi 
+			* 
+			* \see \ref statiskit::BinomialDistribution::_pi
+			* */
             const double& get_pi() const;
+            
+            /** \brief Set the value of pi 
+             * 
+             * \see \ref statiskit::BinomialDistribution::_pi            
+             * */            
             void set_pi(const double& pi);
 
+            /** \brief Compute the log-probability of an outcome
+             *
+             * \param value The considered outcome.
+             * \see \ref statiskit::BinomialDistribution::ldf.
+             * */
             virtual double ldf(const int& value) const;
-            virtual double pdf(const int& value) const;
-            virtual double cdf(const int& value) const;
             
+			/** \brief Compute the probability of an outcome
+             *
+             * \details Let \f$n\f$ denote the outcome
+             *          \f[
+             *              P\left(N = n\right) = \binom{\kappa }{n} \pi^{n} \left(1 - \pi\right)^{\kappa - n} 
+             *          \f]
+             *
+             * \param value The considered outcome.
+             * \see \ref statiskit::BinomialDistribution::pdf.
+             * */
+            virtual double pdf(const int& value) const;
+            
+			/** \brief Compute the cumulative probability of an outcome
+             *
+             * \details Let \f$n\f$ denote the outcome
+             *          \f[
+             *              P\left(N \leq n\right) = \sum_{k = 0}^n P\left(N = k\right)
+             *          \f]
+             *
+             * \see \ref statiskit::BinomialDistribution::cdf.
+             * */            
+            virtual double cdf(const int& value) const;
+
+			/** \brief Compute the quantile of a probability
+             *
+             *
+             * \see \ref statiskit::BinomialDistribution::quantile.
+             * */            
             virtual int quantile(const double& p) const;
             
+			/** \brief Simulate an outcome of a binomial distribution
+             *
+             *
+             * \see \ref statiskit::BinomialDistribution::simulate.
+             * */            
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
             virtual double get_mean() const;
@@ -247,40 +325,45 @@ namespace statiskit
 
             /** \brief Get the value of kappa 
              *
-             * @see kappa
+             * \see \ref statiskit::NegativeBinomialDistribution::_kappa
              * */
             const double& get_kappa() const;
 
             /** \brief Set the value of kappa 
              *
-             * @see kappa
+             * \see \ref statiskit::NegativeBinomialDistribution::_kappa
              * */
             void set_kappa(const double& kappa);
 
             /** \brief Get the value of pi 
+             * 
+             * \see \ref statiskit::NegativeBinomialDistribution::_pi
              * */
             const double& get_pi() const;
 
             /** \brief Set the value of pi 
+             * 
+             * \see \ref statiskit::NegativeBinomialDistribution::_pi            
              * */
             void set_pi(const double& pi);
 
             /** \brief Compute the log-probability of an outcome
              *
+             * \details Let \f$n\f$ denote the outcome
+             *          \f[
+             *              \log P\left(N = n\right) = \log \binom{n + \kappa - 1}{n} + \kappa \log \left(1 - \pi\right) + n \log \pi
+             *          \f]
+             *             
              * \param value The considered outcome.
-             * \see \ref ::NegativeBinomialDistribution::pdf.
+             * \see \ref statiskit::NegativeBinomialDistribution::pdf.
              * */
             virtual double ldf(const int& value) const;
 
             /** \brief Compute the probability of an outcome
              *
-             * \details Let \f$x\f$ denote the outcome
-             *          \f[
-             *              P\left(X = x\right) = \binom{x + \kappa - 1}{x} \left(1 - \pi\right)^{\kappa} \pi^x
-             *          \f]
              *
              * \param value The considered outcome.
-             * \see ::NegativeBinomialDistribution::pdf.
+             * \see \ref statiskit::NegativeBinomialDistribution::ldf.
              * */
             virtual double pdf(const int& value) const;
 
