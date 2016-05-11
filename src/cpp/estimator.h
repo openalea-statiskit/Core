@@ -195,7 +195,7 @@ namespace statiskit
          *          \f[
          *              P\left(X = x\right) = \frac{\Gamma\left(x+\kappa\right)}{x! \Gamma\left(\kappa\right)} \left(\frac{\mu}{\mu + \kappa}\right)^{x} \left(\frac{\kappa}{\kappa + \mu}\right)^{\kappa}.
          *          \f]
-         *          This is a reparametrization of the negative binomial distribution described by parameters \f$\kappa$\f and \f$\pi$\f with 
+         *          This is a reparametrization of the negative binomial distribution described by parameters \f$\kappa\f$ and \f$\pi\f$ with 
          *          \f[
          *              \pi = \frac{\mu}{\mu + \kappa}
          *          \f]
@@ -208,7 +208,7 @@ namespace statiskit
              *
              * \details \f$\kappa = \alpha^{-1}\f$ if given by the formula
              *          \f[
-             *              \alpha = \frac{\log\left(1 + \alpha \bar{x}}{\bar{x} - \frac{\alpha}{n} \sum_{i = 0}^{n}\sum_{\nu = 0}^{x^{\left(i\right)}-1} \frac{\nu}{1 + \alpha \nu}},
+             *              \alpha = \frac{\log\left(1 + \alpha \bar{x} \right) }{\bar{x} - \frac{\alpha}{n} \sum_{i = 0}^{n}\sum_{\nu = 0}^{x^{ \left(i \right) }-1} \frac{\nu}{1 + \alpha \nu}},
              *          \f]
              *          and 
              *          \f[

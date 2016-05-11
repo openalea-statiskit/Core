@@ -8,6 +8,7 @@
 
 #include "distribution.h"
 #include "error.h"
+#include "base.h"
 
 namespace statiskit
 {
@@ -543,12 +544,9 @@ namespace statiskit
 
     NormalDistribution::NormalDistribution() 
     {
-        _mu = 0;
+        _mu = 0.;
         _sigma = 1.;
     }
-
-    NormalDistribution::~NormalDistribution()
-    {}
 
     NormalDistribution::NormalDistribution(const double& mu, const double& sigma) 
     {
@@ -585,16 +583,16 @@ namespace statiskit
     }
 
     double NormalDistribution::ldf(const double& value) const
-    { return -pow((value - _mu) / _sigma, 2) / 2. - log(_sigma * sqrt(2 * acos(-1))); }
+    { return -pow((value - _mu) / _sigma, 2) / 2. - log(_sigma)  - log(boost::math::constants::root_two_pi<double>()); }
 
     double NormalDistribution::pdf(const double& value) const
     { return exp(ldf(value)); }
 
     double NormalDistribution::cdf(const double& value) const
-    { return 0.5 * erfc(- (value - _mu) / (_sigma * sqrt(2))); }
+    { return 0.5 * erfc( (_mu - value) / (_sigma * boost::math::constants::root_two<double>()  )); }
 
     double NormalDistribution::quantile(const double& p) const
-    { return _mu - _sigma * sqrt(2) * boost::math::erfc_inv(2 * p); }
+    { return _mu - _sigma * boost::math::constants::root_two<double>() * boost::math::erfc_inv(2 * p); }
 
     std::unique_ptr< UnivariateEvent > NormalDistribution::simulate() const
     {
@@ -799,9 +797,6 @@ namespace statiskit
         _scale = 1.;
     }
 
-    LogisticDistribution::~LogisticDistribution()
-    {}
-
     LogisticDistribution::LogisticDistribution(const double& mu, const double& scale) 
     {
         _mu = mu;
@@ -837,7 +832,7 @@ namespace statiskit
     { return -2*log(cosh(0.5 * (value - _mu) / _scale)) - log(4 * _scale); }//(_mu-value)/_scale - log(scale) - 2*log(1+exp((_mu-value)/_scale )); }
 
     double LogisticDistribution::pdf(const double& value) const
-    { return (1. / pow(cosh(0.5 * (value - _mu) / _scale), 2))/(4 * _scale); }
+    { return  4. * _scale/ pow(cosh(0.5 * (value - _mu) / _scale), 2); }
 
     double LogisticDistribution::cdf(const double& value) const
     { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _scale)); }

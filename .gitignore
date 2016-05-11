@@ -1,5 +1,7 @@
 doc/html
 doc/latex
 doc/Doxyfile
-
+build-scons
+*.so
 *~
+.sconsign.dblite
