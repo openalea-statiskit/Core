@@ -793,20 +793,20 @@ namespace statiskit
 
     LogisticDistribution::LogisticDistribution() 
     {
-        _mu = 0;
-        _scale = 1.;
+        _mu = 0.;
+        _sigma = 1.;
     }
 
-    LogisticDistribution::LogisticDistribution(const double& mu, const double& scale) 
+    LogisticDistribution::LogisticDistribution(const double& mu, const double& sigma) 
     {
         _mu = mu;
-        _scale = scale;
+        _sigma = sigma;
     }
 
     LogisticDistribution::LogisticDistribution(const LogisticDistribution& logistic)
     {
         _mu = logistic._mu;
-        _scale = logistic._scale;
+        _sigma = logistic._sigma;
     }
 
     unsigned int LogisticDistribution::get_nb_parameters() const
@@ -818,27 +818,27 @@ namespace statiskit
     void LogisticDistribution::set_mu(const double& mu)
     { _mu = mu; }
 
-    const double& LogisticDistribution::get_scale() const
-    { return _scale; }
+    const double& LogisticDistribution::get_sigma() const
+    { return _sigma; }
 
-    void LogisticDistribution::set_scale(const double& scale)
+    void LogisticDistribution::set_sigma(const double& sigma)
     {
-        if(scale <= 0.)
-        { throw lower_bound_error("scale", scale, 0., true); }
-        _scale = scale;
+        if(sigma <= 0.)
+        { throw lower_bound_error("sigma", sigma, 0., true); }
+        _sigma = sigma;
     }
 
     double LogisticDistribution::ldf(const double& value) const
-    { return -2*log(cosh(0.5 * (value - _mu) / _scale)) - log(4 * _scale); }//(_mu-value)/_scale - log(scale) - 2*log(1+exp((_mu-value)/_scale )); }
+    { return -2*log(cosh(0.5 * (value - _mu) / _sigma)) - log(4 * _sigma); }//(_mu-value)/_sigma - log(sigma) - 2*log(1+exp((_mu-value)/_sigma )); }
 
     double LogisticDistribution::pdf(const double& value) const
-    { return  4. * _scale/ pow(cosh(0.5 * (value - _mu) / _scale), 2); }
+    { return  4. * _sigma/ pow(cosh(0.5 * (value - _mu) / _sigma), 2); }
 
     double LogisticDistribution::cdf(const double& value) const
-    { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _scale)); }
+    { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _sigma)); }
 
     double LogisticDistribution::quantile(const double& p) const
-    { return _mu + _scale * log(p / (1 - p)); }
+    { return _mu + _sigma * log(p / (1 - p)); }
 
     std::unique_ptr< UnivariateEvent > LogisticDistribution::simulate() const
     {       
@@ -851,11 +851,218 @@ namespace statiskit
     { return _mu; }
 
     double LogisticDistribution::get_variance() const
-    { return pow(_scale, 2); }
+    { return pow(_sigma * boost::math::constants::pi<double>() , 2) / 3.; }
 
     std::unique_ptr< UnivariateDistribution > LogisticDistribution::copy() const
     { return std::make_unique< LogisticDistribution >(*this); }
+    
+    
+    LaplaceDistribution::LaplaceDistribution() 
+    {
+        _mu = 0.;
+        _sigma = 1.;
+    }
 
+    LaplaceDistribution::LaplaceDistribution(const double& mu, const double& sigma) 
+    {
+        _mu = mu;
+        _sigma = sigma;
+    }
+
+    LaplaceDistribution::LaplaceDistribution(const LaplaceDistribution& laplace)
+    {
+        _mu = laplace._mu;
+        _sigma = laplace._sigma;
+    }
+
+    unsigned int LaplaceDistribution::get_nb_parameters() const
+    { return 2; }
+
+    const double& LaplaceDistribution::get_mu() const
+    { return _mu; }
+
+    void LaplaceDistribution::set_mu(const double& mu)
+    { _mu = mu; }
+
+    const double& LaplaceDistribution::get_sigma() const
+    { return _sigma; }
+
+    void LaplaceDistribution::set_sigma(const double& sigma)
+    {
+        if(sigma <= 0.)
+        { throw lower_bound_error("sigma", sigma, 0., true); }
+        _sigma = sigma;
+    }
+
+    double LaplaceDistribution::ldf(const double& value) const
+    { return abs(_mu - value) / _sigma - log(2*_sigma); }
+    
+    double LaplaceDistribution::pdf(const double& value) const
+    { return  0.5 * exp( abs(_mu - value) / _sigma) / _sigma; }
+
+    double LaplaceDistribution::cdf(const double& value) const
+    {
+    	if (value < _mu)
+    	{ return 0.5 * exp( (value - _mu) / _sigma); } 
+    	else
+    	{ return 1 - 0.5 * exp( (_mu - value) / _sigma); }
+    }
+
+    double LaplaceDistribution::quantile(const double& p) const
+    {
+    	if (p < 0.5)
+    	{ return _mu + _sigma * log(2*p); } 
+    	else
+    	{ return _mu - _sigma * log(2-2*p); }
+    }
+
+    std::unique_ptr< UnivariateEvent > LaplaceDistribution::simulate() const
+    {        
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double LaplaceDistribution::get_mean() const
+    { return _mu; }
+
+    double LaplaceDistribution::get_variance() const
+    { return 2 * pow(_sigma, 2); }
+
+    std::unique_ptr< UnivariateDistribution > LaplaceDistribution::copy() const
+    { return std::make_unique< LaplaceDistribution >(*this); }    
+
+
+    GumbelMaxDistribution::GumbelMaxDistribution() 
+    {
+        _mu = 0.;
+        _sigma = 1.;
+    }
+
+    GumbelMaxDistribution::GumbelMaxDistribution(const double& mu, const double& sigma) 
+    {
+        _mu = mu;
+        _sigma = sigma;
+    }
+
+    GumbelMaxDistribution::GumbelMaxDistribution(const GumbelMaxDistribution& gumbel_max)
+    {
+        _mu = gumbel_max._mu;
+        _sigma = gumbel_max._sigma;
+    }
+
+    unsigned int GumbelMaxDistribution::get_nb_parameters() const
+    { return 2; }
+
+    const double& GumbelMaxDistribution::get_mu() const
+    { return _mu; }
+
+    void GumbelMaxDistribution::set_mu(const double& mu)
+    { _mu = mu; }
+
+    const double& GumbelMaxDistribution::get_sigma() const
+    { return _sigma; }
+
+    void GumbelMaxDistribution::set_sigma(const double& sigma)
+    {
+        if(sigma <= 0.)
+        { throw lower_bound_error("sigma", sigma, 0., true); }
+        _sigma = sigma;
+    }
+
+    double GumbelMaxDistribution::ldf(const double& value) const
+    { return (_mu - value) / _sigma - exp((_mu - value) / _sigma) - log(_sigma); }
+    
+    double GumbelMaxDistribution::pdf(const double& value) const
+    { return exp( (_mu - value) / _sigma - exp((_mu - value) / _sigma) ) / _sigma ; }
+
+    double GumbelMaxDistribution::cdf(const double& value) const
+    { return  exp( - exp((_mu - value) / _sigma) ); }
+
+    double GumbelMaxDistribution::quantile(const double& p) const
+    { return _mu - _sigma * log( -log(p) ); }
+
+    std::unique_ptr< UnivariateEvent > GumbelMaxDistribution::simulate() const
+    {        
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double GumbelMaxDistribution::get_mean() const
+    { return _mu + _sigma * boost::math::constants::euler<double>(); }
+
+    double GumbelMaxDistribution::get_variance() const
+    { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
+
+    std::unique_ptr< UnivariateDistribution > GumbelMaxDistribution::copy() const
+    { return std::make_unique< GumbelMaxDistribution >(*this); }   
+ 
+    
+    GumbelMinDistribution::GumbelMinDistribution() 
+    {
+        _mu = 0.;
+        _sigma = 1.;
+    }
+
+    GumbelMinDistribution::GumbelMinDistribution(const double& mu, const double& sigma) 
+    {
+        _mu = mu;
+        _sigma = sigma;
+    }
+
+    GumbelMinDistribution::GumbelMinDistribution(const GumbelMinDistribution& gumbel_min)
+    {
+        _mu = gumbel_min._mu;
+        _sigma = gumbel_min._sigma;
+    }
+
+    unsigned int GumbelMinDistribution::get_nb_parameters() const
+    { return 2; }
+
+    const double& GumbelMinDistribution::get_mu() const
+    { return _mu; }
+
+    void GumbelMinDistribution::set_mu(const double& mu)
+    { _mu = mu; }
+
+    const double& GumbelMinDistribution::get_sigma() const
+    { return _sigma; }
+
+    void GumbelMinDistribution::set_sigma(const double& sigma)
+    {
+        if(sigma <= 0.)
+        { throw lower_bound_error("sigma", sigma, 0., true); }
+        _sigma = sigma;
+    }
+
+    double GumbelMinDistribution::ldf(const double& value) const
+    { return (value - _mu) / _sigma - exp( (value - _mu) / _sigma) - log(_sigma); }
+    
+    double GumbelMinDistribution::pdf(const double& value) const
+    { return exp( (value - _mu)/ _sigma - exp( (value - _mu)/ _sigma) ) / _sigma ; }
+
+    double GumbelMinDistribution::cdf(const double& value) const
+    { return  1 - exp( - exp((value - _mu) / _sigma) ); }
+
+    double GumbelMinDistribution::quantile(const double& p) const
+    { return _mu + _sigma * log( -log(1-p) ); }
+
+    std::unique_ptr< UnivariateEvent > GumbelMinDistribution::simulate() const
+    {        
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double GumbelMinDistribution::get_mean() const
+    { return - _mu + _sigma * boost::math::constants::euler<double>(); }
+
+    double GumbelMinDistribution::get_variance() const
+    { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
+
+    std::unique_ptr< UnivariateDistribution > GumbelMinDistribution::copy() const
+    { return std::make_unique< GumbelMinDistribution >(*this); }       
     /*NormalRegression::NormalRegression(const std::shared_ptr< ScalarPredictor >& predictor, const double& sigma)// : NormalDistribution(std::numeric_limits< double >::quiet_NaN(), sigma)
     {
         _mu = std::numeric_limits< double >::quiet_NaN();

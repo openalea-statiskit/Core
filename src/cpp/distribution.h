@@ -570,8 +570,8 @@ namespace statiskit
              *
              * \details This constructor is usefull for normal distribution instantiation with specified \f$\mu\f$ and \f$\sigma\f$ parameters.
              *
-             * \param mu The specified mean \f$ \mu \in \mathbb{R} \f$.
-             * \param sigma The specified standard deviation \f$ \sigma \in \mathbb{R}_+^* \f$.
+             * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param sigma the specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
              * */
             NormalDistribution(const double& mu, const double& sigma);
             
@@ -584,16 +584,16 @@ namespace statiskit
              * */
             virtual unsigned int get_nb_parameters() const;
         
-        	/// \brief Get the value of mu.
+        	/// \brief Get the value of the location parameter mu.
             const double& get_mu() const;
             
-            /// \brief Set the value of mu.
+            /// \brief Set the value of the location parameter mu.
             void set_mu(const double& mu);
             
-			/// \brief Get the value of sigma.
+			/// \brief Get the value of the scale parameter sigma.
             const double& get_sigma() const;
             
-  			/// \brief Set the value of sigma.          
+  			/// \brief Set the value of the scale parameter sigma.          
             void set_sigma(const double& sigma);
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
@@ -603,13 +603,14 @@ namespace statiskit
 		     * 				 \ln f(x) = - \frac{1}{2} \left( \frac{x-\mu}{\sigma} \right)^2  - \ln \sigma  - \ln \sqrt{2\pi}, 
 		     *			\f]
 		     * where  [\f$ \sqrt{2\pi} \f$](http://www.boost.org/doc/libs/1_46_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is a constant computed in Boost.Math library.
-		     * \param value The considered value.
+		     * \param value The considered value \f$x\f$.
 		     * */ 
             virtual double ldf(const double& value) const;
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
 			 * \details The pdf value is computed as the exponential of the ldf value.
 			 *  @see statiskit::NormalDistribution::ldf()
+			 * \param value The considered value \f$x\f$.
 			 * */
             virtual double pdf(const double& value) const;
             
@@ -620,20 +621,21 @@ namespace statiskit
 		     *				P(X \leq x) & = & 0.5 \; \textnormal{erfc}\left( \frac{\mu-x}{\sigma \sqrt{2}} \right),
 		     *			\f}
 		     * where [\f$ \textnormal{erfc} \f$](http://www.cplusplus.com/reference/cmath/erfc/) is a function implemented in C++ standard library and [\f$\sqrt{2}\f$](http://www.boost.org/doc/libs/1_46_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is a constant implemented in Boost.Math library.
+		     * \param value The considered value \f$x\f$.
 			 * */            
             virtual double cdf(const double& value) const;
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			*  The quantile is computed as \f$ x = \mu - \sigma \sqrt{2} \; \textnormal{erfc}\_\textnormal{inv}(2p) \f$ where [\f$\sqrt{2}\f$](http://www.boost.org/doc/libs/1_46_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is a constant implemented in Boost.Math library and [\f$ \textnormal{erfc}\_\textnormal{inv} \f$](http://www.boost.org/doc/libs/1_53_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_erf/error_inv.html) is a function implemented in Boost.Math library.
+			*  The quantile for normal distribution is computed as \f$ x = \mu - \sigma \sqrt{2} \; \textnormal{erfc}\_\textnormal{inv}(2p) \f$ where [\f$\sqrt{2}\f$](http://www.boost.org/doc/libs/1_46_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is a constant implemented in Boost.Math library and [\f$ \textnormal{erfc}\_\textnormal{inv} \f$](http://www.boost.org/doc/libs/1_53_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_erf/error_inv.html) is a function implemented in Boost.Math library.
 			* */
             virtual double quantile(const double& p) const;
 
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-			/// \brief Get mean of a normal distribution \f$ E(X) = \mu \f$.
+			/// \brief Get mean of normal distribution \f$ E(X) = \mu \f$.
             virtual double get_mean() const;
             
-			/// \brief Get variance of a normal distribution \f$ V(X) = \sigma^2 \f$.
+			/// \brief Get variance of normal distribution \f$ V(X) = \sigma^2 \f$.
             virtual double get_variance() const;
 
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
@@ -687,50 +689,50 @@ namespace statiskit
         public:
             /** \brief The default constructor
              *
-             * \details The default constructor instantiate a normal distribution with
+             * \details The default constructor instantiate a logistic distribution with
              *
              * - \f$\mu = 0.\f$,
-             * - \f$s = 1.\f$. 
+             * - \f$\sigma = 1.\f$. 
              * */
             LogisticDistribution();
             
             /** \brief An alternative constructor
              *
-             * \details This constructor is usefull for logistic distribution instantiation with specified \f$\mu\f$ and \f$s\f$ parameters.
+             * \details This constructor is usefull for logistic distribution instantiation with specified \f$\mu\f$ and \f$\sigma\f$ parameters.
              *
-             * \param mu The specified mean \f$ \mu \in \mathbb{R} \f$.
-             * \param scale The specified scale \f$ s \in \mathbb{R}_+^* \f$.
+             * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param sigma the specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
              * */            
-            LogisticDistribution(const double& mu, const double& scale);
+            LogisticDistribution(const double& mu, const double& sigma);
             
             /// \brief A copy constructor
             LogisticDistribution(const LogisticDistribution& logistic);
 
             /** \brief Returns the number of parameters of the logistic distribution
              *
-             * \details The number of parameters of a logistic distribution is \f$2\f$ (\f$\mu\f$ and \f$s\f$).
+             * \details The number of parameters of a logistic distribution is \f$2\f$ (\f$\mu\f$ and \f$\sigma\f$).
              * */
             virtual unsigned int get_nb_parameters() const;
         	
-        	/// \brief Get the value of mu.
+        	/// \brief Get the value of the location parameter mu.
             const double& get_mu() const;
             
-            /// \brief Set the value of mu.
+            /// \brief Set the value of the location parameter mu.
             void set_mu(const double& mu);
 
-			/// \brief Get the value of scale.
-            const double& get_scale() const;
+			/// \brief Get the value of the scale parameter sigma.
+            const double& get_sigma() const;
             
-            /// \brief Set the value of scale.
-            void set_scale(const double& scale);
+            /// \brief Set the value of the scale parameter sigma.
+            void set_sigma(const double& sigma);
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
 		     *			\f[
-		     * 				 \ln f(x) = - 2 \ln \left\lbrace \cosh \left( 0.5 \; \frac{x-\mu}{s} \right) \right\rbrace - \ln (4s).
+		     * 				 \ln f(x) = - 2 \ln \left\lbrace \cosh \left( 0.5 \; \frac{x-\mu}{\sigma} \right) \right\rbrace - \ln (4\sigma).
 		     *			\f]
-		     * \param value The considered value.
+		     * \param value The considered value \f$x\f$.
 		     * */ 
             virtual double ldf(const double& value) const;
             
@@ -738,9 +740,9 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
 		     *			\f[
-		     * 				 f(x) =  \frac{4s}{\cosh^2 \left( 0.5 \; \frac{x-\mu}{s} \right)}.
+		     * 				 f(x) =  \frac{4\sigma}{\cosh^2 \left( 0.5 \; \frac{x-\mu}{\sigma} \right)}.
 		     *			\f]
-		     * \param value The considered value.
+		     * \param value The considered value \f$x\f$.
 		     * */             
             virtual double pdf(const double& value) const;
             
@@ -748,14 +750,14 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
 		     *			\f[
-		     * 				 P(X \leq x) = 0.5 \; \left\lbrace 1+\tanh \left( 0.5 \; \frac{x-\mu}{s} \right) \right\rbrace.
+		     * 				 P(X \leq x) = 0.5 \; \left\lbrace 1+\tanh \left( 0.5 \; \frac{x-\mu}{\sigma} \right) \right\rbrace.
 		     *			\f]
-		     * \param value The considered value.
+		     * \param value The considered value \f$x\f$.
 		     * */             
             virtual double cdf(const double& value) const;
 
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			*  The quantile is computed as \f$ x = \mu + s \ln \left( \frac{p}{1-p} \right) \f$.
+			*  The quantile for logistic distribution is computed as \f$ x = \mu + \sigma \ln \left( \frac{p}{1-p} \right) \f$.
 			* */
             virtual double quantile(const double& p) const;
 
@@ -764,16 +766,327 @@ namespace statiskit
 			/// \brief Get mean of logistic distribution \f$ E(X) = \mu \f$.
             virtual double get_mean() const;
 
-			/// \brief Get variance of logistic distribution \f$ V(X) = \frac{s^2 \pi^2}{3} \f$.
+			/// \brief Get variance of logistic distribution \f$ V(X) = \frac{\sigma^2 \pi^2}{3} \f$.
             virtual double get_variance() const;
 
             virtual std::unique_ptr< UnivariateDistribution > copy() const;            
 
         protected:
             double _mu;
-            double _scale;
+            double _sigma;
     };
 
+    /** \brief This class LaplaceDistribution represents a [Laplace distribution](https://en.wikipedia.org/wiki/Laplace_distribution).
+     * 
+     * \details The Laplace distribution is an univariate continuous distribution.
+     *         The support is the set of real values \f$\mathbb{R}\f$.
+     * */                
+    class LaplaceDistribution : public ContinuousUnivariateDistribution
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Laplace distribution with
+             *
+             * - \f$\mu = 0.\f$,
+             * - \f$\sigma = 1.\f$. 
+             * */
+            LaplaceDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for Laplace distribution instantiation with specified \f$\mu\f$ and \f$\sigma\f$ parameters.
+             *
+             * \param mu The specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param scale The specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
+             * */            
+            LaplaceDistribution(const double& mu, const double& sigma);
+            
+            /// \brief A copy constructor
+            LaplaceDistribution(const LaplaceDistribution& laplace);
+
+            /** \brief Returns the number of parameters of the Laplace distribution
+             *
+             * \details The number of parameters of a Laplace distribution is \f$2\f$ (\f$\mu\f$ and \f$\sigma\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+        	
+        	/// \brief Get the value of the location parameter mu.
+            const double& get_mu() const;
+            
+            /// \brief Set the value of the location parameter mu.
+            void set_mu(const double& mu);
+
+			/// \brief Get the value of the scale parameter sigma.
+            const double& get_sigma() const;
+            
+            /// \brief Set the value of the scale parameter sigma.
+            void set_sigma(const double& sigma);
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 \ln f(x) =  \frac{\vert \mu - x \vert }{\sigma} - \ln (2\sigma).
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */ 
+            virtual double ldf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 f(x) =  \frac{1}{2\sigma} \exp \left( \frac{\vert \mu - x \vert }{\sigma} \right).
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double pdf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 P(X \leq x) = \left\{
+			 *								\begin{array}{ll}
+			 *								   0.5 \exp \left(  \frac{x - \mu  }{\sigma} \right) & x < \mu \\
+			 *								  	1-0.5 \exp \left( \frac{\mu - x}{\sigma} \right)	 & x \geq \mu
+			 *								\end{array}
+			 *								\right.
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double cdf(const double& value) const;
+
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+			 *  The quantile for Laplace distribution is computed as 
+		     *			\f[
+		     * 				 x = \left\{
+			 *								\begin{array}{ll}
+			 *								\mu + \sigma \ln (2p)   & p < 0.5 \\
+			 *								\mu - \sigma \ln (2-2p)      & p \geq 0.5
+			 *								\end{array}
+			 *								\right.
+		     *			\f]			
+			 * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+			/// \brief Get mean of Laplace distribution \f$ E(X) = \mu \f$.
+            virtual double get_mean() const;
+
+			/// \brief Get variance of Laplace distribution \f$ V(X) = 2\sigma^2 \f$.
+            virtual double get_variance() const;
+
+            virtual std::unique_ptr< UnivariateDistribution > copy() const;            
+
+        protected:
+            double _mu;
+            double _sigma;
+    };
+    
+    /** \brief This class GumbelMaxDistribution represents a [Gumbel distribution](https://en.wikipedia.org/wiki/Gumbel_distribution) (maximum).
+     * 
+     * \details The Gumbel distribution (maximum) is an univariate continuous distribution.
+     * 		   It is also called extreme value type I distribution (maximum).
+     *         The support is the set of real values \f$\mathbb{R}\f$.
+     * */                
+    class GumbelMaxDistribution : public ContinuousUnivariateDistribution
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Gumbel distribution with
+             *
+             * - \f$ \mu = 0.\f$,
+             * - \f$ \sigma = 1.\f$. 
+             * */
+            GumbelMaxDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for Gumbel distribution instantiation with specified \f$m\f$ and \f$s\f$ parameters.
+             *
+             * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param sigma the specified scale parameter\f$ \sigma \in \mathbb{R}_+^* \f$.
+             * */            
+            GumbelMaxDistribution(const double& mu, const double& sigma);
+            
+            /// \brief A copy constructor
+            GumbelMaxDistribution(const GumbelMaxDistribution& gumbel_max);
+
+            /** \brief Returns the number of parameters of the GumbelMax distribution
+             *
+             * \details The number of parameters of a GumbelMax distribution is \f$2\f$ (\f$\mu\f$ and \f$\sigma\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+        	
+        	/// \brief Get the value of the location parameter mu.
+            const double& get_mu() const;
+            
+            /// \brief Set the value of the location parameter mu.
+            void set_mu(const double& mu);
+
+			/// \brief Get the value of the scale prameter sigma.
+            const double& get_sigma() const;
+            
+            /// \brief Set the value of the scale prameter sigma.
+            void set_sigma(const double& sigma);
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 \ln f(x) = \frac{m-x}{\sigma} - \exp \left( \frac{m-x}{\sigma} \right) - \ln (\sigma).
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */ 
+            virtual double ldf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 f(x) =  \frac{1}{\sigma} \exp \left\lbrace \frac{m-x}{\sigma} - \exp \left( \frac{m-x}{\sigma} \right)  \right\rbrace .
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double pdf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 P(X \leq x) = \exp \left\lbrace - \exp \left( \frac{m-x}{\sigma} \right)  \right\rbrace.
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double cdf(const double& value) const;
+
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+			 *  The quantile for GumbelMax distribution is computed as \f$ x = m - \sigma \ln \lbrace - \ln (p) \rbrace  \f$.		
+			 * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+			///  \brief Get mean of GumbelMax distribution \f$ E(X) = m + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
+            virtual double get_mean() const;
+
+			/// \brief Get variance of GumbelMax distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
+            virtual double get_variance() const;
+
+            virtual std::unique_ptr< UnivariateDistribution > copy() const;            
+
+        protected:
+            double _mu;
+            double _sigma;
+    };
+    
+    /** \brief This class GumbelMinDistribution represents a Gumbel distribution (minimum).
+     * 
+     * \details A random variable \f$X\f$ is said to folloow a Gumbel distribution (minimum) if \f$Y=-X\f$ follows a Gumbel distribution (maximum).
+     *         The Gumbel distribution (minimum) is an univariate continuous distribution.
+     *			It is also called extreme value type I distribution (minimum).
+     *         The support is the set of real values \f$\mathbb{R}\f$.
+     * @see statiskit::GumbelMaxDistribution
+     * */                
+    class GumbelMinDistribution : public ContinuousUnivariateDistribution
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Gumbel distribution (minimum) with
+             *
+             * - \f$ \mu = 0.\f$,
+             * - \f$ \sigma = 1.\f$. 
+             * */
+            GumbelMinDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for Gumbel distribution (minimum) instantiation with specified \f$m\f$ and \f$s\f$ parameters.
+             *
+             * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param sigma the specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
+             * */            
+            GumbelMinDistribution(const double& mu, const double& sigma);
+            
+            /// \brief A copy constructor
+            GumbelMinDistribution(const GumbelMinDistribution& gumbel_min);
+
+            /** \brief Returns the number of parameters of the Gumbel distribution (minimum).
+             *
+             * \details The number of parameters of a Gumbel distribution (minimum) is \f$2\f$ (\f$m\f$ and \f$s\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+        	
+        	/// \brief Get the value of the location parameter mu.
+            const double& get_mu() const;
+            
+            /// \brief Set the value of the location parameter mu.
+            void set_mu(const double& mu);
+
+			/// \brief Get the value of the scale parameter sigma.
+            const double& get_sigma() const;
+            
+            /// \brief Set the value of the scale parameter sigma.
+            void set_sigma(const double& sigma);
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 \ln f(x) = \frac{x-m}{\sigma} - \exp \left( \frac{x-m}{\sigma} \right) - \ln (\sigma).
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */ 
+            virtual double ldf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 f(x) =  \frac{1}{\sigma} \exp \left\lbrace \frac{x-m}{\sigma} - \exp \left( \frac{x-m}{\sigma} \right)  \right\rbrace .
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double pdf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+		     *			\f[
+		     * 				 P(X \leq x) = 1 - \exp \left\lbrace - \exp \left( \frac{x-m}{\sigma} \right)  \right\rbrace.
+		     *			\f]
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double cdf(const double& value) const;
+
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+			 *  The quantile for GumbelMin distribution is computed as \f$ x = m + \sigma \ln \lbrace - \ln (1-p) \rbrace  \f$.		
+			 * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+			///  \brief Get mean of GumbelMin distribution \f$ E(X) = - m + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
+            virtual double get_mean() const;
+
+			/// \brief Get variance of GumbelMin distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
+            virtual double get_variance() const;
+
+            virtual std::unique_ptr< UnivariateDistribution > copy() const;            
+
+        protected:
+            double _mu;
+            double _sigma;
+    };
+
+
+
+        
     /*struct MultivariateDistribution
     {
         typedef UnivariateDistribution marginal_type;
