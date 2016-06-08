@@ -3,5 +3,6 @@ doc/latex
 doc/Doxyfile
 build-scons
 *.so
+*.pyc
 *~
 .sconsign.dblite
