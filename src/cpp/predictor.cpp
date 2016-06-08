@@ -14,7 +14,7 @@ namespace statiskit
     {
         _sample_space = sample_space;
         _alpha = 0.;
-        _delta = arma::zeros< arma::rowvec >(sample_space->encode());
+        _delta = arma::zeros< arma::colvec >(sample_space->encode());
     }
 
     ScalarPredictor::~ScalarPredictor()
@@ -43,8 +43,26 @@ namespace statiskit
     { return _delta.n_rows; }
 
     const double& ScalarPredictor::get_delta(const size_t& index) const
-    { return _delta.at(index); }
+    { return _delta(index); }
 
     void ScalarPredictor::set_delta(const size_t& index, const double& delta)
-    { _delta.at(index) = delta; }
+    { _delta(index) = delta; }
+
+    
+    ConstrainedScalarPredictor::ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const arma::mat& constraint) : ScalarPredictor(sample_space)
+    { 
+    	if(constraint.n_rows != sample_space->encode())
+    	{ throw statiskit::size_error("constraint", constraint.n_rows, sample_space->encode()); }    
+        _delta = arma::zeros< arma::colvec >(constraint.n_cols);    
+    	_constraint = constraint; 
+    }
+
+    ConstrainedScalarPredictor::~ConstrainedScalarPredictor()
+    {}
+
+    ConstrainedScalarPredictor::ConstrainedScalarPredictor(const ConstrainedScalarPredictor& predictor) : ScalarPredictor(predictor)
+    { _constraint = predictor._constraint; }
+     
+    double ConstrainedScalarPredictor::operator() (const MultivariateEvent& event) const
+    { return _alpha + (_sample_space->encode(event) * _constraint * _delta).eval().at(0); }    
 }

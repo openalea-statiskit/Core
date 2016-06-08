@@ -37,6 +37,44 @@ namespace statiskit
             double _alpha;
             arma::colvec _delta;
     };
+    
+    class ConstrainedScalarPredictor : ScalarPredictor
+    {
+        public:
+            ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const arma::mat& constraint);
+            virtual ~ConstrainedScalarPredictor();
+            ConstrainedScalarPredictor(const ConstrainedScalarPredictor& predictor);
+
+            double operator() (const MultivariateEvent& event) const;
+
+        protected:
+            arma::mat _constraint;
+    };    
+
+//    class VectorPredictor
+//    {
+//        public:
+//            VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space);
+//            virtual ~VectorPredictor();
+//            VectorPredictor(const VectorPredictor& predictor);
+
+//            double operator() (const MultivariateEvent& event) const;
+
+//            const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+
+//            const double& get_alpha() const;
+//            void set_alpha(const double& alpha);
+
+//            size_t size() const;
+
+//            const double& get_delta(const size_t& index) const;
+//            void set_delta(const size_t& index, const double& delta);
+
+//        protected:
+//            std::shared_ptr< MultivariateSampleSpace > _sample_space;
+//            double _alpha;
+//            arma::colvec _delta;
+//    };    
 };
 
 #endif

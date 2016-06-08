@@ -999,63 +999,63 @@ namespace statiskit
     { return std::make_unique< CauchyDistribution >(*this); }    
 
 
-    StudentDistribution::StudentDistribution() 
+    NonStandardStudentDistribution::NonStandardStudentDistribution() 
     {
         _mu = 0.;
         _sigma = 1.;
         _nu = 1.;
     }
 
-    StudentDistribution::StudentDistribution(const double& mu, const double& sigma, const double& nu) 
+    NonStandardStudentDistribution::NonStandardStudentDistribution(const double& mu, const double& sigma, const double& nu) 
     {
         _mu = mu;
         _sigma = sigma;
         _nu = nu;
     }
 
-    StudentDistribution::StudentDistribution(const StudentDistribution& student)
+    NonStandardStudentDistribution::NonStandardStudentDistribution(const NonStandardStudentDistribution& nsstudent)
     {
-        _mu = student._mu;
-        _sigma = student._sigma;
-        _nu = student._nu;
+        _mu = nsstudent._mu;
+        _sigma = nsstudent._sigma;
+        _nu = nsstudent._nu;
     }
 
-    unsigned int StudentDistribution::get_nb_parameters() const
+    unsigned int NonStandardStudentDistribution::get_nb_parameters() const
     { return 3; }
 
-    const double& StudentDistribution::get_mu() const
+    const double& NonStandardStudentDistribution::get_mu() const
     { return _mu; }
 
-    void StudentDistribution::set_mu(const double& mu)
+    void NonStandardStudentDistribution::set_mu(const double& mu)
     { _mu = mu; }
 
-    const double& StudentDistribution::get_sigma() const
+    const double& NonStandardStudentDistribution::get_sigma() const
     { return _sigma; }
 
-    void StudentDistribution::set_sigma(const double& sigma)
+    void NonStandardStudentDistribution::set_sigma(const double& sigma)
     {
         if(sigma <= 0.)
         { throw lower_bound_error("sigma", sigma, 0., true); }
         _sigma = sigma;
     }
     
-    const double& StudentDistribution::get_nu() const
+    const double& NonStandardStudentDistribution::get_nu() const
     { return _nu; }
 
-    void StudentDistribution::set_nu(const double& nu)
+    void NonStandardStudentDistribution::set_nu(const double& nu)
     {
         if(nu <= 0.)
         { throw lower_bound_error("nu", nu, 0., true); }
         _nu = nu;
     }    
 
-    double StudentDistribution::ldf(const double& value) const
+    double NonStandardStudentDistribution::ldf(const double& value) const
     { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow((value-_mu)/_sigma, 2) )  ) - 0.5*log(_nu) - log(_sigma) - log(boost::math::beta(_nu*0.5, 0.5) ); }
     
-    double StudentDistribution::pdf(const double& value) const
+    double NonStandardStudentDistribution::pdf(const double& value) const
     { return pow( _nu/(_nu + pow((value-_mu)/_sigma, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * _sigma * boost::math::beta(_nu*0.5, 0.5) ); }
 
-    double StudentDistribution::cdf(const double& value) const
+    double NonStandardStudentDistribution::cdf(const double& value) const
     {
     	double z;
     	if(_nu < 2*(value-_mu)/_sigma)
@@ -1068,7 +1068,7 @@ namespace statiskit
     	{return z; }
     }
 
-    double StudentDistribution::quantile(const double& p) const
+    double NonStandardStudentDistribution::quantile(const double& p) const
     { 
     	if(p<0.5)
     	{ return _mu - _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) ) ; }
@@ -1078,14 +1078,14 @@ namespace statiskit
     	{ return _mu + _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) ); }   	 
     }
 
-    std::unique_ptr< UnivariateEvent > StudentDistribution::simulate() const
+    std::unique_ptr< UnivariateEvent > NonStandardStudentDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
         boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
-    double StudentDistribution::get_mean() const
+    double NonStandardStudentDistribution::get_mean() const
     {
     	if(_nu>1.)
     	{ return _mu; }
@@ -1093,18 +1093,135 @@ namespace statiskit
     	{ return std::numeric_limits< double >::quiet_NaN(); }
     }
 
-    double StudentDistribution::get_variance() const
+    double NonStandardStudentDistribution::get_variance() const
     {
     	if(_nu>2.)
     	{ return _nu/(_nu-2.); }
     	else if(_nu>1.)
-    	{ return std::numeric_limits< double >::quiet_NaN(); } // return INFTY 
+    	{ return std::numeric_limits< double >::infinity(); } 
     	else
     	{ return std::numeric_limits< double >::quiet_NaN(); }
     }
 
-    std::unique_ptr< UnivariateDistribution > StudentDistribution::copy() const
-    { return std::make_unique< StudentDistribution >(*this); }    
+    std::unique_ptr< UnivariateDistribution > NonStandardStudentDistribution::copy() const
+    { return std::make_unique< NonStandardStudentDistribution >(*this); }    
+
+
+    GeneralizedStudentDistribution::GeneralizedStudentDistribution() 
+    {
+        _mu = 0.;
+        _sigma = 1.;
+        _nu = 1.;
+        _delta = 0.;
+    }
+
+    GeneralizedStudentDistribution::GeneralizedStudentDistribution(const double& mu, const double& sigma, const double& nu, const double& delta) 
+    {
+        _mu = mu;
+        _sigma = sigma;
+        _nu = nu;
+        _delta = delta;
+    }
+
+    GeneralizedStudentDistribution::GeneralizedStudentDistribution(const GeneralizedStudentDistribution& gstudent)
+    {
+        _mu = gstudent._mu;
+        _sigma = gstudent._sigma;
+        _nu = gstudent._nu;
+        _delta = gstudent._delta;
+    }
+
+    unsigned int GeneralizedStudentDistribution::get_nb_parameters() const
+    { return 4; }
+
+    const double& GeneralizedStudentDistribution::get_mu() const
+    { return _mu; }
+
+    void GeneralizedStudentDistribution::set_mu(const double& mu)
+    { _mu = mu; }
+
+    const double& GeneralizedStudentDistribution::get_sigma() const
+    { return _sigma; }
+
+    void GeneralizedStudentDistribution::set_sigma(const double& sigma)
+    {
+        if(sigma <= 0.)
+        { throw lower_bound_error("sigma", sigma, 0., true); }
+        _sigma = sigma;
+    }
+    
+    const double& GeneralizedStudentDistribution::get_nu() const
+    { return _nu; }
+
+    void GeneralizedStudentDistribution::set_nu(const double& nu)
+    {
+        if(nu <= 0.)
+        { throw lower_bound_error("nu", nu, 0., true); }
+        _nu = nu;
+    }    
+
+    const double& GeneralizedStudentDistribution::get_delta() const
+    { return _delta; }
+
+    void GeneralizedStudentDistribution::set_delta(const double& delta)
+    { _delta = delta; }
+    
+    double GeneralizedStudentDistribution::ldf(const double& value) const
+    { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow((value-_mu)/_sigma, 2) )  ) - 0.5*log(_nu) - log(_sigma) - log(boost::math::beta(_nu*0.5, 0.5) ); }
+    
+    double GeneralizedStudentDistribution::pdf(const double& value) const
+    { return pow( _nu/(_nu + pow((value-_mu)/_sigma, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * _sigma * boost::math::beta(_nu*0.5, 0.5) ); }
+
+    double GeneralizedStudentDistribution::cdf(const double& value) const
+    {
+    	double z;
+    	if(_nu < 2*(value-_mu)/_sigma)
+    	{ z = boost::math::ibeta(_nu*0.5, 0.5, _nu/(_nu+pow((value-_mu)/_sigma, 2) ) ) * 0.5; }
+    	else
+    	{ z = boost::math::ibetac(0.5, _nu*0.5, pow((value-_mu)/_sigma, 2)/(_nu+pow((value-_mu)/_sigma, 2) ) ) * 0.5; }
+    	if(value>_mu)
+    	{ return 1-z; }
+    	else
+    	{return z; }
+    }
+
+    double GeneralizedStudentDistribution::quantile(const double& p) const
+    { 
+    	if(p<0.5)
+    	{ return _mu - _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) ) ; }
+    	else if(p>0.5)
+    	{ return _mu; }
+    	else
+    	{ return _mu + _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) ); }   	 
+    }
+
+    std::unique_ptr< UnivariateEvent > GeneralizedStudentDistribution::simulate() const
+    {        
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double GeneralizedStudentDistribution::get_mean() const
+    {
+    	if(_nu>1.)
+    	{ return _mu; }
+    	else
+    	{ return std::numeric_limits< double >::quiet_NaN(); }
+    }
+
+    double GeneralizedStudentDistribution::get_variance() const
+    {
+    	if(_nu>2.)
+    	{ return _nu/(_nu-2.); }
+    	else if(_nu>1.)
+    	{ return std::numeric_limits< double >::infinity(); } 
+    	else
+    	{ return std::numeric_limits< double >::quiet_NaN(); }
+    }
+
+    std::unique_ptr< UnivariateDistribution > GeneralizedStudentDistribution::copy() const
+    { return std::make_unique< GeneralizedStudentDistribution >(*this); }    
 
 
     GumbelMaxDistribution::GumbelMaxDistribution() 
