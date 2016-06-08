@@ -7,8 +7,14 @@ compiler: clang
 sudo: required
 
 before_install:
-    - "sudo apt-get install libboost1.58-all-dev libarmadillo-dev"
     - "cd .."
+    - "wget https://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2"
+    - "tar --bzip2 -xf boost_1_61_0.tar.bz2"
+    - "cd boost_1_61_0"
+    - "./bootstrap.sh"
+    - "./b2 install"
+    - "cd .."
+    - "sudo apt-get install libarmadillo-dev"
     - "git clone https://github.com/openalea/deploy.git"
     - "cd deploy"
     - "python setup.py install"
