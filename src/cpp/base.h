@@ -20,6 +20,7 @@
 #endif
 
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/math/constants/constants.hpp>
 #include <type_traits>
 #include <map>
 #include <exception>
