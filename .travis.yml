@@ -35,11 +35,11 @@ before_install:
   - "cd .."
   - "git clone https://github.com/openalea/deploy.git"
   - "cd deploy"
-  - "python setup.py install"
+  - "sudo python setup.py install"
   - "cd .."
   - "git clone https://github.com/openalea/sconsx.git"
   - "cd sconsx"
-  - "python setup.py install"
+  - "sudo python setup.py install"
   - "cd .."
   - "cd StatisKit-Core"
     
