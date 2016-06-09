@@ -64,21 +64,46 @@ namespace statiskit
             std::set< typename T::event_type::value_type > _values;
             std::vector< double > _pi;
     };
-
+    
+    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ S\f$. The support is a finite set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+     * 
+     * */
     struct CategoricalUnivariateDistribution : UnivariateDistribution
     {
         typedef CategoricalEvent event_type;
- 
+        
+		/** \brief Compute the probability of a set of values.
+         *
+         * \details Let \f$A \in \mathcal{S} \f$ denote the set of values. The probability function get \f$ P\left(S \in A\right) \f$ or \f$ \ln P\left(S \in A\right) \f$ according to the boolean parameter logarithm.
+         * \param UnivariateEvent* The considered set of values.
+         * \param logarithm The boolean.
+         * */  
         virtual double probability(const UnivariateEvent*, const bool& logarithm) const;
-
-        virtual double pdf(const std::string& value) const = 0;
+        
+		/** \brief Compute the log-probability of a value.
+         *
+         * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ \ln P\left(S = s\right) \f$.
+         * \param value The considered value.
+         * */         
         virtual double ldf(const std::string& value) const = 0;
-
+        
+		/** \brief Compute the probability of a value
+         *
+         * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ P\left(S = s\right) \f$.
+         * \param value The considered value.
+         * */         
+        virtual double pdf(const std::string& value) const = 0;
+        
+		/// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
         virtual const std::set< std::string >& get_values() const = 0;
 
+		/// \brief Get the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
         virtual const std::vector< double >& get_pi() const = 0;
     };
-
+    
+    /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+     * 
+     * */
     struct NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     { 
         using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
@@ -87,11 +112,33 @@ namespace statiskit
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
-
+    
+    /** \brief This class OrdinalDistribution represents the distribution of a random ordinal variable \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
+     * 
+     * */
     class OrdinalDistribution : public UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     {
         public:
+             /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for ordinal distribution instantiation with specified set of string \f$ \mathcal{S} \f$.
+             *			The ordering relation is given by the lexicographic order.
+             *			The probabilities are uniform on the finite set \f$ \mathcal{S} \f$.
+             *
+             * \param values The specified set of string.
+             * */
             OrdinalDistribution(const std::vector< std::string >& values);
+            
+             /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for ordinal distribution instantiation with specified set of string \f$ \mathcal{S} \f$ and specified ordering relation.
+             *			The ordering relation is given by the rank.
+             *			The probabilities are given by the vector \f$ \pi \f$.
+             *
+             * \param values The specified set of string.
+             * \param rank The specified vector of rank.
+             * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
+             * */            
             OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const std::vector< double >& pi);
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
             
