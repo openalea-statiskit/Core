@@ -14,7 +14,7 @@ before_install:
     - "./bootstrap.sh"
     - "sudo ./b2 install"
     - "cd .."
-    - "wget wget http://downloads.sourceforge.net/project/arma/armadillo-7.200.1.tar.xz"
+    - "wget http://downloads.sourceforge.net/project/arma/armadillo-7.200.1.tar.xz"
     - "tar -xf armadillo-7.200.1.tar.xz"
     - "cd armadillo-7.200.1"
     - "cmake ."
