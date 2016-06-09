@@ -23,18 +23,14 @@ namespace statiskit
             double operator() (const MultivariateEvent& event) const;
 
             const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+            
+            double alpha;
 
-            const double& get_alpha() const;
-            void set_alpha(const double& alpha);
-
-            size_t size() const;
-
-            const double& get_delta(const size_t& index) const;
-            void set_delta(const size_t& index, const double& delta);
-
+			const arma::colvec& get_delta() const;
+			void set_delta(const arma::colvec& delta);
+			
         protected:
             std::shared_ptr< MultivariateSampleSpace > _sample_space;
-            double _alpha;
             arma::colvec _delta;
     };
     
@@ -46,35 +42,89 @@ namespace statiskit
             ConstrainedScalarPredictor(const ConstrainedScalarPredictor& predictor);
 
             double operator() (const MultivariateEvent& event) const;
+            
+			const arma::mat& get_constraint() const;
+			void set_constraint(const arma::mat& constraint);            
 
         protected:
             arma::mat _constraint;
+    };      
+
+    class VectorPredictor
+    {
+        public:
+            VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            virtual ~VectorPredictor();
+			VectorPredictor(const VectorPredictor& predictor);
+			
+            virtual arma::colvec operator() (const MultivariateEvent& event) const = 0;
+
+            const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+            
+            const arma::colvec& get_alpha() const;
+			void set_alpha(const arma::colvec& alpha);
+
+			virtual void set_beta(const arma::colvec& beta) = 0;
+			
+        protected:
+            std::shared_ptr< MultivariateSampleSpace > _sample_space;	
+            arma::colvec _alpha;	
+    };
+
+    class CompletePredictor : VectorPredictor
+    {
+        public:
+            CompletePredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            virtual ~CompletePredictor();
+            CompletePredictor(const CompletePredictor& predictor);
+
+            virtual arma::colvec operator() (const MultivariateEvent& event) const;
+            
+            virtual void set_beta(const arma::colvec& beta);
+			
+			const arma::mat& get_delta() const;
+			void set_delta(const arma::mat& delta);
+			
+        protected:
+            arma::mat _delta;
     };    
+    
+    class ProportionalPredictor : VectorPredictor
+    {
+        public:
+            ProportionalPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            virtual ~ProportionalPredictor();
+            ProportionalPredictor(const ProportionalPredictor& predictor);
 
-//    class VectorPredictor
-//    {
-//        public:
-//            VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space);
-//            virtual ~VectorPredictor();
-//            VectorPredictor(const VectorPredictor& predictor);
+            virtual arma::colvec operator() (const MultivariateEvent& event) const;
+            
+            virtual void set_beta(const arma::colvec& beta);
+			
+			const arma::colvec& get_delta() const;
+			void set_delta(const arma::colvec& delta);
+			
+        protected:
+            arma::colvec _delta;
+    }; 
 
-//            double operator() (const MultivariateEvent& event) const;
+    class ConstrainedVectorPredictor : VectorPredictor
+    {
+        public:
+            ConstrainedVectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols, const arma::mat& constraint);
+            virtual ~ConstrainedVectorPredictor();
+            ConstrainedVectorPredictor(const ConstrainedVectorPredictor& predictor);
 
-//            const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+            virtual arma::colvec operator() (const MultivariateEvent& event) const;
+            
+            virtual void set_beta(const arma::colvec& beta);
+            
+			const arma::mat& get_constraint() const;
+			void set_constraint(const arma::mat& constraint);            
 
-//            const double& get_alpha() const;
-//            void set_alpha(const double& alpha);
-
-//            size_t size() const;
-
-//            const double& get_delta(const size_t& index) const;
-//            void set_delta(const size_t& index, const double& delta);
-
-//        protected:
-//            std::shared_ptr< MultivariateSampleSpace > _sample_space;
-//            double _alpha;
-//            arma::colvec _delta;
-//    };    
+        protected:
+        	arma::colvec _delta;
+            arma::mat _constraint;
+    };    
 };
 
 #endif
