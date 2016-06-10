@@ -88,8 +88,8 @@ namespace statiskit
          * \details Let \f$A \in \mathcal{S} \f$ denote the set of values. The probability function get \f$ P\left(S \in A\right) \f$ or \f$ \ln P\left(S \in A\right) \f$ according to the boolean parameter logarithm.
          * \param UnivariateEvent* The considered set of values.
          * \param logarithm The boolean.
-         * */
-        ///\brief \copybrief statiskit::UnivariateDistribution::probability() 
+         *
+         * */  
         virtual double probability(const UnivariateEvent*, const bool& logarithm) const;
         
 		/** \brief Compute the log-probability of a value.
