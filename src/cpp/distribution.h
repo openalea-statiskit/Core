@@ -1534,23 +1534,44 @@ namespace statiskit
     };
 
 
-    /** Univariate Conditional Distribution Class
+    /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random variable \f$ Y\f$ given a multivariate variable \f$ \boldsymbol{X} \f$.
      *
      */
     struct UnivariateConditionalDistribution
     {
-        const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
+        typedef UnivariateDistribution response_type;
+        
+        /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
+        virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
+    	/// \Brief Get the sample space of the response variable \f$ Y \f$.
         virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
+    	/// \Brief Get the sample space of the explanatory variables \f$ \boldsymbol{X} \f$.
         virtual std::unique_ptr< MultivariateSampleSpace > get_explanatory_space() const = 0;
 
+    	/// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
         virtual unsigned int get_nb_parameters() const = 0;
 
         //double loglikelihood(const UnivariateData& data) const;
 
         virtual std::unique_ptr< UnivariateConditionalDistribution > copy() const = 0;
-    }; 
+    };
+    
+    struct CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef CategoricalUnivariateDistribution response_type;
+    };
+    
+    struct DiscretelUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef DiscreteUnivariateDistribution response_type;
+    };        
+    
+    struct ContinuouslUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef ContinuousUnivariateDistribution response_type;
+    };      
 
     /*struct MultivariateDistribution
     {
