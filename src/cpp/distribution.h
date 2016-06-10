@@ -9,7 +9,6 @@
 #ifndef STATISKIT_CORE_DISTRIBUTION_H
 #define STATISKIT_CORE_DISTRIBUTION_H
 
-#include "predictor.h"
 #include "data.h"
 
 #include <boost/random/poisson_distribution.hpp>
@@ -1548,7 +1547,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
     	/// \Brief Get the sample space of the explanatory variables \f$ \boldsymbol{X} \f$.
-        virtual std::unique_ptr< MultivariateSampleSpace > get_explanatory_space() const = 0;
+        virtual const MultivariateSampleSpace* get_explanatory_space() const = 0;
 
     	/// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -1563,12 +1562,12 @@ namespace statiskit
         typedef CategoricalUnivariateDistribution response_type;
     };
     
-    struct DiscretelUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef DiscreteUnivariateDistribution response_type;
     };        
     
-    struct ContinuouslUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef ContinuousUnivariateDistribution response_type;
     };      
