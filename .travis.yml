@@ -1,0 +1,47 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - clang
+
+sudo: required
+
+before_install:
+  - "cd .."
+  - "wget https://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2"
+  - "tar --bzip2 -xf boost_1_61_0.tar.bz2"
+  - "cd boost_1_61_0"
+  - "./bootstrap.sh"
+  - "sudo ./b2 install"
+  - "cd .."
+  - "wget http://downloads.sourceforge.net/project/arma/armadillo-7.200.1.tar.xz"
+  - "tar -xf armadillo-7.200.1.tar.xz"
+  - "cd armadillo-7.200.1"
+  - "cmake ."
+  - "make"
+  - "sudo make install"
+  - "cd .."
+  - "git clone https://github.com/openalea/deploy.git"
+  - "cd deploy"
+  - "sudo python setup.py install"
+  - "cd .."
+  - "git clone https://github.com/openalea/sconsx.git"
+  - "cd sconsx"
+  - "sudo python setup.py install"
+  - "cd .."
+  - "cd StatisKit-Core"
+    
+install:
+  - "scons"
