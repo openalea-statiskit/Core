@@ -967,7 +967,7 @@ namespace statiskit
             virtual double cdf(const double& value) const;
 
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			 *  The quantile for Cauchy distribution is defined as \f$ \mu + \sigma \tan \left\lbrace \pi (p-1/2) \right\rbrace\f$.		
+			 *  The quantile for Cauchy distribution is defined as \f$ \mu + \sigma \tan \left\lbrace \pi (p-1/2) \right\rbrace \f$.		
 			 * */
             virtual double quantile(const double& p) const;
 
@@ -986,17 +986,17 @@ namespace statiskit
             double _sigma;
     };
 
-    /** \brief This class StudentDistribution represents a [non-standardized Student distribution](https://en.wikipedia.org/wiki/Student's_t-distribution#Non-standardized_Student.27s_t-distribution).
+    /** \brief This class NonStandardStudentDistribution represents a <a href="https://en.wikipedia.org/wiki/Student's_t-distribution#Non-standardized_Student.27s_t-distribution">non standardized Student distribution</a>.
      * 
      * \details The non-standardized Student distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
-    class StudentDistribution : public ContinuousUnivariateDistribution
+    class NonStandardStudentDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
              *
-             * \details The default constructor instantiate a Student distribution with
+             * \details The default constructor instantiate a non-standardized Student distribution with
              *
              * - \f$\mu = 0.\f$,
              * - \f$\sigma = 1.\f$,
@@ -1004,24 +1004,24 @@ namespace statiskit
              *
              * i.e. a standard Cauchy distribution.
              * */
-            StudentDistribution();
+            NonStandardStudentDistribution();
             
             /** \brief An alternative constructor
              *
-             * \details This constructor is usefull for Student distribution instantiation with specified \f$\mu\f$, \f$\sigma\f$ and \f$\nu\f$ parameters.
+             * \details This constructor is usefull for non-standardized Student distribution instantiation with specified \f$\mu\f$, \f$\sigma\f$ and \f$\nu\f$ parameters.
              *
              * \param mu The specified location parameter \f$ \mu \in \mathbb{R} \f$.
              * \param sigma The specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
-             * \param nu The specified shape parameter \f$ \nu \in \mathbb{R}_+^* \f$.
+             * \param nu The specified degree of freedom parameter \f$ \nu \in \mathbb{R}_+^* \f$.
              * */            
-            StudentDistribution(const double& mu, const double& sigma, const double& nu);
+            NonStandardStudentDistribution(const double& mu, const double& sigma, const double& nu);
             
             /// \brief A copy constructor
-            StudentDistribution(const StudentDistribution& Student);
+            NonStandardStudentDistribution(const NonStandardStudentDistribution& nsstudent);
 
-            /** \brief Returns the number of parameters of the Student distribution
+            /** \brief Returns the number of parameters of the non-standardized Student distribution
              *
-             * \details The number of parameters of a Student distribution is \f$3\f$ (\f$\mu\f$, \f$\sigma\f$ and \f$\nu\f$).
+             * \details The number of parameters of a non-standardized Student distribution is \f$3\f$ (\f$\mu\f$, \f$\sigma\f$ and \f$\nu\f$).
              * */
             virtual unsigned int get_nb_parameters() const;
         	
@@ -1047,7 +1047,7 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the ldf is computed as 
 		     *			\f[
-		     * 				 \ln f(x) = \left(\frac{1+\nu}{2} \right) \left[ \ln \nu - \ln\left\lbrace \nu +\left( \frac{x-\mu}{\sqrt_{\nu}\sigma}\right)^2  \right\rbrace \right]  - 0.5*\ln\nu - \ln \sigma - \ln \textnormal{beta}(\nu/2, 0.5) ,
+		     * 				 \ln f(x) = \left( \frac{1+\nu}{2} \right) \left[ \ln \nu - \ln \left\lbrace \nu + \left( \frac{x-\mu}{\sqrt{\nu}\sigma} \right)^2  \right\rbrace \right]  - 0.5  \ln \nu - \ln \sigma - \ln \textnormal{beta}(0.5 \nu, 0.5) ,
 		     *			\f]
 		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
 		     * \param value The considered value \f$x\f$.
@@ -1058,11 +1058,11 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the pdf is defined by 
 		     *			\f[
-		     * 				 f(x) =  \frac{\Gamma \left(\frac{1+\nu}{2} \right) }{\sqrt_{\nu\pi}\sigma \Gamma(\frac{\nu}{2}) \left\lbrace 1 + \left( \frac{x-\mu}{\sqrt_{\nu}\sigma}\right)^2  \right\rbrace^{\frac{1+\nu}{2}} },
+		     * 				 f(x) =  \frac{\Gamma \left(\frac{1+\nu}{2} \right) }{\sqrt{\nu\pi}\sigma \Gamma(\frac{\nu}{2}) \left\lbrace 1 + \left( \frac{x-\mu}{\sqrt{\nu}\sigma}\right)^2  \right\rbrace^{\frac{1+\nu}{2}} },
 		     *			\f]
 		     * and computed as
 		     *			\f[
-		     * 				 f(x) =  \left\lbrace \frac{\nu}{\nu+\left( \frac{x-\mu}{\sqrt_{\nu}\sigma}\right)^2} \right\rbrace^{\frac{1+\nu}{2}} / \left\lbrace \sqrt_{\nu}\sigma \textnormal{beta}(\nu/2, 0.5) \right\rbrace ,
+		     * 				 f(x) =  \left\lbrace \frac{\nu}{\nu+\left( \frac{x-\mu}{\sqrt{\nu}\sigma}\right)^2} \right\rbrace^{\frac{1+\nu}{2}} \Bigg/ \left\lbrace \sqrt{\nu}\sigma \; \textnormal{beta}(0.5\nu, \; 0.5) \right\rbrace ,
 		     *			\f]		     
 		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
 		     * \param value The considered value \f$x\f$.
@@ -1071,7 +1071,7 @@ namespace statiskit
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
 		     *
-		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the cdf is computed as
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the cdf is given by
 		     *			\f[
 		     * 				 P(X \leq x) = \left\{
 			 *								\begin{array}{ll}
@@ -1080,28 +1080,28 @@ namespace statiskit
 			 *								\end{array}
 			 *								\right.
 		     *			\f]
-		     * where \f$ z \f$ is given by
+		     * where \f$ z \f$ is computed as
 		     *			\f[
 		     * 				 z = \left\{
 			 *								\begin{array}{ll}
-			 *								  \textnormal{ibeta}\left\rbrace \nu/2, 0.5, \frac{\nu}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right\rbrace * 0.5 & \nu < 2 \left( \frac{x-\mu}{\sigma} \right)^2 , \\
-			 *								  \textnormal{ibetac}\left\rbrace 0.5, \nu/2, \frac{\left( \frac{x-\mu}{\sigma} \right)^2}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right\rbrace * 0.5   & \textnormal{otherwise},
+			 *								 \displaystyle 0.5 * \textnormal{ibeta} \left( 0.5 \nu, \; 0.5, \frac{\nu}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right) & \nu < 2 \left( \frac{x-\mu}{\sigma} \right)^2 , \\
+			 *								 \displaystyle 0.5 * \textnormal{ibetac} \left( 0.5, \; 0.5 \nu, \frac{\left( \frac{x-\mu}{\sigma} \right)^2}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right)   & \textnormal{otherwise},
 			 *								\end{array}
 			 *								\right.
 		     *			\f]		     
-		     * where [\f$\textnormal{ibeta}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_function.html) is the normalized incomplete beta function and [\f$\textnormal{ibetac}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibetac_function.html) is the normalized complement of the incomplete beta function implemented in the Boost.Math library. 
+		     * where [\f$\textnormal{ibeta}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_function.html) is the normalized incomplete beta function and [\f$\textnormal{ibetac}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibetac_function.html) is its complement, both implemented in the Boost.Math library. 
 		     * \param value The considered value \f$x\f$.
 		     * */             
             virtual double cdf(const double& value) const;
 
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			 *  The quantile for Student distribution is computed as 
+			 *  The quantile for non-standardized Student distribution is computed as 
 		     *			\f[
-		     * 				 q = \left\{
+		     * 				 x = \left\{
 			 *								\begin{array}{ll}
-			 *								  \mu - \sigma \sqrt_{ \nu \frac{1-\textnormal{ibeta\_inv}(\nu/2, 0.5, 2*p) }{\textnormal{ibeta\_inv}(\nu/2, 0.5, 2*p) }  }  & p < 0.5, \\
+			 *								\displaystyle  \mu - \sigma \left\lbrace \nu \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }  \right\rbrace^{0.5}  & p < 0.5, \\
 			 *								  \mu                        & p = 0.5, \\
-			 *								  \mu + \sigma \sqrt_{\nu  \frac{1-\textnormal{ibeta\_inv}(\nu/2, 0.5, 2-2*p) }{\textnormal{ibeta\_inv}(\nu/2, 0.5, 2-2*p) } }  & p > 0.5,
+			 *								 \displaystyle  \mu + \sigma \left\lbrace \nu  \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) } \right\rbrace^{0.5}  & p > 0.5,
 			 *								\end{array}
 			 *								\right.
 		     *			\f]		
@@ -1111,10 +1111,10 @@ namespace statiskit
 
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-			/// \brief Get the mean of Student distribution \f$ E(X) = \mu \f$ if \f$ \nu > 1 \f$ and undefined otherwise.
+			/// \brief Get the mean of non-standardized Student distribution \f$ E(X) = \mu \f$ if \f$ \nu > 1 \f$ and undefined otherwise.
             virtual double get_mean() const;
 
-			/// \brief Get the variance of Student distribution \f$ V(X) = \frac{\nu}{\nu-2} \f$ if \f$ \nu >2 \f$,  \f$ V(X) = \infty \f$ \f$ if \f$ 1  < \nu \leq 2\f$n and undefined otherwise.
+			/// \brief Get the variance of non-standardized Student distribution \f$ V(X) = \frac{\nu}{\nu-2} \f$ if \f$ \nu >2 \f$,  \f$ V(X) = \infty \f$ if \f$ 1 < \nu \leq 2\f$ and undefined otherwise.
             virtual double get_variance() const;
 
             virtual std::unique_ptr< UnivariateDistribution > copy() const;            
@@ -1123,6 +1123,155 @@ namespace statiskit
             double _mu;
             double _sigma;
             double _nu;
+    };
+
+    /** \brief This class GeneralizedStudentDistribution represents a <a href="https://en.wikipedia.org/wiki/Noncentral_t-distribution">non central Student distribution</a> which is also non standardized.
+     * 
+     * \details A random variable $W=\sigma T + \mu$ is said to follow a generalized Student distribution if $T$ follows a non-central distribution.
+     *			The generalized Student distribution is an univariate continuous distribution.
+     *         The support is the set of real values \f$\mathbb{R}\f$.
+     * */   
+    class GeneralizedStudentDistribution : public ContinuousUnivariateDistribution
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a generalized Student distribution with
+             *
+             * - \f$\mu = 0.\f$,
+             * - \f$\sigma = 1.\f$,
+             * - \f$\nu = 1.\f$,
+             * - \f$\delta = 0.\f$,
+             *
+             * i.e. a standard Cauchy distribution.
+             * */
+            GeneralizedStudentDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for generalized Student distribution instantiation with specified \f$\mu\f$, \f$\sigma\f$, \f$\nu\f$ and \f$\delta\f$ parameters.
+             *
+             * \param mu The specified location parameter \f$ \mu \in \mathbb{R} \f$.
+             * \param sigma The specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
+             * \param nu The specified degree of freedom parameter \f$ \nu \in \mathbb{R}_+^* \f$.
+             * \param delta The specified non-centrality parameter \f$ \delta \in \mathbb{R} \f$.
+             * */            
+            GeneralizedStudentDistribution(const double& mu, const double& sigma, const double& nu, const double& delta);
+            
+            /// \brief A copy constructor
+            GeneralizedStudentDistribution(const GeneralizedStudentDistribution& gstudent);
+
+            /** \brief Returns the number of parameters of the generalized Student distribution
+             *
+             * \details The number of parameters of a generalized Student distribution is \f$4\f$ (\f$\mu\f$, \f$\sigma\f$, \f$\nu\f$ and \f$\delta\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+        	
+        	/// \brief Get the value of the location parameter mu.
+            const double& get_mu() const;
+            
+            /// \brief Set the value of the location parameter mu.
+            void set_mu(const double& mu);
+
+			/// \brief Get the value of the scale parameter sigma.
+            const double& get_sigma() const;
+            
+            /// \brief Set the value of the scale parameter sigma.
+            void set_sigma(const double& sigma);
+            
+			/// \brief Get the value of the shape parameter nu.
+            const double& get_nu() const;
+            
+            /// \brief Set the value of the shape parameter nu.
+            void set_nu(const double& nu);            
+        	
+        	/// \brief Get the value of the location parameter delta.
+            const double& get_delta() const;
+            
+            /// \brief Set the value of the location parameter delta.
+            void set_delta(const double& delta);      
+                  
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the ldf is computed as 
+		     *			\f[
+		     * 				 \ln f(x) = ,
+		     *			\f]
+		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
+		     * \param value The considered value \f$x\f$.
+		     * */ 
+            virtual double ldf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the pdf is defined by 
+		     *			\f[
+		     * 				 f(x) =  \displaystyle f(x)={\frac {\nu ^{\frac {\nu }{2}}\Gamma (\nu +1)\exp \left(-{\frac {\mu ^{2}}{2}}\right)}{2^{\nu }(\nu +x^{2})^{\frac {\nu }{2}}\Gamma ({\frac {\nu }{2}})}}\left\{{\sqrt {2}}\mu x{\frac {{}_{1}F_{1}\left({\frac {\nu }{2}}+1;\,{\frac {3}{2}};\,{\frac {\mu ^{2}x^{2}}{2(\nu +x^{2})}}\right)}{(\nu +x^{2})\Gamma ({\frac {\nu +1}{2}})}}+{\frac {{}_{1}F_{1}\left({\frac {\nu +1}{2}};\,{\frac {1}{2}};\,{\frac {\mu ^{2}x^{2}}{2(\nu +x^{2})}}\right)}{{\sqrt {\nu +x^{2}}}\Gamma ({\frac {\nu }{2}}+1)}}\right\},
+		     *			\f]
+		     * and computed as
+		     *			\f[
+		     * 				 f(x) =  \left\lbrace \frac{\nu}{\nu+\left( \frac{x-\mu}{\sqrt{\nu}\sigma}\right)^2} \right\rbrace^{\frac{1+\nu}{2}} \Bigg/ \left\lbrace \sqrt{\nu}\sigma \; \textnormal{beta}(0.5\nu, \; 0.5) \right\rbrace ,
+		     *			\f]		     
+		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double pdf(const double& value) const;
+            
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+		     *
+		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the cdf is given by
+		     *			\f[
+		     * 				 P(X \leq x) = \left\{
+			 *								\begin{array}{ll}
+			 *								   z & x \leq \mu, \\
+			 *								   1- z & x > \mu,
+			 *								\end{array}
+			 *								\right.
+		     *			\f]
+		     * where \f$ z \f$ is computed as
+		     *			\f[
+		     * 				 z = \left\{
+			 *								\begin{array}{ll}
+			 *								 \displaystyle 0.5 * \textnormal{ibeta} \left( 0.5 \nu, \; 0.5, \frac{\nu}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right) & \nu < 2 \left( \frac{x-\mu}{\sigma} \right)^2 , \\
+			 *								 \displaystyle 0.5 * \textnormal{ibetac} \left( 0.5, \; 0.5 \nu, \frac{\left( \frac{x-\mu}{\sigma} \right)^2}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right)   & \textnormal{otherwise},
+			 *								\end{array}
+			 *								\right.
+		     *			\f]		     
+		     * where [\f$\textnormal{ibeta}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_function.html) is the normalized incomplete beta function and [\f$\textnormal{ibetac}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibetac_function.html) is its complement, both implemented in the Boost.Math library. 
+		     * \param value The considered value \f$x\f$.
+		     * */             
+            virtual double cdf(const double& value) const;
+
+			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+			 *  The quantile for non-standardized Student distribution is computed as 
+		     *			\f[
+		     * 				 x = \left\{
+			 *								\begin{array}{ll}
+			 *								\displaystyle  \mu - \sigma \left\lbrace \nu \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }  \right\rbrace^{0.5}  & p < 0.5, \\
+			 *								  \mu                        & p = 0.5, \\
+			 *								 \displaystyle  \mu + \sigma \left\lbrace \nu  \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) } \right\rbrace^{0.5}  & p > 0.5,
+			 *								\end{array}
+			 *								\right.
+		     *			\f]		
+		     * where [\f$\textnormal{ibeta\_inv}(a,b,x)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_inv_function.html) is the incomplete Beta function inverse implemented in the Boost.Math library.	
+			 * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+			/// \brief Get the mean of non-standardized Student distribution \f$ E(X) = \mu \f$ if \f$ \nu > 1 \f$ and undefined otherwise.
+            virtual double get_mean() const;
+
+			/// \brief Get the variance of non-standardized Student distribution \f$ V(X) = \frac{\nu}{\nu-2} \f$ if \f$ \nu >2 \f$,  \f$ V(X) = \infty \f$ if \f$ 1 < \nu \leq 2\f$ and undefined otherwise.
+            virtual double get_variance() const;
+
+            virtual std::unique_ptr< UnivariateDistribution > copy() const;            
+
+        protected:
+            double _mu;
+            double _sigma;
+            double _nu;
+            double _delta;
     };
         
     /** \brief This class GumbelMaxDistribution represents a [Gumbel distribution](https://en.wikipedia.org/wiki/Gumbel_distribution) (maximum).
