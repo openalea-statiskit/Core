@@ -144,7 +144,7 @@ namespace statiskit
              /** \brief An alternative constructor
              *
              * \details This constructor is usefull for ordinal distribution instantiation with specified set of string \f$ \mathcal{S} \f$ and specified ordering relation.
-             *			The ordering relation is given by the rank.
+             *			The ordering relation is given by the rank (the categories are ordered by lexicographic order in \f$ \mathcal{S} \f$ and each of them has a specific rank).
              *			The probabilities are given by the vector \f$ \pi \f$.
              *
              * \param values The specified set of string.
@@ -157,14 +157,29 @@ namespace statiskit
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
             
             virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;        
-
-            double cdf(const std::string& value) const;
-
-            std::string quantile(const double& p) const;
             
+			/** \brief Compute the cumulative probability of a category
+			 *
+			 * \details Let \f$s_j \in \mathcal{S} \f$ denote the category
+			 *          \f[
+			 *              P\left(S \leq s_j\right)  =   \sum_{i \leq j} P\left(S = s_i\right).
+			 *          \f]
+			 * \param value The considered category.
+			 * */
+            double cdf(const std::string& value) const;
+            
+		    /** \brief Compute the quantile of a probability \f$ p \in (0,1) \f$. This is the category \f$ s_j \in \mathcal{S} \f$ such that \f$ P(S \leq s_j) \leq p < P(N \leq s_{j+1}) \f$.
+		      * \param p The considered probability p.       
+		    * */
+            std::string quantile(const double& p) const;
+
+            /// \brief Get the rank of each category in lexicographic order.
             const std::vector< size_t >& get_rank() const;
+            
+            /// \brief Set the rank of each category in lexicographic order.
             void set_rank(const std::vector< size_t >& rank);
 
+			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;
             
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
@@ -1563,7 +1578,7 @@ namespace statiskit
         typedef CategoricalUnivariateDistribution response_type;
     };
     
-    struct DiscretelUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef DiscreteUnivariateDistribution response_type;
     };        
