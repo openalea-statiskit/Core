@@ -13,31 +13,44 @@
 
 namespace statiskit
 {
+    /// \Brief This class ScalarPredictor represents the predictor value for an univariate response variable given a value of explanatory variables: \f$ \eta = \alpha + \boldsymbol{x}^T \; \boldsymbol{\delta}\f$.
     class ScalarPredictor
     {
         public:
-            ScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space);
+        	/**  \Brief This constructor need the sample space of explanatory variables.
+        	*
+        	* \param explanatory_space the specified space of explanatory variables.
+        	* */
+            ScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space);
             virtual ~ScalarPredictor();
             ScalarPredictor(const ScalarPredictor& predictor);
 
+        	/// \Brief This operator compute the scalar predictor value from a specific event.
             double operator() (const MultivariateEvent& event) const;
-
-            const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+            
+        	/// \Brief Get the space of explanatory variables.
+            const std::shared_ptr< MultivariateSampleSpace >& get_explanatory_space() const;
             
             double alpha;
-
+            
+        	/// \Brief Get the vector of slopes delta.
 			const arma::colvec& get_delta() const;
+			
+			/** \Brief Set the vector of slopes delta.
+			*   \details The length of \f$\delta\f$ must be equal to the lenght of \f$ \boldsymbol{x} \f$.
+			* */
 			void set_delta(const arma::colvec& delta);
 			
         protected:
-            std::shared_ptr< MultivariateSampleSpace > _sample_space;
+            std::shared_ptr< MultivariateSampleSpace > _explanatory_space;
             arma::colvec _delta;
     };
     
+    /// \Brief This class ConstrainedScalarPredictor represents the predictor value for an univariate response variable with linear equality constraints between parameter slopes, i.e. \f$ \eta = \alpha + \boldsymbol{x}^T \; M \; \boldsymbol{\delta}\f$ where \f$ M \f$ is the matrix of constraints.    
     class ConstrainedScalarPredictor : ScalarPredictor
     {
         public:
-            ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const arma::mat& constraint);
+            ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const arma::mat& constraint);
             virtual ~ConstrainedScalarPredictor();
             ConstrainedScalarPredictor(const ConstrainedScalarPredictor& predictor);
 
@@ -53,13 +66,13 @@ namespace statiskit
     class VectorPredictor
     {
         public:
-            VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols);
             virtual ~VectorPredictor();
 			VectorPredictor(const VectorPredictor& predictor);
 			
             virtual arma::colvec operator() (const MultivariateEvent& event) const = 0;
 
-            const std::shared_ptr< MultivariateSampleSpace >& get_sample_space() const;
+            const std::shared_ptr< MultivariateSampleSpace >& get_explanatory_space() const;
             
             const arma::colvec& get_alpha() const;
 			void set_alpha(const arma::colvec& alpha);
@@ -67,14 +80,14 @@ namespace statiskit
 			virtual void set_beta(const arma::colvec& beta) = 0;
 			
         protected:
-            std::shared_ptr< MultivariateSampleSpace > _sample_space;	
+            std::shared_ptr< MultivariateSampleSpace > _explanatory_space;	
             arma::colvec _alpha;	
     };
 
     class CompletePredictor : VectorPredictor
     {
         public:
-            CompletePredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            CompletePredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols);
             virtual ~CompletePredictor();
             CompletePredictor(const CompletePredictor& predictor);
 
@@ -92,7 +105,7 @@ namespace statiskit
     class ProportionalPredictor : VectorPredictor
     {
         public:
-            ProportionalPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols);
+            ProportionalPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols);
             virtual ~ProportionalPredictor();
             ProportionalPredictor(const ProportionalPredictor& predictor);
 
@@ -110,7 +123,7 @@ namespace statiskit
     class ConstrainedVectorPredictor : VectorPredictor
     {
         public:
-            ConstrainedVectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols, const arma::mat& constraint);
+            ConstrainedVectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols, const arma::mat& constraint);
             virtual ~ConstrainedVectorPredictor();
             ConstrainedVectorPredictor(const ConstrainedVectorPredictor& predictor);
 
