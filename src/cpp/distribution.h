@@ -76,7 +76,8 @@ namespace statiskit
             std::vector< double > _pi;
     };
     
-    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ S\f$. The support is a finite set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+
      * 
      * */
     struct CategoricalUnivariateDistribution : UnivariateDistribution
@@ -88,8 +89,8 @@ namespace statiskit
          * \details Let \f$A \in \mathcal{S} \f$ denote the set of values. The probability function get \f$ P\left(S \in A\right) \f$ or \f$ \ln P\left(S \in A\right) \f$ according to the boolean parameter logarithm.
          * \param UnivariateEvent* The considered set of values.
          * \param logarithm The boolean.
-         * */
-        ///\brief \copybrief statiskit::UnivariateDistribution::probability() 
+         * */  
+
         virtual double probability(const UnivariateEvent*, const bool& logarithm) const;
         
 		/** \brief Compute the log-probability of a value.
