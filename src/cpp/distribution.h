@@ -1473,8 +1473,24 @@ namespace statiskit
     };
 
 
+    /** Univariate Conditional Distribution Class
+     *
+     */
+    struct UnivariateConditionalDistribution
+    {
+        const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
-        
+        virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
+
+        virtual std::unique_ptr< MultivariateSampleSpace > get_explanatory_space() const = 0;
+
+        virtual unsigned int get_nb_parameters() const = 0;
+
+        //double loglikelihood(const UnivariateData& data) const;
+
+        virtual std::unique_ptr< UnivariateConditionalDistribution > copy() const = 0;
+    }; 
+
     /*struct MultivariateDistribution
     {
         typedef UnivariateDistribution marginal_type;
