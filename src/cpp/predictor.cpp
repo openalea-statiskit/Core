@@ -10,11 +10,11 @@
 
 namespace statiskit
 {
-    ScalarPredictor::ScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space)
+    ScalarPredictor::ScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space)
     {
-        _sample_space = sample_space;
+        _explanatory_space = explanatory_space;
         alpha = 0.;
-        _delta = arma::zeros< arma::colvec >(sample_space->encode());
+        _delta = arma::zeros< arma::colvec >(explanatory_space->encode());
     }
 
     ScalarPredictor::~ScalarPredictor()
@@ -22,16 +22,16 @@ namespace statiskit
 
     ScalarPredictor::ScalarPredictor(const ScalarPredictor& predictor)
     {
-        _sample_space = predictor._sample_space;
+        _explanatory_space = predictor._explanatory_space;
         alpha = predictor.alpha;
         _delta = predictor._delta;
     }
      
     double ScalarPredictor::operator() (const MultivariateEvent& event) const
-    { return alpha + (_sample_space->encode(event) * _delta).eval().at(0); }
+    { return alpha + (_explanatory_space->encode(event) * _delta).eval().at(0); }
 
-    const std::shared_ptr< MultivariateSampleSpace >& ScalarPredictor::get_sample_space() const
-    { return _sample_space; }
+    const std::shared_ptr< MultivariateSampleSpace >& ScalarPredictor::get_explanatory_space() const
+    { return _explanatory_space; }
 
 	const arma::colvec& ScalarPredictor::get_delta() const
 	{ return _delta; }
@@ -44,12 +44,12 @@ namespace statiskit
 	}
 
     
-    ConstrainedScalarPredictor::ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const arma::mat& constraint) : ScalarPredictor(sample_space)
+    ConstrainedScalarPredictor::ConstrainedScalarPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const arma::mat& constraint) : ScalarPredictor(explanatory_space)
     { 
-    	if(constraint.n_rows != sample_space->encode())
-    	{ throw statiskit::size_error("constraint", constraint.n_rows, sample_space->encode()); } 
-    	if(constraint.n_cols <= sample_space->encode())
-    	{ throw statiskit::size_error("constraint", constraint.n_cols, sample_space->encode(), statiskit::size_error::size_type::inferior); }     	   
+    	if(constraint.n_rows != explanatory_space->encode())
+    	{ throw statiskit::size_error("constraint", constraint.n_rows, explanatory_space->encode()); } 
+    	if(constraint.n_cols <= explanatory_space->encode())
+    	{ throw statiskit::size_error("constraint", constraint.n_cols, explanatory_space->encode(), statiskit::size_error::size_type::inferior); }     	   
         _delta = arma::zeros< arma::colvec >(constraint.n_cols);    
     	_constraint = constraint; 
     }
@@ -61,7 +61,7 @@ namespace statiskit
     { _constraint = predictor._constraint; }
      
     double ConstrainedScalarPredictor::operator() (const MultivariateEvent& event) const
-    { return alpha + (_sample_space->encode(event) * _constraint * _delta).eval().at(0); }
+    { return alpha + (_explanatory_space->encode(event) * _constraint * _delta).eval().at(0); }
     
     const arma::mat& ConstrainedScalarPredictor::get_constraint() const
     { return _constraint; }
@@ -76,9 +76,9 @@ namespace statiskit
 	}
 	
 	
-    VectorPredictor::VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols)
+    VectorPredictor::VectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols)
     {
-    	_sample_space = sample_space;
+    	_explanatory_space = explanatory_space;
     	_alpha = arma::zeros< arma::colvec >(nb_cols);     	
     }
   
@@ -87,12 +87,12 @@ namespace statiskit
     
     VectorPredictor::VectorPredictor(const VectorPredictor& predictor)
     {
-    	_sample_space = predictor._sample_space; 
+    	_explanatory_space = predictor._explanatory_space; 
     	_alpha = predictor._alpha;
     }
     
-    const std::shared_ptr< MultivariateSampleSpace >& VectorPredictor::get_sample_space() const
-    { return _sample_space; }
+    const std::shared_ptr< MultivariateSampleSpace >& VectorPredictor::get_explanatory_space() const
+    { return _explanatory_space; }
     
 	
 	const arma::colvec& VectorPredictor::get_alpha() const
@@ -106,8 +106,8 @@ namespace statiskit
 	}    
 
 
-    CompletePredictor::CompletePredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols) : VectorPredictor(sample_space, nb_cols)
-    { _delta = arma::zeros< arma::mat >(sample_space->encode(), _alpha.n_cols); }
+    CompletePredictor::CompletePredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols) : VectorPredictor(explanatory_space, nb_cols)
+    { _delta = arma::zeros< arma::mat >(explanatory_space->encode(), _alpha.n_cols); }
     
     CompletePredictor::~CompletePredictor()
     {}
@@ -116,7 +116,7 @@ namespace statiskit
     { _delta = predictor._delta; }
 
     arma::colvec CompletePredictor::operator() (const MultivariateEvent& event) const
-    { return _alpha + _sample_space->encode(event) * _delta; }
+    { return _alpha + _explanatory_space->encode(event) * _delta; }
             
     void CompletePredictor::set_beta(const arma::colvec& beta)
 	{
@@ -140,8 +140,8 @@ namespace statiskit
 	}
 	
 
-    ProportionalPredictor::ProportionalPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols) : VectorPredictor(sample_space, nb_cols)
-    { _delta = arma::zeros< arma::colvec >(sample_space->encode()); }
+    ProportionalPredictor::ProportionalPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols) : VectorPredictor(explanatory_space, nb_cols)
+    { _delta = arma::zeros< arma::colvec >(explanatory_space->encode()); }
     
     ProportionalPredictor::~ProportionalPredictor()
     {}
@@ -152,7 +152,7 @@ namespace statiskit
     arma::colvec ProportionalPredictor::operator() (const MultivariateEvent& event) const
     {
     	arma::colvec constant(_alpha.n_rows, arma::fill::ones);   
-    	return _alpha + (_sample_space->encode(event) * _delta).eval().at(0) * constant; 
+    	return _alpha + (_explanatory_space->encode(event) * _delta).eval().at(0) * constant; 
     }
             
     void ProportionalPredictor::set_beta(const arma::colvec& beta)
@@ -174,12 +174,12 @@ namespace statiskit
 	}
 	
 	    
-    ConstrainedVectorPredictor::ConstrainedVectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& sample_space, const size_t& nb_cols, const arma::mat& constraint) : VectorPredictor(sample_space, nb_cols)
+    ConstrainedVectorPredictor::ConstrainedVectorPredictor(const std::shared_ptr< MultivariateSampleSpace >& explanatory_space, const size_t& nb_cols, const arma::mat& constraint) : VectorPredictor(explanatory_space, nb_cols)
     { 
-    	if(constraint.n_rows != sample_space->encode() * nb_cols)
-    	{ throw statiskit::size_error("constraint", constraint.n_rows, sample_space->encode() * nb_cols); }    
-    	if(constraint.n_cols <= sample_space->encode() * nb_cols)
-    	{ throw statiskit::size_error("constraint", constraint.n_cols, sample_space->encode() * nb_cols, statiskit::size_error::size_type::inferior); }     	
+    	if(constraint.n_rows != explanatory_space->encode() * nb_cols)
+    	{ throw statiskit::size_error("constraint", constraint.n_rows, explanatory_space->encode() * nb_cols); }    
+    	if(constraint.n_cols <= explanatory_space->encode() * nb_cols)
+    	{ throw statiskit::size_error("constraint", constraint.n_cols, explanatory_space->encode() * nb_cols, statiskit::size_error::size_type::inferior); }     	
         _delta = arma::zeros< arma::colvec >(constraint.n_cols);    
     	_constraint = constraint; 
     }
@@ -196,7 +196,7 @@ namespace statiskit
     arma::colvec ConstrainedVectorPredictor::operator() (const MultivariateEvent& event) const
     {
 		arma::mat identity(_alpha.n_rows, _alpha.n_rows, arma::fill::eye);
-		return _alpha + kron(identity, _sample_space->encode(event)) * _constraint * _delta;
+		return _alpha + kron(identity, _explanatory_space->encode(event)) * _constraint * _delta;
 	}
 	
     void ConstrainedVectorPredictor::set_beta(const arma::colvec& beta)

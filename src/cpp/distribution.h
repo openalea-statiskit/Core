@@ -23,19 +23,30 @@
 
 namespace statiskit
 {
-    /** Univariate Distribution class
-     *
-     */
+    /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate variable \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct UnivariateDistribution
-    {
+    {	
+    	/// \brief Get the sample space of the distribution.
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const = 0;
 
+    	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
         
+		/** \brief Compute the probability of a set of values.
+         *
+         * \details Let \f$A \subseteq \mathcal{X} \f$ denote the set of values. The probability function get the probability \f$ P\left(X \in A\right) \f$ or the log probability \f$ \ln P\left(X \in A\right) \f$ according to the boolean parameter logarithm.
+         * \param UnivariateEvent* The considered set of values \f$A \f$.
+         * \param logarithm The boolean.
+         * */        
         virtual double probability(const UnivariateEvent* event, const bool& logarithm) const = 0;
-
+        
+		/** \brief Compute the log-likelihood of an univariate dataset according to the considered univariate distribution.
+		 *
+         * \param data The considered univariate dataset.
+         * */ 
         double loglikelihood(const UnivariateData& data) const;
 
+		/// Simulate an elementary event according to the considered univariate distribution.
         virtual std::unique_ptr< UnivariateEvent > simulate() const = 0;
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const = 0;
@@ -64,21 +75,47 @@ namespace statiskit
             std::set< typename T::event_type::value_type > _values;
             std::vector< double > _pi;
     };
-
+    
+    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+     * 
+     * */
     struct CategoricalUnivariateDistribution : UnivariateDistribution
     {
         typedef CategoricalEvent event_type;
- 
+        
+		/** \brief Compute the probability of a set of values.
+         *
+         * \details Let \f$A \in \mathcal{S} \f$ denote the set of values. The probability function get \f$ P\left(S \in A\right) \f$ or \f$ \ln P\left(S \in A\right) \f$ according to the boolean parameter logarithm.
+         * \param UnivariateEvent* The considered set of values.
+         * \param logarithm The boolean.
+         *
+         * */  
         virtual double probability(const UnivariateEvent*, const bool& logarithm) const;
-
-        virtual double pdf(const std::string& value) const = 0;
+        
+		/** \brief Compute the log-probability of a value.
+         *
+         * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ \ln P\left(S = s\right) \f$.
+         * \param value The considered value.
+         * */         
         virtual double ldf(const std::string& value) const = 0;
-
+        
+		/** \brief Compute the probability of a value
+         *
+         * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ P\left(S = s\right) \f$.
+         * \param value The considered value.
+         * */         
+        virtual double pdf(const std::string& value) const = 0;
+        
+		/// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
         virtual const std::set< std::string >& get_values() const = 0;
 
+		/// \brief Get the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
         virtual const std::vector< double >& get_pi() const = 0;
     };
-
+    
+    /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+     * 
+     * */
     struct NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     { 
         using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
@@ -87,12 +124,36 @@ namespace statiskit
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
-
+    
+    /** \brief This class OrdinalDistribution represents the distribution of a random ordinal variable \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
+     * 
+     * */
     class OrdinalDistribution : public UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     {
         public:
+             /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for ordinal distribution instantiation with specified set of string \f$ \mathcal{S} \f$.
+             *			The ordering relation is given by the lexicographic order.
+             *			The probabilities are uniform on the finite set \f$ \mathcal{S} \f$.
+             *
+             * \param values The specified set of string.
+             * */
             OrdinalDistribution(const std::vector< std::string >& values);
+            
+             /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for ordinal distribution instantiation with specified set of string \f$ \mathcal{S} \f$ and specified ordering relation.
+             *			The ordering relation is given by the rank.
+             *			The probabilities are given by the vector \f$ \pi \f$.
+             *
+             * \param values The specified set of string.
+             * \param rank The specified vector of rank.
+             * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
+             * */            
             OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const std::vector< double >& pi);
+            
+            /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
             
             virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;        
@@ -1473,23 +1534,44 @@ namespace statiskit
     };
 
 
-    /** Univariate Conditional Distribution Class
+    /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random variable \f$ Y\f$ given a multivariate variable \f$ \boldsymbol{X} \f$.
      *
      */
     struct UnivariateConditionalDistribution
     {
-        const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
+        typedef UnivariateDistribution response_type;
+        
+        /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
+        virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
+    	/// \Brief Get the sample space of the response variable \f$ Y \f$.
         virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
+    	/// \Brief Get the sample space of the explanatory variables \f$ \boldsymbol{X} \f$.
         virtual std::unique_ptr< MultivariateSampleSpace > get_explanatory_space() const = 0;
 
+    	/// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
         virtual unsigned int get_nb_parameters() const = 0;
 
         //double loglikelihood(const UnivariateData& data) const;
 
         virtual std::unique_ptr< UnivariateConditionalDistribution > copy() const = 0;
-    }; 
+    };
+    
+    struct CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef CategoricalUnivariateDistribution response_type;
+    };
+    
+    struct DiscretelUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef DiscreteUnivariateDistribution response_type;
+    };        
+    
+    struct ContinuouslUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    {
+        typedef ContinuousUnivariateDistribution response_type;
+    };      
 
     /*struct MultivariateDistribution
     {
