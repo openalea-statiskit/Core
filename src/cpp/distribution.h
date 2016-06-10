@@ -23,19 +23,30 @@
 
 namespace statiskit
 {
-    /** Univariate Distribution class
-     *
-     */
+    /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate variable \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct UnivariateDistribution
-    {
+    {	
+    	/// \brief Get the sample space of the distribution.
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const = 0;
 
+    	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
         
+		/** \brief Compute the probability of a set of values.
+         *
+         * \details Let \f$A \subseteq \mathcal{X} \f$ denote the set of values. The probability function get the probability \f$ P\left(X \in A\right) \f$ or the log probability \f$ \ln P\left(X \in A\right) \f$ according to the boolean parameter logarithm.
+         * \param UnivariateEvent* The considered set of values \f$A \f$.
+         * \param logarithm The boolean.
+         * */        
         virtual double probability(const UnivariateEvent* event, const bool& logarithm) const = 0;
-
+        
+		/** \brief Compute the log-likelihood of an univariate dataset according to the considered univariate distribution.
+		 *
+         * \param data The considered univariate dataset.
+         * */ 
         double loglikelihood(const UnivariateData& data) const;
 
+		/// Simulate an elementary event according to the considered univariate distribution.
         virtual std::unique_ptr< UnivariateEvent > simulate() const = 0;
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const = 0;
@@ -65,7 +76,7 @@ namespace statiskit
             std::vector< double > _pi;
     };
     
-    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ S\f$. The support is a finite set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
     struct CategoricalUnivariateDistribution : UnivariateDistribution
@@ -77,7 +88,8 @@ namespace statiskit
          * \details Let \f$A \in \mathcal{S} \f$ denote the set of values. The probability function get \f$ P\left(S \in A\right) \f$ or \f$ \ln P\left(S \in A\right) \f$ according to the boolean parameter logarithm.
          * \param UnivariateEvent* The considered set of values.
          * \param logarithm The boolean.
-         * */  
+         * */
+        ///\brief \copybrief statiskit::UnivariateDistribution::probability() 
         virtual double probability(const UnivariateEvent*, const bool& logarithm) const;
         
 		/** \brief Compute the log-probability of a value.
@@ -140,6 +152,8 @@ namespace statiskit
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
             OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const std::vector< double >& pi);
+            
+            /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
             
             virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;        
