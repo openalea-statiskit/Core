@@ -110,6 +110,9 @@ namespace statiskit
 
 		/// \brief Get the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
         virtual const std::vector< double >& get_pi() const = 0;
+        
+        /// \brief Set the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
+        virtual void set_pi(const std::vector< double >& pi) = 0;
     };
     
     /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
