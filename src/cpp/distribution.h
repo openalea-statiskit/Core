@@ -181,6 +181,9 @@ namespace statiskit
 			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;
             
+            /// \brief Set the vector of probabilities for ordered categories.
+            void set_ordered_pi(const std::vector< double >& ordered_pi);
+            
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
 
         protected:

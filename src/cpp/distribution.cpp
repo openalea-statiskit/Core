@@ -151,6 +151,12 @@ namespace statiskit
         { order[_rank[distance(_values.cbegin(), it)]] = *it; }
         return order;
     }
+    
+	void OrdinalDistribution::set_ordered_pi(const std::vector< double >& ordered_pi)
+	{
+		for(size_t j=0; j<_pi.size(); ++j)
+		{ _pi[j] = ordered_pi[ _rank[j] ]; }
+	}
 
     std::unique_ptr< UnivariateDistribution > OrdinalDistribution::copy() const
     { return std::make_unique< OrdinalDistribution >(*this); }
