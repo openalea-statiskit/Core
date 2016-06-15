@@ -620,6 +620,17 @@ namespace statiskit
         _constant = constant;
     }
 
+    void UnivariateConditionalDistributionEstimation::Estimator::check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const
+    {
+        if(response >= data.get_nb_variables())
+        { throw size_error("response", reponse, data.get_nb_variables(), size_error::size_type::superior); }
+        for(std::set< size_t >::const_iterator it = explanatories.cbegin(), it != explanatories.cend(); ++it)
+        { 
+            if(*it >= data.get_nb_variables())
+            { throw size_error("explanatories", *it, data.get_nb_variables(), size_error::size_type::superior); }
+        }
+    }
+
     /*template<>
         std::shared_ptr< UnivariateDistributionEstimation::Estimator > get_default_estimator< UnivariateDistributionEstimation::Estimator >()
         { return nullptr; }
