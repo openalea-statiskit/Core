@@ -623,8 +623,8 @@ namespace statiskit
     void UnivariateConditionalDistributionEstimation::Estimator::check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const
     {
         if(response >= data.get_nb_variables())
-        { throw size_error("response", reponse, data.get_nb_variables(), size_error::size_type::superior); }
-        for(std::set< size_t >::const_iterator it = explanatories.cbegin(), it != explanatories.cend(); ++it)
+        { throw size_error("response", response, data.get_nb_variables(), size_error::size_type::superior); }
+        for(std::set< size_t >::const_iterator it = explanatories.cbegin(), it_end = explanatories.cend(); it != it_end ; ++it)
         { 
             if(*it >= data.get_nb_variables())
             { throw size_error("explanatories", *it, data.get_nb_variables(), size_error::size_type::superior); }

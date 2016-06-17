@@ -721,7 +721,7 @@ namespace statiskit
     const std::shared_ptr< UnivariateData >& MultivariateDataFrame::get_variable(const size_t& index) const
     { return _variables[index]; }
 
-    std::shared_ptr< MultivariateDataFrame > MultivariateDataFrame::get_variables(const std::set< size_t >& indices) const
+    std::shared_ptr< MultivariateData > MultivariateDataFrame::get_variables(const std::set< size_t >& indices) const
     { 
         std::vector< std::shared_ptr< UnivariateData > > variables(indices.size());
         subset(_variables.cbegin(), _variables.cend(), variables.begin(), indices.cbegin(), indices.cend());
