@@ -42,7 +42,7 @@ namespace statiskit
 
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
     };
- 
+
     class NamedData
     {
         public:
@@ -141,13 +141,18 @@ namespace statiskit
         
         virtual size_t size() const = 0;
 
+        virtual size_t get_nb_variables() const = 0;
+
         virtual const MultivariateEvent* get_event(const size_t& index) const = 0;
         virtual void set_event(const size_t& index, const MultivariateEvent* event) = 0;
 
         virtual bool is_weighted() const = 0;
 
         virtual double get_weight(const size_t& index) const = 0;
-        
+       
+        virtual const std::shared_ptr< UnivariateData >& get_variable(const size_t& index) const = 0;
+        virtual std::shared_ptr< MultivariateData > get_variables(const std::set< size_t >& indices) const = 0;
+
         virtual double compute_total() const;
         virtual std::unique_ptr< MultivariateEvent > compute_minimum() const;
         virtual std::unique_ptr< MultivariateEvent > compute_maximum() const;
@@ -186,10 +191,10 @@ namespace statiskit
 
             double get_weight(const size_t& index) const;
 
-            size_t get_nb_variables() const;
+            virtual size_t get_nb_variables() const;
             
-            const std::shared_ptr< UnivariateData >& get_variable(const size_t& index) const;
-            std::shared_ptr< MultivariateDataFrame > get_variables(const std::set< size_t >& indices) const;
+            virtual const std::shared_ptr< UnivariateData >& get_variable(const size_t& index) const;
+            virtual std::shared_ptr< MultivariateData > get_variables(const std::set< size_t >& indices) const;
             void set_variable(const size_t& index, const std::shared_ptr< UnivariateData >& variable);
             void insert_variable(const size_t& index, const std::shared_ptr< UnivariateData >& variable);
             void remove_variable(const size_t& index);

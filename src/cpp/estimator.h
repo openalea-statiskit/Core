@@ -323,6 +323,45 @@ namespace statiskit
                 double _constant;
         }; 
     };
+ 
+    struct UnivariateConditionalDistributionEstimation
+    {
+        typedef MultivariateData data_type;
+        typedef UnivariateConditionalDistribution estimated_type;
+        
+        virtual std::shared_ptr< estimated_type > get_estimated() const = 0;
+
+        class Estimator
+        { 
+            public:
+                typedef UnivariateConditionalDistributionEstimation estimation_type;
+                
+                virtual std::shared_ptr< estimation_type > operator() (const std::shared_ptr< data_type >& data, const size_t& response, const std::set< size_t >& explanatories, const bool& lazy=true) const = 0; 
+
+            protected:
+
+                inline void check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const;
+        };
+    };
+
+    struct CategoricalUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+    };
+
+    struct DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+    };
+
+    struct ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+    };
+
 
     /*struct MultivariateDistributionEstimation
     {
