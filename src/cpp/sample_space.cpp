@@ -17,11 +17,17 @@ namespace statiskit
     { _values = values; }
 
     CategoricalSampleSpace::CategoricalSampleSpace(const CategoricalSampleSpace& sample_space) 
-    { _values = sample_space._values; }
+    { 
+    	_values = sample_space._values; 
+    	_encoding = sample_space._encoding;
+    }
     
     const std::set< std::string >& CategoricalSampleSpace::get_values() const
     { return _values; }
-
+    
+    encoding_type CategoricalSampleSpace::get_encoding() const
+    { return _encoding; }
+    
     size_t CategoricalSampleSpace::get_cardinality() const
     { return _values.size(); }
 
@@ -100,9 +106,6 @@ namespace statiskit
         boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(get_random_generator(), dist);
         advance(_reference, simulator());
     }
-
-    encoding_type NominalSampleSpace::get_encoding() const
-    { return _encoding; }
 
     void NominalSampleSpace::set_encoding(const encoding_type& encoding)
     {
@@ -183,9 +186,6 @@ namespace statiskit
 
     ordering_type OrdinalSampleSpace::get_ordering() const
     { return TOTAL; }
-
-    encoding_type OrdinalSampleSpace::get_encoding() const
-    { return _encoding; }
 
     void OrdinalSampleSpace::set_encoding(const encoding_type& encoding)
     { _encoding = encoding; }

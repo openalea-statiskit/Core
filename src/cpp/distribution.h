@@ -55,24 +55,26 @@ namespace statiskit
     {
         public:
             UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values);
-            UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const std::vector< double >& pi);
+            UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi);
             UnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency);
 
             virtual unsigned int get_nb_parameters() const;
 
             virtual double ldf(const typename T::event_type::value_type& value) const;
             virtual double pdf(const typename T::event_type::value_type& value) const;
-
+            
+			virtual double pdf(const int& position) const;
+			
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
             const std::set< typename T::event_type::value_type >& get_values() const;
 
-            const std::vector< double >& get_pi() const;
-            void set_pi(const std::vector< double >& pi);
+            const arma::colvec& get_pi() const;
+            void set_pi(const arma::colvec& pi);
 
         protected:
             std::set< typename T::event_type::value_type > _values;
-            std::vector< double > _pi;
+            arma::colvec _pi;
     };
     
     /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
@@ -105,14 +107,15 @@ namespace statiskit
          * */         
         virtual double pdf(const std::string& value) const = 0;
         
-		/// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
-        virtual const std::set< std::string >& get_values() const = 0;
-
-		/// \brief Get the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
-        virtual const std::vector< double >& get_pi() const = 0;
+		/** \brief Compute the probability of a value
+         *
+         * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ P\left(S = s\right) \f$.
+         * \param value The considered value.
+         * */         
+        virtual double pdf(const int& position) const = 0;
         
-        /// \brief Set the vector of probabilities \f$ \pi = \left\lbrace P(S=s) \right\rbrace_{s \in \mathcal{S}} \f$.
-        virtual void set_pi(const std::vector< double >& pi) = 0;
+        /// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
+        virtual const std::set< std::string >& get_values() const = 0;
     };
     
     /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
@@ -153,13 +156,15 @@ namespace statiskit
              * \param rank The specified vector of rank.
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
-            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const std::vector< double >& pi);
+            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi);
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
             
-            virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;        
-            
+            virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;  
+                  
+            virtual double pdf(const std::string& value) const;
+                
 			/** \brief Compute the cumulative probability of a category
 			 *
 			 * \details Let \f$s_j \in \mathcal{S} \f$ denote the category
@@ -183,9 +188,6 @@ namespace statiskit
 
 			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;
-            
-            /// \brief Set the vector of probabilities for ordered categories.
-            void set_ordered_pi(const std::vector< double >& ordered_pi);
             
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
 

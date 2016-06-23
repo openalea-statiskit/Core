@@ -327,7 +327,7 @@ namespace statiskit
     struct UnivariateConditionalDistributionEstimation
     {
         typedef MultivariateData data_type;
-        typedef UnivariateConditionalDistribution estimated_type;
+        typedef ::statiskit::UnivariateConditionalDistribution estimated_type;
         
         virtual std::shared_ptr< estimated_type > get_estimated() const = 0;
 
@@ -347,19 +347,19 @@ namespace statiskit
     struct CategoricalUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
         struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
-        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+        {};
     };
 
     struct DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
         struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
-        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+        {};
     };
 
     struct ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
         struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
-        { using UnivariateConditionalDistributionEstimation::Estimator::Estimator; };
+        {};
     };
 
 

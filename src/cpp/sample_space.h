@@ -60,12 +60,16 @@ namespace statiskit
             
             size_t get_cardinality() const;
 
-            const std::set< std::string >& get_values() const;            
+            const std::set< std::string >& get_values() const;        
+                
+            encoding_type get_encoding() const;
+            virtual void set_encoding(const encoding_type& encoding) = 0;
             
             virtual arma::rowvec encode(const std::string& outcome) const = 0;
 
         protected:
-            std::set< std::string > _values;            
+            std::set< std::string > _values;
+            encoding_type _encoding;            
     };
 
     class NominalSampleSpace : public CategoricalSampleSpace
@@ -82,7 +86,6 @@ namespace statiskit
 
             void randomize();
 
-            encoding_type get_encoding() const;
             void set_encoding(const encoding_type& encoding);
 
             virtual arma::rowvec encode(const std::string& value) const;
@@ -91,7 +94,6 @@ namespace statiskit
 
         protected:
             std::set< std::string >::const_iterator _reference;
-            encoding_type _encoding;
     };
 
     class OrdinalSampleSpace : public CategoricalSampleSpace
@@ -110,7 +112,6 @@ namespace statiskit
 
             void randomize();
 
-            encoding_type get_encoding() const;
             void set_encoding(const encoding_type& encoding);
 
             virtual arma::rowvec encode(const std::string& value) const;
@@ -119,7 +120,6 @@ namespace statiskit
 
         protected:
             std::vector< size_t > _rank;
-            encoding_type _encoding;
     };
 
     struct DiscreteSampleSpace : public UnivariateSampleSpace

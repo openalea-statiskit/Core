@@ -82,7 +82,7 @@ namespace statiskit
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const std::vector< double >& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
+    OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
     { set_rank(rank); }
 
     OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(ordinal)
@@ -91,18 +91,25 @@ namespace statiskit
     std::unique_ptr< UnivariateSampleSpace > OrdinalDistribution::get_sample_space() const
     { return std::make_unique< OrdinalSampleSpace >(get_ordered()); }
 
+    double OrdinalDistribution::pdf(const std::string& value) const
+    {
+        double p;
+        std::set< std::string >::const_iterator it = _values.find(value);
+        if(it == _values.end())
+        { p = 0.; }
+        else
+        { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
+        return p;
+     }
+
     double OrdinalDistribution::cdf(const std::string& value) const
     {
         double p = 0.;
         std::set< std::string >::const_iterator it = _values.find(value);
         if(it != _values.cend())
         {
-            size_t rank = _rank[distance(_values.cbegin(), it)];
-            for(size_t size = 0, max_size = _rank.size(); size < max_size; ++size)
-            {
-                if(_rank[size] <= rank)
-                { p += _pi[size]; }
-            }
+            for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
+            { p += _pi[size]; }
         }
         return p;
     }
@@ -110,14 +117,14 @@ namespace statiskit
     std::string OrdinalDistribution::quantile(const double& p) const
     {
         std::vector< std::string > ordered = get_ordered();
-        size_t size = 0, max_size = ordered.size();
-        double _p = pdf(ordered[size]);
-        while(_p < p && size + 1 < max_size)
+        size_t size = 0, max_size = ordered.size() - 1;
+        double _p = _pi[size];
+        while(_p < p && size < max_size)
         {
             ++size;
-            _p += pdf(ordered[size]);
+            _p += _pi[size];
         }
-        if(size >= max_size)
+        if(size == max_size)
         { --size; }
         return ordered[size];
     }
@@ -151,12 +158,6 @@ namespace statiskit
         { order[_rank[distance(_values.cbegin(), it)]] = *it; }
         return order;
     }
-    
-	void OrdinalDistribution::set_ordered_pi(const std::vector< double >& ordered_pi)
-	{
-		for(size_t j=0; j<_pi.size(); ++j)
-		{ _pi[j] = ordered_pi[ _rank[j] ]; }
-	}
 
     std::unique_ptr< UnivariateDistribution > OrdinalDistribution::copy() const
     { return std::make_unique< OrdinalDistribution >(*this); }

@@ -17,11 +17,11 @@ namespace statiskit
             if(values.size() == 0)
             { throw size_error("values", 0, 0, size_error::superior); }
             _values = values;
-            _pi = normalize(std::vector< double >(values.size(), 1.));
+            _pi = arma::normalise(arma::colvec(values.size(), arma::fill::ones));
         }
     
     template<class T>
-        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const std::vector< double >& pi)
+        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi)
         {
             if(values.size() == 0)
             { throw size_error("values", 0, 0, size_error::superior); }
@@ -57,7 +57,11 @@ namespace statiskit
             { p = _pi[distance(_values.cbegin(), it)]; }
             return p;
         }
-
+        
+    template<class T>        
+		double UnivariateFrequencyDistribution< T >::pdf(const int& position) const
+		{ return _pi[position]; }
+		
     template<class T>
         std::unique_ptr< UnivariateEvent > UnivariateFrequencyDistribution< T >::simulate() const
         {
@@ -78,16 +82,39 @@ namespace statiskit
         { return _values; }
 
     template<class T>
-        const std::vector< double >& UnivariateFrequencyDistribution< T >::get_pi() const
+        const arma::colvec& UnivariateFrequencyDistribution< T >::get_pi() const
         { return _pi; }
 
     template<class T>
-        void UnivariateFrequencyDistribution< T >::set_pi(const std::vector< double >& pi)
-        { 
-            try
-            { _pi = normalize(pi); }
-            catch(const std::exception&)
-            { throw parameter_error("pi", "contains negative values"); }
+        void UnivariateFrequencyDistribution< T >::set_pi(const arma::colvec& pi)
+        {
+        	if(pi.n_rows == _values.size()-1)
+        	{
+		    	size_t j=0; 
+		    	while(pi[j] >= 0. && j<pi.n_rows)
+		    	{ ++j; }
+		    	if(j < pi.n_rows)
+		    	{ throw parameter_error("pi", "contains negative values"); } 
+		    	double norm = arma::norm(pi);
+		    	if(norm<1)
+		    	{
+					_pi.subvec(0,_values.size()-2) = pi;
+					_pi[_values.size()-1] = 1-norm;
+		    	}
+		    	else
+		    	{ throw parameter_error("pi", "last category values"); } 		    	
+        	}
+        	else if(pi.n_rows == _values.size())
+        	{
+		    	size_t j=0; 
+		    	while(pi[j] >= 0. && j<pi.n_rows)
+		    	{ ++j; }
+		    	if(j < pi.n_rows)
+		    	{ throw parameter_error("pi", "contains negative values"); } 
+		        _pi = arma::normalise(pi);
+            }
+            else
+            { throw parameter_error("pi", "number of parameters"); } 	           
         }
 
     template<class T>
