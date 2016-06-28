@@ -63,6 +63,21 @@ namespace statiskit
 
             void set_data(const std::shared_ptr< typename B::data_type >& data);
     };
+    
+    template<class D, class B, class R> class ConditionalActiveEstimation : public ActiveEstimation< D, B >
+    {
+        public:
+            ConditionalActiveEstimation();
+            ConditionalActiveEstimation(const std::shared_ptr< D >& estimated, const std::shared_ptr< typename B::data_type >& data, const R& response, const std::set< size_t >& explanatories);
+            ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation);
+
+			const R get_response() const;
+			const std::set< size_t > get_explanatories() const;
+
+        protected:
+        	R _response;
+            std::set< size_t > _explanatories;
+    };    
 
     template<class D, class B> class ListEstimation : public ActiveEstimation< D, B >
     {
