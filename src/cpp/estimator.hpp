@@ -50,6 +50,33 @@ namespace statiskit
             if(_data)
             { _data->lock(); }
         }
+        
+    template<class D, class B, class R>
+        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation() : ActiveEstimation< D, B >()
+        {}
+        
+    template<class D, class B, class R>        
+		ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const std::shared_ptr< D >& estimated, const std::shared_ptr< typename B::data_type >& data, const R& response, const std::set< size_t >& explanatories) : ActiveEstimation< D, B >(estimated, data) 
+		{
+			_response = response;
+			_explanatories = explanatories;
+		}
+
+    template<class D, class B, class R>                 
+		ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation) : ActiveEstimation< D, B >(estimation) 
+		{
+			_response = estimation._response;
+			_explanatories = estimation._explanatories;
+		}
+		
+    template<class D, class B, class R>                 
+		const R ConditionalActiveEstimation< D, B, R >::get_response() const
+		{ return _response; }
+		
+    template<class D, class B, class R>                 
+		const std::set< size_t > ConditionalActiveEstimation< D, B, R >::get_explanatories() const  
+		{ return _explanatories; }        
+
 
     template<class D, class B>
         ListEstimation< D, B >::ListEstimation() : ActiveEstimation< D, B >()
