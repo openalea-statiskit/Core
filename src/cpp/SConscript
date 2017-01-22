@@ -7,8 +7,9 @@ system = platform.system().lower()
 
 Import("env")
 
-cppenv = env.Clone(tools = ['cpp'],
-                   CPPDEFINES = ['LIBSTATISKIT_CORE'])
+cppenv = env.Clone(tools = ['cpp'])
+
+cppenv.AppendUnique(CPPDEFINES = ['LIBSTATISKIT_CORE'])
 
 exclude = """
 """.split()
