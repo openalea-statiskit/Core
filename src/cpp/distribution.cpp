@@ -82,8 +82,8 @@ namespace statiskit
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
-    { set_rank(rank); }
+    // OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
+    // { set_rank(rank); }
 
     OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(ordinal)
     { _rank = ordinal._rank; }

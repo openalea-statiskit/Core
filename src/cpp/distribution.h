@@ -55,7 +55,7 @@ namespace statiskit
     {
         public:
             UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values);
-            UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi);
+            // UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi);
             UnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency);
 
             virtual unsigned int get_nb_parameters() const;
@@ -69,12 +69,12 @@ namespace statiskit
 
             const std::set< typename T::event_type::value_type >& get_values() const;
 
-            const arma::colvec& get_pi() const;
-            void set_pi(const arma::colvec& pi);
+            // const arma::colvec& get_pi() const;
+            // void set_pi(const arma::colvec& pi);
 
         protected:
             std::set< typename T::event_type::value_type > _values;
-            arma::colvec _pi;
+            // arma::colvec _pi;
     };
     
     /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
@@ -156,7 +156,7 @@ namespace statiskit
              * \param rank The specified vector of rank.
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
-            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi);
+            // OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi);
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 

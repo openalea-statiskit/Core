@@ -10,8 +10,8 @@
 
 namespace statiskit
 {
-    arma::colvec SlopeHeuristicOLSSolver::operator() (const arma::mat& X, const arma::colvec& y) const
-    { return solve(X.t() * X, X.t() * y); }
+    // arma::colvec SlopeHeuristicOLSSolver::operator() (const arma::mat& X, const arma::colvec& y) const
+    // { return solve(X.t() * X, X.t() * y); }
 
     SlopeHeuristicIWLSSolver::SlopeHeuristicIWLSSolver()
     { 
@@ -25,20 +25,20 @@ namespace statiskit
         _maxits = shs._maxits;
     }
 
-    arma::colvec SlopeHeuristicIWLSSolver::operator() (const arma::mat& X, const arma::colvec& y) const
-    {
-        arma::mat W = arma::diagmat(arma::ones(y.size()));
-        arma::colvec bp, bc = solve(X.t() * X, X.t() * y);
-        unsigned int its = 0;
-        do
-        {
-            bp = bc;
-            update(bp, W, X, y);
-            bc = solve(X.t() * W * X, X.t() * W * y);
-            ++its;
-        } while(arma::norm((bc - bp) / bp, 2) > _epsilon && its < _maxits);
-        return bc;
-    }
+    // arma::colvec SlopeHeuristicIWLSSolver::operator() (const arma::mat& X, const arma::colvec& y) const
+    // {
+    //     arma::mat W = arma::diagmat(arma::ones(y.size()));
+    //     arma::colvec bp, bc = solve(X.t() * X, X.t() * y);
+    //     unsigned int its = 0;
+    //     do
+    //     {
+    //         bp = bc;
+    //         update(bp, W, X, y);
+    //         bc = solve(X.t() * W * X, X.t() * W * y);
+    //         ++its;
+    //     } while(arma::norm((bc - bp) / bp, 2) > _epsilon && its < _maxits);
+    //     return bc;
+    // }
     
     const double& SlopeHeuristicIWLSSolver::get_epsilon() const
     { return _epsilon; }
@@ -64,19 +64,19 @@ namespace statiskit
     void SlopeHeuristicHuberSolver::set_k(const double& k)
     { _k = k; }
 
-    void SlopeHeuristicHuberSolver::update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const
-    {
-        arma::colvec errors = y - X * beta;
-        double sigma = _k * arma::norm(errors, 2) / sqrt(y.size() - 1);
-        errors = arma::abs(errors);
-        for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
-        {
-            if(errors.at(index) <= sigma)
-            { W.at(index, index) = 1; }
-            else
-            { W.at(index, index) = sigma / errors.at(index); }
-        }
-    }
+    // void SlopeHeuristicHuberSolver::update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const
+    // {
+    //     arma::colvec errors = y - X * beta;
+    //     double sigma = _k * arma::norm(errors, 2) / sqrt(y.size() - 1);
+    //     errors = arma::abs(errors);
+    //     for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
+    //     {
+    //         if(errors.at(index) <= sigma)
+    //         { W.at(index, index) = 1; }
+    //         else
+    //         { W.at(index, index) = sigma / errors.at(index); }
+    //     }
+    // }
 
     SlopeHeuristicBiSquareSolver::SlopeHeuristicBiSquareSolver() : SlopeHeuristicIWLSSolver()
     { _k = 4.685; }
@@ -90,19 +90,19 @@ namespace statiskit
     void SlopeHeuristicBiSquareSolver::set_k(const double& k)
     { _k = k; }
 
-    void SlopeHeuristicBiSquareSolver::update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const
-    {
-        arma::colvec errors = y - X * beta;
-        double sigma = _k * arma::norm(errors, 2) / sqrt(y.size() - 1);
-        errors = arma::abs(errors);
-        for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
-        {
-            if(errors.at(index) <= sigma)
-            { W.at(index, index) = pow(1-pow(errors.at(index) / sigma, 2), 2); }
-            else
-            { W.at(index, index) = 0.; }
-        }
-    }
+    // void SlopeHeuristicBiSquareSolver::update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const
+    // {
+    //     arma::colvec errors = y - X * beta;
+    //     double sigma = _k * arma::norm(errors, 2) / sqrt(y.size() - 1);
+    //     errors = arma::abs(errors);
+    //     for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
+    //     {
+    //         if(errors.at(index) <= sigma)
+    //         { W.at(index, index) = pow(1-pow(errors.at(index) / sigma, 2), 2); }
+    //         else
+    //         { W.at(index, index) = 0.; }
+    //     }
+    // }
 
     size_t SlopeHeuristicMaximalSelector::operator() (const SlopeHeuristic& sh) const
     {
@@ -245,22 +245,22 @@ namespace statiskit
         _slopes = std::vector< double >(size(), std::numeric_limits< double >::quiet_NaN());
         for(size_t index = 2, max_index = size(); index < max_index; ++index)
         {
-            arma::mat X(index, 2);//, arma::fill::ones);
-            arma::colvec y(index);//, arma::fill::zeros);
-            for(size_t shift = 0; shift < index; ++shift)
-            {
-                X.at(shift, 0) = 1;
-                X.at(shift, 1) = _penshapes[max_index - shift - 1];
-                y.at(shift) = _scores[max_index - shift - 1];
-            }
-            try
-            {
-                arma::colvec beta = (*_solver)(X, y);
-                _intercepts[index - 1] = beta.at(0);
-                _slopes[index - 1] = beta.at(1);
-            }
-            catch(const std::exception& error)
-            {}
+            // arma::mat X(index, 2);//, arma::fill::ones);
+            // arma::colvec y(index);//, arma::fill::zeros);
+            // for(size_t shift = 0; shift < index; ++shift)
+            // {
+            //     X.at(shift, 0) = 1;
+            //     X.at(shift, 1) = _penshapes[max_index - shift - 1];
+            //     y.at(shift) = _scores[max_index - shift - 1];
+            // }
+            // try
+            // {
+            //     arma::colvec beta = (*_solver)(X, y);
+            //     _intercepts[index - 1] = beta.at(0);
+            //     _slopes[index - 1] = beta.at(1);
+            // }
+            // catch(const std::exception& error)
+            // {}
         }
         _selected = std::vector< size_t >(_slopes.size());
         for(size_t index = 1, max_index = size(); index < max_index; ++index)

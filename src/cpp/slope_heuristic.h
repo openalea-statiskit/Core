@@ -13,16 +13,20 @@
 
 #include <set>
 #include <map>
-#include <armadillo>
+// #include <armadillo>
 #include <memory>
 
 namespace statiskit
 {
     struct SlopeHeuristicSolver
-    { virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const = 0; };
+    { 
+        // virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const = 0;
+    };
 
     struct SlopeHeuristicOLSSolver : SlopeHeuristicSolver
-    { virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const; };
+    {
+        // virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const; 
+    };
 
     class SlopeHeuristicIWLSSolver : public SlopeHeuristicSolver
     {
@@ -30,7 +34,7 @@ namespace statiskit
             SlopeHeuristicIWLSSolver();
             SlopeHeuristicIWLSSolver(const SlopeHeuristicIWLSSolver& shs);
 
-            virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const;
+            // virtual arma::colvec operator() (const arma::mat& X, const arma::colvec& y) const;
 
             const double& get_epsilon() const;
             void set_epsilon(const double& epsilon);
@@ -42,7 +46,7 @@ namespace statiskit
             double _epsilon;
             unsigned int _maxits;
 
-            virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const = 0;
+            // virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const = 0;
     };
 
     class SlopeHeuristicHuberSolver : public SlopeHeuristicIWLSSolver
@@ -57,7 +61,7 @@ namespace statiskit
         protected:
             double _k;
 
-            virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const;
+            // virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const;
     };
 
     class SlopeHeuristicBiSquareSolver : public SlopeHeuristicIWLSSolver
@@ -72,7 +76,7 @@ namespace statiskit
          protected:
             double _k;
 
-            virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const;
+            // virtual void update(const arma::colvec& beta, arma::mat& W, const arma::mat& X, const arma::colvec& y) const;
     };
 
     class SlopeHeuristic;
