@@ -13,7 +13,7 @@
 #include "moment.h"
 #include "slope_heuristic.h"
 #include "optimization.h"
-#include "error.h"
+// #include "error.h"
 
 namespace statiskit
 {

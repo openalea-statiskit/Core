@@ -7,7 +7,7 @@
 /**********************************************************************************/
 
 #include "distribution.h"
-#include "error.h"
+// #include "error.h"
 #include "base.h"
 
 namespace statiskit
