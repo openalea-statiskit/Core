@@ -121,13 +121,11 @@ namespace statiskit
     };*/
 }
 
-#ifndef _WIN32
-#ifndef WIN32 
+#if !defined(_WIN32) && !defined(WIN32) 
 namespace std
 {
     template<typename T, typename... Args> std::unique_ptr<T> make_unique(Args&&... args);
 }
-#endif
 #endif
 
 #include "base.hpp"

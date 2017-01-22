@@ -136,9 +136,11 @@ namespace statiskit
         typedef MultivariateEvent event_type;
         
         virtual const MultivariateSampleSpace* get_sample_space() const = 0;
-        
+
+        #if !defined(_WIN32) && !defined(WIN32)         
         virtual explicit operator bool() const = 0;
-        
+        #endif
+
         virtual size_t size() const = 0;
 
         virtual size_t get_nb_variables() const = 0;
@@ -174,7 +176,9 @@ namespace statiskit
  
             virtual const MultivariateSampleSpace* get_sample_space() const;
 
+            #if !defined(_WIN32) && !defined(WIN32)         
             virtual explicit operator bool() const;
+            #endif
             
             virtual size_t size() const;
 

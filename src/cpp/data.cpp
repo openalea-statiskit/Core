@@ -462,6 +462,7 @@ namespace statiskit
     const MultivariateSampleSpace* MultivariateDataFrame::get_sample_space() const
     { return _sample_space; }
 
+    #if !defined(_WIN32) && !defined(WIN32)         
     MultivariateDataFrame::operator bool() const
     {
         bool valid = _variables.size() > 0;
@@ -479,6 +480,7 @@ namespace statiskit
         }
         return valid;
     }
+    #endif
     
     size_t MultivariateDataFrame::size() const
     {
