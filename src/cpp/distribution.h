@@ -126,6 +126,8 @@ namespace statiskit
         using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
 
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
+        
+        virtual double pdf(const int& position) const;
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };

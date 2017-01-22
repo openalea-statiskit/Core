@@ -72,6 +72,12 @@ namespace statiskit
     std::unique_ptr< UnivariateSampleSpace > NominalDistribution::get_sample_space() const
     { return std::make_unique< NominalSampleSpace >(_values); }
     
+    double NominalDistribution::pdf(const int& position) const
+    { 
+        // return _pi[position];
+        return 0;
+    }
+        
     std::unique_ptr< UnivariateDistribution > NominalDistribution::copy() const
     { return std::make_unique< NominalDistribution >(*this); }
    
