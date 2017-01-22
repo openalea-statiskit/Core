@@ -424,7 +424,7 @@ namespace statiskit
                             compatible = true;
                             while(compatible && it != ite)
                             {
-                                compatible == boost::math::isfinite(*it);
+                                compatible = boost::math::isfinite(*it);
                                 if(compatible)
                                 {
                                     if(_left_closed)
