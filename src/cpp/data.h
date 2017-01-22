@@ -139,6 +139,8 @@ namespace statiskit
 
         #if !defined(_WIN32) && !defined(WIN32)         
         virtual explicit operator bool() const = 0;
+        #else
+        virtual operator bool() const = 0;
         #endif
 
         virtual size_t size() const = 0;
@@ -178,6 +180,8 @@ namespace statiskit
 
             #if !defined(_WIN32) && !defined(WIN32)         
             virtual explicit operator bool() const;
+            #else
+            virtual operator bool() const;
             #endif
             
             virtual size_t size() const;
