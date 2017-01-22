@@ -269,7 +269,7 @@ namespace statiskit
         NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
         std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double std_err = variance_estimation->get_covariance(); TODO
-        stderr = sqrt(std_err); 
+        std_err = sqrt(std_err); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(std_err))
         {
             auto normal = std::make_shared< NormalDistribution >(mean, std_err);
