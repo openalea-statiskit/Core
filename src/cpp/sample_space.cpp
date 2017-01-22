@@ -444,7 +444,7 @@ namespace statiskit
                         }
                         break;
                     case LEFT:
-                        if(boost::math::isinf(_lower_bound) and _lower_bound < 0)
+                        if(boost::math::isinf(_lower_bound) && _lower_bound < 0)
                         {
                             double value = static_cast< const ContinuousLeftCensoredEvent* >(event)->get_upper_bound();
                             compatible = boost::math::isfinite(value) && value >= _lower_bound && value <= _upper_bound;
@@ -453,7 +453,7 @@ namespace statiskit
                         { compatible = false; }
                         break;
                     case RIGHT:
-                        if(boost::math::isinf(_upper_bound) and _upper_bound > 0)
+                        if(boost::math::isinf(_upper_bound) && _upper_bound > 0)
                         {
                             double value = static_cast< const ContinuousRightCensoredEvent* >(event)->get_lower_bound();
                             compatible = boost::math::isfinite(value) && value >= _lower_bound && value <= _upper_bound;
