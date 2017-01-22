@@ -1,26 +1,22 @@
 # -*-python-*-
 
 import os
-from openalea.sconsx import config, environ
+from SCons import Errors
 
-ALEASolution = config.ALEASolution
+env = Environment(tools = ['toolchain'])
 
-pj = os.path.join
+VariantDir('build', 'src')
+try:
+  SConscript(os.path.join('build', 'cpp', 'SConscript'), exports="env")
+except Errors.EnvironmentError:
+  pass
+except Exception:
+  raise
+# try:
+#   SConscript(os.path.join('build', 'py', 'SConscript'), exports="env")
+# except Errors.EnvironmentError:
+#   pass
+# except Exception:
+#   raise
 
-SConsignFile()
-
-options = Variables(['../options.py', 'options.py'], ARGUMENTS)
-tools = ['boost_python']
-
-env = ALEASolution(options, tools)
-env.AppendUnique(CXXFLAGS=['-x', 'c++', "-std=c++0x"])
-
-env.AppendUnique(LIBS=['blas', 'lapack'])
-
-prefix = env['build_prefix']
-
-# Build stage
-SConscript(pj(prefix,"src/cpp/SConscript"), exports="env")
-SConscript(pj(prefix,"src/wrapper/SConscript"), exports="env")
-
-Default("build")
+# Default("build")
