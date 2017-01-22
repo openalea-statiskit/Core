@@ -20,44 +20,44 @@ namespace statiskit
         if(data->get_sample_space()->get_outcome() != CATEGORICAL)
         { throw statiskit::sample_space_error("data", CATEGORICAL); }
         std::shared_ptr< UnivariateDistributionEstimation > estimation;
-        std::set< std::string > values;
-        double total = data->compute_total();
-        if(data->size() > 0 && total > 0.)
-        {
-            if(boost::math::isfinite(total))
-            {
-                const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data->get_sample_space());
-                values = sample_space->get_values();
-                std::vector< double > masses(values.size(), 0.);
-                for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
-                {
-                    auto event = data->get_event(index);
-                    if(event)
-                    {
-                        if(event->get_event() == ELEMENTARY)
-                        {
-                            std::set< std::string >::iterator it = values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value());
-                            masses[distance(values.begin(), it)] += data->get_weight(index) / total;
-                        }
-                    }
-                }
-                std::shared_ptr< CategoricalUnivariateDistribution > distribution;
-                switch(sample_space->get_ordering())
-                {
-                    case NONE:
-                    case PARTIAL:
-                        distribution = std::make_shared< NominalDistribution >(values, masses);
-                        break;
-                    case TOTAL:
-                        distribution = std::make_shared< OrdinalDistribution >(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
-                        break;
-                }
-                if(lazy)
-                { estimation = std::make_shared< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
-                else
-                { estimation = std::make_shared< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
-            }
-        }
+        // std::set< std::string > values;
+        // double total = data->compute_total();
+        // if(data->size() > 0 && total > 0.)
+        // {
+        //     if(boost::math::isfinite(total))
+        //     {
+        //         const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data->get_sample_space());
+        //         values = sample_space->get_values();
+        //         std::vector< double > masses(values.size(), 0.);
+        //         for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+        //         {
+        //             auto event = data->get_event(index);
+        //             if(event)
+        //             {
+        //                 if(event->get_event() == ELEMENTARY)
+        //                 {
+        //                     std::set< std::string >::iterator it = values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value());
+        //                     masses[distance(values.begin(), it)] += data->get_weight(index) / total;
+        //                 }
+        //             }
+        //         }
+        //         std::shared_ptr< CategoricalUnivariateDistribution > distribution;
+        //         switch(sample_space->get_ordering())
+        //         {
+        //             case NONE:
+        //             case PARTIAL:
+        //                 distribution = std::make_shared< NominalDistribution >(values, masses);
+        //                 break;
+        //             case TOTAL:
+        //                 distribution = std::make_shared< OrdinalDistribution >(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
+        //                 break;
+        //         }
+        //         if(lazy)
+        //         { estimation = std::make_shared< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
+        //         else
+        //         { estimation = std::make_shared< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
+        //     }
+        // }
         return estimation;
     }
 

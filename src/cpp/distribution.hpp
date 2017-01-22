@@ -60,7 +60,10 @@ namespace statiskit
         
     template<class T>        
 		double UnivariateFrequencyDistribution< T >::pdf(const int& position) const
-		{ return _pi[position]; }
+		{ 
+            // return _pi[position];
+            return 0;
+        }
 		
     template<class T>
         std::unique_ptr< UnivariateEvent > UnivariateFrequencyDistribution< T >::simulate() const

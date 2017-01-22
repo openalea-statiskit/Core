@@ -95,10 +95,10 @@ namespace statiskit
     {
         double p;
         std::set< std::string >::const_iterator it = _values.find(value);
-        if(it == _values.end())
-        { p = 0.; }
-        else
-        { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
+        // if(it == _values.end())
+        // { p = 0.; }
+        // else
+        // { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
         return p;
      }
 
@@ -108,8 +108,8 @@ namespace statiskit
         std::set< std::string >::const_iterator it = _values.find(value);
         if(it != _values.cend())
         {
-            for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
-            { p += _pi[size]; }
+            // for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
+            // { p += _pi[size]; }
         }
         return p;
     }
@@ -118,14 +118,14 @@ namespace statiskit
     {
         std::vector< std::string > ordered = get_ordered();
         size_t size = 0, max_size = ordered.size() - 1;
-        double _p = _pi[size];
-        while(_p < p && size < max_size)
-        {
-            ++size;
-            _p += _pi[size];
-        }
-        if(size == max_size)
-        { --size; }
+        // double _p = _pi[size];
+        // while(_p < p && size < max_size)
+        // {
+        //     ++size;
+        //     _p += _pi[size];
+        // }
+        // if(size == max_size)
+        // { --size; }
         return ordered[size];
     }
 

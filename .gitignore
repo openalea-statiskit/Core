@@ -1,7 +1,7 @@
 doc/html
 doc/latex
 doc/Doxyfile
-build-scons
+build
 *.so
 *.pyc
 *~
