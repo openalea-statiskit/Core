@@ -63,7 +63,7 @@ namespace statiskit
             virtual double ldf(const typename T::event_type::value_type& value) const;
             virtual double pdf(const typename T::event_type::value_type& value) const;
             
-			virtual double pdf(const int& position) const;
+			//virtual double pdf(const int& position) const;
 			
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
