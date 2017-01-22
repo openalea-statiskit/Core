@@ -10,7 +10,7 @@ services:
   - docker
   
 env:
- - RECIPE=libstatiskit
+ - RECIPE=libstatiskit_core
 
 matrix:
   exclude:
