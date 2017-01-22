@@ -108,6 +108,12 @@ namespace statiskit
         return p;
      }
 
+    double OrdinalDistribution::pdf(const int& position) const
+    { 
+        // return _pi[position];
+        return 0;
+    }
+    
     double OrdinalDistribution::cdf(const std::string& value) const
     {
         double p = 0.;

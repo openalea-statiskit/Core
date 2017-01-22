@@ -126,7 +126,7 @@ namespace statiskit
         using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
 
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
-        
+
         virtual double pdf(const int& position) const;
 
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
@@ -167,6 +167,8 @@ namespace statiskit
                   
             virtual double pdf(const std::string& value) const;
                 
+            virtual double pdf(const int& position) const;
+
 			/** \brief Compute the cumulative probability of a category
 			 *
 			 * \details Let \f$s_j \in \mathcal{S} \f$ denote the category
