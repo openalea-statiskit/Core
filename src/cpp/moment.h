@@ -53,8 +53,8 @@ namespace statiskit
            
             struct Estimator
             {
-                std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
-                std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
+                virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
+                virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const = 0;
             };
 
         protected:
@@ -77,7 +77,6 @@ namespace statiskit
                     Estimator(const bool& bias);
                     Estimator(const Estimator& estimator);
                       
-                    using VarianceEstimation::Estimator::operator();
                     virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
 
                     const bool& get_bias() const;
