@@ -35,7 +35,7 @@ namespace statiskit
 
         virtual bool is_compatible(const UnivariateEvent* event) const = 0;
 
-        std::unique_ptr< UnivariateSampleSpace > copy() const = 0;
+        virtual std::unique_ptr< UnivariateSampleSpace > copy() const = 0;
     };
 
     struct sample_space_error : parameter_error
