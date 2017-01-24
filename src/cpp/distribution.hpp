@@ -17,30 +17,31 @@ namespace statiskit
             if(values.size() == 0)
             { throw size_error("values", 0, 0, size_error::superior); }
             _values = values;
-            // _pi = arma::normalise(arma::colvec(values.size(), arma::fill::ones));
+            _pi = Eigen::VectorXd::Ones(values.size());
+            _pi.normalize();
         }
     
-    // template<class T>
-    //     UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi)
-    //     {
-    //         if(values.size() == 0)
-    //         { throw size_error("values", 0, 0, size_error::superior); }
-    //         if(values.size() != pi.size())
-    //         { throw size_error("values", 0, values.size(), size_error::equal); }
-    //         _values = values;
-    //         set_pi(pi);
-    //     }
+    template<class T>
+        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi)
+        {
+            if(values.size() == 0)
+            { throw size_error("values", 0, 0, size_error::superior); }
+            if(values.size() != pi.size())
+            { throw size_error("values", 0, values.size(), size_error::equal); }
+            _values = values;
+            set_pi(pi);
+        }
 
     template<class T>
         UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency)
         {
             _values = frequency._values;
-            // _pi = frequency._pi;
+            _pi = frequency._pi;
         }
 
     template<class T>
         unsigned int UnivariateFrequencyDistribution< T >::get_nb_parameters() const
-        { return 0;/*_pi.size() - 1; */ }
+        { return _pi.size() - 1; }
 
     template<class T>
         double UnivariateFrequencyDistribution< T >::ldf(const typename T::event_type::value_type& value) const
@@ -53,23 +54,23 @@ namespace statiskit
             typename std::set< typename T::event_type::value_type >::const_iterator it = _values.find(value);
             if(it == _values.end())
             { p = 0.; }
-            // else
-            // { p = _pi[distance(_values.cbegin(), it)]; }
+            else
+            { p = _pi[distance(_values.cbegin(), it)]; }
             return p;
         }
         
     template<class T>
         std::unique_ptr< UnivariateEvent > UnivariateFrequencyDistribution< T >::simulate() const
         {
-            // double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(get_random_generator())();
+            double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(get_random_generator())();
             typename std::set< typename T::event_type::value_type >::const_iterator it = _values.cbegin();
-            // while(it != _values.cend() && cp < sp)
-            // {
-            //     ++it;
-            //     cp += _pi[distance(_values.cbegin(), it)];
-            // }
-            // if(it == _values.cend())
-            // { --it; }
+            while(it != _values.cend() && cp < sp)
+            {
+                ++it;
+                cp += _pi[distance(_values.cbegin(), it)];
+            }
+            if(it == _values.cend())
+            { --it; }
             return std::make_unique< ElementaryEvent< typename T::event_type > >(*it);
         }
 
@@ -77,54 +78,54 @@ namespace statiskit
         const std::set< typename T::event_type::value_type >& UnivariateFrequencyDistribution< T >::get_values() const
         { return _values; }
 
-    // template<class T>
-    //     const arma::colvec& UnivariateFrequencyDistribution< T >::get_pi() const
-    //     { return _pi; }
+    template<class T>
+        const Eigen::VectorXd& UnivariateFrequencyDistribution< T >::get_pi() const
+        { return _pi; }
 
-    // template<class T>
-    //     void UnivariateFrequencyDistribution< T >::set_pi(const arma::colvec& pi)
-    //     {
-    //     	if(pi.n_rows == _values.size()-1)
-    //     	{
-		  //   	size_t j=0; 
-		  //   	while(pi[j] >= 0. && j<pi.n_rows)
-		  //   	{ ++j; }
-		  //   	if(j < pi.n_rows)
-		  //   	{ throw parameter_error("pi", "contains negative values"); } 
-		  //   	double norm = arma::norm(pi);
-		  //   	if(norm<1)
-		  //   	{
-				// 	_pi.subvec(0,_values.size()-2) = pi;
-				// 	_pi[_values.size()-1] = 1-norm;
-		  //   	}
-		  //   	else
-		  //   	{ throw parameter_error("pi", "last category values"); } 		    	
-    //     	}
-    //     	else if(pi.n_rows == _values.size())
-    //     	{
-		  //   	size_t j=0; 
-		  //   	while(pi[j] >= 0. && j<pi.n_rows)
-		  //   	{ ++j; }
-		  //   	if(j < pi.n_rows)
-		  //   	{ throw parameter_error("pi", "contains negative values"); } 
-		  //       _pi = arma::normalise(pi);
-    //         }
-    //         else
-    //         { throw parameter_error("pi", "number of parameters"); } 	           
-    //     }
+    template<class T>
+        void UnivariateFrequencyDistribution< T >::set_pi(const Eigen::VectorXd& pi)
+        {
+        	if(pi.rows() == _values.size()-1)
+        	{
+		    	size_t j=0; 
+		    	while(pi[j] >= 0. && j<pi.rows())
+		    	{ ++j; }
+		    	if(j < pi.rows())
+		    	{ throw parameter_error("pi", "contains negative values"); } 
+		    	double norm = pi.norm();
+		    	if(norm < 1)
+		    	{
+					_pi.block(0, 0, _values.size()-1, 1) = pi;
+					_pi[_values.size()-1] = 1 - norm;
+		    	}
+		    	else
+		    	{ throw parameter_error("pi", "last category values"); } 		    	
+        	}
+        	else if(pi.rows() == _values.size())
+        	{
+		    	size_t j=0; 
+		    	while(pi[j] >= 0. && j<pi.rows())
+		    	{ ++j; }
+		    	if(j < pi.rows())
+		    	{ throw parameter_error("pi", "contains negative values"); } 
+		        _pi = pi.normalized();
+            }
+            else
+            { throw parameter_error("pi", "number of parameters"); } 	           
+        }
 
     template<class T>
         double QuantitativeUnivariateFrequencyDistribution< T >::cdf(const typename T::event_type::value_type& value) const
         {
             double p = 0.;
-            // typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin();
-            // while(it != this->_values.cend() && *it <= value)
-            // {
-            //     p += this->_pi[distance(this->_values.cbegin(), it)];
-            //     ++it;
-            // }
-            // if(it == this->_values.cend())
-            // { p = 1.; }
+            typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin();
+            while(it != this->_values.cend() && *it <= value)
+            {
+                p += this->_pi[distance(this->_values.cbegin(), it)];
+                ++it;
+            }
+            if(it == this->_values.cend())
+            { p = 1.; }
             return p;
         }
 
@@ -133,16 +134,16 @@ namespace statiskit
         {
             double tp = 0.;
             typename T::event_type::value_type q;
-            // typename std::set< typename T::event_type::value_type >::const_iterator it_begin = this->_values.cbegin(), it, it_end = this->_values.cend();
-            // it = it_begin;
-            // while(it != it_end && tp < p)
-            // {
-            //     tp += this->_pi[distance(it_begin, it)];
-            //     ++it;
-            // }
-            // if(it != it_begin)
-            // { --it; }
-            // q = *it;
+            typename std::set< typename T::event_type::value_type >::const_iterator it_begin = this->_values.cbegin(), it, it_end = this->_values.cend();
+            it = it_begin;
+            while(it != it_end && tp < p)
+            {
+                tp += this->_pi[distance(it_begin, it)];
+                ++it;
+            }
+            if(it != it_begin)
+            { --it; }
+            q = *it;
             return q;
         }
 
@@ -150,8 +151,8 @@ namespace statiskit
         double QuantitativeUnivariateFrequencyDistribution< T >::get_mean() const
         {
             double mean = 0.;
-            // for(typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin(), it_end = this->_values.cend(); it != it_end; ++it)
-            // { mean += *it * this->_pi[distance(this->_values.cbegin(), it)]; }
+            for(typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin(), it_end = this->_values.cend(); it != it_end; ++it)
+            { mean += *it * this->_pi[distance(this->_values.cbegin(), it)]; }
             return mean;
         }
 
@@ -159,8 +160,8 @@ namespace statiskit
         double QuantitativeUnivariateFrequencyDistribution< T >::get_variance() const
         {
             double mean = get_mean(), variance = 0.;
-            // for(typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin(), it_end = this->_values.cend(); it != it_end; ++it)
-            // { variance += pow(*it-mean, 2) * this->_pi[distance(this->_values.cbegin(), it)]; }
+            for(typename std::set< typename T::event_type::value_type >::const_iterator it = this->_values.cbegin(), it_end = this->_values.cend(); it != it_end; ++it)
+            { variance += pow(*it-mean, 2) * this->_pi[distance(this->_values.cbegin(), it)]; }
             return variance;
         }
 

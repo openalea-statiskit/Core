@@ -18,4 +18,4 @@ sources = [source for source in cppenv.Glob('*.*') if not source.name in exclude
 
 targets = cppenv.BuildCpp("statiskit_core", sources)
 Alias("cpp", targets)
-Alias("build", targets)
+Alias("install", "cpp")

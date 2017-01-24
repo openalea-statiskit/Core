@@ -19,5 +19,7 @@ requirements:
     build:
         - libdev
         - libboost
+        - eigen
     run:
         - libboost
+        - eigen

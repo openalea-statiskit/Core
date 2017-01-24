@@ -114,55 +114,55 @@ namespace statiskit
         _encoding = encoding;
     }
 
-    // arma::rowvec NominalSampleSpace::encode(const std::string& value) const
-    // {
-    //     arma::rowvec dummy;
-    //     size_t cardinality = get_cardinality();
-    //     if(cardinality > 1)
-    //     {
-    //         --cardinality;
-    //         std::set< std::string >::const_iterator it = _values.find(value);
-    //         if(it == _values.cend())
-    //         { dummy = std::numeric_limits< double >::quiet_NaN() * arma::rowvec(cardinality, arma::fill::ones); }
-    //         else
-    //         {
-    //              size_t index = distance(_values.cbegin(), it), ref_index = distance(_values.cbegin(), _reference);
-    //             switch(_encoding)
-    //             {
-    //                 case TREATMENT:
-    //                     dummy = arma::rowvec(cardinality, arma::fill::zeros);
-    //                     if(index < ref_index)
-    //                     { dummy.at(index) = 1; }
-    //                     else if(index > ref_index)
-    //                     { 
-    //                         --index;
-    //                         dummy.at(index) = 1;
-    //                     }
-    //                     break;
-    //                 case DEVIATION:
-    //                     if(index == ref_index)
-    //                     { dummy = -1 * arma::rowvec(cardinality, arma::fill::ones); }
-    //                     else
-    //                     {
-    //                         dummy = arma::rowvec(cardinality, arma::fill::zeros);
-    //                         if(index < ref_index)
-    //                         { dummy.at(index) = 1; }
-    //                         else if(index > ref_index)
-    //                         { 
-    //                             --index;
-    //                             dummy.at(index) = 1;
-    //                         }
-    //                     }
-    //                     break;
-    //                 default:
-    //                     break;
-    //             }
-    //         }
-    //     }
-    //     else
-    //     { dummy = arma::rowvec(); }
-    //     return dummy;
-    // }
+    Eigen::RowVectorXd NominalSampleSpace::encode(const std::string& value) const
+    {
+        Eigen::RowVectorXd dummy;
+        size_t cardinality = get_cardinality();
+        if(cardinality > 1)
+        {
+            --cardinality;
+            std::set< std::string >::const_iterator it = _values.find(value);
+            if(it == _values.cend())
+            { dummy = std::numeric_limits< double >::quiet_NaN() * Eigen::RowVectorXd::Ones(cardinality); }
+            else
+            {
+                 size_t index = distance(_values.cbegin(), it), ref_index = distance(_values.cbegin(), _reference);
+                switch(_encoding)
+                {
+                    case TREATMENT:
+                        dummy = Eigen::RowVectorXd::Zero(cardinality);
+                        if(index < ref_index)
+                        { dummy(index) = 1; }
+                        else if(index > ref_index)
+                        { 
+                            --index;
+                            dummy(index) = 1;
+                        }
+                        break;
+                    case DEVIATION:
+                        if(index == ref_index)
+                        { dummy = -1 * Eigen::RowVectorXd::Ones(cardinality); }
+                        else
+                        {
+                            dummy = Eigen::RowVectorXd::Zero(cardinality);
+                            if(index < ref_index)
+                            { dummy(index) = 1; }
+                            else if(index > ref_index)
+                            { 
+                                --index;
+                                dummy(index) = 1;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        else
+        { dummy = Eigen::RowVectorXd(); }
+        return dummy;
+    }
 
     std::unique_ptr< UnivariateSampleSpace > NominalSampleSpace::copy() const
     { return std::make_unique< NominalSampleSpace >(*this); }
@@ -190,32 +190,32 @@ namespace statiskit
     void OrdinalSampleSpace::set_encoding(const encoding_type& encoding)
     { _encoding = encoding; }
 
-    // arma::rowvec OrdinalSampleSpace::encode(const std::string& value) const
-    // {
-    //     arma::rowvec dummy;
-    //     size_t cardinality = get_cardinality();
-    //     if(cardinality > 1)
-    //     {
-    //         --cardinality;
-    //         std::set< std::string >::const_iterator it = _values.find(value);
-    //         if(it == _values.cend())
-    //         { dummy = std::numeric_limits< double >::quiet_NaN() * arma::rowvec(cardinality, arma::fill::ones); }
-    //         else
-    //         {
-    //             switch(_encoding)
-    //             {
-    //                 case CUMULATIVE:
-    //                     dummy = arma::rowvec(cardinality, arma::fill::zeros);
-    //                     for(size_t index = 0, max_index = _rank[distance(_values.cbegin(), it)]; index < max_index; ++index)
-    //                     { dummy.at(index) = 1; } 
-    //                     break;
-    //             }
-    //         }
-    //     }
-    //     else
-    //     { dummy = arma::rowvec(); }
-    //     return dummy;
-    // }
+    Eigen::RowVectorXd OrdinalSampleSpace::encode(const std::string& value) const
+    {
+        Eigen::RowVectorXd dummy;
+        size_t cardinality = get_cardinality();
+        if(cardinality > 1)
+        {
+            --cardinality;
+            std::set< std::string >::const_iterator it = _values.find(value);
+            if(it == _values.cend())
+            { dummy = std::numeric_limits< double >::quiet_NaN() * Eigen::RowVectorXd::Ones(cardinality); }
+            else
+            {
+                switch(_encoding)
+                {
+                    case CUMULATIVE:
+                        dummy = Eigen::RowVectorXd::Zero(cardinality);
+                        for(size_t index = 0, max_index = _rank[distance(_values.cbegin(), it)]; index < max_index; ++index)
+                        { dummy(index) = 1; } 
+                        break;
+                }
+            }
+        }
+        else
+        { dummy = Eigen::RowVectorXd(); }
+        return dummy;
+    }
 
     std::vector< std::string > OrdinalSampleSpace::get_ordered() const
     {
@@ -630,60 +630,60 @@ namespace statiskit
         return _size;
     }
 
-    // arma::rowvec MultivariateSampleSpace::encode(const MultivariateEvent& event) const
-    // {
-    //     arma::rowvec dummy;
-    //     if(event.size() != size())
-    //     { dummy = std::numeric_limits< double >::quiet_NaN() * arma::rowvec(encode()); }
-    //     else
-    //     {
-    //         size_t shift = 0;
-    //         dummy = arma::rowvec(encode());
-    //         arma::rowvec temp;
-    //         for(size_t index = 0, max_index = size(); index< max_index; ++index)
-    //         {
-    //             const UnivariateEvent* uevent = event.get(index);
-    //             if(uevent->get_event() == ELEMENTARY)
-    //             {
-    //                 const UnivariateSampleSpace* sample_space = get(index);
-    //                 switch(sample_space->get_outcome())
-    //                 {
-    //                     case CATEGORICAL:
-    //                         {
-    //                             temp = arma::fliplr(static_cast< const CategoricalSampleSpace* >(sample_space)->encode(static_cast< const CategoricalElementaryEvent* >(uevent)->get_value()));
-    //                             size_t max_size = index + shift + temp.n_cols;
-    //                             while(index + shift < max_size)
-    //                             {
-    //                                 dummy.at(index + shift) = temp.at(max_size - index - shift - 1);
-    //                                 ++shift;
-    //                             }
-    //                         }
-    //                         break;
-    //                     case DISCRETE:
-    //                         dummy.at(index + shift) = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-    //                         break;
-    //                     case CONTINUOUS:
-    //                         dummy.at(index + shift) = static_cast< const ContinuousElementaryEvent* >(uevent)->get_value();
-    //                         break;
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 const UnivariateSampleSpace* sample_space = get(index);
-    //                 if(sample_space->get_outcome() == CATEGORICAL)
-    //                 {
-    //                     size_t max_size = index + shift + static_cast< const CategoricalSampleSpace* >(sample_space)->get_cardinality();
-    //                     while(index + shift < max_size)
-    //                     {
-    //                         dummy.at(index + shift) = std::numeric_limits< double >::quiet_NaN();
-    //                         ++shift;
-    //                     }
-    //                 }
-    //                 else
-    //                 { dummy.at(index + shift) = std::numeric_limits< double >::quiet_NaN(); }
-    //             }
-    //         }
-    //     }
-    //     return dummy;
-    // }
+    Eigen::RowVectorXd MultivariateSampleSpace::encode(const MultivariateEvent& event) const
+    {
+        Eigen::RowVectorXd dummy;
+        if(event.size() != size())
+        { dummy = std::numeric_limits< double >::quiet_NaN() * Eigen::RowVectorXd::Ones(encode()); }
+        else
+        {
+            size_t shift = 0;
+            dummy = Eigen::RowVectorXd::Zero(encode());
+            Eigen::RowVectorXd temp;
+            for(size_t index = 0, max_index = size(); index< max_index; ++index)
+            {
+                const UnivariateEvent* uevent = event.get(index);
+                if(uevent->get_event() == ELEMENTARY)
+                {
+                    const UnivariateSampleSpace* sample_space = get(index);
+                    switch(sample_space->get_outcome())
+                    {
+                        case CATEGORICAL:
+                            {
+                                temp = (static_cast< const CategoricalSampleSpace* >(sample_space)->encode(static_cast< const CategoricalElementaryEvent* >(uevent)->get_value())).reverse().eval();
+                                size_t max_size = index + shift + temp.cols();
+                                while(index + shift < max_size)
+                                {
+                                    dummy(index + shift) = temp(max_size - index - shift - 1);
+                                    ++shift;
+                                }
+                            }
+                            break;
+                        case DISCRETE:
+                            dummy(index + shift) = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
+                            break;
+                        case CONTINUOUS:
+                            dummy(index + shift) = static_cast< const ContinuousElementaryEvent* >(uevent)->get_value();
+                            break;
+                    }
+                }
+                else
+                {
+                    const UnivariateSampleSpace* sample_space = get(index);
+                    if(sample_space->get_outcome() == CATEGORICAL)
+                    {
+                        size_t max_size = index + shift + static_cast< const CategoricalSampleSpace* >(sample_space)->get_cardinality();
+                        while(index + shift < max_size)
+                        {
+                            dummy(index + shift) = std::numeric_limits< double >::quiet_NaN();
+                            ++shift;
+                        }
+                    }
+                    else
+                    { dummy(index + shift) = std::numeric_limits< double >::quiet_NaN(); }
+                }
+            }
+        }
+        return dummy;
+    }
 }

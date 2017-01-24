@@ -16,7 +16,7 @@
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <map>
-// #include <armadillo>
+#include <eigen3/Eigen/Dense>
 
 namespace statiskit
 {    
@@ -65,7 +65,7 @@ namespace statiskit
             encoding_type get_encoding() const;
             virtual void set_encoding(const encoding_type& encoding) = 0;
             
-            // virtual arma::rowvec encode(const std::string& outcome) const = 0;
+            virtual Eigen::RowVectorXd encode(const std::string& outcome) const = 0;
 
         protected:
             std::set< std::string > _values;
@@ -88,7 +88,7 @@ namespace statiskit
 
             void set_encoding(const encoding_type& encoding);
 
-            // virtual arma::rowvec encode(const std::string& value) const;
+            virtual Eigen::RowVectorXd encode(const std::string& value) const;
 
             std::unique_ptr< UnivariateSampleSpace > copy() const;
 
@@ -114,7 +114,7 @@ namespace statiskit
 
             void set_encoding(const encoding_type& encoding);
 
-            // virtual arma::rowvec encode(const std::string& value) const;
+            virtual Eigen::RowVectorXd encode(const std::string& value) const;
 
             virtual std::unique_ptr< UnivariateSampleSpace > copy() const;
 
@@ -195,7 +195,7 @@ namespace statiskit
         
         virtual size_t encode() const;
         
-        // virtual arma::rowvec encode(const MultivariateEvent& event) const;
+        virtual Eigen::RowVectorXd encode(const MultivariateEvent& event) const;
         
         virtual std::unique_ptr< MultivariateSampleSpace > copy() const = 0;
     };

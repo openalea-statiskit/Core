@@ -9,6 +9,7 @@
 #ifndef STATISKIT_CORE_DATA_H
 #define STATISKIT_CORE_DATA_H
 
+#include "base.h"
 #include "sample_space.h"
 
 #include <boost/random/uniform_int.hpp>
@@ -16,7 +17,7 @@
 
 namespace statiskit
 {
-    struct UnivariateData
+    struct STATISKIT_CORE_API UnivariateData
     {
         typedef UnivariateSampleSpace sample_space_type;
         typedef UnivariateEvent event_type;
@@ -43,7 +44,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
     };
 
-    class NamedData
+    class STATISKIT_CORE_API NamedData
     {
         public:
             NamedData();
@@ -69,7 +70,7 @@ namespace statiskit
             static unsigned int __index;
     };
 
-    class UnivariateDataFrame : public UnivariateData, public NamedData
+    class STATISKIT_CORE_API UnivariateDataFrame : public UnivariateData, public NamedData
     {
         public:
             UnivariateDataFrame(const UnivariateSampleSpace& sample_space);
@@ -106,7 +107,7 @@ namespace statiskit
             bool _locked;
     };
 
-    class WeightedUnivariateDataFrame : public UnivariateDataFrame
+    class STATISKIT_CORE_API WeightedUnivariateDataFrame : public UnivariateDataFrame
     {
         public:
             WeightedUnivariateDataFrame(const UnivariateSampleSpace& sample_space);
@@ -130,7 +131,7 @@ namespace statiskit
             std::vector< double > _weights;
     };
 
-    struct MultivariateData
+    struct STATISKIT_CORE_API MultivariateData
     {
         typedef MultivariateSampleSpace sample_space_type;
         typedef MultivariateEvent event_type;
@@ -168,7 +169,7 @@ namespace statiskit
         virtual std::unique_ptr< MultivariateData > copy() const = 0;
     };
 
-    class MultivariateDataFrame : public MultivariateData
+    class STATISKIT_CORE_API MultivariateDataFrame : public MultivariateData
     {
         public:
             MultivariateDataFrame();

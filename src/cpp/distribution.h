@@ -9,7 +9,9 @@
 #ifndef STATISKIT_CORE_DISTRIBUTION_H
 #define STATISKIT_CORE_DISTRIBUTION_H
 
+#include "base.h"
 #include "data.h"
+#include <eigen3/Eigen/Dense>
 
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>
@@ -23,7 +25,7 @@
 namespace statiskit
 {
     /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate variable \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
-    struct UnivariateDistribution
+    struct STATISKIT_CORE_API UnivariateDistribution
     {	
     	/// \brief Get the sample space of the distribution.
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const = 0;
@@ -55,7 +57,7 @@ namespace statiskit
     {
         public:
             UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values);
-            // UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const arma::colvec& pi);
+            UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi);
             UnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency);
 
             virtual unsigned int get_nb_parameters() const;
@@ -69,18 +71,18 @@ namespace statiskit
 
             const std::set< typename T::event_type::value_type >& get_values() const;
 
-            // const arma::colvec& get_pi() const;
-            // void set_pi(const arma::colvec& pi);
+            const Eigen::VectorXd& get_pi() const;
+            void set_pi(const Eigen::VectorXd& pi);
 
         protected:
             std::set< typename T::event_type::value_type > _values;
-            // arma::colvec _pi;
+            Eigen::VectorXd _pi;
     };
     
     /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
-    struct CategoricalUnivariateDistribution : UnivariateDistribution
+    struct STATISKIT_CORE_API CategoricalUnivariateDistribution : UnivariateDistribution
     {
         typedef CategoricalEvent event_type;
         
@@ -121,7 +123,7 @@ namespace statiskit
     /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
-    struct NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
+    struct STATISKIT_CORE_API NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     { 
         using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
 
@@ -135,7 +137,7 @@ namespace statiskit
     /** \brief This class OrdinalDistribution represents the distribution of a random ordinal variable \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
      * 
      * */
-    class OrdinalDistribution : public UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
+    class STATISKIT_CORE_API  OrdinalDistribution : public UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     {
         public:
              /** \brief An alternative constructor
@@ -158,7 +160,7 @@ namespace statiskit
              * \param rank The specified vector of rank.
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
-            // OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi);
+            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const Eigen::VectorXd& pi);
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
@@ -215,7 +217,7 @@ namespace statiskit
     /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete variable \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.
      * 
      * */
-    struct DiscreteUnivariateDistribution : UnivariateDistribution
+    struct STATISKIT_CORE_API DiscreteUnivariateDistribution : UnivariateDistribution
     {
         typedef DiscreteEvent event_type;
 
@@ -271,7 +273,7 @@ namespace statiskit
      * 
      * \details The Poisson distribution is an univariate discrete distribution that expresses the probability of a given number of events occurring in a fixed interval of time and/or space if these events occur with a known average rate \f$\theta  \in \mathbb{R}_+^*  \f$ and independently of the time since the last event. The support of the Poisson distribution is the set of non-negative integer \f$ \mathbb{N} \f$.
      * */
-    class PoissonDistribution : public DiscreteUnivariateDistribution
+    class STATISKIT_CORE_API PoissonDistribution : public DiscreteUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -370,7 +372,7 @@ namespace statiskit
      *          The support of the binomial distribution is the set all intergers betwwen $0$ and \f$ \kappa \f$.
      *          In the particular case of \f$ \kappa = 1\f$ the binomial distribution is the [Bernouilli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). 
      * */
-    class BinomialDistribution : public DiscreteUnivariateDistribution
+    class STATISKIT_CORE_API BinomialDistribution : public DiscreteUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -487,7 +489,7 @@ namespace statiskit
      *         The support of the negative binomial distribution is the set of non-negative integer \f$\mathbb{N}\f$.
      *         In the particular case of \f$\kappa = 1.\f$ the negative binomial distribution represents a [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) with \f$\mathbb{N}\f$ as support.
      * */
-    class NegativeBinomialDistribution : public DiscreteUnivariateDistribution
+    class STATISKIT_CORE_API NegativeBinomialDistribution : public DiscreteUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -586,7 +588,7 @@ namespace statiskit
     /** \brief This virtual class ContinuousUnivariateDistribution represents the distribution of a random continuous variable \f$ X\f$. The support is \f$ \mathbb{R} \f$ and we have \f$ \int_{-\infty}^{\infty} f(x) dx = 1\f$.
      * 
      * */
-    struct ContinuousUnivariateDistribution : UnivariateDistribution
+    struct STATISKIT_CORE_API ContinuousUnivariateDistribution : UnivariateDistribution
     { 
         typedef ContinuousEvent event_type;
 
@@ -641,7 +643,7 @@ namespace statiskit
      * \details The normal distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */
-    class NormalDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API NormalDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -732,7 +734,7 @@ namespace statiskit
             double _sigma;
     };
     
-    class UnivariateHistogramDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API UnivariateHistogramDistribution : public ContinuousUnivariateDistribution
     {
         public: 
             UnivariateHistogramDistribution(const std::set<double>& bins, const std::vector<double>& densities);
@@ -771,7 +773,7 @@ namespace statiskit
      * \details The logistic distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */                
-    class LogisticDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API LogisticDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -868,7 +870,7 @@ namespace statiskit
      * \details The Laplace distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */                
-    class LaplaceDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API LaplaceDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -978,7 +980,7 @@ namespace statiskit
      * \details The Cauchy distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
-    class CauchyDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API CauchyDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -1078,7 +1080,7 @@ namespace statiskit
      * \details The non-standardized Student distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
-    class NonStandardStudentDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API NonStandardStudentDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -1218,7 +1220,7 @@ namespace statiskit
      *			The generalized Student distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
-    class GeneralizedStudentDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API GeneralizedStudentDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -1367,7 +1369,7 @@ namespace statiskit
      * 		   It is also called extreme value type I distribution (maximum).
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */                
-    class GumbelMaxDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API GumbelMaxDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -1467,7 +1469,7 @@ namespace statiskit
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * @see statiskit::GumbelMaxDistribution
      * */                
-    class GumbelMinDistribution : public ContinuousUnivariateDistribution
+    class STATISKIT_CORE_API GumbelMinDistribution : public ContinuousUnivariateDistribution
     {
         public:
             /** \brief The default constructor
@@ -1563,7 +1565,7 @@ namespace statiskit
     /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random variable \f$ Y\f$ given a multivariate variable \f$ \boldsymbol{X} \f$.
      *
      */
-    struct UnivariateConditionalDistribution
+    struct STATISKIT_CORE_API UnivariateConditionalDistribution
     {
         typedef UnivariateDistribution response_type;
         
@@ -1584,17 +1586,17 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateConditionalDistribution > copy() const = 0;
     };
     
-    struct CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef CategoricalUnivariateDistribution response_type;
     };
     
-    struct DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef DiscreteUnivariateDistribution response_type;
     };        
     
-    struct ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
+    struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {
         typedef ContinuousUnivariateDistribution response_type;
     };      

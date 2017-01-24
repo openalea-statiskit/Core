@@ -9,16 +9,6 @@
 #ifndef STATISKIT_CORE_BASE_H
 #define STATISKIT_CORE_BASE_H
 
-#ifndef ARMA_DONT_PRINT_ERRORS
-#define ARMA_DONT_PRINT_ERRORS
-#endif
-#ifdef ARMA_PRINT_ERRORS
-#undef ARMA_PRINT_ERRORS
-#endif
-#ifndef ARMA_DONT_USE_WRAPPER
-#define ARMA_DONT_USE_WRAPPER
-#endif
-
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <type_traits>
@@ -28,18 +18,40 @@
 #include <iostream>
 #include <memory>
 
+#if defined WIN32 || defined _WIN32 || defined __CYGWIN__
+  #ifdef LIBSTATISKIT_CORE
+    #ifdef __GNUC__
+      #define STATISKIT_CORE_API __attribute__ ((dllexport))
+    #else
+      #define STATISKIT_CORE_API __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define STATISKIT_CORE_API __attribute__ ((dllimport))
+    #else
+      #define STATISKIT_CORE_API __declspec(dllimport)
+    #endif
+  #endif
+#else
+  #if __GNUC__ >= 4
+    #define STATISKIT_CORE_API __attribute__ ((visibility ("default")))
+  #else
+    #define STATISKIT_CORE_API
+  #endif
+#endif
+
 namespace statiskit
 {
-    struct not_implemented_error : std::exception
+    struct STATISKIT_CORE_API not_implemented_error : std::exception
     { not_implemented_error(); };
 
-    struct proxy_connection_error : std::exception
+    struct STATISKIT_CORE_API proxy_connection_error : std::exception
     { proxy_connection_error(); };
 
-    struct parameter_error : std::runtime_error
+    struct STATISKIT_CORE_API parameter_error : std::runtime_error
     { parameter_error(const std::string& parameter, const std::string& error); };
 
-    struct size_error : parameter_error
+    struct STATISKIT_CORE_API size_error : parameter_error
     {
         enum size_type {
             inferior,
@@ -50,32 +62,32 @@ namespace statiskit
         size_error(const std::string& parameter, const size_t& self, const size_t& other, const size_type& size=size_type::equal);
     };
 
-    struct nullptr_error : parameter_error
+    struct STATISKIT_CORE_API nullptr_error : parameter_error
     { nullptr_error(const std::string& parameter); };
 
-    struct lower_bound_error : parameter_error
+    struct STATISKIT_CORE_API lower_bound_error : parameter_error
     { template<typename T, typename L> lower_bound_error(const std::string& parameter, const T& value, const L& lower, const bool& strict); };
 
-    struct upper_bound_error : parameter_error
+    struct STATISKIT_CORE_API upper_bound_error : parameter_error
     { template<typename T, typename U> upper_bound_error(const std::string& parameter, const T& value, const U& upper, const bool& strict); };
 
-    struct interval_error : parameter_error
+    struct STATISKIT_CORE_API interval_error : parameter_error
     { template<typename T, typename L, typename U> interval_error(const std::string& parameter, const T& value, const L& lower, const U& upper, const std::pair<bool, bool>& strict); };
 
-    struct duplicated_value_error : parameter_error
+    struct STATISKIT_CORE_API duplicated_value_error : parameter_error
     { template<typename T> duplicated_value_error(const std::string& parameter, const T& value); };
     
     /** Get the random generator
      * 
      * The random generator used is the <a href="http://www.boost.org/doc/libs/1_60_0/doc/html/boost/random/mt19937.html">Mersenne Twister</a> random generator of the Boost.Random library
      */
-    boost::mt19937& get_random_generator();
+    STATISKIT_CORE_API boost::mt19937& get_random_generator();
 
-    double get_mindiff();
+    STATISKIT_CORE_API double get_mindiff();
 
-    unsigned int get_minits();
+    STATISKIT_CORE_API unsigned int get_minits();
 
-    unsigned int get_maxits();
+    STATISKIT_CORE_API unsigned int get_maxits();
 
     //typedef std::float_round_style round_type;
 

@@ -7,7 +7,6 @@
 /**********************************************************************************/
 
 #include "distribution.h"
-// #include "error.h"
 #include "base.h"
 
 namespace statiskit
@@ -74,7 +73,7 @@ namespace statiskit
     
     double NominalDistribution::pdf(const int& position) const
     { 
-        // return _pi[position];
+        return _pi[position];
         return 0;
     }
         
@@ -88,8 +87,8 @@ namespace statiskit
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    // OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const arma::colvec& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
-    // { set_rank(rank); }
+    OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
+    { set_rank(rank); }
 
     OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(ordinal)
     { _rank = ordinal._rank; }
@@ -101,16 +100,16 @@ namespace statiskit
     {
         double p;
         std::set< std::string >::const_iterator it = _values.find(value);
-        // if(it == _values.end())
-        // { p = 0.; }
-        // else
-        // { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
+        if(it == _values.end())
+        { p = 0.; }
+        else
+        { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
         return p;
      }
 
     double OrdinalDistribution::pdf(const int& position) const
     { 
-        // return _pi[position];
+        return _pi[position];
         return 0;
     }
     
@@ -120,8 +119,8 @@ namespace statiskit
         std::set< std::string >::const_iterator it = _values.find(value);
         if(it != _values.cend())
         {
-            // for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
-            // { p += _pi[size]; }
+            for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
+            { p += _pi[size]; }
         }
         return p;
     }
@@ -130,14 +129,14 @@ namespace statiskit
     {
         std::vector< std::string > ordered = get_ordered();
         size_t size = 0, max_size = ordered.size() - 1;
-        // double _p = _pi[size];
-        // while(_p < p && size < max_size)
-        // {
-        //     ++size;
-        //     _p += _pi[size];
-        // }
-        // if(size == max_size)
-        // { --size; }
+        double _p = _pi[size];
+        while(_p < p && size < max_size)
+        {
+            ++size;
+            _p += _pi[size];
+        }
+        if(size == max_size)
+        { --size; }
         return ordered[size];
     }
 
@@ -1372,8 +1371,9 @@ namespace statiskit
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
 
     std::unique_ptr< UnivariateDistribution > GumbelMinDistribution::copy() const
-    { return std::make_unique< GumbelMinDistribution >(*this); }       
-    /*NormalRegression::NormalRegression(const std::shared_ptr< ScalarPredictor >& predictor, const double& sigma)// : NormalDistribution(std::numeric_limits< double >::quiet_NaN(), sigma)
+    { return std::make_unique< GumbelMinDistribution >(*this); }      
+     
+    /*NormalRegression::NormalRegression(const std::shared_ptr< ScalarPredictor >& predictor, const double& sigma) : NormalDistribution(std::numeric_limits< double >::quiet_NaN(), sigma)
     {
         _mu = std::numeric_limits< double >::quiet_NaN();
         _sigma = sigma;

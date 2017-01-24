@@ -19,4 +19,4 @@ except Exception:
 # except Exception:
 #   raise
 
-# Default("build")
+Default("install")

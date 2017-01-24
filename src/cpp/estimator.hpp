@@ -203,7 +203,7 @@ namespace statiskit
                 }
                 if(boost::math::isfinite(total))
                 {
-                    std::vector< double > masses(values.size(), 0.);
+                    Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
                     for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
                     {
                         auto event = data->get_event(index);

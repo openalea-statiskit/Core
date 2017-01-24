@@ -9,25 +9,25 @@
 #ifndef STATISKIT_CORE_ESTIMATOR_H
 #define STATISKIT_CORE_ESTIMATOR_H
 
+#include "base.h"
 #include "distribution.h"
 #include "moment.h"
 #include "slope_heuristic.h"
 #include "optimization.h"
-// #include "error.h"
 
 namespace statiskit
 {
-    struct sample_size_error : parameter_error
+    struct STATISKIT_CORE_API sample_size_error : parameter_error
     { sample_size_error(const std::string& parameter, const unsigned int& minsize); };
 
-    struct UnivariateDistributionEstimation
+    struct STATISKIT_CORE_API UnivariateDistributionEstimation
     {
         typedef UnivariateData data_type;
         typedef UnivariateDistribution estimated_type;
 
         virtual std::shared_ptr< estimated_type > get_estimated() const = 0;
         
-        struct Estimator
+        struct STATISKIT_CORE_API Estimator
         { 
             typedef UnivariateDistributionEstimation estimation_type;
 
@@ -141,37 +141,37 @@ namespace statiskit
         { virtual std::shared_ptr< UnivariateDistributionEstimation > operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy=true) const; };
     };
 
-    struct CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation
+    struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation
     {
-        struct Estimator : UnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator
         { virtual std::shared_ptr< UnivariateDistributionEstimation > operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy=true) const; };
     };
 
     typedef LazyEstimation< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionLazyEstimation;
     typedef ActiveEstimation< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionActiveEstimation;
 
-    struct DiscreteUnivariateDistributionEstimation : UnivariateDistributionEstimation
+    struct STATISKIT_CORE_API DiscreteUnivariateDistributionEstimation : UnivariateDistributionEstimation
     {
-        struct Estimator : UnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator
         { using UnivariateDistributionEstimation::Estimator::Estimator; };
     };
 
     typedef UnivariateFrequencyDistributionEstimation< DiscreteUnivariateFrequencyDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateFrequencyDistributionEstimation;
     typedef DiscreteUnivariateFrequencyDistributionEstimation::Estimator DiscreteUnivariateFrequencyDistributionEstimationEstimator;
 
-    struct PoissonDistributionMLEstimation : ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API PoissonDistributionMLEstimation : ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >
     {
         using ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
 
-        struct Estimator : DiscreteUnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator
         { virtual std::shared_ptr< UnivariateDistributionEstimation > operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy=true) const; };
     };
 
-    struct BinomialDistributionMLEstimation : OptimizationEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API BinomialDistributionMLEstimation : OptimizationEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
         using OptimizationEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
 
-        struct Estimator : DiscreteUnivariateDistributionEstimation::Estimator, Optimization
+        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator, Optimization
         {
             using Optimization::Optimization;
 
@@ -179,19 +179,19 @@ namespace statiskit
         };
     };
     
-    struct BinomialDistributionMMEstimation : ActiveEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API BinomialDistributionMMEstimation : ActiveEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
         using ActiveEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
 
-        struct Estimator : DiscreteUnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator
         { virtual std::shared_ptr< UnivariateDistributionEstimation > operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy=true) const; };
     };
 
-    struct NegativeBinomialDistributionMLEstimation : OptimizationEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API NegativeBinomialDistributionMLEstimation : OptimizationEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
         using OptimizationEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
 
-        struct Estimator : DiscreteUnivariateDistributionEstimation::Estimator, Optimization
+        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator, Optimization
         {
             using Optimization::Optimization;
 
@@ -199,7 +199,7 @@ namespace statiskit
         };
     };
     
-    struct NegativeBinomialDistributionMMEstimation : ActiveEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API NegativeBinomialDistributionMMEstimation : ActiveEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
         using ActiveEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
 
@@ -217,7 +217,7 @@ namespace statiskit
          *
          * \see \ref ::statiskit::NegativeBinomialDistribution.
          * */
-        class Estimator : DiscreteUnivariateDistributionEstimation::Estimator
+        class STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator
         { 
             /** \brief Update parameters \f$\kappa\f$ and \f$\pi\f$
              *
@@ -234,20 +234,20 @@ namespace statiskit
         };
     };
 
-    struct ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
+    struct STATISKIT_CORE_API ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
     {
-        struct Estimator : UnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator
         { using UnivariateDistributionEstimation::Estimator::Estimator; };
     };
     
     typedef UnivariateFrequencyDistributionEstimation< ContinuousUnivariateFrequencyDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateFrequencyDistributionEstimation;
     typedef ContinuousUnivariateFrequencyDistributionEstimation::Estimator ContinuousUnivariateFrequencyDistributionEstimationEstimator;
 
-    struct NormalDistributionMLEstimation : ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API NormalDistributionMLEstimation : ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >
     {
         using ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >::ActiveEstimation;
 
-        struct Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         { virtual std::shared_ptr< UnivariateDistributionEstimation > operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy=true) const; };
     };
 
@@ -271,11 +271,11 @@ namespace statiskit
         };
     };*/
    
-    struct UnivariateHistogramDistributionEstimation : ActiveEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API UnivariateHistogramDistributionEstimation : ActiveEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation >
     {
         using ActiveEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation >::ActiveEstimation;
 
-        class Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
+        class STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         {
             public:
                 Estimator();
@@ -291,13 +291,13 @@ namespace statiskit
         };
     };
 
-    struct RegularUnivariateHistogramDistributionSlopeHeuristicEstimation : ContinuousUnivariateDistributionEstimation, SlopeHeuristicEstimation< UnivariateHistogramDistribution >
+    struct STATISKIT_CORE_API RegularUnivariateHistogramDistributionSlopeHeuristicEstimation : ContinuousUnivariateDistributionEstimation, SlopeHeuristicEstimation< UnivariateHistogramDistribution >
     {
         using SlopeHeuristicEstimation< UnivariateHistogramDistribution >::SlopeHeuristicEstimation;
 
         virtual std::shared_ptr< UnivariateDistribution > get_estimated() const;
 
-        class Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
+        class STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         {
             public:
                 Estimator();
@@ -313,13 +313,13 @@ namespace statiskit
         }; 
     };
 
-    struct IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation : ContinuousUnivariateDistributionEstimation, SlopeHeuristicEstimation< UnivariateHistogramDistribution >
+    struct STATISKIT_CORE_API IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation : ContinuousUnivariateDistributionEstimation, SlopeHeuristicEstimation< UnivariateHistogramDistribution >
     {
         using SlopeHeuristicEstimation< UnivariateHistogramDistribution >::SlopeHeuristicEstimation;
 
         virtual std::shared_ptr< UnivariateDistribution > get_estimated() const;
 
-        class Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
+        class STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         {
             public:
                 Estimator();
@@ -339,14 +339,14 @@ namespace statiskit
         }; 
     };
  
-    struct UnivariateConditionalDistributionEstimation
+    struct STATISKIT_CORE_API UnivariateConditionalDistributionEstimation
     {
         typedef MultivariateData data_type;
         typedef ::statiskit::UnivariateConditionalDistribution estimated_type;
         
         virtual std::shared_ptr< estimated_type > get_estimated() const = 0;
 
-        class Estimator
+        class STATISKIT_CORE_API Estimator
         { 
             public:
                 typedef UnivariateConditionalDistributionEstimation estimation_type;
@@ -359,21 +359,21 @@ namespace statiskit
         };
     };
 
-    struct CategoricalUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
-        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
 
-    struct DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
-        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
 
-    struct ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
-        struct Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
 
