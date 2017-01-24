@@ -131,6 +131,20 @@ namespace statiskit
         protected:
             T __default;
     };*/
+
+    /*enum solver_type 
+    {
+        partialPivLu,
+        fullPivLu,
+        householderQr,
+        colPivHouseholderQr,
+        fullPivHouseholderQr,
+        LLT,
+        LDLT,
+        jacobiSvd
+    };
+
+    Eigen::VectorXd solve();*/
 }
 
 #if !defined(_WIN32) && !defined(WIN32) 

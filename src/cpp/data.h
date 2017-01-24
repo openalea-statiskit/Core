@@ -158,9 +158,9 @@ namespace statiskit
         virtual const std::shared_ptr< UnivariateData >& get_variable(const size_t& index) const = 0;
         virtual std::shared_ptr< MultivariateData > get_variables(const std::set< size_t >& indices) const = 0;
 
-        virtual double compute_total() const;
-        virtual std::unique_ptr< MultivariateEvent > compute_minimum() const;
-        virtual std::unique_ptr< MultivariateEvent > compute_maximum() const;
+        virtual double compute_total() const = 0;
+        //virtual std::unique_ptr< MultivariateEvent > compute_minimum() const;
+        //virtual std::unique_ptr< MultivariateEvent > compute_maximum() const;
         
         virtual void lock() = 0;
         virtual void unlock() = 0;
@@ -190,11 +190,11 @@ namespace statiskit
             virtual const MultivariateEvent* get_event(const size_t& index) const;
             virtual void set_event(const size_t& index, const MultivariateEvent* event);
 
-            virtual void add_event(const UnivariateEvent* event);
-            virtual std::unique_ptr< UnivariateEvent > pop_event();
+            //virtual void add_event(const MultivariateEvent* event);
+            //virtual std::unique_ptr< MultivariateEvent > pop_event();
 
-            virtual void insert_event(const size_t& index, const MultivariateEvent* event);
-            virtual void remove_event(const size_t& index);
+            //virtual void insert_event(const size_t& index, const MultivariateEvent* event);
+            //virtual void remove_event(const size_t& index);
      
             virtual bool is_weighted() const;
 
@@ -213,7 +213,7 @@ namespace statiskit
             void unlock();
             const bool& is_locked() const;
 
-            double compute_total() const;
+            virtual double compute_total() const;
             
             virtual std::unique_ptr< MultivariateData > copy() const;
 
@@ -223,7 +223,7 @@ namespace statiskit
                 public:
                     Event(const size_t* index, const MultivariateDataFrame* data);
                     Event(const Event& event);
-                    virtual ~Event();
+                    //virtual ~Event();
 
                     virtual size_t size() const;
 

@@ -681,7 +681,7 @@ namespace statiskit
             else
             { throw std::runtime_error("invalid"); } // TODO error
         }
-    }
+    }*
     
     void MultivariateDataFrame::append_event(const std::shared_ptr< MultivariateEvent >& event)
     {
@@ -807,6 +807,9 @@ namespace statiskit
         }
         return total;
     }
+
+    std::unique_ptr< MultivariateData > MultivariateDataFrame::copy() const
+    { return std::make_unique< MultivariateDataFrame >(*this); }
 
     MultivariateDataFrame::Event::Event(const size_t* index, const MultivariateDataFrame * data)
     {
