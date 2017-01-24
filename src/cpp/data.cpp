@@ -846,4 +846,23 @@ namespace statiskit
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::copy() const
     { return std::make_unique< Event >(*this); }
+
+    MultivariateDataFrame::SampleSpace::SampleSpace(MultivariateDataFrame* data)
+    { _data = data; }
+
+    MultivariateDataFrame::SampleSpace::SampleSpace(const SampleSpace& sample_space)
+    { _data = sample_space._data }
+
+    MultivariateDataFrame::SampleSpace::~SampleSpace()
+    {}
+
+    size_t MultivariateDataFrame::SampleSpace::size() const
+    { return _data->get_nb_variables(); }
+
+    const UnivariateSampleSpace* MultivariateDataFrame::SampleSpace::get(const size_t& index) const
+    { return _data->get_variable(index)->get_sample_space(); }
+ 
+    std::unique_ptr< MultivariateSampleSpace > MultivariateDataFrame::SampleSpace::copy() const
+    { return std::make_unique< MultivariateDataFrame::SampleSpace >(*this); }
+
 }
