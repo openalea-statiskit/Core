@@ -22,41 +22,40 @@ namespace statiskit
         std::shared_ptr< UnivariateDistributionEstimation > estimation;
         std::set< std::string > values;
         double total = data->compute_total();
-        if(data->size() > 0 && total > 0.)
+        if(total > 0. && boost::math::isfinite(total))
         {
-            if(boost::math::isfinite(total))
+            const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data->get_sample_space());
+            values = sample_space->get_values();
+            Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
+            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+            while(*generator)
             {
-                const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data->get_sample_space());
-                values = sample_space->get_values();
-                Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
-                for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+                auto event = generator->event();
+                if(event)
                 {
-                    auto event = data->get_event(index);
-                    if(event)
+                    if(event->get_event() == ELEMENTARY)
                     {
-                        if(event->get_event() == ELEMENTARY)
-                        {
-                            std::set< std::string >::iterator it = values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value());
-                            masses[distance(values.begin(), it)] += data->get_weight(index) / total;
-                        }
+                        std::set< std::string >::iterator it = values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value());
+                        masses[distance(values.begin(), it)] += generator->weight() / total;
                     }
                 }
-                std::shared_ptr< CategoricalUnivariateDistribution > distribution;
-                switch(sample_space->get_ordering())
-                {
-                    case NONE:
-                    case PARTIAL:
-                        distribution = std::make_shared< NominalDistribution >(values, masses);
-                        break;
-                    case TOTAL:
-                        distribution = std::make_shared< OrdinalDistribution >(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
-                        break;
-                }
-                if(lazy)
-                { estimation = std::make_shared< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
-                else
-                { estimation = std::make_shared< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
+                ++(*generator);
             }
+            std::shared_ptr< CategoricalUnivariateDistribution > distribution;
+            switch(sample_space->get_ordering())
+            {
+                case NONE:
+                case PARTIAL:
+                    distribution = std::make_shared< NominalDistribution >(values, masses);
+                    break;
+                case TOTAL:
+                    distribution = std::make_shared< OrdinalDistribution >(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
+                    break;
+            }
+            if(lazy)
+            { estimation = std::make_shared< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
+            else
+            { estimation = std::make_shared< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
         }
         return estimation;
     }
@@ -97,9 +96,9 @@ namespace statiskit
             NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
             std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
             double mean = mean_estimation->get_mean();
-            NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
-            std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
-            double variance = variance_estimation->get_covariance(); 
+            NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+            std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+            double variance = variance_estimation->get_variance(); 
             if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean > variance)
             {
                 unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data->compute_maximum().get())->get_value());
@@ -161,9 +160,9 @@ namespace statiskit
         NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
         std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
         double mean = mean_estimation->get_mean(); 
-        NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
-        std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double variance = variance_estimation->get_covariance(); 
+        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_variance(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean > variance)
         {
             unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data->compute_maximum().get())->get_value());
@@ -192,9 +191,9 @@ namespace statiskit
             double total = data->compute_total();
             std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
             double mean = mean_estimation->get_mean();
-            NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
-            std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
-            double variance = variance_estimation->get_covariance();
+            NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+            std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+            double variance = variance_estimation->get_variance();
             if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean < variance)
             {
                 double kappa = pow(mean, 2)/(variance - mean);
@@ -207,14 +206,16 @@ namespace statiskit
                 {
                     prev = curr;
                     double alpha = 0;
-                    for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+                    std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+                    while(*generator)
                     {
-                        const UnivariateEvent* event = data->get_event(index);
+                        const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
                         {
                             for(int nu = 0, max_nu = static_cast< const DiscreteElementaryEvent* >(event)->get_value(); nu < max_nu; ++nu)
                             { alpha += nu/(nu + kappa); }
                         }
+                        ++(*generator);
                     }
                     alpha /= -total;
                     alpha += mean;
@@ -242,9 +243,9 @@ namespace statiskit
         NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
         std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
         double mean = mean_estimation->get_mean(); 
-        NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
-        std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double variance = variance_estimation->get_covariance(); 
+        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_variance(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && variance > mean)
         {
             auto negbinomial = std::make_shared< NegativeBinomialDistribution >(pow(mean, 2)/(variance - mean), 1. - mean/variance);
@@ -266,9 +267,9 @@ namespace statiskit
         NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
         std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
         double mean = mean_estimation->get_mean(); 
-        NaturalCoVarianceEstimation::Estimator variance_estimator = NaturalCoVarianceEstimation::Estimator(false);
-        std::shared_ptr< CoVarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double std_err = sqrt(variance_estimation->get_covariance());
+        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        double std_err = sqrt(variance_estimation->get_variance()); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(std_err))
         {
             auto normal = std::make_shared< NormalDistribution >(mean, std_err);
@@ -337,20 +338,23 @@ namespace statiskit
         std::shared_ptr< UnivariateDistributionEstimation > estimation;
         auto bins = std::set< double >();
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
-        for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+        std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+        double nb_bins = 0;
+        while(*generator)
         {
-            auto event = data->get_event(index);
+            auto event = generator->event();
             if(event && event->get_event() == ELEMENTARY)
             {
                 auto cevent = static_cast< const ContinuousElementaryEvent* >(event);
                 min = std::min(min, cevent->get_value());
                 max = std::max(max, cevent->get_value());
-                total += data->get_weight(index);                            
+                total += generator->weight(); 
+                nb_bins += 1;                           
             }
+            ++(*generator);
         }
-        double nb_bins = _nb_bins;
-        if(nb_bins == 0)
-        { nb_bins = data->size(); }
+        if(_nb_bins != 0)
+        { nb_bins = _nb_bins; }
         bins.insert(min - .5 / total * (max - min));
         for(size_t index = 1; index < nb_bins; ++index)
         { bins.insert(*(bins.rbegin()) + 1. / nb_bins * (max-min)); }
@@ -369,22 +373,24 @@ namespace statiskit
             }
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
-            for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+            generator = data->generator();
+            while(*generator)
             {
-                auto event = data->get_event(index);
+                auto event = generator->event();
                 if(event)
                 {
                     if(event->get_event() == ELEMENTARY)
                     {
                         it = bins.upper_bound(static_cast< const ContinuousElementaryEvent* >(event)->get_value());
                         if(it == bins.end())
-                        { densities.back() += data->get_weight(index) /(lengths.back() * total); }
+                        { densities.back() += generator->weight() / (lengths.back() * total); }
                         else if(it == bins.begin())
-                        { densities.front() +=  data->get_weight(index) /(lengths.front() * total); }
+                        { densities.front() += generator->weight() / (lengths.front() * total); }
                         else
-                        { densities[distance(bins.begin(), it) - 1] += data->get_weight(index) /(lengths[distance(bins.begin(), it) - 1] * total); }
+                        { densities[distance(bins.begin(), it) - 1] += generator->weight() /(lengths[distance(bins.begin(), it) - 1] * total); }
                     }
                 }
+                ++(*generator);
             }
             auto histogram = std::make_shared< UnivariateHistogramDistribution >(bins, densities);
             if(lazy)
@@ -482,16 +488,18 @@ namespace statiskit
         auto cache = std::make_shared< IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation >();
         auto bins = std::set< double >();
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
-        for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+        std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+        while(*generator)
         {
-            auto event = data->get_event(index);
+            auto event = generator->event();
             if(event && event->get_event() == ELEMENTARY)
             {
                 auto cevent = static_cast< const ContinuousElementaryEvent* >(event);
                 min = std::min(min, cevent->get_value());
                 max = std::max(max, cevent->get_value());
-                total += data->get_weight(index);                            
+                total += generator->weight();                            
             }
+            ++(*generator);
         }
         bins.insert(min - .5 / total * (max - min));
         for(size_t index = 1; index < total; ++index)
@@ -511,22 +519,24 @@ namespace statiskit
             }
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
-            for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+            generator = data->generator();
+            while(*generator)
             {
-                auto event = data->get_event(index);
+                auto event = generator->event();
                 if(event)
                 {
                     if(event->get_event() == ELEMENTARY)
                     {
                         it = bins.upper_bound(static_cast< const ContinuousElementaryEvent* >(event)->get_value());
                         if(it == bins.end())
-                        { densities.back() += data->get_weight(index) /(lengths.back() * total); }
+                        { densities.back() += generator->weight() /(lengths.back() * total); }
                         else if(it == bins.begin())
-                        { densities.front() +=  data->get_weight(index) /(lengths.front() * total); }
+                        { densities.front() +=  generator->weight() /(lengths.front() * total); }
                         else
-                        { densities[distance(bins.begin(), it) - 1] += data->get_weight(index) /(lengths[distance(bins.begin(), it) - 1] * total); }
+                        { densities[distance(bins.begin(), it) - 1] += generator->weight() /(lengths[distance(bins.begin(), it) - 1] * total); }
                     }
                 }
+                ++(*generator);
             }
             auto entropies = std::vector< double >(densities.size()-1, std::numeric_limits< double >::quiet_NaN());
             for(size_t index = 0, max_index = densities.size()-1; index < max_index; ++index)
@@ -620,7 +630,7 @@ namespace statiskit
         _constant = constant;
     }
 
-    void UnivariateConditionalDistributionEstimation::Estimator::check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const
+    /*void UnivariateConditionalDistributionEstimation::Estimator::check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const
     {
         if(response >= data.get_nb_variables())
         { throw size_error("response", response, data.get_nb_variables(), size_error::size_type::superior); }

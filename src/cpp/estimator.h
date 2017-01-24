@@ -339,7 +339,7 @@ namespace statiskit
         }; 
     };
  
-    struct STATISKIT_CORE_API UnivariateConditionalDistributionEstimation
+    /*struct STATISKIT_CORE_API UnivariateConditionalDistributionEstimation
     {
         typedef MultivariateData data_type;
         typedef ::statiskit::UnivariateConditionalDistribution estimated_type;

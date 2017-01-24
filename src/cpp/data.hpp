@@ -11,7 +11,7 @@
 
 namespace statiskit
 {
-    template<class D>
+    /*template<class D>
         DataMask< D >::DataMask(const std::shared_ptr< D >& masked)
         { _masked = masked; }
     
@@ -158,7 +158,7 @@ namespace statiskit
 
     template<class D>
         std::unique_ptr< D > DataIntervalMask< D >::copy() const
-        { return std::make_unique< DataIntervalMask< D > >(*this); }
+        { return std::make_unique< DataIntervalMask< D > >(*this); }*/
 }
 
 #endif

@@ -14,9 +14,12 @@ namespace statiskit
     double UnivariateDistribution::loglikelihood(const UnivariateData& data) const
     {
         double llh = 0.;
-        size_t index = 0, max_index = data.size();
-        while(index < max_index && boost::math::isfinite(llh))
-        { llh += data.get_weight(index) * probability(data.get_event(index), true); }
+        std::unique_ptr< UnivariateData::Generator > generator = data.generator();
+        while(*generator && boost::math::isfinite(llh))
+        { 
+            llh += generator->weight() * probability(generator->event(), true);
+            ++(*generator);
+        }
         return llh;
     }
 

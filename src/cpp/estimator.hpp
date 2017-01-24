@@ -197,42 +197,43 @@ namespace statiskit
         {
             if(!data)
             { throw std::runtime_error("None"); }
-            //if(data->get_sample_space()->get_outcome() != CATEGORICAL)
-            //{ throw std::runtime_error("value"); }
+            // if(data->get_sample_space()->get_outcome() != CATEGORICAL)
+            // { throw std::runtime_error("value"); }
             std::shared_ptr< UnivariateDistributionEstimation > estimation;
             std::set< typename D::event_type::value_type > values;
             double total = data->compute_total();
-            if(data->size() > 0 && total > 0.)
+            if(total > 0. && boost::math::isfinite(total))
             {
-                for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+                std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+                while(*generator)
                 {
-                    auto event = data->get_event(index);
+                    auto event = generator->event();
                     if(event)
                     {
                         if(event->get_event() == ELEMENTARY)
                         { values.insert(static_cast< ElementaryEvent< typename D::event_type >* >(event)->get_value()); }
                     }
+                    ++(*generator);
                 }
-                if(boost::math::isfinite(total))
+                Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
+                generator = data->generator();
+                while(*generator)
                 {
-                    Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
-                    for(size_t index = 0, max_index = data->size(); index < max_index; ++index)
+                    auto event = generator->event();
+                    if(event)
                     {
-                        auto event = data->get_event(index);
-                        if(event)
+                        if(event->get_event() == ELEMENTARY)
                         {
-                            if(event->get_event() == ELEMENTARY)
-                            {
-                                typename std::set< typename D::event_type::value_type >::iterator it = values.find(static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value());
-                                masses[distance(values.begin(), it)] += data->get_weight(index) / total;
-                            }
+                            typename std::set< typename D::event_type::value_type >::iterator it = values.find(static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value());
+                            masses[distance(values.begin(), it)] += generator->weight() / total;
                         }
                     }
-                    if(lazy)
-                    { estimation = std::make_shared< LazyEstimation< D, B > >(std::make_shared< D >(values, masses)); }
-                    else
-                    { estimation = std::make_shared< UnivariateFrequencyDistributionEstimation< D, B > >(std::make_shared< D >(values, masses), data); }
+                    ++(*generator);
                 }
+                if(lazy)
+                { estimation = std::make_shared< LazyEstimation< D, B > >(std::make_shared< D >(values, masses)); }
+                else
+                { estimation = std::make_shared< UnivariateFrequencyDistributionEstimation< D, B > >(std::make_shared< D >(values, masses), data); }
             }
             return estimation;
         }

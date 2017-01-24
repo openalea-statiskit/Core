@@ -10,8 +10,8 @@
 
 namespace statiskit
 {
-    NaturalMeanEstimation::NaturalMeanEstimation()
-    { _mean = std::numeric_limits< double >::quiet_NaN(); }
+    NaturalMeanEstimation::NaturalMeanEstimation(const double& mean)
+    { _mean = mean; }
 
     NaturalMeanEstimation::NaturalMeanEstimation(const NaturalMeanEstimation& estimation)
     { _mean = estimation._mean; }
@@ -30,38 +30,126 @@ namespace statiskit
         if(!data)
         { throw std::runtime_error("None"); }
         double total = data->compute_total();
-        std::shared_ptr< NaturalMeanEstimation > estimation = std::make_shared< NaturalMeanEstimation >();        
-        if(total > 0 && data->size() > 0)
+        double mean = 0.;
+        std::shared_ptr< MeanEstimation > estimation;
+        if(total > 0)
         {
-            size_t index = 0, max_index = data->size();
+            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
             switch(data->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    estimation->_mean = 0.;
-                    while(boost::math::isfinite(estimation->_mean) && index < max_index)
+                    while(boost::math::isfinite(mean) && *generator)
                     {
-                        const UnivariateEvent* event = data->get_event(index);
+                        const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
-                        { estimation->_mean += data->get_weight(index) * static_cast< const DiscreteElementaryEvent* >(event)->get_value() / total; }
-                        ++index;
+                        { mean += generator->weight() * static_cast< const DiscreteElementaryEvent* >(event)->get_value() / total; }
+                        ++(*generator);
                     }
                     break;
                 case CONTINUOUS:
-                    estimation->_mean = 0.;
-                    while(boost::math::isfinite(estimation->_mean) && index < max_index)
+                    while(boost::math::isfinite(mean) && *generator)
                     {
-                        const UnivariateEvent* event = data->get_event(index);
+                        const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
-                        { estimation->_mean += data->get_weight(index) * static_cast< const ContinuousElementaryEvent* >(event)->get_value() / total; }
-                        ++index;
+                        { mean += generator->weight() * static_cast< const ContinuousElementaryEvent* >(event)->get_value() / total; }
+                        ++(*generator);
                     }
                     break;
+                default:
+                    mean = std::numeric_limits< double >::quiet_NaN();
+                    break;
             }
+            if(boost::math::isfinite(mean))
+            { estimation = std::make_shared< NaturalMeanEstimation >(mean); }
         }
         return estimation;
     }
 
-    CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
+    VarianceEstimation::VarianceEstimation(const double& mean)
+    { _mean = mean; }
+
+    VarianceEstimation::VarianceEstimation(const VarianceEstimation& estimation)
+    { _mean = estimation._mean; }
+
+    const double& VarianceEstimation::get_mean() const
+    { return _mean; }
+
+    std::shared_ptr< VarianceEstimation > VarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
+    { 
+        NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
+        return (*this)(data, estimator(data)->get_mean());
+    }
+
+    NaturalVarianceEstimation::NaturalVarianceEstimation(const double& mean, const bool& bias, const double& variance) : VarianceEstimation(mean)
+    { 
+        _bias = bias;
+        _variance = variance;
+    }
+
+    NaturalVarianceEstimation::NaturalVarianceEstimation(const NaturalVarianceEstimation& estimation) : VarianceEstimation(estimation)
+    {
+        _bias = estimation._bias;
+        _variance = estimation._variance;
+    }
+
+    const bool& NaturalVarianceEstimation::get_bias() const
+    { return _bias; }
+
+    const double& NaturalVarianceEstimation::get_variance() const
+    { return _variance; }
+
+    std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean)
+    { 
+        if(!data)
+        { throw std::runtime_error("None"); }
+        double total = data->compute_total(), total_square = 0.;
+        std::shared_ptr< VarianceEstimation > estimation;
+        if(total > 0)
+        {
+            double variance = 0.;
+            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+            switch(data->get_sample_space()->get_outcome())
+            {
+                case DISCRETE:
+                    while(boost::math::isfinite(variance) && *generator)
+                    {
+                        const UnivariateEvent* event = generator->event();
+                        if(event && event->get_event() == ELEMENTARY)
+                        { 
+                            variance += generator->weight() * pow(static_cast< const DiscreteElementaryEvent* >(event)->get_value() - mean, 2) / total;
+                            total_square += pow(generator->weight(), 2);
+                        }
+                        ++(*generator);
+                    }
+                    break;
+                case CONTINUOUS:
+                    while(boost::math::isfinite(variance) && *generator)
+                    {
+                        const UnivariateEvent* event = generator->event();
+                        if(event && event->get_event() == ELEMENTARY)
+                        {
+                            variance += generator->weight() * pow(static_cast< const ContinuousElementaryEvent* >(event)->get_value() - mean, 2)/ total;
+                            total_square += pow(generator->weight(), 2);
+                        }
+                        ++(*generator);
+                    }
+                    break;
+                default:
+                    variance = std::numeric_limits< double >::quiet_NaN();
+                    break;
+            }
+            if(!_bias)
+            {
+                total *= total;
+                variance *= total/(total - total_square);
+            }
+            if(boost::math::isfinite(variance))
+            { estimation = std::make_shared< NaturalVarianceEstimation >(mean, _bias, variance); }
+        }
+        return estimation;
+    }
+
+    /*CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
     { _means = means; }
 
     CoVarianceEstimation::CoVarianceEstimation(const CoVarianceEstimation& estimation)

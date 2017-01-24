@@ -24,7 +24,7 @@ namespace statiskit
     class NaturalMeanEstimation : public MeanEstimation
     {
         public:
-            NaturalMeanEstimation();
+            NaturalMeanEstimation(const double& mean);
             NaturalMeanEstimation(const NaturalMeanEstimation& estimation);
 
             virtual const double& get_mean() const;
@@ -41,7 +41,58 @@ namespace statiskit
             double _mean;
     };
 
-    class CoVarianceEstimation
+    class VarianceEstimation
+    {
+        public:
+            VarianceEstimation(const double& mean);
+            VarianceEstimation(const VarianceEstimation& estimation);
+
+            const double& get_mean() const;
+
+            virtual const double& get_variance() const = 0;
+           
+            struct Estimator
+            {
+                std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
+                std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
+            };
+
+        protected:
+            double _mean;
+    };
+
+    class NaturalVarianceEstimation : public VarianceEstimation
+    { 
+        public:
+            NaturalVarianceEstimation(const double& mean, const bool& bias, const double& variance);
+            NaturalVarianceEstimation(const NaturalVarianceEstimation& estimation);
+
+            const bool& get_bias() const;
+
+            virtual const double& get_variance() const;
+
+            class Estimator : public VarianceEstimation::Estimator
+            {
+                public:
+                    Estimator(const bool& bias);
+                    Estimator(const Estimator& estimator);
+                      
+                    using VarianceEstimation::Estimator::operator();
+                    virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean);
+
+                    const bool& get_bias() const;
+                    void set_bias(const bool& bias);
+
+                protected:
+                    bool _bias;
+            };
+
+        protected:
+            bool _bias;
+            double _variance;
+    };
+
+    /*class CoVarianceEstimation
     {
         public:
             CoVarianceEstimation(const std::array< double, 2 >& means);
@@ -92,7 +143,7 @@ namespace statiskit
         protected:
             double _covariance;
             bool _bias;
-    };
+    };*/
 
     /*struct CoSkewnessEstimator
     {
