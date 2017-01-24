@@ -177,6 +177,18 @@ namespace statiskit
         }
 
     template<class D, class B>
+        std::shared_ptr< typename B::estimated_type > OptimizationEstimation< D, B >::get_estimated() const
+        { return _iterations.back(); }
+
+    template<class D, class B>
+        const std::vector< std::shared_ptr< D > >& OptimizationEstimation< D, B >::get_iterations() const
+        { return _iterations; }
+
+    template<class D, class B>
+        const std::vector< double >& OptimizationEstimation< D, B >::get_scores() const
+        { return _scores; }
+
+    template<class D, class B>
         const bool& OptimizationEstimation< D, B >::has_converged() const
         { return _converged; }
     
