@@ -101,7 +101,7 @@ namespace statiskit
     NaturalVarianceEstimation::Estimator::Estimator(const bool& bias)
     { _bias = bias; }
 
-    std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean)
+    std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const
     { 
         if(!data)
         { throw std::runtime_error("None"); }
