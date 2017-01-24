@@ -851,7 +851,7 @@ namespace statiskit
     { _data = data; }
 
     MultivariateDataFrame::SampleSpace::SampleSpace(const SampleSpace& sample_space)
-    { _data = sample_space._data }
+    { _data = sample_space._data; }
 
     MultivariateDataFrame::SampleSpace::~SampleSpace()
     {}

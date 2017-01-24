@@ -42,6 +42,20 @@ namespace statiskit
         virtual const bool& is_locked() const = 0;
 
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
+
+        // virtual std::unique_ptr< EventGenerator > generator() const = 0;
+
+        // struct STATISKIT_CORE_API EventGenerator : UnivariateEvent
+        // {
+
+        //     #if !defined(_WIN32) && !defined(WIN32)         
+        //     virtual explicit operator bool() const = 0;
+        //     #else
+        //     virtual operator bool() const = 0;
+        //     #endif
+
+        //     EventGenerator& operator++();
+        // };
     };
 
     class STATISKIT_CORE_API NamedData
