@@ -78,7 +78,7 @@ namespace statiskit
                     Estimator(const Estimator& estimator);
                       
                     using VarianceEstimation::Estimator::operator();
-                    virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean);
+                    virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
 
                     const bool& get_bias() const;
                     void set_bias(const bool& bias);
