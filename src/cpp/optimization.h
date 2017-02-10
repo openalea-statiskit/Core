@@ -13,7 +13,7 @@
 
 namespace statiskit
 {
-    class Optimization
+    class STATISKIT_CORE_API Optimization
     {
         public:
             Optimization();

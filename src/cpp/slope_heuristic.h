@@ -18,17 +18,17 @@
 
 namespace statiskit
 {
-    struct SlopeHeuristicSolver
+    struct STATISKIT_CORE_API SlopeHeuristicSolver
     { 
         virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const = 0;
     };
 
-    struct SlopeHeuristicOLSSolver : SlopeHeuristicSolver
+    struct STATISKIT_CORE_API SlopeHeuristicOLSSolver : SlopeHeuristicSolver
     {
         virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const; 
     };
 
-    class SlopeHeuristicIWLSSolver : public SlopeHeuristicSolver
+    class STATISKIT_CORE_API SlopeHeuristicIWLSSolver : public SlopeHeuristicSolver
     {
         public:
             SlopeHeuristicIWLSSolver();
@@ -49,7 +49,7 @@ namespace statiskit
             virtual void update(const Eigen::VectorXd& beta, Eigen::MatrixXd& W, const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const = 0;
     };
 
-    class SlopeHeuristicHuberSolver : public SlopeHeuristicIWLSSolver
+    class STATISKIT_CORE_API SlopeHeuristicHuberSolver : public SlopeHeuristicIWLSSolver
     {
         public:
             SlopeHeuristicHuberSolver();
@@ -64,7 +64,7 @@ namespace statiskit
             virtual void update(const Eigen::VectorXd& beta, Eigen::MatrixXd& W, const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const;
     };
 
-    class SlopeHeuristicBiSquareSolver : public SlopeHeuristicIWLSSolver
+    class STATISKIT_CORE_API SlopeHeuristicBiSquareSolver : public SlopeHeuristicIWLSSolver
     {
          public:
             SlopeHeuristicBiSquareSolver();
@@ -81,13 +81,13 @@ namespace statiskit
 
     class SlopeHeuristic;
 
-    struct SlopeHeuristicSelector
+    struct STATISKIT_CORE_API SlopeHeuristicSelector
     { virtual size_t operator() (const SlopeHeuristic& sh) const = 0; };
 
-    struct SlopeHeuristicMaximalSelector : SlopeHeuristicSelector
+    struct STATISKIT_CORE_API SlopeHeuristicMaximalSelector : SlopeHeuristicSelector
     { virtual size_t operator() (const SlopeHeuristic& sh) const; };
 
-    class SlopeHeuristicSuperiorSelector : public SlopeHeuristicSelector
+    class STATISKIT_CORE_API SlopeHeuristicSuperiorSelector : public SlopeHeuristicSelector
     {
         public:
             SlopeHeuristicSuperiorSelector();
@@ -102,7 +102,7 @@ namespace statiskit
             double _threshold;
     };
 
-    class SlopeHeuristic
+    class STATISKIT_CORE_API SlopeHeuristic
     {
         public:
             SlopeHeuristic();

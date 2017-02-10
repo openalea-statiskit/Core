@@ -13,7 +13,7 @@
 
 namespace statiskit
 {
-    struct MeanEstimation
+    struct STATISKIT_CORE_API MeanEstimation
     { 
         virtual const double& get_mean() const = 0;
 
@@ -21,7 +21,7 @@ namespace statiskit
         { virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const = 0; };
     };
 
-    class NaturalMeanEstimation : public MeanEstimation
+    class STATISKIT_CORE_API NaturalMeanEstimation : public MeanEstimation
     {
         public:
             NaturalMeanEstimation(const double& mean);
@@ -41,7 +41,7 @@ namespace statiskit
             double _mean;
     };
 
-    class VarianceEstimation
+    class STATISKIT_CORE_API VarianceEstimation
     {
         public:
             VarianceEstimation(const double& mean);
@@ -61,7 +61,7 @@ namespace statiskit
             double _mean;
     };
 
-    class NaturalVarianceEstimation : public VarianceEstimation
+    class STATISKIT_CORE_API NaturalVarianceEstimation : public VarianceEstimation
     { 
         public:
             NaturalVarianceEstimation(const double& mean, const bool& bias, const double& variance);
