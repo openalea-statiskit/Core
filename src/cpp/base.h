@@ -149,12 +149,21 @@ namespace statiskit
 
 namespace std
 {
-    template<typename T, typename... Args> std::unique_ptr<T> make_unique(Args&&... args);
 
-    #if defined(_WIN32) || defined(WIN32) 
+    #if defined(_WIN32) || defined(WIN32)
+
     template<class Type, class Del = default_delete<Type> >
-        struct unique_ptr : std::auto_ptr< Type, Del > 
-        {};
+        struct unique_ptr : auto_ptr< Type, Del > 
+        { using auto_ptr< Type, Del >::auto_ptr; };
+
+    template <typename T> inline unique_ptr<T> make_unique() { return unique_ptr<T>(new T()) ; }
+    template <typename T, typename T_0> inline unique_ptr<T> make_unique(const T_0 & p_0) { return unique_ptr<T>(new T(p_0)) ; }
+    template <typename T, typename T_0, typename T_1> inline unique_ptr<T> make_unique(const T_0 & p_0, const T_1 & p_1) { return unique_ptr<T>(new T(p_0, p_1)) ; }
+
+    #else
+
+    template<typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args);
+        
     #endif
 }
 
