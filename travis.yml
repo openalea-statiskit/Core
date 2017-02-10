@@ -11,6 +11,7 @@ services:
   
 env:
  - RECIPE=libstatiskit_core
+ - RECIPE=python-statiskit_core
     
 install:
   - git clone https://github.com/StatisKit/travis-ci.git

@@ -1,0 +1,35 @@
+package:
+  name: python-statiskit_core
+  version: "1.0.0"
+
+source:
+  path: ../..
+
+build:
+  number: 0
+
+about:
+  home: http://statiskit-core.readthedocs.io
+  license: CeCILL
+
+requirements:
+  build:
+    - libdev
+    - python-dev
+    - libboost
+    - libstatiskit_core
+    - python
+  run:
+    - librun
+    - libboost
+    - libstatiskit_core
+    - libstatiskit_stl
+    - python
+
+test:                                                           
+  source_files:                                
+    - test/test_*.py
+  requires:
+    - python-dbg
+  commands:                                       
+   - nosetests test -x -s -v
