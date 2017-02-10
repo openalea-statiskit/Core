@@ -1,5 +1,5 @@
 import os
-import path
+from path import path
 import autowig
 import sys
 import pickle
@@ -8,16 +8,25 @@ import subprocess
 
 asg = autowig.AbstractSemanticGraph()
 
-asg = autowig.parser(asg, path(os.path.join(sys.prefix, 'include', 'statiskit', 'core')).walkfiles('.h'),
+for dependency in ['LinAlg', 'STL']:
+    with open(os.path.join('..', dependency, 'ASG.pkl'), 'r') as filehandler:
+        asg.merge(pickle.load(filehandler))
+
+
+asg = autowig.parser(asg, path(os.path.join(sys.prefix, 'include', 'statiskit', 'core')).walkfiles('*.h'),
                      ['-x', 'c++', '-std=c++11', '-ferror-limit=0', '-I' + os.path.join(sys.prefix, 'include')],
                      bootstrap=1)
 
 asg = autowig.controller(asg)
-        
+from autowig.asg import ClassTemplateProxy
+for cls in asg.classes():
+    if any(isinstance(ancestor, ClassTemplateProxy) for ancestor in cls.ancestors):
+        cls.boost_python_export = False
+
 autowig.generator.plugin = 'boost_python_internal'
-wrappers = autowig.generator(asg, nodes, module='src/py/_core.cpp',
-                                         decorator='src/py/statiskit/core/_core.py',
-                                         closure=False)
+wrappers = autowig.generator(asg, module='src/py/_core.cpp',
+                                  decorator='src/py/statiskit/core/_core.py',
+                                  closure=False)
 wrappers.write()
 
 s = subprocess.Popen(['scons', 'py', '-j7', '-k', '--eigen-static-assert=yes'], stderr=subprocess.PIPE)
