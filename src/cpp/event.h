@@ -35,7 +35,7 @@ namespace statiskit
         COMPOUND
     };
 
-    struct UnivariateEvent
+    struct STATISKIT_CORE_API UnivariateEvent
     {
         virtual ~UnivariateEvent();
 
@@ -135,7 +135,7 @@ namespace statiskit
 
     class CategoricalUnivariateDistribution;
 
-    struct CategoricalEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API CategoricalEvent : public UnivariateEvent
     {
         typedef std::string value_type;
         typedef CategoricalUnivariateDistribution distribution_type;
@@ -148,7 +148,7 @@ namespace statiskit
 
     class DiscreteUnivariateDistribution;
 
-    struct DiscreteEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API DiscreteEvent : public UnivariateEvent
     {
         typedef int value_type;
         typedef DiscreteUnivariateDistribution distribution_type;
@@ -164,7 +164,7 @@ namespace statiskit
 
     class ContinuousUnivariateDistribution;
 
-    struct ContinuousEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API ContinuousEvent : public UnivariateEvent
     {
         typedef double value_type;
         typedef ContinuousUnivariateDistribution distribution_type;
@@ -178,7 +178,7 @@ namespace statiskit
     typedef RightCensoredEvent< ContinuousEvent > ContinuousRightCensoredEvent;
     typedef IntervalCensoredEvent< ContinuousEvent > ContinuousIntervalCensoredEvent;
 
-    struct MultivariateEvent
+    struct STATISKIT_CORE_API MultivariateEvent
     {        
         virtual size_t size() const = 0;
                 
