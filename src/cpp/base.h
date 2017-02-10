@@ -155,14 +155,14 @@ namespace std
     template<class Type>
         struct default_delete
         {};
-        
-    template<class Type, class Del = default_delete<Type> >
-        struct unique_ptr : auto_ptr< Type > 
-        { using auto_ptr< Type, Del >::auto_ptr; };
 
-    template <typename T> inline unique_ptr<T> make_unique() { return unique_ptr<T>(new T()) ; }
-    template <typename T, typename T_0> inline unique_ptr<T> make_unique(const T_0 & p_0) { return unique_ptr<T>(new T(p_0)) ; }
-    template <typename T, typename T_0, typename T_1> inline unique_ptr<T> make_unique(const T_0 & p_0, const T_1 & p_1) { return unique_ptr<T>(new T(p_0, p_1)) ; }
+    template<class Type, class Del = default_delete< Type > >
+        struct unique_ptr : auto_ptr< Type > 
+        { using auto_ptr< Type >::auto_ptr; };
+
+    template <typename T> inline unique_ptr< T > make_unique() { return unique_ptr< T >(new T()) ; }
+    template <typename T, typename T_0> inline unique_ptr< T > make_unique(const T_0 & p_0) { return unique_ptr< T >(new T(p_0)) ; }
+    template <typename T, typename T_0, typename T_1> inline unique_ptr< T > make_unique(const T_0 & p_0, const T_1 & p_1) { return unique_ptr< T >(new T(p_0, p_1)) ; }
 
     #else
 
