@@ -158,7 +158,11 @@ namespace std
 
     template<class Type, class Del = default_delete< Type > >
         struct unique_ptr : auto_ptr< Type > 
-        { using auto_ptr< Type >::auto_ptr; };
+        {
+            unique_ptr(Type* p = NULL) : auto_ptr< Type >(p) {}
+            unique_ptr(unique_ptr< Type, Del >& r) : auto_ptr< Type >(r) {}
+            template<class OType, class ODel > unique_ptr(unique_ptr< OType, ODel > & r) : auto_ptr< Type >(r) {}
+        };
 
     template <typename T> inline unique_ptr< T > make_unique() { return unique_ptr< T >(new T()) ; }
     template <typename T, typename T_0> inline unique_ptr< T > make_unique(const T_0 & p_0) { return unique_ptr< T >(new T(p_0)) ; }
