@@ -26,10 +26,12 @@ requirements:
     - libstatiskit_stl
     - python
 
-test:                                                           
-  source_files:                                
-    - test/test_*.py
-  requires:
-    - python-dbg
-  commands:                                       
-   - nosetests test -x -s -v
+test:     
+  imports:
+    - statiskit.core.__core
+  # source_files:                                
+  # - test/test_*.py
+  # requires:
+  #   - python-dbg
+  # commands:                                       
+  #  - nosetests test -x -s -v
