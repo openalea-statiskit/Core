@@ -152,8 +152,12 @@ namespace std
 
     #if defined(_WIN32) || defined(WIN32)
 
+    template<class Type>
+        struct default_delete
+        {};
+        
     template<class Type, class Del = default_delete<Type> >
-        struct unique_ptr : auto_ptr< Type, Del > 
+        struct unique_ptr : auto_ptr< Type > 
         { using auto_ptr< Type, Del >::auto_ptr; };
 
     template <typename T> inline unique_ptr<T> make_unique() { return unique_ptr<T>(new T()) ; }
@@ -163,7 +167,7 @@ namespace std
     #else
 
     template<typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args);
-        
+
     #endif
 }
 
