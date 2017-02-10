@@ -162,6 +162,8 @@ namespace std
             unique_ptr(Type* p = NULL) : auto_ptr< Type >(p) {}
             unique_ptr(unique_ptr< Type, Del >& r) : auto_ptr< Type >(r) {}
             template<class OType, class ODel > unique_ptr(unique_ptr< OType, ODel > & r) : auto_ptr< Type >(r) {}
+
+            bool operator() { return (bool)(this->get()); }
         };
 
     template <typename T> inline unique_ptr< T > make_unique() { return unique_ptr< T >(new T()) ; }
