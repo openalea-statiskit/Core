@@ -147,12 +147,16 @@ namespace statiskit
     Eigen::VectorXd solve();*/
 }
 
-#if !defined(_WIN32) && !defined(WIN32) 
 namespace std
 {
     template<typename T, typename... Args> std::unique_ptr<T> make_unique(Args&&... args);
+
+    #if defined(_WIN32) || defined(WIN32) 
+    template<class Type, class Del = default_delete<Type> >
+        struct unique_ptr : std::auto_ptr< Type, Del > 
+        {};
+    #endif
 }
-#endif
 
 #include "base.hpp"
 #endif
