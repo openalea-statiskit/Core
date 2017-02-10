@@ -163,6 +163,9 @@ namespace std
             unique_ptr(unique_ptr< Type, Del >& r) : auto_ptr< Type >(r) {}
             template<class OType, class ODel > unique_ptr(unique_ptr< OType, ODel > & r) : auto_ptr< Type >(r) {}
 
+            unique_ptr< Type, Del >& operator=(unique_ptr< Type, Del >& r) { this->reset(r.release()); return *this; }
+            template<class OType, class ODel > unique_ptr< Type, Del >& operator=(unique_ptr< OType, ODel > & r) { this->reset(r.release()); return *this; }
+
             operator bool() const { return (bool)(this->get()); }
         };
 
