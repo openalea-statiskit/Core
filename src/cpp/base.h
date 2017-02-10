@@ -173,6 +173,8 @@ namespace std
     template <typename T, typename T_0> inline unique_ptr< T > make_unique(const T_0 & p_0) { return unique_ptr< T >(new T(p_0)) ; }
     template <typename T, typename T_0, typename T_1> inline unique_ptr< T > make_unique(const T_0 & p_0, const T_1 & p_1) { return unique_ptr< T >(new T(p_0, p_1)) ; }
 
+    #define nullptr 0
+
     #else
 
     template<typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args);
