@@ -101,11 +101,8 @@ namespace statiskit
     NaturalVarianceEstimation::Estimator::Estimator(const bool& bias)
     { _bias = bias; }
 
-    // std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
-    // { 
-    //     NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-    //     return (*this)(data, estimator(data)->get_mean());
-    // }
+    NaturalVarianceEstimation::Estimator::Estimator(const Estimator& estimator)
+    { _bias = estimator._bias; }
     
     std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const
     { 
@@ -157,6 +154,12 @@ namespace statiskit
         }
         return estimation;
     }
+
+    const bool& NaturalVarianceEstimation::Estimator::get_bias() const
+    { return _bias; }
+
+    void NaturalVarianceEstimation::Estimator::set_bias(const bool& bias)
+    { _bias = bias; }
 
     /*CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
     { _means = means; }

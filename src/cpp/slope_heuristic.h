@@ -11,9 +11,10 @@
 
 #include "base.h"
 
+#include <statiskit/linalg/Eigen.h>
+
 #include <set>
 #include <map>
-#include <eigen3/Eigen/Dense>
 #include <memory>
 
 namespace statiskit

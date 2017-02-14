@@ -12,11 +12,12 @@
 #include "base.h"
 #include "event.h"
 
+#include <statiskit/linalg/Eigen.h>
+
 #include <algorithm>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <map>
-#include <eigen3/Eigen/Dense>
 
 namespace statiskit
 {    
@@ -148,8 +149,8 @@ namespace statiskit
             int _upper_bound;
     };
 
-    const IntegerSampleSpace& get_NN();
-    const IntegerSampleSpace& get_ZZ();
+    STATISKIT_CORE_API const IntegerSampleSpace& get_NN();
+    STATISKIT_CORE_API const IntegerSampleSpace& get_ZZ();
 
     struct STATISKIT_CORE_API ContinuousSampleSpace : public UnivariateSampleSpace
     { 
@@ -183,9 +184,9 @@ namespace statiskit
             bool _right_closed;
     };
 
-    const RealSampleSpace& get_RR();
-    const RealSampleSpace& get_PR();
-    const RealSampleSpace& get_NR();
+    STATISKIT_CORE_API const RealSampleSpace& get_RR();
+    STATISKIT_CORE_API const RealSampleSpace& get_PR();
+    STATISKIT_CORE_API const RealSampleSpace& get_NR();
 
     struct STATISKIT_CORE_API MultivariateSampleSpace
     {

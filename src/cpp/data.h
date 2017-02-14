@@ -36,6 +36,8 @@ namespace statiskit
             virtual double weight() const = 0;
         };
 
+        virtual size_t get_nb_events() const = 0;
+
         virtual std::unique_ptr< UnivariateData::Generator > generator() const = 0;
 
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
@@ -95,7 +97,7 @@ namespace statiskit
 
             virtual std::unique_ptr< UnivariateData > copy() const;
 
-            size_t get_nb_events() const;
+            virtual size_t get_nb_events() const;
 
             virtual const UnivariateEvent* get_event(const size_t& index) const;
             virtual void set_event(const size_t& index, const UnivariateEvent* event);

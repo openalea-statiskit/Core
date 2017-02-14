@@ -5,6 +5,8 @@ from SCons.Errors import EnvironmentError
 
 env = Environment(tools = ['toolchain'])
 
+env.AppendUnique(LIBS=['statiskit_linalg'])
+
 VariantDir('build', 'src')
 try:
   SConscript(os.path.join('build', 'cpp', 'SConscript'), exports="env")

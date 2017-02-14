@@ -46,10 +46,10 @@ namespace statiskit
                     case ELEMENTARY:
                         compatible = _values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value()) != _values.cend();
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< std::string >& __values = static_cast< const CategoricalSetCensoredEvent* >(event)->get_values();
-                            std::set< std::string >::const_iterator it = __values.cbegin(), ite = __values.cend();
+                            const std::vector< std::string >& __values = static_cast< const CategoricalCensoredEvent* >(event)->get_values();
+                            std::vector< std::string >::const_iterator it = __values.cbegin(), ite = __values.cend();
                             compatible = true;
                             while(compatible && it != ite)
                             {
@@ -297,10 +297,10 @@ namespace statiskit
                             compatible = value >= _lower_bound && value <= _upper_bound;
                         }    
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< int >& __values = static_cast< const DiscreteSetCensoredEvent* >(event)->get_values();
-                            std::set< int >::const_iterator it = __values.cbegin(), ite = __values.cend();
+                            const std::vector< int >& __values = static_cast< const DiscreteCensoredEvent* >(event)->get_values();
+                            std::vector< int >::const_iterator it = __values.cbegin(), ite = __values.cend();
                             compatible = true;
                             while(compatible && it != ite)
                             {
@@ -417,10 +417,10 @@ namespace statiskit
                             }
                         }    
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< double >& __values = static_cast< const ContinuousSetCensoredEvent* >(event)->get_values();
-                            std::set< double >::const_iterator it = __values.cbegin(), ite = __values.cend();
+                            const std::vector< double >& __values = static_cast< const ContinuousCensoredEvent* >(event)->get_values();
+                            std::vector< double >::const_iterator it = __values.cbegin(), ite = __values.cend();
                             compatible = true;
                             while(compatible && it != ite)
                             {

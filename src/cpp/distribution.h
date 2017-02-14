@@ -11,7 +11,7 @@
 
 #include "base.h"
 #include "data.h"
-#include <eigen3/Eigen/Dense>
+#include <statiskit/linalg/Eigen.h>
 
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>

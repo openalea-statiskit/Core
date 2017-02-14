@@ -36,24 +36,24 @@ namespace statiskit
         { return std::make_unique< ElementaryEvent< E > >(*this); }
 
     template<class E>
-        SetCensoredEvent< E >::SetCensoredEvent(const std::set< typename E::value_type >& values)
+        CensoredEvent< E >::CensoredEvent(const std::vector< typename E::value_type >& values)
         { _values = values; }
     
     template<class E>
-        SetCensoredEvent< E >::SetCensoredEvent(const SetCensoredEvent< E >& event)
+        CensoredEvent< E >::CensoredEvent(const CensoredEvent< E >& event)
         { _values = event._values; }
 
     template<class E>
-        event_type SetCensoredEvent< E >::get_event() const
-        { return SET; }
+        event_type CensoredEvent< E >::get_event() const
+        { return CENSORED; }
 
     template<class E>
-        const std::set< typename E::value_type >& SetCensoredEvent< E >::get_values() const
+        const std::vector< typename E::value_type >& CensoredEvent< E >::get_values() const
         { return _values; }
 
     template<class E>
-        std::unique_ptr< UnivariateEvent > SetCensoredEvent< E >::copy() const
-        { return std::make_unique< SetCensoredEvent< E > >(*this); }
+        std::unique_ptr< UnivariateEvent > CensoredEvent< E >::copy() const
+        { return std::make_unique< CensoredEvent< E > >(*this); }
 
     template<class E>
         LeftCensoredEvent< E >::LeftCensoredEvent(const typename E::value_type& upper_bound)
@@ -127,6 +127,10 @@ namespace statiskit
     template<class E>
         typename E::value_type IntervalCensoredEvent< E >::get_range() const
         { return _bounds.second - _bounds.first; }
+
+    template<class E>
+        typename E::value_type IntervalCensoredEvent< E >::get_center() const
+        { return get_range() / 2.; }
 
     template<class E>
         std::unique_ptr< UnivariateEvent > IntervalCensoredEvent< E >::copy() const

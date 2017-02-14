@@ -41,11 +41,11 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< std::string >& values = static_cast< const CategoricalSetCensoredEvent* >(event)->get_values();
+                            const std::vector< std::string >& values = static_cast< const CategoricalCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< std::string >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< std::string >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }
@@ -197,11 +197,11 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< int >& values = static_cast< const DiscreteSetCensoredEvent* >(event)->get_values();
+                            const std::vector< int >& values = static_cast< const DiscreteCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< int >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< int >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }
@@ -509,9 +509,9 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< double >& values = static_cast< const ContinuousSetCensoredEvent* >(event)->get_values();
+                            const std::vector< double >& values = static_cast< const ContinuousCensoredEvent* >(event)->get_values();
                             p = 0.;
                             for(std::set< double >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }

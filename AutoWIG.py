@@ -13,7 +13,7 @@ for dependency in ['LinAlg', 'STL']:
         asg.merge(pickle.load(filehandler))
 
 
-asg = autowig.parser(asg, path(os.path.join(sys.prefix, 'include', 'statiskit', 'core')).walkfiles('*.h'),
+asg = autowig.parser(asg, list(path(os.path.join(sys.prefix, 'include', 'statiskit', 'core')).walkfiles('*.h')),
                      ['-x', 'c++', '-std=c++11', '-ferror-limit=0', '-I' + os.path.join(sys.prefix, 'include')],
                      bootstrap=1)
 
@@ -26,7 +26,7 @@ for cls in asg.classes():
 autowig.generator.plugin = 'boost_python_internal'
 wrappers = autowig.generator(asg, module='src/py/_core.cpp',
                                   decorator='src/py/statiskit/core/_core.py',
-                                  closure=False)
+                                  closure=True)
 wrappers.write()
 
 s = subprocess.Popen(['scons', 'py', '-j7', '-k', '--eigen-static-assert=yes'], stderr=subprocess.PIPE)
@@ -55,3 +55,13 @@ for i in range(11):
 
 with open('ASG.pkl', 'w') as filehandler:
     pickle.dump(asg, filehandler)
+
+
+
+
+
+
+
+nodes = [node for node in asg.declarations() if not getattr(node.header, 'is_external_dependency', True)]
+autowig.visitor.plugin = 'boost_python_closure'
+dependencies = asg.dependencies(*nodes)
