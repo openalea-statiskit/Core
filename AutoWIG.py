@@ -24,7 +24,10 @@ for cls in asg['class ::std::allocator'].specializations():
     cls.boost_python_export = False
 for cls in asg['class ::std::shared_ptr'].specializations():
     cls.boost_python_export = False
-
+for cls in asg['class ::std::reverse_iterator'].specializations():
+    cls.boost_python_export = False
+for cls in asg['class ::std::initializer_list'].specializations():
+    cls.boost_python_export = False
 autowig.generator.plugin = 'boost_python_internal'
 wrappers = autowig.generator(asg, module='src/py/_core.cpp',
                                   decorator='src/py/statiskit/core/_core.py',

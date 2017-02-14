@@ -225,8 +225,9 @@ namespace statiskit
                         break;
                     case INTERVAL:
                         {
-                            const std::pair<int, int>& bounds = static_cast< const DiscreteIntervalCensoredEvent* >(event)->get_bounds();
-                            p = cdf(bounds.second) - cdf(bounds.first - 1);
+                            const DiscreteIntervalCensoredEvent* devent = static_cast< const DiscreteIntervalCensoredEvent* >(event);
+                            const int& lower_bound = devent->get_lower_bound(), upper_bound = devent->get_lower_bound();
+                            p = cdf(upper_bound) - cdf(lower_bound - 1);
                             if(logarithm)
                             { p = log(p); }
                         }
@@ -537,8 +538,9 @@ namespace statiskit
                         break;
                     case INTERVAL:
                         {
-                            const std::pair<double, double>& bounds = static_cast< const ContinuousIntervalCensoredEvent* >(event)->get_bounds();
-                            p = cdf(bounds.second) - cdf(bounds.first);
+                            const ContinuousIntervalCensoredEvent* cevent = static_cast< const DiscreteIntervalCensoredEvent* >(event);
+                            const double& lower_bound = cevent->get_lower_bound(), upper_bound = cevent->get_lower_bound();
+                            p = cdf(upper_bound) - cdf(lower_bound);
                             if(logarithm)
                             { p = log(p); }
                         }

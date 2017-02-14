@@ -113,10 +113,6 @@ namespace statiskit
         { return INTERVAL; }
     
     template<class E>
-        const std::pair< typename E::value_type, typename E::value_type >& IntervalCensoredEvent< E >::get_bounds() const
-        { return _bounds; }
-    
-    template<class E>
         const typename E::value_type& IntervalCensoredEvent< E >::get_lower_bound() const
         { return _bounds.first; }
 

@@ -119,8 +119,6 @@ namespace statiskit
 
             virtual event_type get_event() const;
 
-            const std::pair< typename E::value_type, typename E::value_type >& get_bounds() const;
-
             const typename E::value_type& get_lower_bound() const;
             const typename E::value_type& get_upper_bound() const;
             
