@@ -513,7 +513,7 @@ namespace statiskit
                         {
                             const std::vector< double >& values = static_cast< const ContinuousCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< double >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< double >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }

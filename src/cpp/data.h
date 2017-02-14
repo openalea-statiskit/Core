@@ -36,8 +36,6 @@ namespace statiskit
             virtual double weight() const = 0;
         };
 
-        virtual size_t get_nb_events() const = 0;
-
         virtual std::unique_ptr< UnivariateData::Generator > generator() const = 0;
 
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
