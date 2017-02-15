@@ -31,7 +31,8 @@ for cls in asg['class ::std::initializer_list'].specializations():
 autowig.generator.plugin = 'boost_python_internal'
 wrappers = autowig.generator(asg, module='src/py/_core.cpp',
                                   decorator='src/py/statiskit/core/_core.py',
-                                  closure=True)
+                                  closure=True,
+                                  helder='std::shared_ptr')
 wrappers.write()
 
 # s = subprocess.Popen(['scons', 'py', '-j7', '-k', '--eigen-static-assert=yes'], stderr=subprocess.PIPE)

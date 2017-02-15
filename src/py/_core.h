@@ -13,12 +13,13 @@
 #include <statiskit/core/event.h>
 #include <statiskit/core/moment.h>
 #include <statiskit/core/distribution.h>
+#include <memory>
 
 namespace autowig
 {
      template<class T> struct Held {
-        typedef T* Type;
-        static bool const is_class = false;
+        typedef std::shared_ptr< T > Type;
+        static bool const is_class = true;
     };
 }
 

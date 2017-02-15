@@ -23,7 +23,6 @@ void wrapper_fb8f1cea3a695accb39f019b3fbd2247()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     enum ::statiskit::event_type  (::statiskit::IntervalCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_b5b7c5bb9a2e5ddc8667751935bbf6a7)() const = &::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent >::get_event;
-    struct ::std::pair< int, int > const & (::statiskit::IntervalCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_388731d473bd536cbe05888e962bf7eb)() const = &::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent >::get_bounds;
     int const & (::statiskit::IntervalCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_8376654e7157578aa3f686833ab27fac)() const = &::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent >::get_lower_bound;
     int const & (::statiskit::IntervalCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_5801af14002b5532ba366122c0678191)() const = &::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent >::get_upper_bound;
     int  (::statiskit::IntervalCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_d7218a6b4e365c178e8a5e168c11181b)() const = &::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent >::get_range;
@@ -33,7 +32,6 @@ void wrapper_fb8f1cea3a695accb39f019b3fbd2247()
     class_fb8f1cea3a695accb39f019b3fbd2247.def(boost::python::init< int const &, int const & >(""));
     class_fb8f1cea3a695accb39f019b3fbd2247.def(boost::python::init< class ::statiskit::IntervalCensoredEvent< struct ::statiskit::DiscreteEvent > const & >(""));
     class_fb8f1cea3a695accb39f019b3fbd2247.def("get_event", method_pointer_b5b7c5bb9a2e5ddc8667751935bbf6a7, "");
-    class_fb8f1cea3a695accb39f019b3fbd2247.def("get_bounds", method_pointer_388731d473bd536cbe05888e962bf7eb, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_fb8f1cea3a695accb39f019b3fbd2247.def("get_lower_bound", method_pointer_8376654e7157578aa3f686833ab27fac, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_fb8f1cea3a695accb39f019b3fbd2247.def("get_upper_bound", method_pointer_5801af14002b5532ba366122c0678191, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_fb8f1cea3a695accb39f019b3fbd2247.def("get_range", method_pointer_d7218a6b4e365c178e8a5e168c11181b, "");

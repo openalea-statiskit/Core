@@ -38,7 +38,7 @@ namespace statiskit
             switch(data->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(mean) && *generator)
+                    while(boost::math::isfinite(mean) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -47,7 +47,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(mean) && *generator)
+                    while(boost::math::isfinite(mean) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -117,7 +117,7 @@ namespace statiskit
             switch(data->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(variance) && *generator)
+                    while(boost::math::isfinite(variance) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -129,7 +129,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(variance) && *generator)
+                    while(boost::math::isfinite(variance) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)

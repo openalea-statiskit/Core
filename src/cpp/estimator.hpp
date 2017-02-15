@@ -205,7 +205,7 @@ namespace statiskit
             if(total > 0. && boost::math::isfinite(total))
             {
                 std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-                while(*generator)
+                while(generator->is_valid())
                 {
                     auto event = generator->event();
                     if(event)
@@ -217,7 +217,7 @@ namespace statiskit
                 }
                 Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
                 generator = data->generator();
-                while(*generator)
+                while(generator->is_valid())
                 {
                     auto event = generator->event();
                     if(event)

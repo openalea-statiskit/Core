@@ -24,11 +24,7 @@ namespace statiskit
 
         struct STATISKIT_CORE_API Generator
         {
-            #if !defined(_WIN32) && !defined(WIN32)         
-            virtual explicit operator bool() const = 0;
-            #else
-            virtual operator bool() const = 0;
-            #endif
+            virtual bool is_valid() const = 0;
 
             virtual Generator& operator++() = 0;
 
@@ -117,11 +113,7 @@ namespace statiskit
                     Generator(const UnivariateDataFrame* data);
                     virtual ~Generator();
 
-                    #if !defined(_WIN32) && !defined(WIN32)         
-                    virtual explicit operator bool() const;
-                    #else
-                    virtual operator bool() const;
-                    #endif
+                    virtual bool is_valid() const;
 
                     virtual UnivariateData::Generator& operator++();
 
@@ -163,11 +155,7 @@ namespace statiskit
                     Generator(const WeightedUnivariateDataFrame* data);
                     virtual ~Generator();
 
-                    #if !defined(_WIN32) && !defined(WIN32)         
-                    virtual explicit operator bool() const;
-                    #else
-                    virtual operator bool() const;
-                    #endif
+                    virtual bool is_valid() const;
 
                     virtual UnivariateData::Generator& operator++();
 

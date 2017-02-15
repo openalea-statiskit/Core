@@ -15,7 +15,7 @@ namespace statiskit
     {
         double llh = 0.;
         std::unique_ptr< UnivariateData::Generator > generator = data.generator();
-        while(*generator && boost::math::isfinite(llh))
+        while(generator->is_valid() && boost::math::isfinite(llh))
         { 
             llh += generator->weight() * probability(generator->event(), true);
             ++(*generator);
@@ -538,7 +538,7 @@ namespace statiskit
                         break;
                     case INTERVAL:
                         {
-                            const ContinuousIntervalCensoredEvent* cevent = static_cast< const DiscreteIntervalCensoredEvent* >(event);
+                            const ContinuousIntervalCensoredEvent* cevent = static_cast< const ContinuousIntervalCensoredEvent* >(event);
                             const double& lower_bound = cevent->get_lower_bound(), upper_bound = cevent->get_lower_bound();
                             p = cdf(upper_bound) - cdf(lower_bound);
                             if(logarithm)
