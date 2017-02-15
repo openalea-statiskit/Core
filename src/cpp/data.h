@@ -37,8 +37,6 @@ namespace statiskit
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
     
         virtual void lock() = 0;
-        virtual void unlock() = 0;
-        virtual const bool& is_locked() const = 0;
 
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
         
@@ -86,8 +84,8 @@ namespace statiskit
             void set_sample_space(const UnivariateSampleSpace& sample_space);
 
             virtual void lock();
-            virtual void unlock();
-            virtual const bool& is_locked() const;
+            void unlock();
+            const bool& is_locked() const;
 
             virtual std::unique_ptr< UnivariateData > copy() const;
 
