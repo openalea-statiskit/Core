@@ -24,11 +24,7 @@ namespace statiskit
 
         struct STATISKIT_CORE_API Generator
         {
-            #if !defined(_WIN32) && !defined(WIN32)         
-            virtual explicit operator bool() const = 0;
-            #else
-            virtual operator bool() const = 0;
-            #endif
+            virtual bool is_valid() const = 0;
 
             virtual Generator& operator++() = 0;
 
@@ -41,8 +37,6 @@ namespace statiskit
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
     
         virtual void lock() = 0;
-        virtual void unlock() = 0;
-        virtual const bool& is_locked() const = 0;
 
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
         
@@ -90,12 +84,12 @@ namespace statiskit
             void set_sample_space(const UnivariateSampleSpace& sample_space);
 
             virtual void lock();
-            virtual void unlock();
-            virtual const bool& is_locked() const;
+            void unlock();
+            const bool& is_locked() const;
 
             virtual std::unique_ptr< UnivariateData > copy() const;
 
-            size_t get_nb_events() const;
+            virtual size_t get_nb_events() const;
 
             virtual const UnivariateEvent* get_event(const size_t& index) const;
             virtual void set_event(const size_t& index, const UnivariateEvent* event);
@@ -117,11 +111,7 @@ namespace statiskit
                     Generator(const UnivariateDataFrame* data);
                     virtual ~Generator();
 
-                    #if !defined(_WIN32) && !defined(WIN32)         
-                    virtual explicit operator bool() const;
-                    #else
-                    virtual operator bool() const;
-                    #endif
+                    virtual bool is_valid() const;
 
                     virtual UnivariateData::Generator& operator++();
 
@@ -163,11 +153,7 @@ namespace statiskit
                     Generator(const WeightedUnivariateDataFrame* data);
                     virtual ~Generator();
 
-                    #if !defined(_WIN32) && !defined(WIN32)         
-                    virtual explicit operator bool() const;
-                    #else
-                    virtual operator bool() const;
-                    #endif
+                    virtual bool is_valid() const;
 
                     virtual UnivariateData::Generator& operator++();
 

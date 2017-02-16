@@ -11,7 +11,7 @@
 
 #include "base.h"
 #include "data.h"
-#include <eigen3/Eigen/Dense>
+#include <statiskit/linalg/Eigen.h>
 
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>
@@ -212,6 +212,8 @@ namespace statiskit
         virtual double get_mean() const;
         
         virtual double get_variance() const;
+
+        virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
     
     /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete variable \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.

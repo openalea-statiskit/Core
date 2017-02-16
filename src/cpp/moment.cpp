@@ -38,7 +38,7 @@ namespace statiskit
             switch(data->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(mean) && *generator)
+                    while(boost::math::isfinite(mean) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -47,7 +47,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(mean) && *generator)
+                    while(boost::math::isfinite(mean) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -101,11 +101,8 @@ namespace statiskit
     NaturalVarianceEstimation::Estimator::Estimator(const bool& bias)
     { _bias = bias; }
 
-    // std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
-    // { 
-    //     NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-    //     return (*this)(data, estimator(data)->get_mean());
-    // }
+    NaturalVarianceEstimation::Estimator::Estimator(const Estimator& estimator)
+    { _bias = estimator._bias; }
     
     std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const
     { 
@@ -120,7 +117,7 @@ namespace statiskit
             switch(data->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(variance) && *generator)
+                    while(boost::math::isfinite(variance) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -132,7 +129,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(variance) && *generator)
+                    while(boost::math::isfinite(variance) && generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -157,6 +154,12 @@ namespace statiskit
         }
         return estimation;
     }
+
+    const bool& NaturalVarianceEstimation::Estimator::get_bias() const
+    { return _bias; }
+
+    void NaturalVarianceEstimation::Estimator::set_bias(const bool& bias)
+    { _bias = bias; }
 
     /*CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
     { _means = means; }

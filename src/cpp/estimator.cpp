@@ -28,7 +28,7 @@ namespace statiskit
             values = sample_space->get_values();
             Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
             std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-            while(*generator)
+            while(generator->is_valid())
             {
                 auto event = generator->event();
                 if(event)
@@ -207,7 +207,7 @@ namespace statiskit
                     prev = curr;
                     double alpha = 0;
                     std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-                    while(*generator)
+                    while(generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -340,7 +340,7 @@ namespace statiskit
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
         std::unique_ptr< UnivariateData::Generator > generator = data->generator();
         double nb_bins = 0;
-        while(*generator)
+        while(generator->is_valid())
         {
             auto event = generator->event();
             if(event && event->get_event() == ELEMENTARY)
@@ -374,7 +374,7 @@ namespace statiskit
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
             generator = data->generator();
-            while(*generator)
+            while(generator->is_valid())
             {
                 auto event = generator->event();
                 if(event)
@@ -489,7 +489,7 @@ namespace statiskit
         auto bins = std::set< double >();
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
         std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-        while(*generator)
+        while(generator->is_valid())
         {
             auto event = generator->event();
             if(event && event->get_event() == ELEMENTARY)
@@ -520,7 +520,7 @@ namespace statiskit
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
             generator = data->generator();
-            while(*generator)
+            while(generator->is_valid())
             {
                 auto event = generator->event();
                 if(event)

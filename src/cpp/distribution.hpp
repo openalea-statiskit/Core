@@ -165,6 +165,10 @@ namespace statiskit
             return variance;
         }
 
+    template<class T>
+        std::unique_ptr< UnivariateDistribution > QuantitativeUnivariateFrequencyDistribution< T >::copy() const
+        { return std::make_unique< QuantitativeUnivariateFrequencyDistribution< T > >(*this); }
+
     /*template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< std::shared_ptr< typename D::marginal_type > >& marginals)
         {

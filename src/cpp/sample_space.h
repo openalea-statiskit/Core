@@ -12,11 +12,12 @@
 #include "base.h"
 #include "event.h"
 
+#include <statiskit/linalg/Eigen.h>
+
 #include <algorithm>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <map>
-#include <eigen3/Eigen/Dense>
 
 namespace statiskit
 {    
@@ -27,7 +28,7 @@ namespace statiskit
         PARTIAL,
     };
 
-    struct UnivariateSampleSpace
+    struct STATISKIT_CORE_API UnivariateSampleSpace
     {
         virtual outcome_type get_outcome() const = 0;
 
@@ -38,7 +39,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateSampleSpace > copy() const = 0;
     };
 
-    struct sample_space_error : parameter_error
+    struct STATISKIT_CORE_API sample_space_error : parameter_error
     { sample_space_error(const std::string& parameter, const outcome_type& expected); };
 
     enum encoding_type 
@@ -48,7 +49,7 @@ namespace statiskit
         CUMULATIVE,
     };
 
-    struct CategoricalSampleSpace : public UnivariateSampleSpace
+    struct STATISKIT_CORE_API CategoricalSampleSpace : public UnivariateSampleSpace
     {
         public:
             CategoricalSampleSpace(const std::set< std::string >& values);
@@ -72,7 +73,7 @@ namespace statiskit
             encoding_type _encoding;            
     };
 
-    class NominalSampleSpace : public CategoricalSampleSpace
+    class STATISKIT_CORE_API NominalSampleSpace : public CategoricalSampleSpace
     {
         public:
             NominalSampleSpace(const std::set< std::string >& values);
@@ -96,7 +97,7 @@ namespace statiskit
             std::set< std::string >::const_iterator _reference;
     };
 
-    class OrdinalSampleSpace : public CategoricalSampleSpace
+    class STATISKIT_CORE_API OrdinalSampleSpace : public CategoricalSampleSpace
     {
         public:
             OrdinalSampleSpace(const std::vector< std::string >& values);
@@ -122,14 +123,14 @@ namespace statiskit
             std::vector< size_t > _rank;
     };
 
-    struct DiscreteSampleSpace : public UnivariateSampleSpace
+    struct STATISKIT_CORE_API DiscreteSampleSpace : public UnivariateSampleSpace
     {
         virtual outcome_type get_outcome() const; 
 
         virtual ordering_type get_ordering() const;
     };
 
-    class IntegerSampleSpace : public DiscreteSampleSpace
+    class STATISKIT_CORE_API IntegerSampleSpace : public DiscreteSampleSpace
     {
         public:
             IntegerSampleSpace(const int& lower_bound=std::numeric_limits< int >::min(), const int& upper_bound=std::numeric_limits< int >::max());
@@ -148,17 +149,17 @@ namespace statiskit
             int _upper_bound;
     };
 
-    const IntegerSampleSpace& get_NN();
-    const IntegerSampleSpace& get_ZZ();
+    STATISKIT_CORE_API const IntegerSampleSpace& get_NN();
+    STATISKIT_CORE_API const IntegerSampleSpace& get_ZZ();
 
-    struct ContinuousSampleSpace : public UnivariateSampleSpace
+    struct STATISKIT_CORE_API ContinuousSampleSpace : public UnivariateSampleSpace
     { 
         virtual outcome_type get_outcome() const;
     
         virtual ordering_type get_ordering() const;
     };
     
-    class RealSampleSpace : public ContinuousSampleSpace
+    class STATISKIT_CORE_API RealSampleSpace : public ContinuousSampleSpace
     {
         public:
             RealSampleSpace(const double& lower_bound=-1*std::numeric_limits< double >::infinity(), const double& upper_bound=std::numeric_limits< double >::infinity(), const bool& left_closed=false, const bool& right_closed=false);
@@ -183,11 +184,11 @@ namespace statiskit
             bool _right_closed;
     };
 
-    const RealSampleSpace& get_RR();
-    const RealSampleSpace& get_PR();
-    const RealSampleSpace& get_NR();
+    STATISKIT_CORE_API const RealSampleSpace& get_RR();
+    STATISKIT_CORE_API const RealSampleSpace& get_PR();
+    STATISKIT_CORE_API const RealSampleSpace& get_NR();
 
-    struct MultivariateSampleSpace
+    struct STATISKIT_CORE_API MultivariateSampleSpace
     {
         virtual size_t size() const = 0;
         

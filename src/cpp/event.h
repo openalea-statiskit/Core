@@ -28,14 +28,14 @@ namespace statiskit
     enum event_type
     {
         ELEMENTARY,
-        SET,
+        CENSORED,
         LEFT,
         RIGHT,
         INTERVAL,
         COMPOUND
     };
 
-    struct UnivariateEvent
+    struct STATISKIT_CORE_API UnivariateEvent
     {
         virtual ~UnivariateEvent();
 
@@ -63,20 +63,20 @@ namespace statiskit
             typename E::value_type _value;
     };
 
-    template<class E> class SetCensoredEvent : public E
+    template<class E> class CensoredEvent : public E
     {
         public:
-            SetCensoredEvent(const std::set< typename E::value_type >& values);
-            SetCensoredEvent(const SetCensoredEvent< E >& event);
+            CensoredEvent(const std::vector< typename E::value_type >& values);
+            CensoredEvent(const CensoredEvent< E >& event);
 
             virtual event_type get_event() const;
 
-            const std::set< typename E::value_type >& get_values() const;
+            const std::vector< typename E::value_type >& get_values() const;
 
             virtual std::unique_ptr< UnivariateEvent > copy() const;
 
         protected:
-            std::set< typename E::value_type > _values;
+            std::vector< typename E::value_type > _values;
     };
 
     template<class E> class LeftCensoredEvent : public E
@@ -119,8 +119,6 @@ namespace statiskit
 
             virtual event_type get_event() const;
 
-            const std::pair< typename E::value_type, typename E::value_type >& get_bounds() const;
-
             const typename E::value_type& get_lower_bound() const;
             const typename E::value_type& get_upper_bound() const;
             
@@ -135,7 +133,7 @@ namespace statiskit
 
     class CategoricalUnivariateDistribution;
 
-    struct CategoricalEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API CategoricalEvent : public UnivariateEvent
     {
         typedef std::string value_type;
         typedef CategoricalUnivariateDistribution distribution_type;
@@ -144,11 +142,11 @@ namespace statiskit
     };
 
     typedef ElementaryEvent< CategoricalEvent > CategoricalElementaryEvent;
-    typedef SetCensoredEvent< CategoricalEvent > CategoricalSetCensoredEvent;
+    typedef CensoredEvent< CategoricalEvent > CategoricalCensoredEvent;
 
     class DiscreteUnivariateDistribution;
 
-    struct DiscreteEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API DiscreteEvent : public UnivariateEvent
     {
         typedef int value_type;
         typedef DiscreteUnivariateDistribution distribution_type;
@@ -157,14 +155,14 @@ namespace statiskit
     };
 
     typedef ElementaryEvent< DiscreteEvent > DiscreteElementaryEvent;
-    typedef SetCensoredEvent< DiscreteEvent > DiscreteSetCensoredEvent;
+    typedef CensoredEvent< DiscreteEvent > DiscreteCensoredEvent;
     typedef LeftCensoredEvent< DiscreteEvent > DiscreteLeftCensoredEvent;
     typedef RightCensoredEvent< DiscreteEvent > DiscreteRightCensoredEvent;
     typedef IntervalCensoredEvent< DiscreteEvent > DiscreteIntervalCensoredEvent;
 
     class ContinuousUnivariateDistribution;
 
-    struct ContinuousEvent : public UnivariateEvent
+    struct STATISKIT_CORE_API ContinuousEvent : public UnivariateEvent
     {
         typedef double value_type;
         typedef ContinuousUnivariateDistribution distribution_type;
@@ -173,12 +171,12 @@ namespace statiskit
     };
 
     typedef ElementaryEvent< ContinuousEvent > ContinuousElementaryEvent;
-    typedef SetCensoredEvent< ContinuousEvent > ContinuousSetCensoredEvent;
+    typedef CensoredEvent< ContinuousEvent > ContinuousCensoredEvent;
     typedef LeftCensoredEvent< ContinuousEvent > ContinuousLeftCensoredEvent;
     typedef RightCensoredEvent< ContinuousEvent > ContinuousRightCensoredEvent;
     typedef IntervalCensoredEvent< ContinuousEvent > ContinuousIntervalCensoredEvent;
 
-    struct MultivariateEvent
+    struct STATISKIT_CORE_API MultivariateEvent
     {        
         virtual size_t size() const = 0;
                 

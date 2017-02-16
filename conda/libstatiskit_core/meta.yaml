@@ -7,9 +7,6 @@ source:
 
 build:
     number: 0
-    script: 
-        - scons cpp --prefix={{ PREFIX }} -j{{ CPU_COUNT }}          [unix]
-        - scons cpp --prefix={{ LIBRARY_PREFIX }} -j{{ CPU_COUNT }}  [win]
     
 about:
     home: http://statiskit-core.readthedocs.io/
@@ -19,7 +16,7 @@ requirements:
     build:
         - libdev
         - libboost
-        - eigen
+        - libstatiskit_linalg
     run:
         - libboost
-        - eigen
+        - libstatiskit_linalg

@@ -205,19 +205,19 @@ namespace statiskit
             if(total > 0. && boost::math::isfinite(total))
             {
                 std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-                while(*generator)
+                while(generator->is_valid())
                 {
                     auto event = generator->event();
                     if(event)
                     {
                         if(event->get_event() == ELEMENTARY)
-                        { values.insert(static_cast< ElementaryEvent< typename D::event_type >* >(event)->get_value()); }
+                        { values.insert(static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value()); }
                     }
                     ++(*generator);
                 }
                 Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
                 generator = data->generator();
-                while(*generator)
+                while(generator->is_valid())
                 {
                     auto event = generator->event();
                     if(event)

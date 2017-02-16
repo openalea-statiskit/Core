@@ -131,27 +131,10 @@ namespace statiskit
         protected:
             T __default;
     };*/
-
-    /*enum solver_type 
-    {
-        partialPivLu,
-        fullPivLu,
-        householderQr,
-        colPivHouseholderQr,
-        fullPivHouseholderQr,
-        LLT,
-        LDLT,
-        jacobiSvd
-    };
-
-    Eigen::VectorXd solve();*/
 }
 
-#if !defined(_WIN32) && !defined(WIN32) 
-namespace std
-{
-    template<typename T, typename... Args> std::unique_ptr<T> make_unique(Args&&... args);
-}
+#if !defined(_WIN32) && !defined(WIN32)
+namespace std { template<typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args); }
 #endif
 
 #include "base.hpp"

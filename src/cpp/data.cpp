@@ -14,7 +14,7 @@ namespace statiskit
     {
         double total = 0.;
         std::unique_ptr< UnivariateData::Generator > _generator = generator();
-        while(*_generator)
+        while(_generator->is_valid())
         {
             total += _generator->weight();
             ++(*_generator);
@@ -29,7 +29,7 @@ namespace statiskit
         std::unique_ptr< UnivariateData::Generator > _generator = generator();
         if(sample_space->get_ordering() == TOTAL)
         {
-            while(*_generator && !minimum)
+            while(_generator->is_valid() && !minimum)
             {
                 const UnivariateEvent* event = _generator->event();
                 if(event && event->get_event() == ELEMENTARY)
@@ -52,7 +52,7 @@ namespace statiskit
             switch(sample_space->get_outcome())
             {
                 case CATEGORICAL:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -64,7 +64,7 @@ namespace statiskit
                     }
                     break;
                 case DISCRETE:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -76,7 +76,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -99,7 +99,7 @@ namespace statiskit
         std::unique_ptr< UnivariateData::Generator > _generator = generator();
         if(sample_space->get_ordering() == TOTAL)
         {
-            while(_generator && !maximum)
+            while(_generator->is_valid() && !maximum)
             {
                 const UnivariateEvent* event = _generator->event();
                 if(event && event->get_event() == ELEMENTARY)
@@ -122,7 +122,7 @@ namespace statiskit
             switch(sample_space->get_outcome())
             {
                 case CATEGORICAL:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -134,7 +134,7 @@ namespace statiskit
                     }
                     break;
                 case DISCRETE:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -146,7 +146,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(_generator)
+                    while(_generator->is_valid())
                     {
                         const UnivariateEvent* event = _generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -370,7 +370,7 @@ namespace statiskit
     UnivariateDataFrame::Generator::~Generator()
     {}
 
-    UnivariateDataFrame::Generator::operator bool() const
+    bool UnivariateDataFrame::Generator::is_valid() const
     { return _data && _index < _data->get_nb_events(); }
 
     UnivariateData::Generator& UnivariateDataFrame::Generator::operator++()
@@ -458,7 +458,7 @@ namespace statiskit
     WeightedUnivariateDataFrame::Generator::~Generator()
     {}
 
-    WeightedUnivariateDataFrame::Generator::operator bool() const
+    bool WeightedUnivariateDataFrame::Generator::is_valid() const
     { return _data && _index < _data->get_nb_events(); }
 
     UnivariateData::Generator& WeightedUnivariateDataFrame::Generator::operator++()

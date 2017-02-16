@@ -15,7 +15,7 @@ namespace statiskit
     {
         double llh = 0.;
         std::unique_ptr< UnivariateData::Generator > generator = data.generator();
-        while(*generator && boost::math::isfinite(llh))
+        while(generator->is_valid() && boost::math::isfinite(llh))
         { 
             llh += generator->weight() * probability(generator->event(), true);
             ++(*generator);
@@ -41,11 +41,11 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< std::string >& values = static_cast< const CategoricalSetCensoredEvent* >(event)->get_values();
+                            const std::vector< std::string >& values = static_cast< const CategoricalCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< std::string >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< std::string >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }
@@ -197,11 +197,11 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< int >& values = static_cast< const DiscreteSetCensoredEvent* >(event)->get_values();
+                            const std::vector< int >& values = static_cast< const DiscreteCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< int >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< int >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }
@@ -225,8 +225,9 @@ namespace statiskit
                         break;
                     case INTERVAL:
                         {
-                            const std::pair<int, int>& bounds = static_cast< const DiscreteIntervalCensoredEvent* >(event)->get_bounds();
-                            p = cdf(bounds.second) - cdf(bounds.first - 1);
+                            const DiscreteIntervalCensoredEvent* devent = static_cast< const DiscreteIntervalCensoredEvent* >(event);
+                            const int& lower_bound = devent->get_lower_bound(), upper_bound = devent->get_lower_bound();
+                            p = cdf(upper_bound) - cdf(lower_bound - 1);
                             if(logarithm)
                             { p = log(p); }
                         }
@@ -509,11 +510,11 @@ namespace statiskit
                             { p = pdf(value); }
                         }
                         break;
-                    case SET:
+                    case CENSORED:
                         {
-                            const std::set< double >& values = static_cast< const ContinuousSetCensoredEvent* >(event)->get_values();
+                            const std::vector< double >& values = static_cast< const ContinuousCensoredEvent* >(event)->get_values();
                             p = 0.;
-                            for(std::set< double >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
+                            for(std::vector< double >::const_iterator it = values.cbegin(), it_end = values.cend(); it != it_end; ++it)
                             { p += pdf(*it); }
                             if(logarithm)
                             { p = log(p); }
@@ -537,8 +538,9 @@ namespace statiskit
                         break;
                     case INTERVAL:
                         {
-                            const std::pair<double, double>& bounds = static_cast< const ContinuousIntervalCensoredEvent* >(event)->get_bounds();
-                            p = cdf(bounds.second) - cdf(bounds.first);
+                            const ContinuousIntervalCensoredEvent* cevent = static_cast< const ContinuousIntervalCensoredEvent* >(event);
+                            const double& lower_bound = cevent->get_lower_bound(), upper_bound = cevent->get_lower_bound();
+                            p = cdf(upper_bound) - cdf(lower_bound);
                             if(logarithm)
                             { p = log(p); }
                         }
