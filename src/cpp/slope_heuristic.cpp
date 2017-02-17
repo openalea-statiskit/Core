@@ -180,6 +180,17 @@ namespace statiskit
         _selector = std::make_shared< SlopeHeuristicSuperiorSelector >();
     }
 
+    SlopeHeuristic::SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores)
+    {
+        _penshapes = std::vector< double >(penshapes.cbegin(), penshapes.cend());
+        if(scores.size() != penshapes.size())
+        { throw size_error("scores", scores.size(), penshapes.size()); }
+        _scores = scores;
+        _solver = std::make_shared< SlopeHeuristicBiSquareSolver >();
+        _selector = std::make_shared< SlopeHeuristicSuperiorSelector >();
+        finalize();
+    }
+
     SlopeHeuristic::SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector)
     {
         _penshapes = std::vector< double >(penshapes.cbegin(), penshapes.cend());

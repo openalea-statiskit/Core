@@ -107,6 +107,7 @@ namespace statiskit
     {
         public:
             SlopeHeuristic();
+            SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores);
             SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector);
             SlopeHeuristic(const SlopeHeuristic& sh);
 

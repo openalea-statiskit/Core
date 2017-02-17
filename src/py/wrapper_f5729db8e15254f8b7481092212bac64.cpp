@@ -30,6 +30,7 @@ void wrapper_f5729db8e15254f8b7481092212bac64()
     ::std::size_t const & (::statiskit::SlopeHeuristic::*method_pointer_21d48bb2676356bba155828d34a968eb)(::std::size_t const &) const = &::statiskit::SlopeHeuristic::get_selected;
     boost::python::class_< class ::statiskit::SlopeHeuristic, autowig::Held< class ::statiskit::SlopeHeuristic >::Type > class_f5729db8e15254f8b7481092212bac64("SlopeHeuristic", "", boost::python::no_init);
     class_f5729db8e15254f8b7481092212bac64.def(boost::python::init<  >(""));
+    class_f5729db8e15254f8b7481092212bac64.def(boost::python::init< class ::std::set< double, struct ::std::less< double >, class ::std::allocator< double > > const &, class ::std::vector< double, class ::std::allocator< double > > const & >(""));
     class_f5729db8e15254f8b7481092212bac64.def(boost::python::init< class ::statiskit::SlopeHeuristic const & >(""));
     class_f5729db8e15254f8b7481092212bac64.def("__len__", method_pointer_6acd82e3139651f6bb4fda0c61390fe4, "");
     class_f5729db8e15254f8b7481092212bac64.def("get_score", method_pointer_2e471d76c8745eb99548f18746240833, boost::python::return_value_policy< boost::python::return_by_value >(), "");

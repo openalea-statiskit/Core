@@ -23,7 +23,8 @@ requirements:
     - librun
     - libboost
     - libstatiskit_core
-    - libstatiskit_stl
+    - python-statiskit_linalg
+    - python-statiskit_stl
     - python
 
 test:     
