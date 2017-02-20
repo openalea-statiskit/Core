@@ -26,11 +26,13 @@ void wrapper_1e029a866743577a96657ca3aa3e679a()
     boost::python::object module_b9cd6e4044b45bc181ede2824969b3f6(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_b9cd6e4044b45bc181ede2824969b3f6.c_str()))));
     boost::python::scope().attr("_regular_univariate_histogram_distribution_slope_heuristic_estimation") = module_b9cd6e4044b45bc181ede2824969b3f6;
     boost::python::scope scope_b9cd6e4044b45bc181ede2824969b3f6 = module_b9cd6e4044b45bc181ede2824969b3f6;
+    class ::std::shared_ptr< struct ::statiskit::UnivariateDistributionEstimation >  (::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::*method_pointer_78e5d68d0ca25529bc2b5266c62c3306)(class ::std::shared_ptr< struct ::statiskit::UnivariateData > const &, bool const &) const = &::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::operator();
     unsigned int const & (::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::*method_pointer_5e1edc96567f512299e757eec199fc0c)() const = &::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::get_max_bins;
     void  (::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::*method_pointer_787616912f6855a4b073a8d98adc756b)(unsigned int const &) = &::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::set_max_bins;
     boost::python::class_< class ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator, autowig::Held< class ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistributionEstimation::Estimator > > class_1e029a866743577a96657ca3aa3e679a("Estimator", "", boost::python::no_init);
     class_1e029a866743577a96657ca3aa3e679a.def(boost::python::init<  >(""));
     class_1e029a866743577a96657ca3aa3e679a.def(boost::python::init< class ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator const & >(""));
+    class_1e029a866743577a96657ca3aa3e679a.def("__call__", method_pointer_78e5d68d0ca25529bc2b5266c62c3306, "");
     class_1e029a866743577a96657ca3aa3e679a.def("get_max_bins", method_pointer_5e1edc96567f512299e757eec199fc0c, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_1e029a866743577a96657ca3aa3e679a.def("set_max_bins", method_pointer_787616912f6855a4b073a8d98adc756b, "");
 

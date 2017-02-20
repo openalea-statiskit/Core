@@ -69,11 +69,11 @@ SlopesProxy.__getitem__ = wrapper(SlopeHeuristic.get_slope)
 del SlopeHeuristic.get_slope
 SlopeHeuristic.slopes = property(SlopesProxy)
 
-# SlopeHeuristic.solver = property(SlopeHeuristic.get_solver, SlopeHeuristic.set_solver)
-# del SlopeHeuristic.get_solver, SlopeHeuristic.set_solver
+SlopeHeuristic.solver = property(SlopeHeuristic.get_solver, SlopeHeuristic.set_solver)
+del SlopeHeuristic.get_solver, SlopeHeuristic.set_solver
 
-# SlopeHeuristic.selector = property(SlopeHeuristic.get_selector, SlopeHeuristic.set_selector)
-# del SlopeHeuristic.get_selector, SlopeHeuristic.set_selector
+SlopeHeuristic.selector = property(SlopeHeuristic.get_selector, SlopeHeuristic.set_selector)
+del SlopeHeuristic.get_selector, SlopeHeuristic.set_selector
 
 def wrapper(f):
     @wraps(f)

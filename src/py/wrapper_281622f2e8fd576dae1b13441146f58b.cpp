@@ -22,9 +22,12 @@ void wrapper_281622f2e8fd576dae1b13441146f58b()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::shared_ptr< struct ::statiskit::UnivariateData > const & (::statiskit::ActiveEstimation< ::statiskit::BinomialDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_bec9566eb66f52b88c9504961ea4177c)() const = &::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::get_data;
     boost::python::class_< class ::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< class ::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_281622f2e8fd576dae1b13441146f58b("_ActiveEstimation_281622f2e8fd576dae1b13441146f58b", "", boost::python::no_init);
     class_281622f2e8fd576dae1b13441146f58b.def(boost::python::init<  >(""));
+    class_281622f2e8fd576dae1b13441146f58b.def(boost::python::init< class ::std::shared_ptr< class ::statiskit::BinomialDistribution > const &, class ::std::shared_ptr< struct ::statiskit::UnivariateData > const & >(""));
     class_281622f2e8fd576dae1b13441146f58b.def(boost::python::init< class ::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_281622f2e8fd576dae1b13441146f58b.def("get_data", method_pointer_bec9566eb66f52b88c9504961ea4177c, boost::python::return_value_policy< boost::python::return_by_value >(), "");
 
     if(autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
     {

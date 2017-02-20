@@ -26,6 +26,8 @@ void wrapper_38789725488459f2828bf83b439865f4()
     boost::python::object module_c9a2f82a42795e79b282609850c28571(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_c9a2f82a42795e79b282609850c28571.c_str()))));
     boost::python::scope().attr("_mean_estimation") = module_c9a2f82a42795e79b282609850c28571;
     boost::python::scope scope_c9a2f82a42795e79b282609850c28571 = module_c9a2f82a42795e79b282609850c28571;
+    class ::std::shared_ptr< struct ::statiskit::MeanEstimation >  (::statiskit::MeanEstimation::Estimator::*method_pointer_1b78210aabce58ada0deee362586d166)(class ::std::shared_ptr< struct ::statiskit::UnivariateData > const) const = &::statiskit::MeanEstimation::Estimator::operator();
     boost::python::class_< struct ::statiskit::MeanEstimation::Estimator, autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type, boost::noncopyable > class_38789725488459f2828bf83b439865f4("Estimator", "", boost::python::no_init);
+    class_38789725488459f2828bf83b439865f4.def("__call__", method_pointer_1b78210aabce58ada0deee362586d166, "");
 
 }
