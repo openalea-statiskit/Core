@@ -19,14 +19,30 @@
 
 namespace statiskit
 {
-    struct STATISKIT_CORE_API SlopeHeuristicSolver
+    class STATISKIT_CORE_API SlopeHeuristicSolver
     { 
-        virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const = 0;
+        public:
+            SlopeHeuristicSolver();
+            SlopeHeuristicSolver(const SlopeHeuristicSolver& solver);
+
+            virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const = 0;
+
+            linalg::solver_type get_solver() const;
+            void set_solver(const linalg::solver_type& solver);
+
+            virtual std::unique_ptr< SlopeHeuristicSolver > copy() const = 0;
+
+        protected:
+            linalg::solver_type _solver;
     };
 
     struct STATISKIT_CORE_API SlopeHeuristicOLSSolver : SlopeHeuristicSolver
     {
+        using SlopeHeuristicSolver::SlopeHeuristicSolver;
+
         virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const; 
+
+        virtual std::unique_ptr< SlopeHeuristicSolver > copy() const;
     };
 
     class STATISKIT_CORE_API SlopeHeuristicIWLSSolver : public SlopeHeuristicSolver
@@ -56,6 +72,8 @@ namespace statiskit
             SlopeHeuristicHuberSolver();
             SlopeHeuristicHuberSolver(const SlopeHeuristicHuberSolver& shs);
 
+            virtual std::unique_ptr< SlopeHeuristicSolver > copy() const;
+
             const double& get_k() const;
             void set_k(const double& k);
 
@@ -71,6 +89,8 @@ namespace statiskit
             SlopeHeuristicBiSquareSolver();
             SlopeHeuristicBiSquareSolver(const SlopeHeuristicBiSquareSolver& shs);
 
+            virtual std::unique_ptr< SlopeHeuristicSolver > copy() const;
+
             const double& get_k() const;
             void set_k(const double& k);
          
@@ -83,10 +103,21 @@ namespace statiskit
     class SlopeHeuristic;
 
     struct STATISKIT_CORE_API SlopeHeuristicSelector
-    { virtual size_t operator() (const SlopeHeuristic& sh) const = 0; };
+    { 
+        virtual size_t operator() (const SlopeHeuristic& sh) const = 0;
+
+        virtual std::unique_ptr< SlopeHeuristicSelector > copy() const = 0; 
+    };
 
     struct STATISKIT_CORE_API SlopeHeuristicMaximalSelector : SlopeHeuristicSelector
-    { virtual size_t operator() (const SlopeHeuristic& sh) const; };
+    { 
+        SlopeHeuristicMaximalSelector();
+        SlopeHeuristicMaximalSelector(const SlopeHeuristicMaximalSelector& selector);
+
+        virtual size_t operator() (const SlopeHeuristic& sh) const; 
+
+        virtual std::unique_ptr< SlopeHeuristicSelector > copy() const; 
+    };
 
     class STATISKIT_CORE_API SlopeHeuristicSuperiorSelector : public SlopeHeuristicSelector
     {
@@ -95,6 +126,8 @@ namespace statiskit
             SlopeHeuristicSuperiorSelector(const SlopeHeuristicSuperiorSelector& selector);
 
             virtual size_t operator() (const SlopeHeuristic& sh) const;
+
+            virtual std::unique_ptr< SlopeHeuristicSelector > copy() const; 
 
             const double& get_threshold() const;
             void set_threshold(const double& threshold);
@@ -108,7 +141,7 @@ namespace statiskit
         public:
             SlopeHeuristic();
             SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores);
-            SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector);
+            SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const SlopeHeuristicSolver& solver, const SlopeHeuristicSelector& selector);
             SlopeHeuristic(const SlopeHeuristic& sh);
 
             size_t size() const;
@@ -123,11 +156,13 @@ namespace statiskit
 
             const size_t& get_selected(const size_t& index) const;
 
-            const std::shared_ptr< SlopeHeuristicSolver >& get_solver() const;
-            void set_solver(const std::shared_ptr< SlopeHeuristicSolver >& solver);
+            double compute_r_squared(const size_t& index) const;
 
-            const std::shared_ptr< SlopeHeuristicSelector >& get_selector() const;
-            void set_selector(const std::shared_ptr< SlopeHeuristicSelector >& _selector);
+            SlopeHeuristicSolver* get_solver();
+            void set_solver(const SlopeHeuristicSolver& solver);
+
+            SlopeHeuristicSelector* get_selector();
+            void set_selector(const SlopeHeuristicSelector* _selector);
             
         protected:
             std::vector< double > _penshapes;
@@ -135,18 +170,17 @@ namespace statiskit
             std::vector< double > _intercepts;
             std::vector< double > _slopes;
             std::vector< size_t > _selected;
-            std::shared_ptr< SlopeHeuristicSolver > _solver;
-            std::shared_ptr< SlopeHeuristicSelector > _selector;
+            SlopeHeuristicSolver* _solver;
+            SlopeHeuristicSelector* _selector;
 
             void finalize();
     };
 
-    template<class D> class SlopeHeuristicEstimation : public SlopeHeuristic
+    template<class D> class SlopeHeuristicSelection : public SlopeHeuristic
     {
         public:
-            SlopeHeuristicEstimation();
-            SlopeHeuristicEstimation(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector, const std::vector< std::shared_ptr< D > >& models);
-            SlopeHeuristicEstimation(const SlopeHeuristicEstimation< D >& she);
+            SlopeHeuristicSelection();
+            SlopeHeuristicSelection(const SlopeHeuristicSelection< D >& she);
 
             const std::shared_ptr< D >& get_model(const size_t& index) const;
             

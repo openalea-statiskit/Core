@@ -255,7 +255,10 @@ namespace statiskit
             ++index;
         }
         if(compatible)
-        { _sample_space = sample_space.copy().release(); }
+        { 
+            delete _sample_space;
+            _sample_space = sample_space.copy().release();
+        }
         else
         { throw statiskit::parameter_error("sample_space", "incompatible"); }
     }
@@ -481,11 +484,11 @@ namespace statiskit
         return _data->get_weight(_index);
     }
 
-    /* double MultivariateData::compute_total() const
+    double MultivariateData::compute_total() const
     {
         double total = 0.;
         std::unique_ptr< MultivariateData::Generator > _generator = generator();
-        while(*_generator)
+        while(_generator->is_valid())
         {
             total += _generator->weight();
             ++(*_generator);
@@ -493,40 +496,24 @@ namespace statiskit
         return total;
     }
 
+
     MultivariateDataFrame::MultivariateDataFrame()
     {
+        _sample_space = new SampleSpace(this);
         _variables.clear();
-        _locked = false;
     }
 
-    // MultivariateDataFrame::MultivariateDataFrame(const std::shared_ptr< MultivariateSampleSpace >& sample_space)
-    // {
-    //     _variables.clear();
-    //     _locked = false;
-    //     for(size_t variable = 0, max_variable = sample_space->size(); variable < max_variable; ++variable)
-    //     { append_variable(std::make_shared< UnivariateData >(sample_space->get_sample_space(variable))); }
-    // }
-    
-    MultivariateDataFrame::MultivariateDataFrame(const std::vector< UnivariateDataFrame* >& variables)
+    MultivariateDataFrame::MultivariateDataFrame(const MultivariateDataFrame& data)
     {
-        _variables.clear();
-        _variables.resize(variables.size());
-        _locked = false;
-        for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-        {
-            if(variables[variable])
-            { _variables[variable] = static_cast< UnivariateDataFrame* >(variables[variable]->copy().release()); }
-            else
-            { throw nullptr_error("variables"); }
-        }
+        _sample_space = new SampleSpace(this);
+        _variables.resize(data.get_nb_variables());
+        for(size_t index = 0, max_index = data.get_nb_variables(); index < max_index; ++index)
+        { _variables[index] = static_cast< UnivariateDataFrame* >(data._variables[index]->copy().release()); }
     }
-
-    MultivariateDataFrame::MultivariateDataFrame(const MultivariateDataFrame& data) : MultivariateDataFrame(data._variables)
-    {}
 
     MultivariateDataFrame::~MultivariateDataFrame()
     { 
-        for(size_t index = 0, max_index = _variables.size(); index < max_index; ++index)
+        for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
         {
             if(_variables[index])
             { delete _variables[index]; }
@@ -536,28 +523,229 @@ namespace statiskit
     }
 
     std::unique_ptr< MultivariateData::Generator > MultivariateDataFrame::generator() const
-    { 
-        MultivariateDataFrame::Event* event = new MultivariateDataFrame::Event(this, 0);
-        return std::make_unique< MultivariateDataFrame::Event::Generator >(event);
+    { return std::make_unique< MultivariateDataFrame::Generator >(this); }
+
+
+    const MultivariateSampleSpace* MultivariateDataFrame::get_sample_space() const
+    { return _sample_space; }
+
+    void MultivariateDataFrame::set_sample_space(const MultivariateSampleSpace& sample_space)
+    {
+        size_t index = 0, max_index = sample_space.size();
+        std::vector< UnivariateSampleSpace* > __sample_space;
+        try
+        {
+            if(max_index == get_nb_variables())
+            {
+                while(index < max_index)
+                {
+                    __sample_space.push_back(_sample_space->get(index)->copy().release());
+                    _variables[index]->set_sample_space(*sample_space.get(index));
+                    ++index;
+                }
+            }
+        }
+        catch(const std::exception& error)
+        {
+            delete __sample_space.back();
+            __sample_space.pop_back();
+            while(__sample_space.size() > 0)
+            {
+                _variables[index - 1]->set_sample_space(*__sample_space.back());
+                delete __sample_space.back();
+                __sample_space.pop_back();
+                --index;
+            }
+            throw error;
+        }
     }
+
+    void MultivariateDataFrame::lock()
+    {
+        for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+        { _variables[index]->lock(); }
+    }
+
+    void MultivariateDataFrame::unlock()
+    {
+        for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+        { _variables[index]->unlock(); }
+    }
+
+    bool MultivariateDataFrame::is_locked() const
+    {
+        bool locked = get_nb_variables() > 0;
+        if(locked)
+        { locked = _variables.back()->is_locked(); }
+        return locked;
+    }
+
+    std::unique_ptr< MultivariateData > MultivariateDataFrame::copy() const
+    { return std::make_unique< MultivariateDataFrame >(*this); }
 
     size_t MultivariateDataFrame::get_nb_variables() const
     { return _variables.size(); }
 
-    // const MultivariateSampleSpace* MultivariateDataFrame::get_sample_space() const
-    // { return _sample_space; }
+    const UnivariateDataFrame* MultivariateDataFrame::get_variable(const size_t& index) const
+    {
+        if(index > get_nb_variables())
+        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
+        return _variables[index];
+    }
 
-    void MultivariateDataFrame::lock()
-    { _locked = true; }
+    void MultivariateDataFrame::set_variable(const size_t& index, const UnivariateDataFrame& variable)
+    {
+        if(index > get_nb_variables())
+        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
+        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
+        { throw size_error("variable", get_nb_events(), size_error::equal); }  
+        if(_variables[index]->is_locked())
+        { throw std::runtime_error("data is locked"); }
+        delete _variables[index];
+        _variables[index] = static_cast< UnivariateDataFrame* >(variable.copy().release());
+    }
 
-    void MultivariateDataFrame::unlock()
-    { _locked = false; }
+    void MultivariateDataFrame::add_variable(const UnivariateDataFrame& variable)
+    {  
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
+        { throw size_error("variable", get_nb_events(), size_error::equal); }
+        _variables.push_back(static_cast< UnivariateDataFrame* >(variable.copy().release()));
+    }
 
-    const bool& MultivariateDataFrame::is_locked() const
-    { return _locked; }
+    std::unique_ptr< UnivariateDataFrame > MultivariateDataFrame::pop_variable()
+    {  
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        std::unique_ptr< UnivariateDataFrame > variable;
+        variable.reset(_variables.back());
+        _variables.pop_back();
+        return variable;
+    }
 
-    std::unique_ptr< MultivariateData > MultivariateDataFrame::copy() const;
-    { return std::make_unique< MultivariateData >(*this); }
+    void MultivariateDataFrame::insert_variable(const size_t& index, const UnivariateDataFrame& variable)
+    {
+        if(index > get_nb_variables())
+        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
+        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
+        { throw size_error("variable", get_nb_events(), size_error::equal); }  
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        std::vector< UnivariateDataFrame* >::iterator it = _variables.begin();
+        advance(it, index);
+        _variables.insert(it, static_cast< UnivariateDataFrame* >(variable.copy().release()));
+    }
+
+    void MultivariateDataFrame::remove_variable(const size_t& index)
+    {
+        if(index > get_nb_variables())
+        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
+        if(_variables[index]->is_locked())
+        { throw std::runtime_error("data is locked"); }
+        std::vector< UnivariateDataFrame* >::iterator it = _variables.begin();
+        advance(it, index);
+        delete *it;
+        *it = nullptr;
+        _variables.erase(it);
+    }
+
+    size_t MultivariateDataFrame::get_nb_events() const
+    {
+        size_t nb_event = 0;
+        if(get_nb_variables() > 0)
+        { nb_event = _variables[0]->get_nb_events(); }
+        return nb_event;
+    }
+
+   
+    std::unique_ptr< MultivariateEvent > MultivariateDataFrame::get_event(const size_t& index) const 
+    {
+        if(index > get_nb_events())
+        { throw size_error("index", get_nb_events(), size_error::inferior); }
+        return std::make_unique< Event >(this, index);
+    }
+
+    void MultivariateDataFrame::set_event(const size_t& index, const MultivariateEvent* event)
+    {
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        if(event)
+        {
+            if(_sample_space->is_compatible(event))
+            {
+                for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
+                { _variables[_index]->set_event(index, event->get(_index)); }
+            }
+            else
+            { throw statiskit::parameter_error("event", "incompatible"); } 
+        }
+        else
+        {
+            for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
+            { _variables[_index]->set_event(index, nullptr); }
+        }
+    }
+    
+    void MultivariateDataFrame::add_event(const MultivariateEvent* event)
+    {
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        if(event)
+        {
+            if(_sample_space->is_compatible(event))
+            {
+                for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+                { _variables[index]->add_event(event->get(index)); }
+            }
+            else
+            { throw statiskit::parameter_error("event", "incompatible"); } 
+        }
+        else
+        {
+            for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+            { _variables[index]->add_event(nullptr); }
+        }
+    }
+
+    std::unique_ptr< MultivariateEvent > MultivariateDataFrame::pop_event()
+    {
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(get_nb_variables());
+        for(size_t index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+        { event->set(index, *(_variables[index]->pop_event().get())); }
+        return event;
+    }
+
+    void MultivariateDataFrame::insert_event(const size_t& index, const MultivariateEvent* event)
+    {
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        if(event)
+        {
+            if(_sample_space->is_compatible(event))
+            {
+                for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
+                { _variables[_index]->insert_event(index, event->get(_index)); }
+            }
+            else
+            { throw parameter_error("event", "incompatible"); }
+        }
+        else
+        {
+            for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
+            { _variables[_index]->insert_event(index, nullptr); }
+        }
+    }
+    
+    void MultivariateDataFrame::remove_event(const size_t& index)
+    {
+        if(is_locked())
+        { throw std::runtime_error("data is locked"); }
+        for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
+        { _variables[_index]->remove_event(index); }
+    } 
 
     // const MultivariateEvent* MultivariateDataFrame::get_event(const size_t& index) const
     // { return new Event(&index, this); }
@@ -596,7 +784,7 @@ namespace statiskit
         _index = index;
     }
 
-    std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::Event(const Event& event) const
+    MultivariateDataFrame::Event::Event(const Event& event)
     { 
         _data = event._data;
         _index = event._index;
@@ -610,27 +798,13 @@ namespace statiskit
 
     const UnivariateEvent* MultivariateDataFrame::Event::get(const size_t& index) const
     {
-        if(!*this)
-        { throw proxy_connection_error(); }
         if(index >= size())
         { throw lower_bound_error("index", index, size(), true); }
-        return _data._variables[index]->get_event(index);
-    }
-
-    const UnivariateEvent* MultivariateDataFrame::Event::set(const size_t& index, const UnivariateEvent* event)
-    {
-        if(!*this)
-        { throw proxy_connection_error(); }
-        if(index >= size())
-        { throw lower_bound_error("index", index, size(), true); }
-        return _data._variables[index]->set_event(index, event);
+        return _data->_variables[index]->get_event(_index);
     }
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::copy() const
     { return std::make_unique< MultivariateDataFrame::Event >(*this); }
-
-    MultivariateDataFrame::Event::operator bool() const
-    { return _data; } 
 
     /*void MultivariateDataFrame::set_event(const size_t& index)
     {

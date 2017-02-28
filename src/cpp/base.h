@@ -42,6 +42,25 @@
 
 namespace statiskit
 {
+    namespace __impl
+    {
+        inline double reldiff(const double& prev, const double& curr);
+        inline double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr);
+        inline double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
+
+        template<class T> std::string to_string(const T& t, const unsigned int& width=0);
+
+        template<typename T> T normalize(const T& input, const bool& logarithm=false);
+
+        template<class InputIterator, class OutputIterator, class SubsetIterator> void subset(InputIterator input_first, InputIterator input_last, OutputIterator result, SubsetIterator keep_first, SubsetIterator keep_last);
+
+        /** Get the random generator
+         * 
+         * The random generator used is the <a href="http://www.boost.org/doc/libs/1_60_0/doc/html/boost/random/mt19937.html">Mersenne Twister</a> random generator of the Boost.Random library
+         */
+        STATISKIT_CORE_API boost::mt19937& get_random_generator();
+    }
+
     struct STATISKIT_CORE_API not_implemented_error : std::exception
     { not_implemented_error(); };
 
@@ -76,61 +95,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API duplicated_value_error : parameter_error
     { template<typename T> duplicated_value_error(const std::string& parameter, const T& value); };
-    
-    /** Get the random generator
-     * 
-     * The random generator used is the <a href="http://www.boost.org/doc/libs/1_60_0/doc/html/boost/random/mt19937.html">Mersenne Twister</a> random generator of the Boost.Random library
-     */
-    STATISKIT_CORE_API boost::mt19937& get_random_generator();
-
-    STATISKIT_CORE_API double get_mindiff();
-
-    STATISKIT_CORE_API unsigned int get_minits();
-
-    STATISKIT_CORE_API unsigned int get_maxits();
-
-    //typedef std::float_round_style round_type;
-
-    /*template<class N, typename O> struct Converter
-    { N operator() (const O& o) const; };
-    
-    template<typename N> struct Converter<N, std::string>
-    { N operator() (const std::string& o) const; };
-    
-    template<typename O> struct Converter<std::string, O>
-    { std::string operator() (const O& o) const; };*/
-    
-    template<class T> std::string to_string(const T& t, const unsigned int& width=0);
-
-    template<typename T> T normalize(const T& input, const bool& logarithm=false);
-
-    template<class InputIterator, class OutputIterator, class SubsetIterator> void subset(InputIterator input_first, InputIterator input_last, OutputIterator result, SubsetIterator keep_first, SubsetIterator keep_last);
-
-    /*template <typename T> struct empty_delete
-    {
-        empty_delete() noexcept;
-        
-        template <typename U> empty_delete(const empty_delete<U>&, typename std::enable_if< std::is_convertible<U*, T*>::value >::type* = nullptr) noexcept;
-        
-        void operator()(T* const) const noexcept;
-    };
-
-    template< class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< std::pair<const Key,T> > > class default_map : public std::map< Key, T, Compare, Alloc >
-    {
-        public:
-            default_map();
-            default_map(const T& _default);
-            default_map(const default_map< Key, T, Compare, Alloc >& map);
-
-            virtual const T& operator[] (const Key& key) const;
-            virtual T& operator[] (const Key& key);
-
-            const T& get_default() const;
-            void set_default(const T& _default);
-
-        protected:
-            T __default;
-    };*/
 }
 
 #if !defined(_WIN32) && !defined(WIN32)

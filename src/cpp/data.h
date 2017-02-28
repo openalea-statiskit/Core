@@ -166,24 +166,14 @@ namespace statiskit
             };      
     };
 
-    /* struct STATISKIT_CORE_API MultivariateData
+    struct STATISKIT_CORE_API MultivariateData
     {
         typedef MultivariateSampleSpace sample_space_type;
         typedef MultivariateEvent event_type;
-        
-        #if !defined(_WIN32) && !defined(WIN32)         
-        virtual explicit operator bool() const = 0;
-        #else
-        virtual operator bool() const = 0;
-        #endif
 
         struct STATISKIT_CORE_API Generator
         {
-            #if !defined(_WIN32) && !defined(WIN32)         
-            virtual explicit operator bool() const = 0;
-            #else
-            virtual operator bool() const = 0;
-            #endif
+            virtual bool is_valid() const = 0;
 
             virtual Generator& operator++() = 0;
 
@@ -193,46 +183,97 @@ namespace statiskit
 
         virtual std::unique_ptr< MultivariateData::Generator > generator() const = 0;
 
-        //virtual const MultivariateSampleSpace* get_sample_space() const = 0;
+        virtual const MultivariateSampleSpace* get_sample_space() const = 0;
 
-        virtual size_t get_nb_events() const = 0;
-
-        virtual size_t get_nb_variables() const = 0;
-       
         virtual void lock() = 0;
-        virtual void unlock() = 0;
-        virtual const bool& is_locked() const = 0;
 
         virtual std::unique_ptr< MultivariateData > copy() const = 0;
 
         double compute_total() const;
-        // std::unique_ptr< MultivariateEvent > compute_minimum() const;
-        // std::unique_ptr< MultivariateEvent > compute_maximum() const;
+        //virtual std::unique_ptr< MultivariateEvent > compute_minimum() const = 0;
+        //virtual std::unique_ptr< MultivariateEvent > compute_maximum() const = 0;
     };
 
     class STATISKIT_CORE_API MultivariateDataFrame : public MultivariateData
     {
         public:
             MultivariateDataFrame();
-            MultivariateDataFrame(const std::vector< UnivariateDataFrame* >& variables);
             MultivariateDataFrame(const MultivariateDataFrame& data);
             virtual ~MultivariateDataFrame();
 
             virtual std::unique_ptr< MultivariateData::Generator > generator() const;
 
-            //virtual const MultivariateSampleSpace* get_sample_space() const;
+            virtual const MultivariateSampleSpace* get_sample_space() const;
+            void set_sample_space(const MultivariateSampleSpace& sample_space);
             
-            virtual size_t get_nb_variables() const;
-
             virtual void lock();
-            virtual void unlock();
-            virtual const bool& is_locked() const;
+            void unlock();
+            bool is_locked() const;
 
             virtual std::unique_ptr< MultivariateData > copy() const;
-         
+
+            virtual size_t get_nb_variables() const;
+
+            virtual const UnivariateDataFrame* get_variable(const size_t& index) const;
+            virtual void set_variable(const size_t& index, const UnivariateDataFrame& variable);
+
+            virtual void add_variable(const UnivariateDataFrame& variable);
+            virtual std::unique_ptr< UnivariateDataFrame > pop_variable();
+
+            virtual void insert_variable(const size_t& index, const UnivariateDataFrame& variable);
+            virtual void remove_variable(const size_t& index);
+
+            virtual size_t get_nb_events() const;
+
+            virtual std::unique_ptr< MultivariateEvent > get_event(const size_t& index) const;
+            virtual void set_event(const size_t& index, const MultivariateEvent* event);
+
+            virtual void add_event(const MultivariateEvent* event);
+            virtual std::unique_ptr< MultivariateEvent > pop_event();
+
+            virtual void insert_event(const size_t& index, const MultivariateEvent* event);
+            virtual void remove_event(const size_t& index);
+
         protected:
+            class SampleSpace;
+
+            SampleSpace* _sample_space;
             std::vector< UnivariateDataFrame* > _variables;
-            bool _locked;
+
+            class STATISKIT_CORE_API SampleSpace : public MultivariateSampleSpace
+            {
+                public:
+                    SampleSpace(const MultivariateDataFrame* data);
+                    SampleSpace(const SampleSpace& sample_space);
+                    virtual ~SampleSpace();
+
+                    virtual size_t size() const;
+                    
+                    virtual const UnivariateSampleSpace* get(const size_t& index) const;
+                                                            
+                    virtual std::unique_ptr< MultivariateSampleSpace > copy() const;
+
+                protected:
+                    const MultivariateDataFrame* _data;
+            };
+
+            class STATISKIT_CORE_API Generator : public MultivariateData::Generator
+            {
+                public:
+                    Generator(const MultivariateDataFrame* data);
+                    virtual ~Generator();
+
+                    virtual bool is_valid() const;
+
+                    virtual MultivariateData::Generator& operator++();
+
+                    virtual const MultivariateEvent* event() const;
+                    virtual double weight() const;
+
+                protected:
+                    const MultivariateDataFrame* _data;
+                    size_t _index;
+            };       
 
             class STATISKIT_CORE_API Event : public MultivariateEvent
             {
@@ -244,80 +285,14 @@ namespace statiskit
                     virtual size_t size() const;
                             
                     virtual const UnivariateEvent* get(const size_t& index) const;
-                    virtual void set(const size_t& index, const UnivariateEvent* event);
 
                     virtual std::unique_ptr< MultivariateEvent > copy() const;
 
-                    #if !defined(_WIN32) && !defined(WIN32)         
-                    virtual explicit operator bool() const;
-                    #else
-                    virtual operator bool() const;
-                    #endif
-
                 protected:
                     const MultivariateDataFrame* _data;
-                    size_t _index;                    
-
-                    class STATISKIT_CORE_API Generator : public MultivariateData::Generator
-                    {
-                        public:
-                            Generator(const Event* event);
-                            virtual ~Generator();
-
-                            #if !defined(_WIN32) && !defined(WIN32)         
-                            virtual explicit operator bool() const;
-                            #else
-                            virtual operator bool() const;
-                            #endif
-
-                            virtual MultivariateData::Generator& operator++();
-
-                            virtual const MultivariateEvent* event() const;
-                            virtual double weight() const;
-
-                        protected:
-                            Event* _event;
-                    };
-            };  */
-
-            // class Event : public MultivariateEvent
-            // {
-            //     public:
-            //         Event(const size_t* index, const MultivariateDataFrame* data);
-            //         Event(const Event& event);
-            //         //virtual ~Event();
-
-            //         virtual size_t size() const;
-
-            //         virtual const UnivariateEvent* get(const size_t& index) const;
-            //         virtual void set(const size_t& index, const UnivariateEvent* event);
- 
-            //         virtual std::unique_ptr< MultivariateEvent > copy() const;
-
-            //     protected:
-            //         const size_t* _index;
-            //         const MultivariateDataFrame* _data;
-            // };
-
-            // class SampleSpace : public MultivariateSampleSpace
-            // {
-            //     public:
-            //         SampleSpace(MultivariateDataFrame* data);
-            //         SampleSpace(const SampleSpace& sample_space);
-            //         virtual ~SampleSpace();
-
-            //         virtual size_t size() const;
-
-            //         virtual const UnivariateSampleSpace* get(const size_t& index) const;
- 
-            //         virtual std::unique_ptr< MultivariateSampleSpace > copy() const;
-
-            //     protected:
-            //         size_t _index;
-            //         MultivariateDataFrame* _data;
-            // };
-
-    //};
+                    size_t _index;
+            };                 
+    };
 
     /*template<class D>
     class DataMask : public D

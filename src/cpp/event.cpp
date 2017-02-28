@@ -35,4 +35,42 @@ namespace statiskit
 
     outcome_type ContinuousEvent::get_outcome() const
     { return CONTINUOUS; }
+
+    VectorEvent::VectorEvent(const size_t& size)
+    { _events.resize(size, nullptr); }
+
+    VectorEvent::VectorEvent(const VectorEvent& event)
+    {
+        _events.resize(event.size(), nullptr);
+        for(size_t index = 0, max_index = event.size(); index < max_index; ++index)
+        { _events[index] = event.get(index)->copy().release(); }
+    }
+
+    VectorEvent::~VectorEvent()
+    {
+        for(size_t index = 0, max_index = size(); index < max_index; ++index)
+        { 
+            if(_events[index])
+            { delete _events[index]; }
+            _events[index] = nullptr;
+        } 
+        _events.clear();
+    }
+
+    const UnivariateEvent* VectorEvent::get(const size_t& index) const
+    {
+        if(index > size())
+        { throw size_error("index", size(), size_error::inferior); }
+        return _events[index];
+    }
+
+    void VectorEvent::set(const size_t& index, const UnivariateEvent& event)
+    {
+        if(index > size())
+        { throw size_error("index", size(), size_error::inferior); }
+        _events[index] = event.copy().release();
+    }
+
+    std::unique_ptr< MultivariateEvent > VectorEvent::copy() const
+    { return std::make_unique< VectorEvent >(*this); }
 }

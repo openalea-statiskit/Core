@@ -12,11 +12,11 @@
 namespace statiskit
 {
     template<class D>
-        SlopeHeuristicEstimation< D >::SlopeHeuristicEstimation() : SlopeHeuristic()
+        SlopeHeuristicSelection< D >::SlopeHeuristicSelection() : SlopeHeuristic()
         { _models.clear(); }
     
     template<class D>
-        SlopeHeuristicEstimation< D >::SlopeHeuristicEstimation(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector, const std::vector< std::shared_ptr< D > >& models) : SlopeHeuristic(penshapes, scores, solver, selector)
+        SlopeHeuristicSelection< D >::SlopeHeuristicSelection(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector, const std::vector< std::shared_ptr< D > >& models) : SlopeHeuristic(penshapes, scores, solver, selector)
         {
             if(models.size() != penshapes.size())
             { throw std::runtime_error("invalid"); }
@@ -24,15 +24,15 @@ namespace statiskit
         }
 
     template<class D>
-        SlopeHeuristicEstimation< D >::SlopeHeuristicEstimation(const SlopeHeuristicEstimation< D >& she) : SlopeHeuristic(she)
+        SlopeHeuristicSelection< D >::SlopeHeuristicSelection(const SlopeHeuristicSelection< D >& she) : SlopeHeuristic(she)
         { _models = she._models; }
     
     template<class D>
-        const std::shared_ptr< D >& SlopeHeuristicEstimation< D >::get_model(const size_t& index) const
+        const std::shared_ptr< D >& SlopeHeuristicSelection< D >::get_model(const size_t& index) const
         { return _models[index]; }
 
     template<class D>
-        void SlopeHeuristicEstimation< D >::add(const double& penshape, const double& score, const std::shared_ptr< D >& model)
+        void SlopeHeuristicSelection< D >::add(const double& penshape, const double& score, const std::shared_ptr< D >& model)
         {
             if(boost::math::isfinite(penshape) && boost::math::isfinite(score))
             {
@@ -43,7 +43,7 @@ namespace statiskit
                     this->_scores.push_back(score);
                     _models.push_back(model);
                 }
-                else if(*it == penshape)
+                else if(*it == penshape)W
                 {
                     size_t index = distance(this->_penshapes.begin(), it);
                     if(this->_scores[index] < score)

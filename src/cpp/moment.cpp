@@ -65,6 +65,9 @@ namespace statiskit
         return estimation;
     }
 
+    std::unique_ptr< MeanEstimation::Estimator > NaturalMeanEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
     VarianceEstimation::VarianceEstimation(const double& mean)
     { _mean = mean; }
 
@@ -154,6 +157,9 @@ namespace statiskit
         }
         return estimation;
     }
+
+    std::unique_ptr< VarianceEstimation::Estimator > NaturalVarianceEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     const bool& NaturalVarianceEstimation::Estimator::get_bias() const
     { return _bias; }

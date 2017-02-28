@@ -13,21 +13,28 @@ namespace statiskit
     sample_size_error::sample_size_error(const std::string& parameter, const unsigned int& minsize) : parameter_error(parameter, "must contains at least " + to_string(minsize) + " different observations")
     {}
 
-    std::shared_ptr< UnivariateDistributionEstimation > CategoricalUnivariateDistributionEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    CategoricalUnivariateDistributionEstimation::Estimator::Estimator()
+    {}
+
+    CategoricalUnivariateDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    CategoricalUnivariateDistributionEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< UnivariateDistributionEstimation > CategoricalUnivariateDistributionEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != CATEGORICAL)
+        if(data.get_sample_space()->get_outcome() != CATEGORICAL)
         { throw statiskit::sample_space_error("data", CATEGORICAL); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         std::set< std::string > values;
-        double total = data->compute_total();
+        double total = data.compute_total();
         if(total > 0. && boost::math::isfinite(total))
         {
-            const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data->get_sample_space());
+            const CategoricalSampleSpace* sample_space = static_cast< const CategoricalSampleSpace* >(data.get_sample_space());
             values = sample_space->get_values();
             Eigen::VectorXd masses = Eigen::VectorXd::Zero(values.size());
-            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+            std::unique_ptr< UnivariateData::Generator > generator = data.generator();
             while(generator->is_valid())
             {
                 auto event = generator->event();
@@ -41,287 +48,328 @@ namespace statiskit
                 }
                 ++(*generator);
             }
-            std::shared_ptr< CategoricalUnivariateDistribution > distribution;
+            CategoricalUnivariateDistribution* distribution;
             switch(sample_space->get_ordering())
             {
                 case NONE:
                 case PARTIAL:
-                    distribution = std::make_shared< NominalDistribution >(values, masses);
+                    distribution = new NominalDistribution(values, masses);
                     break;
                 case TOTAL:
-                    distribution = std::make_shared< OrdinalDistribution >(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
+                    distribution = new OrdinalDistribution(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
                     break;
             }
             if(lazy)
-            { estimation = std::make_shared< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
+            { estimation = std::make_unique< CategoricalUnivariateDistributionLazyEstimation >(distribution); }
             else
-            { estimation = std::make_shared< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
+            { estimation = std::make_unique< CategoricalUnivariateDistributionActiveEstimation >(distribution, data); }
         }
         return estimation;
     }
 
-    std::shared_ptr< UnivariateDistributionEstimation > PoissonDistributionMLEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > CategoricalUnivariateDistributionEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    PoissonDistributionMLEstimation::Estimator::Estimator()
+    {}
+
+    PoissonDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    PoissonDistributionMLEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< UnivariateDistributionEstimation > PoissonDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != DISCRETE)
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error("data", DISCRETE); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation; 
+        std::unique_ptr< UnivariateDistributionEstimation > estimation; 
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > _estimation = estimator(data);
+        std::unique_ptr< MeanEstimation > _estimation = estimator(data);
         double mean = _estimation->get_mean(); 
         if(boost::math::isfinite(mean))
         {
-            auto poisson = std::make_shared< PoissonDistribution >(mean);
+            PoissonDistribution* poisson = new PoissonDistribution(mean);
             if(lazy)
-            { estimation = std::make_shared< LazyEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation > >(poisson); }
+            { estimation = std::make_unique< LazyEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation > >(poisson); }
             else
-            { estimation = std::make_shared< PoissonDistributionMLEstimation >(poisson, data); }
+            { estimation = std::make_unique< PoissonDistributionMLEstimation >(poisson, data); }
         }
         return estimation;
     }
 
-    std::shared_ptr< UnivariateDistributionEstimation > BinomialDistributionMLEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > PoissonDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    BinomialDistributionMLEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< UnivariateDistributionEstimation > BinomialDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != DISCRETE)
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error("data", DISCRETE); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
-        if(lazy)
-        { estimation = std::make_shared< LazyEstimation< UnivariateDistribution, DiscreteUnivariateDistributionEstimation > >((*this)(data, false)->get_estimated()); }
-        else
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
+        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
+        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_mean();
+        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
+        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_variance(); 
+        unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
+        BinomialDistribution* binomial = new BinomialDistribution(kappa, mean/double(kappa));
+        if(!lazy)
         {
-            std::shared_ptr< BinomialDistributionMLEstimation > _estimation = std::make_shared< BinomialDistributionMLEstimation >();
-            NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-            std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-            double mean = mean_estimation->get_mean();
-            NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-            std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
-            double variance = variance_estimation->get_variance(); 
-            if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean > variance)
+            estimation = std::make_unique< BinomialDistributionMLEstimation >(binomial, data);
+            std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa);
+        }
+        else
+        { estimation = std::make_unique< LazyEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation > >(binomial); }
+        double curr, prev = binomial->loglikelihood(*data);
+        unsigned int its = 1;
+        --kappa;
+        if(!lazy)
+        { std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
+        binomial->set_kappa(kappa);
+        binomial->set_pi(mean/double(kappa));
+        curr = binomial->loglikelihood(*data);
+        if(curr > prev)
+        {
+            do
             {
-                unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data->compute_maximum().get())->get_value());
-                auto binomial = std::make_shared< BinomialDistribution >(kappa, mean/double(kappa));
-                double curr = binomial->loglikelihood(*data);
-                _estimation->_iterations.push_back(binomial);
-                _estimation->_scores.push_back(curr);
+                prev = curr;
                 --kappa;
+                if(!lazy)
+                { std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
                 binomial->set_kappa(kappa);
                 binomial->set_pi(mean/double(kappa));
-                double prev = binomial->loglikelihood(*data);
-                if(prev > curr)
-                {
-                    unsigned int iteration = 1;
-                    curr = prev;
-                    do
-                    {
-                        prev = curr;
-                        --kappa;
-                        binomial->set_kappa(kappa);
-                        binomial->set_pi(mean/double(kappa));
-                        curr = binomial->loglikelihood(*data);
-                        _estimation->_iterations.push_back(binomial);
-                        _estimation->_scores.push_back(curr);
-                        ++iteration;
-                    } while(run(iteration, prev, curr));
-                }
-                else
-                {
-                    unsigned int iteration = 1;
-                    ++kappa;
-                    do
-                    {
-                        prev = curr;
-                        ++kappa;
-                        binomial->set_kappa(kappa);
-                        binomial->set_pi(mean/double(kappa));
-                        curr = binomial->loglikelihood(*data);
-                        _estimation->_iterations.push_back(binomial);
-                        _estimation->_scores.push_back(curr);
-                        ++iteration;
-                    } while(run(iteration, prev, curr));
-                }
-                estimation = _estimation;
+                curr = binomial->loglikelihood(*data);
+                ++its;
+            } while(run(its, prev, curr) && curr > prev);
+            if(curr < prev)
+            {
+                ++kappa;
+                if(!lazy)
+                { std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
+                binomial->set_kappa(kappa);
+                binomial->set_pi(mean/double(kappa));
             }
-            else
-            { estimation = std::make_shared< LazyEstimation< UnivariateDistribution, DiscreteUnivariateDistributionEstimation > >(); }
         }
+        else
+        {
+            ++kappa;
+            curr = prev;
+            do
+            {
+                prev = curr;
+                ++kappa;
+                if(!lazy)
+                { std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
+                binomial->set_kappa(kappa);
+                binomial->set_pi(mean/double(kappa));
+                curr = binomial->loglikelihood(*data);
+                ++its;
+            } while(run(its, prev, curr) && curr > prev);
+            if(curr < prev)
+            {
+                --kappa;
+                if(!lazy)
+                { std::static_pointer_cast< BinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
+                binomial->set_kappa(kappa);
+                binomial->set_pi(mean/double(kappa));
+            }
+        }
+
         return estimation;
     }
 
-    std::shared_ptr< UnivariateDistributionEstimation > BinomialDistributionMMEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    BinomialDistributionMMEstimation::Estimator::Estimator()
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != DISCRETE)
+        _mean = new NaturalMeanEstimation::Estimator();
+        _variance = new NaturalVarianceEstimation::Estimator(false);
+    }
+
+    BinomialDistributionMMEstimation::Estimator::Estimator(const Estimator& estimator)
+    {
+        _mean = estimator._mean->copy().release();
+        _variance = estimator._variance->copy().release();
+    }
+
+    BinomialDistributionMMEstimation::Estimator::~Estimator()
+    {
+        delete _mean;
+        delete _variance;
+    }
+
+    std::unique_ptr< UnivariateDistributionEstimation > BinomialDistributionMMEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
+    {
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error("data", DISCRETE); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation; 
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        std::unique_ptr< UnivariateDistributionEstimation > estimation; 
+        std::unique_ptr< MeanEstimation > mean_estimation = (*_mean)(data);
         double mean = mean_estimation->get_mean(); 
-        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        std::unique_ptr< VarianceEstimation > variance_estimation = (*_variance)(data, mean);
         double variance = variance_estimation->get_variance(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean > variance)
         {
-            unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data->compute_maximum().get())->get_value());
-            auto binomial = std::make_shared< BinomialDistribution >(kappa, mean/double(kappa));
+            unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
+            BinomialDistribution* binomial = new BinomialDistribution(kappa, mean/double(kappa));
             if(lazy)
-            { estimation = std::make_shared< LazyEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation > >(binomial); }
+            { estimation = std::make_unique< LazyEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation > >(binomial); }
             else
-            { estimation = std::make_shared< BinomialDistributionMMEstimation >(binomial, data); }
+            { estimation = std::make_unique< BinomialDistributionMMEstimation >(binomial, data); }
         }
         return estimation;
     }
 
-    std::shared_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMLEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
-    {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != DISCRETE)
-        { throw statiskit::sample_space_error("data", DISCRETE); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
-        if(lazy)
-        { estimation = std::make_shared< LazyEstimation< UnivariateDistribution, DiscreteUnivariateDistributionEstimation > >((*this)(data, false)->get_estimated()); }
-        else
-        {
-            std::shared_ptr< NegativeBinomialDistributionMLEstimation > _estimation = std::make_shared< NegativeBinomialDistributionMLEstimation >();
-            NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-            double total = data->compute_total();
-            std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-            double mean = mean_estimation->get_mean();
-            NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-            std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
-            double variance = variance_estimation->get_variance();
-            if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean < variance)
-            {
-                double kappa = pow(mean, 2)/(variance - mean);
-                auto negative_binomial = std::make_shared< NegativeBinomialDistribution >(kappa, mean / (mean + kappa));
-                double prev, curr = negative_binomial->loglikelihood(*data);
-                _estimation->_iterations.push_back(negative_binomial);
-                _estimation->_scores.push_back(curr);
-                unsigned int iteration = 1;
-                do
-                {
-                    prev = curr;
-                    double alpha = 0;
-                    std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-                    while(generator->is_valid())
-                    {
-                        const UnivariateEvent* event = generator->event();
-                        if(event && event->get_event() == ELEMENTARY)
-                        {
-                            for(int nu = 0, max_nu = static_cast< const DiscreteElementaryEvent* >(event)->get_value(); nu < max_nu; ++nu)
-                            { alpha += nu/(nu + kappa); }
-                        }
-                        ++(*generator);
-                    }
-                    alpha /= -total;
-                    alpha += mean;
-                    kappa = log(1 + mean/kappa)/alpha;
-                    negative_binomial->set_kappa(kappa);
-                    negative_binomial->set_pi(mean/(mean + kappa));
-                    curr = negative_binomial->loglikelihood(*data);
-                    ++iteration;
-                } while(run(iteration, prev, curr));
-                estimation = _estimation;
-            }
-            else
-            { estimation = std::make_shared< LazyEstimation< UnivariateDistribution, DiscreteUnivariateDistributionEstimation > >(); }
-        }
-        return estimation;
-    }
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMMEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
-    std::shared_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMMEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    const MeanEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_mean() const
+    { return _mean; }
+
+    void BinomialDistributionMMEstimation::Estimator::set_mean(const MeanEstimation::Estimator& mean)
+    { _mean = mean.copy().release(); }
+
+    const VarianceEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_variance() const
+    { return _variance; }
+
+    void BinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
+    { _variance = variance.copy().release(); }
+
+    NegativeBinomialDistributionMLEstimation::Estimator::~Estimator()
+    { }
+
+    std::unique_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != DISCRETE)
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error("data", DISCRETE); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation; 
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean(); 
+        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_mean();
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_variance();
+        double total = data.compute_total(), kappa;
+        if(variance > mean)
+        { kappa = pow(mean, 2)/(variance - mean); }
+        else
+        { kappa = 1.; }
+        NegativeBinomialDistribution* negative_binomial = new NegativeBinomialDistribution(kappa, mean / (mean + kappa));
+        if(!lazy)
+        {
+            estimation = std::make_unique< NegativeBinomialDistributionMLEstimation >(negative_binomial, data);
+            std::static_pointer_cast< NegativeBinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa);
+        }
+        else
+        { estimation = std::make_unique< LazyEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation > >(negative_binomial); }
+        double prev, curr = negative_binomial->loglikelihood(*data);
+        unsigned int its = 1;
+        do
+        {
+            prev = curr;
+            double alpha = 0;
+            std::unique_ptr< UnivariateData::Generator > generator = data.generator();
+            while(generator->is_valid())
+            {
+                const UnivariateEvent* event = generator->event();
+                if(event && event->get_event() == ELEMENTARY)
+                {
+                    for(int nu = 0, max_nu = static_cast< const DiscreteElementaryEvent* >(event)->get_value(); nu < max_nu; ++nu)
+                    { alpha += nu/(nu + kappa); }
+                }
+                ++(*generator);
+            }
+            alpha /= -total;
+            alpha += mean;
+            kappa = log(1 + mean/kappa)/alpha;
+            if(!lazy)
+            { std::static_pointer_cast< NegativeBinomialDistributionMLEstimation >(estimation)._steps.push_back(kappa); }
+            negative_binomial->set_kappa(kappa);
+            negative_binomial->set_pi(mean/(mean + kappa));
+            curr = negative_binomial->loglikelihood(*data);
+            ++its;
+        } while(run(iteration, prev, curr));
+        return estimation;
+    }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    NegativeBinomialDistributionMMEstimation::Estimator::Estimator()
+    {
+        _mean = new NaturalMeanEstimation::Estimator();
+        _variance = new NaturalVarianceEstimation::Estimator(false);
+    }
+
+    NegativeBinomialDistributionMMEstimation::Estimator::Estimator(const Estimator& estimator)
+    {
+        _mean = estimator._mean->copy().release();
+        _variance = estimator._variance->copy().release();
+    }
+
+    NegativeBinomialDistributionMMEstimation::Estimator::~Estimator()
+    {
+        delete _mean;
+        delete _variance;
+    }
+
+    std::unique_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMMEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
+    {
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
+        { throw statiskit::sample_space_error("data", DISCRETE); }
+        std::unique_ptr< UnivariateDistributionEstimation > estimation; 
+        std::unique_ptr< MeanEstimation > mean_estimation = (*_mean)(data);
+        double mean = mean_estimation->get_mean(); 
+        std::unique_ptr< VarianceEstimation > variance_estimation = (*_variance)(data, mean);
         double variance = variance_estimation->get_variance(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && variance > mean)
         {
-            auto negbinomial = std::make_shared< NegativeBinomialDistribution >(pow(mean, 2)/(variance - mean), 1. - mean/variance);
+            auto negbinomial = std::make_unique< NegativeBinomialDistribution >(pow(mean, 2)/(variance - mean), 1. - mean/variance);
             if(lazy)
-            { estimation = std::make_shared< LazyEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation > >(negbinomial); }
+            { estimation = std::make_unique< LazyEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation > >(negbinomial); }
             else
-            { estimation = std::make_shared< NegativeBinomialDistributionMMEstimation >(negbinomial, data); }
+            { estimation = std::make_unique< NegativeBinomialDistributionMMEstimation >(negbinomial, data); }
         }
         return estimation;
     }
-    
-    std::shared_ptr< UnivariateDistributionEstimation > NormalDistributionMLEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+
+    const MeanEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_mean() const
+    { return _mean; }
+
+    void NegativeBinomialDistributionMMEstimation::Estimator::set_mean(const MeanEstimation::Estimator& mean)
+    { _mean = mean.copy().release(); }
+
+    const VarianceEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_variance() const
+    { return _variance; }
+
+    void NegativeBinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
+    { _variance = variance.copy().release(); }
+
+    std::unique_ptr< UnivariateDistributionEstimation > NormalDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != CONTINUOUS)
+        if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error("data", CONTINUOUS); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
         double mean = mean_estimation->get_mean(); 
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::shared_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
+        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double std_err = sqrt(variance_estimation->get_variance()); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(std_err))
         {
-            auto normal = std::make_shared< NormalDistribution >(mean, std_err);
+            auto normal = std::make_unique< NormalDistribution >(mean, std_err);
             if(lazy)
-            { estimation = std::make_shared< LazyEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation > >(normal); }
+            { estimation = std::make_unique< LazyEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation > >(normal); }
             else
-            { estimation = std::make_shared< NormalDistributionMLEstimation >(normal, data); }
+            { estimation = std::make_unique< NormalDistributionMLEstimation >(normal, data); }
         }
         return estimation;
     }
-
-    /*NormalDistributionMMEstimation::Estimator::Estimator() : NormalDistributionMLEstimation::Estimator()
-    { _moment_estimator = std::make_shared< NaturalMomentEstimator >(false); }
-
-    NormalDistributionMMEstimation::Estimator::Estimator(const Estimator& estimator) : NormalDistributionMLEstimation::Estimator(estimator)
-    { _moment_estimator = estimator._moment_estimator; }
-
-    std::shared_ptr< UnivariateEstimation > NormalDistributionMMEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
-    {
-        if(data->get_sample_space()->get_outcome() != CONTINUOUS)
-        { throw std::runtime_error("value"); }
-        std::shared_ptr< NormalDistributionLazyEstimation > estimation;
-        double mean = _mu;
-        if(!boost::math::isfinite(mean))
-        { mean = (*_moment_estimator)(&data, false); }
-        double stderr = _sigma;
-        if(!boost::math::isfinite(stderr))
-        {
-            std::array< const UnivariateData*, 2 > datas{ {&data, &data} };
-            stderr = sqrt((*_moment_estimator)(datas, { {mean, mean} }, false));
-        }
-        if(boost::math::isfinite(mean) && boost::math::isfinite(stderr))
-        {
-            auto normal = std::make_shared< NormalDistribution >(mean, stderr);
-            if(lazy)
-            { estimation = std::make_shared< NormalDistributionLazyEstimation >(normal); }
-            else
-            { estimation = std::make_shared< NormalDistributionMMEstimation >(normal); }
-        }
-        return estimation;
-    }
-
-    const std::shared_ptr< MomentEstimator >& NormalDistributionMMEstimation::Estimator::get_moment_estimator() const
-    { return _moment_estimator; }
-
-    void NormalDistributionMMEstimation::Estimator::set_moment_estimator(const std::shared_ptr< MomentEstimator >& moment_estimator)
-    { 
-        if(moment_estimator)
-        { _moment_estimator = moment_estimator; }
-        else
-        { throw std::runtime_error("None"); }
-    }*/
 
     UnivariateHistogramDistributionEstimation::Estimator::Estimator()
     { _nb_bins = 0; }
@@ -329,16 +377,14 @@ namespace statiskit
     UnivariateHistogramDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
     { _nb_bins = estimator._nb_bins; }
 
-    std::shared_ptr< UnivariateDistributionEstimation > UnivariateHistogramDistributionEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation > UnivariateHistogramDistributionEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != CONTINUOUS)
+        if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error("data", CONTINUOUS); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         auto bins = std::set< double >();
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
-        std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+        std::unique_ptr< UnivariateData::Generator > generator = data.generator();
         double nb_bins = 0;
         while(generator->is_valid())
         {
@@ -373,7 +419,7 @@ namespace statiskit
             }
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
-            generator = data->generator();
+            generator = data.generator();
             while(generator->is_valid())
             {
                 auto event = generator->event();
@@ -392,14 +438,17 @@ namespace statiskit
                 }
                 ++(*generator);
             }
-            auto histogram = std::make_shared< UnivariateHistogramDistribution >(bins, densities);
+            auto histogram = std::make_unique< UnivariateHistogramDistribution >(bins, densities);
             if(lazy)
-            { estimation = std::make_shared< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(histogram); }
+            { estimation = std::make_unique< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(histogram); }
             else
-            { estimation = std::make_shared< UnivariateHistogramDistributionEstimation >(histogram, data); }
+            { estimation = std::make_unique< UnivariateHistogramDistributionEstimation >(histogram, data); }
         }
         return estimation;
     }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > UnivariateHistogramDistributionEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     const unsigned int& UnivariateHistogramDistributionEstimation::Estimator::get_nb_bins() const
     { return _nb_bins; }
@@ -407,9 +456,9 @@ namespace statiskit
     void UnivariateHistogramDistributionEstimation::Estimator::set_nb_bins(const unsigned int& nb_bins)
     { _nb_bins = nb_bins; }
 
-    std::shared_ptr< UnivariateDistribution > RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::get_estimated() const
+    std::unique_ptr< UnivariateDistribution > RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::get_estimated() const
     {
-        std::shared_ptr< UnivariateDistribution > estimated;
+        std::unique_ptr< UnivariateDistribution > estimated;
         if(_selected.size() > 0)
         { estimated = _models[_selected[(*_selector)(*this)]]; }
         return estimated;
@@ -421,13 +470,11 @@ namespace statiskit
     RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::Estimator(const Estimator& estimator)
     { _max_bins = estimator._max_bins; }
 
-    std::shared_ptr< UnivariateDistributionEstimation > RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation > RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != CONTINUOUS)
+        if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error("data", CONTINUOUS); }
-        auto cache = std::make_shared< RegularUnivariateHistogramDistributionSlopeHeuristicEstimation >();
+        auto cache = std::make_unique< RegularUnivariateHistogramDistributionSlopeHeuristicEstimation >();
         auto bins = std::set< double >();
         auto estimator = UnivariateHistogramDistributionEstimation::Estimator();
         for(size_t nb_bins = _max_bins; nb_bins > 0; --nb_bins)
@@ -441,13 +488,16 @@ namespace statiskit
             }
             cache->finalize();
         }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         if(lazy)
-        { estimation = std::make_shared< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(std::static_pointer_cast< UnivariateHistogramDistribution >(cache->get_estimated())); }
+        { estimation = std::make_unique< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(std::static_pointer_cast< UnivariateHistogramDistribution >(cache->get_estimated())); }
         else
         { estimation = cache; }
         return estimation;
     }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     const unsigned int& RegularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::get_max_bins() const
     { return _max_bins; }
@@ -459,9 +509,9 @@ namespace statiskit
         _max_bins = max_bins;
     }
     
-    std::shared_ptr< UnivariateDistribution > IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::get_estimated() const
+    std::unique_ptr< UnivariateDistribution > IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::get_estimated() const
     {
-        std::shared_ptr< UnivariateDistribution > estimated;
+        std::unique_ptr< UnivariateDistribution > estimated;
         if(_selected.size() > 0)
         { estimated = _models[_selected[(*_selector)(*this)]]; }
         return estimated;
@@ -479,16 +529,14 @@ namespace statiskit
         _constant = estimator._constant;
     }
 
-    std::shared_ptr< UnivariateDistributionEstimation > IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData >& data, const bool& lazy) const
+    std::unique_ptr< UnivariateDistributionEstimation > IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        if(!data)
-        { throw statiskit::nullptr_error("data"); }
-        if(data->get_sample_space()->get_outcome() != CONTINUOUS)
+        if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error("data", CONTINUOUS); }
-        auto cache = std::make_shared< IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation >();
+        auto cache = std::make_unique< IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation >();
         auto bins = std::set< double >();
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
-        std::unique_ptr< UnivariateData::Generator > generator = data->generator();
+        std::unique_ptr< UnivariateData::Generator > generator = data.generator();
         while(generator->is_valid())
         {
             auto event = generator->event();
@@ -519,7 +567,7 @@ namespace statiskit
             }
             auto densities = std::vector< double >(bins.size()-1, 0.);
             std::set< double >::iterator it;
-            generator = data->generator();
+            generator = data.generator();
             while(generator->is_valid())
             {
                 auto event = generator->event();
@@ -562,7 +610,7 @@ namespace statiskit
                     score -= *it;
                     if(bins.size() < _max_bins)
                     {
-                        auto current = std::make_shared< UnivariateHistogramDistribution >(bins, densities);
+                        auto current = std::make_unique< UnivariateHistogramDistribution >(bins, densities);
                         double penshape = bins.size()-1;
                         penshape = penshape * (1 + _constant * log(max_bins) - _constant * log(penshape));
                         cache->add(penshape, score, current);
@@ -602,13 +650,16 @@ namespace statiskit
         }
         else
         { throw std::runtime_error("individuals"); }
-        std::shared_ptr< UnivariateDistributionEstimation > estimation;
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
         if(lazy)
-        { estimation = std::make_shared< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(std::static_pointer_cast<  UnivariateHistogramDistribution >(cache->get_estimated())); }
+        { estimation = std::make_unique< LazyEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation > >(std::static_pointer_cast<  UnivariateHistogramDistribution >(cache->get_estimated())); }
         else
         { estimation = cache; }
         return estimation;
     }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     const unsigned int& IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation::Estimator::get_max_bins() const
     { return _max_bins; }
@@ -629,32 +680,4 @@ namespace statiskit
         { throw std::runtime_error("value"); }
         _constant = constant;
     }
-
-    /*void UnivariateConditionalDistributionEstimation::Estimator::check_indices(const data_type& data, const size_t& response, const std::set< size_t >& explanatories) const
-    {
-        if(response >= data.get_nb_variables())
-        { throw size_error("response", response, data.get_nb_variables(), size_error::size_type::superior); }
-        for(std::set< size_t >::const_iterator it = explanatories.cbegin(), it_end = explanatories.cend(); it != it_end ; ++it)
-        { 
-            if(*it >= data.get_nb_variables())
-            { throw size_error("explanatories", *it, data.get_nb_variables(), size_error::size_type::superior); }
-        }
-    }
-
-    /*template<>
-        std::shared_ptr< UnivariateDistributionEstimation::Estimator > get_default_estimator< UnivariateDistributionEstimation::Estimator >()
-        { return nullptr; }
-    
-    template<>
-        std::shared_ptr< CategoricalUnivariateDistributionEstimation::Estimator > get_default_estimator< CategoricalUnivariateDistributionEstimation::Estimator >()
-        { return std::make_shared< CategoricalUnivariateDistributionEstimation::Estimator >(); }
-
-    template<>
-        std::shared_ptr< DiscreteUnivariateDistributionEstimation::Estimator > get_default_estimator< DiscreteUnivariateDistributionEstimation::Estimator >()
-        { return std::make_shared< DiscreteUnivariateFrequencyDistributionEstimation::Estimator >(); }
-
-    template<>
-        std::shared_ptr< ContinuousUnivariateDistributionEstimation::Estimator > get_default_estimator< ContinuousUnivariateDistributionEstimation::Estimator >()
-        { return std::make_shared< NormalDistributionMLEstimation::Estimator >(); }*/
-
 }

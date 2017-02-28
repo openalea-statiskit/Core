@@ -613,6 +613,25 @@ namespace statiskit
     const std::shared_ptr< UnivariateSampleSpace >& MultivariateSampleSpace::get_sample_space(const size_t& index) const
     { return _sample_spaces[index]; }*/
 
+    bool MultivariateSampleSpace::is_compatible(const MultivariateEvent* event) const
+    {
+        bool compatible = !event || event->size() == size();
+        if(compatible)
+        {
+            const UnivariateSampleSpace* sample_space;
+            size_t index = 0, max_index = size();
+            while(compatible && index < max_index)
+            {
+                sample_space = get(index);
+                compatible = sample_space && sample_space->is_compatible(event->get(index));
+                ++index;
+            }
+        }
+        else
+        { compatible = event; }
+        return compatible;
+    }
+
     size_t MultivariateSampleSpace::encode() const
     {
         size_t _size = 0;

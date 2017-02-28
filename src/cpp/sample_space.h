@@ -193,12 +193,29 @@ namespace statiskit
         virtual size_t size() const = 0;
         
         virtual const UnivariateSampleSpace* get(const size_t& index) const = 0;
+
+        virtual bool is_compatible(const MultivariateEvent* event) const;
         
         virtual size_t encode() const;
         
         virtual Eigen::RowVectorXd encode(const MultivariateEvent& event) const;
         
         virtual std::unique_ptr< MultivariateSampleSpace > copy() const = 0;
+    };
+
+    class STATISKIT_CORE_API VectorSampleSpace : public MultivariateSampleSpace
+    {
+        public:
+            VectorSampleSpace(const std::vector< UnivariateSampleSpace >& sample_spaces);
+            VectorSampleSpace(const VectorSampleSpace& sample_space);
+            virtual ~VectorSampleSpace();
+
+            virtual size_t size() const;
+            
+            virtual const UnivariateSampleSpace* get(const size_t& index) const;
+            virtual void set(const size_t& index, const UnivariateSampleSpace& sample_space);
+            
+            virtual std::unique_ptr< MultivariateSampleSpace > copy() const;        
     };
 
 }

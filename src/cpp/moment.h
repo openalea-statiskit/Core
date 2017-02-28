@@ -18,7 +18,11 @@ namespace statiskit
         virtual const double& get_mean() const = 0;
 
         struct Estimator
-        { virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const = 0; };
+        { 
+            virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const = 0; 
+
+            virtual std::unique_ptr< Estimator > copy() const = 0;
+        };
     };
 
     class STATISKIT_CORE_API NaturalMeanEstimation : public MeanEstimation
@@ -35,6 +39,8 @@ namespace statiskit
                 Estimator(const Estimator& estimator);
 
                 virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
+
+                virtual std::unique_ptr< MeanEstimation::Estimator > copy() const;
             };
             
         protected:
@@ -55,6 +61,8 @@ namespace statiskit
             {
                 virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
                 virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const = 0;
+
+                virtual std::unique_ptr< Estimator > copy() const = 0;
             };
 
         protected:
@@ -78,6 +86,8 @@ namespace statiskit
                     Estimator(const Estimator& estimator);
                       
                     virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
+
+                    virtual std::unique_ptr< VarianceEstimation::Estimator > copy() const;
 
                     const bool& get_bias() const;
                     void set_bias(const bool& bias);
