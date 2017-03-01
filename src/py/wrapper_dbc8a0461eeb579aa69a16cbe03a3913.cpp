@@ -23,7 +23,7 @@ void wrapper_dbc8a0461eeb579aa69a16cbe03a3913()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< struct ::statiskit::BinomialDistributionMMEstimation, autowig::Held< struct ::statiskit::BinomialDistributionMMEstimation >::Type, boost::python::bases< class ::statiskit::ActiveEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_dbc8a0461eeb579aa69a16cbe03a3913("BinomialDistributionMMEstimation", "", boost::python::no_init);
-    class_dbc8a0461eeb579aa69a16cbe03a3913.def(boost::python::init< class ::std::shared_ptr< class ::statiskit::BinomialDistribution > const &, class ::std::shared_ptr< struct ::statiskit::UnivariateData > const & >(""));
+    class_dbc8a0461eeb579aa69a16cbe03a3913.def(boost::python::init< class ::statiskit::BinomialDistribution const *, struct ::statiskit::UnivariateData const * >(""));
 
     if(autowig::Held< struct ::statiskit::BinomialDistributionMMEstimation >::is_class)
     {

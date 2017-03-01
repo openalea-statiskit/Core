@@ -18,7 +18,7 @@
 namespace statiskit
 {
 
-    struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation::Estimator : UnivariateDistributionEstimation::Estimator;
+    struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation::Estimator : UnivariateDistributionEstimation::Estimator
     {
         Estimator();
         Estimator(const Estimator& estimator);
@@ -65,9 +65,9 @@ namespace statiskit
 
     struct STATISKIT_CORE_API BinomialDistributionMLEstimation : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        using OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator;
+        using OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
 
-        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator, OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        struct STATISKIT_CORE_API Estimator : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
             using OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
             virtual ~Estimator();
@@ -105,13 +105,13 @@ namespace statiskit
         };
     };
 
-    struct STATISKIT_CORE_API NegativeBinomialDistributionMLEstimation : OptimizationEstimation<double, BinomialDistribution, DiscreteUnivariateDistributionEstimation >
+    struct STATISKIT_CORE_API NegativeBinomialDistributionMLEstimation : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        using OptimizationEstimation<double, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
+        using OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
 
-        struct STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator, OptimizationEstimation<double, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        struct STATISKIT_CORE_API Estimator : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
-            using OptimizationEstimation<double, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
+            using OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
             virtual ~Estimator();
 
             virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
@@ -161,10 +161,10 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                const MeanEstimation::Estimator* get_mean() const;
+                MeanEstimation::Estimator* get_mean();
                 void set_mean(const MeanEstimation::Estimator& mean);
 
-                const VarianceEstimation::Estimator* get_variance() const;
+                VarianceEstimation::Estimator* get_variance();
                 void set_variance(const VarianceEstimation::Estimator& variance);
 
             protected:
@@ -209,11 +209,9 @@ namespace statiskit
         };
     };
 
-    struct STATISKIT_CORE_API RegularUnivariateHistogramDistributionSlopeHeuristicSelection : ContinuousUnivariateDistributionEstimation, SlopeHeuristicSelection< UnivariateHistogramDistribution >
+    struct STATISKIT_CORE_API RegularUnivariateHistogramDistributionSlopeHeuristicSelection : SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >
     {
-        using SlopeHeuristicSelection< UnivariateHistogramDistribution >::SlopeHeuristicSelection;
-
-        virtual std::unique_ptr< UnivariateDistribution > get_estimated() const;
+        using SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >::SlopeHeuristicSelection;
 
         class STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         {
@@ -233,11 +231,9 @@ namespace statiskit
         }; 
     };
 
-    struct STATISKIT_CORE_API IrregularUnivariateHistogramDistributionSlopeHeuristicSelection : ContinuousUnivariateDistributionEstimation, SlopeHeuristicSelection< UnivariateHistogramDistribution >
+    struct STATISKIT_CORE_API IrregularUnivariateHistogramDistributionSlopeHeuristicSelection : SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >
     {
-        using SlopeHeuristicSelection< UnivariateHistogramDistribution >::SlopeHeuristicSelection;
-
-        virtual std::unique_ptr< UnivariateDistribution > get_estimated() const;
+        using SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >::SlopeHeuristicSelection;
 
         class STATISKIT_CORE_API Estimator : public ContinuousUnivariateDistributionEstimation::Estimator
         {

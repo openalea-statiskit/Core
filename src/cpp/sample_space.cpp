@@ -10,9 +10,6 @@
 
 namespace statiskit
 {
-    sample_space_error::sample_space_error(const std::string& parameter, const outcome_type& expected) : parameter_error(parameter, "expected " + to_string(expected) + " outcome")
-    {}
-
     CategoricalSampleSpace::CategoricalSampleSpace(const std::set< std::string >& values)
     { _values = values; }
 
@@ -103,7 +100,7 @@ namespace statiskit
     {
         _reference = _values.cbegin();
         boost::random::uniform_int_distribution<> dist(0, get_cardinality()-1);
-        boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(__impl::get_random_generator(), dist);
         advance(_reference, simulator());
     }
 
@@ -255,7 +252,7 @@ namespace statiskit
         {
             std::set< std::string >::iterator itb = _values.begin();
             boost::random::uniform_int_distribution<> dist(0, distance(_values.begin(), ita));
-            boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(get_random_generator(), dist);
+            boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(__impl::get_random_generator(), dist);
             advance(itb, simulator());
             size_t buffer = _rank[distance(_values.cbegin(), ita)];
             _rank[distance(_values.cbegin(), ita)] = _rank[distance(_values.cbegin(), itb)];
@@ -705,4 +702,48 @@ namespace statiskit
         }
         return dummy;
     }
+
+    VectorSampleSpace::VectorSampleSpace(const std::vector< UnivariateSampleSpace* >& sample_spaces)
+    {
+        _sample_spaces.resize(sample_spaces.size(), nullptr);
+        for(size_t index = 0, max_index = sample_spaces.size(); index < max_index; ++index)
+        {
+            if(!sample_spaces[index])
+            { throw nullptr_error("sample_spaces"); }
+             _sample_spaces[index] = sample_spaces[index]->copy().release(); 
+        }
+    }
+
+    VectorSampleSpace::VectorSampleSpace(const VectorSampleSpace& sample_space)
+    {
+        _sample_spaces.resize(sample_space.size(), nullptr);
+        for(size_t index = 0, max_index = sample_space.size(); index < max_index; ++index)
+        { _sample_spaces[index] = sample_space._sample_spaces[index]->copy().release(); }
+    }
+
+    VectorSampleSpace::~VectorSampleSpace()
+    {
+        for(size_t index = 0, max_index = _sample_spaces.size(); index < max_index; ++index)
+        { 
+            delete _sample_spaces[index];
+            _sample_spaces[index] = nullptr;
+        }
+        _sample_spaces.clear();
+    }
+
+    size_t VectorSampleSpace::size() const
+    { return _sample_spaces.size(); }
+
+    const UnivariateSampleSpace* VectorSampleSpace::get(const size_t& index) const
+    { return _sample_spaces[index]; }
+
+    void VectorSampleSpace::set(const size_t& index, const UnivariateSampleSpace& sample_space)
+    { 
+        delete _sample_spaces[index];
+        _sample_spaces[index] = sample_space.copy().release();
+    }
+    
+    std::unique_ptr< MultivariateSampleSpace > VectorSampleSpace::copy() const
+    { return std::make_unique< VectorSampleSpace >(*this); }
+
 }

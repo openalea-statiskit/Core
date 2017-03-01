@@ -39,9 +39,6 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateSampleSpace > copy() const = 0;
     };
 
-    struct STATISKIT_CORE_API sample_space_error : parameter_error
-    { sample_space_error(const std::string& parameter, const outcome_type& expected); };
-
     enum encoding_type 
     {
         TREATMENT,
@@ -206,7 +203,7 @@ namespace statiskit
     class STATISKIT_CORE_API VectorSampleSpace : public MultivariateSampleSpace
     {
         public:
-            VectorSampleSpace(const std::vector< UnivariateSampleSpace >& sample_spaces);
+            VectorSampleSpace(const std::vector< UnivariateSampleSpace* >& sample_spaces);
             VectorSampleSpace(const VectorSampleSpace& sample_space);
             virtual ~VectorSampleSpace();
 
@@ -215,7 +212,10 @@ namespace statiskit
             virtual const UnivariateSampleSpace* get(const size_t& index) const;
             virtual void set(const size_t& index, const UnivariateSampleSpace& sample_space);
             
-            virtual std::unique_ptr< MultivariateSampleSpace > copy() const;        
+            virtual std::unique_ptr< MultivariateSampleSpace > copy() const;       
+
+        protected:
+            std::vector< UnivariateSampleSpace* > _sample_spaces;
     };
 
 }

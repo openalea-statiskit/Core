@@ -316,7 +316,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > PoissonDistribution::simulate() const
     {
         boost::poisson_distribution<> dist(_theta);
-        boost::variate_generator<boost::mt19937&, boost::poisson_distribution<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::poisson_distribution<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< DiscreteElementaryEvent >(simulator());
     }
 
@@ -393,7 +393,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > BinomialDistribution::simulate() const
     {
         boost::binomial_distribution<> dist(_kappa, _pi);
-        boost::variate_generator<boost::mt19937&, boost::binomial_distribution<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::binomial_distribution<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< DiscreteElementaryEvent >(simulator());
     }
 
@@ -484,7 +484,7 @@ namespace statiskit
     { return _kappa * _pi / pow(1. - _pi, 2); }
 
     std::unique_ptr< UnivariateEvent > NegativeBinomialDistribution::simulate() const
-    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(get_random_generator())())); }
+    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
 
     std::unique_ptr< UnivariateDistribution > NegativeBinomialDistribution::copy() const
     { return std::make_unique< NegativeBinomialDistribution >(*this); }
@@ -620,7 +620,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > NormalDistribution::simulate() const
     {
         boost::normal_distribution<> dist(_mu, _sigma);
-        boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(simulator());
     }
 
@@ -760,7 +760,7 @@ namespace statiskit
     }
 
     std::unique_ptr< UnivariateEvent > UnivariateHistogramDistribution::simulate() const
-    { return std::make_unique< ContinuousElementaryEvent >(quantile(boost::uniform_01<boost::mt19937&>(get_random_generator())())); }
+    { return std::make_unique< ContinuousElementaryEvent >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
 
     double UnivariateHistogramDistribution::get_mean() const
     {
@@ -866,7 +866,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > LogisticDistribution::simulate() const
     {       
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -942,7 +942,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > LaplaceDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -1008,7 +1008,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > CauchyDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -1104,7 +1104,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > NonStandardStudentDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -1221,7 +1221,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > GeneralizedStudentDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -1299,7 +1299,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > GumbelMaxDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
@@ -1365,7 +1365,7 @@ namespace statiskit
     std::unique_ptr< UnivariateEvent > GumbelMinDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(get_random_generator(), dist);
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 

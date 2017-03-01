@@ -25,9 +25,6 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
     class ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > >  (::statiskit::UnivariateDataFrame::*method_pointer_11c9562ddc765f7b8924280f0bee5f38)() const = &::statiskit::UnivariateDataFrame::generator;
     struct ::statiskit::UnivariateSampleSpace const * (::statiskit::UnivariateDataFrame::*method_pointer_072b76b0842455d4b80cd594e9f7f683)() const = &::statiskit::UnivariateDataFrame::get_sample_space;
     void  (::statiskit::UnivariateDataFrame::*method_pointer_b2b45040751857d9942654209dd4fdac)(struct ::statiskit::UnivariateSampleSpace const &) = &::statiskit::UnivariateDataFrame::set_sample_space;
-    void  (::statiskit::UnivariateDataFrame::*method_pointer_2fa5632d8ea95dfe901f37e190fc8206)() = &::statiskit::UnivariateDataFrame::lock;
-    void  (::statiskit::UnivariateDataFrame::*method_pointer_c7b8c3497af958bba4c84279002ebf91)() = &::statiskit::UnivariateDataFrame::unlock;
-    bool const & (::statiskit::UnivariateDataFrame::*method_pointer_c85f46ea457852a09b23df0b5934ddea)() const = &::statiskit::UnivariateDataFrame::is_locked;
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::UnivariateDataFrame::*method_pointer_e3125d321eff52ec8739bb1394a7a392)() const = &::statiskit::UnivariateDataFrame::copy;
     ::std::size_t  (::statiskit::UnivariateDataFrame::*method_pointer_ec123cb9662359159705d2b9db63dcaf)() const = &::statiskit::UnivariateDataFrame::get_nb_events;
     struct ::statiskit::UnivariateEvent const * (::statiskit::UnivariateDataFrame::*method_pointer_acfaaecaae6e563198d7e451796407a2)(::std::size_t const &) const = &::statiskit::UnivariateDataFrame::get_event;
@@ -42,9 +39,6 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
     class_5678c4d7ca565a7d9dbc239c27111073.def("__iter__", method_pointer_11c9562ddc765f7b8924280f0bee5f38, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_sample_space", method_pointer_072b76b0842455d4b80cd594e9f7f683, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("set_sample_space", method_pointer_b2b45040751857d9942654209dd4fdac, "");
-    class_5678c4d7ca565a7d9dbc239c27111073.def("lock", method_pointer_2fa5632d8ea95dfe901f37e190fc8206, "");
-    class_5678c4d7ca565a7d9dbc239c27111073.def("unlock", method_pointer_c7b8c3497af958bba4c84279002ebf91, "");
-    class_5678c4d7ca565a7d9dbc239c27111073.def("is_locked", method_pointer_c85f46ea457852a09b23df0b5934ddea, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("copy", method_pointer_e3125d321eff52ec8739bb1394a7a392, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_nb_events", method_pointer_ec123cb9662359159705d2b9db63dcaf, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_event", method_pointer_acfaaecaae6e563198d7e451796407a2, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");

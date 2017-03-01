@@ -9,6 +9,8 @@
 #ifndef STATISKIT_CORE_BASE_H
 #define STATISKIT_CORE_BASE_H
 
+#include <statiskit/linalg/Eigen.h>
+
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <type_traits>
@@ -44,9 +46,9 @@ namespace statiskit
 {
     namespace __impl
     {
-        inline double reldiff(const double& prev, const double& curr);
-        inline double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr);
-        inline double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
+        double reldiff(const double& prev, const double& curr);
+        double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr);
+        double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
 
         template<class T> std::string to_string(const T& t, const unsigned int& width=0);
 

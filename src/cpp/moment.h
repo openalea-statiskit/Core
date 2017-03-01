@@ -10,16 +10,20 @@
 #define STATISKIT_CORE_MOMENT_H
 
 #include "data.h"
+#include "estimation.h"
 
 namespace statiskit
 {
+    struct STATISKIT_CORE_API qualitative_sample_space_error : parameter_error
+    { qualitative_sample_space_error(); };
+
     struct STATISKIT_CORE_API MeanEstimation
     { 
         virtual const double& get_mean() const = 0;
 
         struct Estimator
         { 
-            virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const = 0; 
+            virtual std::unique_ptr< MeanEstimation > operator() (const UnivariateData& data) const = 0; 
 
             virtual std::unique_ptr< Estimator > copy() const = 0;
         };
@@ -38,7 +42,7 @@ namespace statiskit
                 Estimator();
                 Estimator(const Estimator& estimator);
 
-                virtual std::shared_ptr< MeanEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
+                virtual std::unique_ptr< MeanEstimation > operator() (const UnivariateData& data) const;
 
                 virtual std::unique_ptr< MeanEstimation::Estimator > copy() const;
             };
@@ -59,8 +63,8 @@ namespace statiskit
            
             struct Estimator
             {
-                virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
-                virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const = 0;
+                virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data) const;
+                virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const = 0;
 
                 virtual std::unique_ptr< Estimator > copy() const = 0;
             };
@@ -85,7 +89,7 @@ namespace statiskit
                     Estimator(const bool& bias);
                     Estimator(const Estimator& estimator);
                       
-                    virtual std::shared_ptr< VarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
+                    virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const;
 
                     virtual std::unique_ptr< VarianceEstimation::Estimator > copy() const;
 
@@ -113,10 +117,10 @@ namespace statiskit
            
             struct Estimator
             {
-                std::shared_ptr< CoVarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data) const;
-                std::shared_ptr< CoVarianceEstimation > operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const;
-                std::shared_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::shared_ptr< MultivariateDataFrame > data) const;
-                virtual std::shared_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::shared_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const = 0;            
+                std::unique_ptr< CoVarianceEstimation > operator() (const UnivariateData& data) const;
+                std::unique_ptr< CoVarianceEstimation > operator() (const UnivariateData& data, const double& mean) const;
+                std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data) const;
+                virtual std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const = 0;            
             };
 
         protected:
@@ -140,7 +144,7 @@ namespace statiskit
                     Estimator(const Estimator& estimator);
                       
                     using CoVarianceEstimation::Estimator::operator();
-                    virtual std::shared_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::shared_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const;
+                    virtual std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const;
 
                     const bool& get_bias() const;
                     void set_bias(const bool& bias);
@@ -178,7 +182,7 @@ namespace statiskit
         virtual double operator() (const std::array< const UnivariateData*, 4 >& df, const std::array<double, 4>& mean, const bool& na_omit=true) const;
         virtual double operator() (const std::array< const UnivariateData*, 4 >& df, const std::array<double, 4>& mean, const std::array<double, 4>& stderror, const bool& na_omit=true) const = 0;
 
-        virtual std::shared_ptr< MomentEstimator > copy() const = 0;
+        virtual std::unique_ptr< MomentEstimator > copy() const = 0;
     };
 
     class NaturalMomentEstimator : public MomentEstimator
@@ -195,7 +199,7 @@ namespace statiskit
 
             const bool& get_biased() const;
 
-            virtual std::shared_ptr< MomentEstimator > copy() const;
+            virtual std::unique_ptr< MomentEstimator > copy() const;
 
         protected:
             bool _biased;
@@ -206,5 +210,4 @@ namespace statiskit
     };*/
 }
 
-#include "moment.hpp"
 #endif

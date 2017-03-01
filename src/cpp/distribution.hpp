@@ -62,7 +62,7 @@ namespace statiskit
     template<class T>
         std::unique_ptr< UnivariateEvent > UnivariateFrequencyDistribution< T >::simulate() const
         {
-            double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(get_random_generator())();
+            double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
             typename std::set< typename T::event_type::value_type >::const_iterator it = _values.cbegin();
             while(it != _values.cend() && cp < sp)
             {
@@ -202,12 +202,26 @@ namespace statiskit
     template<class D>
         std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
         {
-            std::vector< UnivariateSampleSpace > sample_spaces;
+            std::vector< UnivariateSampleSpace* > sample_spaces(get_nb_variables(), nullptr);
             for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-            { sample_spaces.push_back(*(_marginals[variable]->get_sample_space().release())); }
-            return std::make_unique< MultivariateSampleSpace >(sample_spaces);
+            { sample_spaces[variable] = _marginals[variable]->get_sample_space().release(); }
+            return std::make_unique< VectorSampleSpace >(sample_spaces);
+            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
+            { 
+                delete sample_spaces[variable];
+                sample_spaces[variable] = nullptr;
+            }
         }
 
+    // template<class D>
+    //     std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
+    //     {
+    //         std::vector< std::unique_ptr< UnivariateSampleSpace > > sample_spaces(get_nb_variables());
+    //         for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
+    //         { sample_spaces.push_back(_marginals[variable]->get_sample_space()); }
+    //         return std::make_unique< VectorSampleSpace >(sample_spaces);
+    //     }
+        
     template<class D>
         size_t IndependentMultivariateDistribution< D >::get_nb_variables() const
         { return _marginals.size(); }
@@ -245,23 +259,23 @@ namespace statiskit
         }
 
     template<class D>
-        std::unique_ptr< typename D::marginal_type > IndependentMultivariateDistribution< D >:: get_marginal(const size_t& index) const
+        typename D::marginal_type* IndependentMultivariateDistribution< D >:: get_marginal(const size_t& index) const
         {
             if(index > get_nb_variables())
             { throw size_error("index", get_nb_variables(), size_error::inferior); }
-            return _marginals[index]->copy();
+            return _marginals[index];
         }
 
 
     template<class D>
-        void IndependentMultivariateDistribution< D >::set_marginal(const size_t& index, const std::unique_ptr< typename D::marginal_type >& marginal) 
+        void IndependentMultivariateDistribution< D >::set_marginal(const size_t& index, const typename D::marginal_type& marginal) 
         {
             if(index > get_nb_variables())
             { throw size_error("index", get_nb_variables(), size_error::inferior); }
-            if(_marginals[index]->get_sample_space()->get_outcome() != marginal->get_sample_space()->get_outcome())
+            if(_marginals[index]->get_sample_space()->get_outcome() != marginal.get_sample_space()->get_outcome())
             { throw parameter_error("marginal", "incompatible sample space"); }
             delete _marginals[index];
-            _marginals[index] = marginal.copy().release();
+            _marginals[index] = static_cast< typename D::marginal_type* >(marginal.copy().release());
         }
 
     template<class D>

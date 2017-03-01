@@ -36,8 +36,6 @@ namespace statiskit
 
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
     
-        virtual void lock() = 0;
-
         virtual std::unique_ptr< UnivariateData > copy() const = 0;
         
         double compute_total() const;
@@ -83,10 +81,6 @@ namespace statiskit
             virtual const UnivariateSampleSpace* get_sample_space() const;
             void set_sample_space(const UnivariateSampleSpace& sample_space);
 
-            virtual void lock();
-            void unlock();
-            const bool& is_locked() const;
-
             virtual std::unique_ptr< UnivariateData > copy() const;
 
             virtual size_t get_nb_events() const;
@@ -103,7 +97,6 @@ namespace statiskit
         protected:
             UnivariateSampleSpace* _sample_space;
             std::vector< UnivariateEvent* > _events;
-            bool _locked;
 
             class STATISKIT_CORE_API Generator : public UnivariateData::Generator
             {
@@ -185,7 +178,8 @@ namespace statiskit
 
         virtual const MultivariateSampleSpace* get_sample_space() const = 0;
 
-        virtual void lock() = 0;
+        virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const = 0;
+        virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const = 0;
 
         virtual std::unique_ptr< MultivariateData > copy() const = 0;
 
@@ -206,9 +200,8 @@ namespace statiskit
             virtual const MultivariateSampleSpace* get_sample_space() const;
             void set_sample_space(const MultivariateSampleSpace& sample_space);
             
-            virtual void lock();
-            void unlock();
-            bool is_locked() const;
+            virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const;
+            virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const;
 
             virtual std::unique_ptr< MultivariateData > copy() const;
 
@@ -291,7 +284,95 @@ namespace statiskit
                 protected:
                     const MultivariateDataFrame* _data;
                     size_t _index;
-            };                 
+            };
+
+            class STATISKIT_CORE_API UnivariateDataExtraction : public UnivariateData
+            {
+                public:
+                    UnivariateDataExtraction(const MultivariateDataFrame* data, const size_t& index);
+                    virtual ~UnivariateDataExtraction();
+
+                    virtual std::unique_ptr< UnivariateData::Generator > generator() const;
+
+                    virtual const UnivariateSampleSpace* get_sample_space() const;
+                
+                    virtual std::unique_ptr< UnivariateData > copy() const;                
+
+                protected:
+                    const UnivariateDataFrame* _data;
+            };
+
+            class STATISKIT_CORE_API MultivariateDataExtraction : public MultivariateData
+            {
+                public:
+                    MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< size_t >& index);
+                    virtual ~MultivariateDataExtraction();
+
+                    virtual std::unique_ptr< MultivariateData::Generator > generator() const;
+
+                    virtual const MultivariateSampleSpace* get_sample_space() const;
+
+                    virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const;
+
+                    virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const;
+
+                    virtual std::unique_ptr< MultivariateData > copy() const;
+
+                protected:
+                    const MultivariateDataFrame* _data;
+                    const MultivariateSampleSpace* _sample_space;
+                    std::vector< size_t > _indices;
+
+                    class STATISKIT_CORE_API SampleSpace : public MultivariateSampleSpace
+                    {
+                        public:
+                            SampleSpace(const MultivariateDataExtraction* data);
+                            virtual ~SampleSpace();
+
+                            virtual size_t size() const;
+                            
+                            virtual const UnivariateSampleSpace* get(const size_t& index) const;
+                                                                    
+                            virtual std::unique_ptr< MultivariateSampleSpace > copy() const;
+
+                        protected:
+                            const MultivariateDataExtraction* _data;
+                    };
+
+                    class STATISKIT_CORE_API Event : public MultivariateEvent
+                    {
+                        public:
+                            Event(const MultivariateDataExtraction* data, const size_t& index);
+                            virtual ~Event();
+
+                            virtual size_t size() const;
+                                    
+                            virtual const UnivariateEvent* get(const size_t& index) const;
+
+                            virtual std::unique_ptr< MultivariateEvent > copy() const;
+
+                            class STATISKIT_CORE_API Generator : public MultivariateData::Generator
+                            {
+                                public:
+                                    Generator(const MultivariateDataExtraction* data);
+                                    virtual ~Generator();
+
+                                    virtual bool is_valid() const;
+
+                                    virtual MultivariateData::Generator& operator++();
+
+                                    virtual const MultivariateEvent* event() const;
+                                    virtual double weight() const;
+
+                                protected:
+                                    Event* _event;
+                            };
+
+                        protected:
+                            const MultivariateDataExtraction* _data;
+                            size_t _index;
+                    };
+            };
     };
 
     /*template<class D>

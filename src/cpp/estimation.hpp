@@ -15,7 +15,7 @@ namespace statiskit
         LazyEstimation< D, B >::LazyEstimation(const LazyEstimation< D, B >& estimation)
         { 
             if(estimation._estimated)
-            { _estimated = estimation._estimated->copy().release(); }
+            { _estimated = static_cast< D* >(estimation._estimated->copy().release()); }
             else
             { _estimated = nullptr; }
         }
@@ -36,8 +36,13 @@ namespace statiskit
         { _data = nullptr; }
 
     template<class D, class B>
-        ActiveEstimation< D, B >::ActiveEstimation(const D * estimated, const typename B::data_type& data) : LazyEstimation< D, B >(estimated)
-        { _data = data.copy().release(); }
+        ActiveEstimation< D, B >::ActiveEstimation(const D * estimated, const typename B::data_type* data) : LazyEstimation< D, B >(estimated)
+        { 
+            if(data)
+            { _data = data->copy().release(); }
+            else
+            { _data = nullptr; }
+        }
 
     template<class D, class B>
         ActiveEstimation< D, B >::ActiveEstimation(const ActiveEstimation< D, B >& estimation) : LazyEstimation< D, B >(estimation)
@@ -56,6 +61,13 @@ namespace statiskit
 
     template<class D, class B>
         ListEstimation< D, B >::ListEstimation() : ActiveEstimation< D, B >()
+        {
+            _estimations.clear();
+            _scores.clear();
+        }
+
+    template<class D, class B>
+        ListEstimation< D, B >::ListEstimation(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
         {
             _estimations.clear();
             _scores.clear();
@@ -122,7 +134,7 @@ namespace statiskit
     template<class D, class B>
         ListEstimation< D, B >::Estimator::~Estimator()
         { 
-            for(size_t index = 0, max_index = estimator.size(); index < max_index; ++index)
+            for(size_t index = 0, max_index = _estimators.size(); index < max_index; ++index)
             { 
                 delete _estimators[index];
                 _estimators[index] = nullptr;
@@ -191,7 +203,7 @@ namespace statiskit
         }
 
     template<class D, class B>
-        void ListEstimation< D, B >::Estimator::set_estimator(const size_t& index, const typename B::Estimator& estimatior)
+        void ListEstimation< D, B >::Estimator::set_estimator(const size_t& index, const typename B::Estimator& estimator)
         { 
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
@@ -201,7 +213,7 @@ namespace statiskit
         }
 
     template<class D, class B>
-        void ListEstimation< D, B >::Estimator::add_estimator(const typename B::Estimator& estimatior)
+        void ListEstimation< D, B >::Estimator::add_estimator(const typename B::Estimator& estimator)
         { _estimators.push_back(estimator.copy().release()); }
 
     template<class D, class B>
@@ -215,100 +227,107 @@ namespace statiskit
             _estimators.erase(it);
         }
 
-    template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::OptimizationEstimation() : ActiveEstimation< D, B >()
-        { _steps.clear(); }
+    namespace __impl
+    {
+        template<class T, class D, class B>
+            OptimizationEstimation< T, D, B >::OptimizationEstimation() : ActiveEstimation< D, B >()
+            { _steps.clear(); }
 
-    template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::OptimizationEstimation(const OptimizationEstimation< D, B >& estimation) : ActiveEstimation< D, B >(estimation)
-        { 
-            if(std::is_pointer< T >::value)
-            {
-                _steps.resize(estimation.size(), nullptr);
-                for(size_t index = 0, max_index = estimation.size(); index < _max_index; ++index)
-                { _steps[index] = new T(estimation._steps[index]); }
-            }
-            else
+        template<class T, class D, class B>
+            OptimizationEstimation< T, D, B >::OptimizationEstimation(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
+            { _steps.clear(); }
+        template<class T, class D, class B>
+
+            OptimizationEstimation< T, D, B >::OptimizationEstimation(const OptimizationEstimation< T, D, B >& estimation) : ActiveEstimation< D, B >(estimation)
             { _steps = estimation._steps; }
-        }
 
-    template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::OptimizationEstimation()
-        {
-            if(std::is_pointer< T >::value)
+        template<class T, class D, class B>
+            size_t OptimizationEstimation< T, D, B >::size() const
+            { return _steps.size(); }
+
+        template<class T, class D, class B>
+            const T OptimizationEstimation< T, D, B >::get_step(const size_t& index) const
             {
-                for(size_t index = 0, max_index = size(); index < _max_index; ++index)
-                { 
-                    delete _steps[index];
-                    _steps[index] = nullptr; 
-                }
+                if(index >= size())
+                { throw size_error("index", size(), size_error::inferior); }
+                return _steps[index];
             }
-            _steps.clear();
-        }
 
-    template<class T, class D, class B>
-        size_t OptimizationEstimation< T, D, B >::size() const
-        { return _steps.size(); }
-
-    template<class T, class D, class B>
-        const T OptimizationEstimation< T, D, B >::get_step(const size_t& index) const
+        template<class T, class D, class B>
+            OptimizationEstimation< T, D, B >::Estimator::Estimator()
         {
-            if(index >= size())
-            { throw size_error("index", size(), size_error::inferior); }
-            return _steps[index];
+            _mindiff = 1e-5;
+            _minits = 10e2;
+            _maxits = 10e6;
         }
 
-    template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::Estimator::Estimator()
-    {
-        _mindiff = 1e-5;
-        _minits = 10e2;
-        _maxits = 10e6;
+        template<class T, class D, class B>
+            OptimizationEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator)
+        {
+            _mindiff = estimator._mindiff;
+            _minits = estimator._minits;
+            _maxits = estimator._maxits;
+        }
+
+        template<class T, class D, class B>
+            bool OptimizationEstimation< T, D, B >::Estimator::run(const unsigned int& its, const T& prev, const T& curr) const
+            { 
+                bool status = true;
+                double reldiff = __impl::reldiff(prev, curr);
+                if(!boost::math::isfinite(reldiff) || its > _maxits)
+                { status = false; }
+                else if(reldiff < _mindiff)
+                { status = false; }
+                return status;
+            }
+
+        template<class T, class D, class B>
+            const double& OptimizationEstimation< T, D, B >::Estimator::get_mindiff() const
+            { return _mindiff; }
+        
+        template<class T, class D, class B>
+            void OptimizationEstimation< T, D, B >::Estimator::set_mindiff(const double& mindiff)
+            { _mindiff = mindiff; }
+
+        template<class T, class D, class B>
+            unsigned int OptimizationEstimation< T, D, B >::Estimator::get_minits() const
+            { return _minits; }
+        
+        template<class T, class D, class B>
+            void OptimizationEstimation< T, D, B >::Estimator::set_minits(const unsigned int& minits)
+            { _minits = minits; }
+
+        template<class T, class D, class B>
+            unsigned int OptimizationEstimation< T, D, B >::Estimator::get_maxits() const
+            { return _maxits; }
+
+        template<class T, class D, class B>
+            void OptimizationEstimation< T, D, B >::Estimator::set_maxits(const unsigned int& maxits)
+            { _maxits = maxits; }
     }
 
     template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator)
-    {
-        _mindiff = estimator._mindiff;
-        _minits = estimator._minits;
-        _maxits = estimator._maxits;
-    }
+        OptimizationEstimation< T, D, B >::~OptimizationEstimation()
+        { this->_steps.clear(); }
+
 
     template<class T, class D, class B>
-        bool OptimizationEstimation< T, D, B >::Estimator::run(const unsigned int& iteration, const T& prev, const T& curr) const
+        OptimizationEstimation< T*, D, B >::OptimizationEstimation(const OptimizationEstimation< T*, D, B >& estimation) : __impl::OptimizationEstimation< T*, D, B >(estimation)
         { 
-            bool status = true;
-            double reldiff = __impl::reldiff(prev, curr);
-            if(!boost::math::isfinite(reldiff) || its > _maxits)
-            { status = false; }
-            else if(reldiff < _mindiff)
-            { status = false; }
-            return status;
+            for(size_t index = 0, max_index = this->_steps.size(); index < max_index; ++index)
+            { this->_steps[index] = new T(this->_steps[index]); }
         }
 
     template<class T, class D, class B>
-        const double& OptimizationEstimation< T, D, B >::Estimator::get_mindiff() const
-        { return _mindiff; }
-    
-    template<class T, class D, class B>
-        void OptimizationEstimation< T, D, B >::Estimator::set_mindiff(const double& mindiff)
-        { _mindiff = mindiff; }
-
-    template<class T, class D, class B>
-        unsigned int OptimizationEstimation< T, D, B >::Estimator::get_minits() const
-        { return _minits; }
-    
-    template<class T, class D, class B>
-        void OptimizationEstimation< T, D, B >::Estimator::set_minits(const unsigned int& minits)
-        { _minits = minits; }
-
-    template<class T, class D, class B>
-        unsigned int OptimizationEstimation< T, D, B >::Estimator::get_maxits() const
-        { return _maxits; }
-
-    template<class T, class D, class B>
-        void OptimizationEstimation< T, D, B >::Estimator::set_maxits(const unsigned int& maxits)
-        { _maxits = maxits; }
+        OptimizationEstimation< T*, D, B >::~OptimizationEstimation()
+        {
+            for(size_t index = 0, max_index = this->_steps.size(); index < max_index; ++index)
+            { 
+                delete this->_steps[index];
+                this->_steps[index] = nullptr; 
+            }
+            this->_steps.clear();
+        }
 }
 
 #endif

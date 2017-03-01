@@ -68,19 +68,19 @@ namespace statiskit
     }
 
     template<typename T, typename L>
-        lower_bound_error::lower_bound_error(const std::string& parameter, const T& value, const L& lower, const bool& strict) : parameter_error(parameter, to_string(value) +  "not " + std::string("strictly", 0, 8*strict) + " superior to " + to_string(lower))
+        lower_bound_error::lower_bound_error(const std::string& parameter, const T& value, const L& lower, const bool& strict) : parameter_error(parameter, __impl::to_string(value) +  "not " + std::string("strictly", 0, 8*strict) + " superior to " + __impl::to_string(lower))
         {}
 
     template<typename T, typename U>
-        upper_bound_error::upper_bound_error(const std::string& parameter, const T& value, const U& upper, const bool& strict) : parameter_error(parameter, to_string(value) + " not " + std::string("strictly", 0, 8*strict) + " inferior to " + to_string(upper))
+        upper_bound_error::upper_bound_error(const std::string& parameter, const T& value, const U& upper, const bool& strict) : parameter_error(parameter, __impl::to_string(value) + " not " + std::string("strictly", 0, 8*strict) + " inferior to " + __impl::to_string(upper))
         {}
 
     template<typename T, typename L, typename U>
-        interval_error::interval_error(const std::string& parameter, const T& value, const L& lower, const U& upper, const std::pair<bool, bool>& strict) : parameter_error(parameter, to_string(value) + " not " + std::string("strictly", 0, 8*strict.first) + " superior to " + to_string(lower) + " and " + std::string("strictly", 0, 8*strict.second) + " inferior to " + to_string(upper))
+        interval_error::interval_error(const std::string& parameter, const T& value, const L& lower, const U& upper, const std::pair<bool, bool>& strict) : parameter_error(parameter, __impl::to_string(value) + " not " + std::string("strictly", 0, 8*strict.first) + " superior to " + __impl::to_string(lower) + " and " + std::string("strictly", 0, 8*strict.second) + " inferior to " + __impl::to_string(upper))
         {}
 
     template<typename T>
-        duplicated_value_error::duplicated_value_error(const std::string& parameter, const T& value) : parameter_error(parameter, "contains multiples " + to_string(value))
+        duplicated_value_error::duplicated_value_error(const std::string& parameter, const T& value) : parameter_error(parameter, "contains multiples " + __impl::to_string(value))
         {}
 }
 

@@ -22,11 +22,12 @@ void wrapper_a640206684935d01aa5be922b3bbdf00()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    boost::python::class_< struct ::statiskit::BinomialDistributionMLEstimation, autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, boost::python::bases< class ::statiskit::OptimizationEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_a640206684935d01aa5be922b3bbdf00("BinomialDistributionMLEstimation", "", boost::python::no_init);
+    boost::python::class_< struct ::statiskit::BinomialDistributionMLEstimation, autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, boost::python::bases< struct ::statiskit::OptimizationEstimation< unsigned int, class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_a640206684935d01aa5be922b3bbdf00("BinomialDistributionMLEstimation", "", boost::python::no_init);
+    class_a640206684935d01aa5be922b3bbdf00.def(boost::python::init< class ::statiskit::BinomialDistribution const *, struct ::statiskit::UnivariateData const * >(""));
 
     if(autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, autowig::Held< class ::statiskit::OptimizationEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, autowig::Held< struct ::statiskit::OptimizationEstimation< unsigned int, class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type >();
     }
 
 }

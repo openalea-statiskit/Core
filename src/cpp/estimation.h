@@ -3,11 +3,23 @@
 #define STATISKIT_CORE_ESTIMATION_H
 
 #include "base.h"
+#include "sample_space.h"
+#include "data.h"
+#include "distribution.h"
 
 namespace statiskit
 {
+    struct STATISKIT_CORE_API sample_space_error : parameter_error
+    { sample_space_error(const outcome_type& expected); };
+
     struct STATISKIT_CORE_API sample_size_error : parameter_error
-    { sample_size_error(const std::string& parameter, const unsigned int& minsize); };
+    { sample_size_error(const unsigned int& minsize); };
+
+    struct STATISKIT_CORE_API overdispersion_error : parameter_error
+    { overdispersion_error(); };
+
+    struct STATISKIT_CORE_API underdispersion_error : parameter_error
+    { underdispersion_error(); };
 
     struct STATISKIT_CORE_API UnivariateDistributionEstimation
     {
@@ -20,6 +32,7 @@ namespace statiskit
         { 
             typedef UnivariateDistributionEstimation estimation_type;
 
+            virtual std::unique_ptr< estimation_type > operator() (const MultivariateData& data, const size_t& index) const;
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
 
             virtual std::unique_ptr< Estimator > copy() const = 0;
@@ -45,7 +58,7 @@ namespace statiskit
     {
         public:
             ActiveEstimation();
-            ActiveEstimation(D const * estimated, typename B::data_type const & data);
+            ActiveEstimation(D const * estimated, typename B::data_type const * data);
             ActiveEstimation(const ActiveEstimation< D, B >& estimation);
             virtual ~ActiveEstimation();
 
@@ -59,6 +72,7 @@ namespace statiskit
     {
         public:
             ListEstimation();
+            ListEstimation(D const * estimated, typename B::data_type const * data);
             ListEstimation(const ListEstimation< D, B >& estimation);
             virtual ~ListEstimation();
 
@@ -80,9 +94,9 @@ namespace statiskit
                     size_t size() const;
 
                     typename B::Estimator * get_estimator(const size_t& index);
-                    void set_estimator(const size_t& index, typename B::Estimator& estimator);
+                    void set_estimator(const size_t& index, const typename B::Estimator& estimator);
 
-                    void add_estimator(typename B::Estimator& estimator);
+                    void add_estimator(const typename B::Estimator& estimator);
                     void remove_estimator(const size_t& index);
 
                 protected:
@@ -98,42 +112,58 @@ namespace statiskit
             void finalize();
     };
 
-    template<class T, class D, class B> struct OptimizationEstimation : ActiveEstimation< D, B >
+    namespace __impl 
     {
-        public:
-            OptimizationEstimation();
-            OptimizationEstimation(const OptimizationEstimation< D, B >& estimation);
-            virtual ~OptimizationEstimation();
+        template<class T, class D, class B> class OptimizationEstimation : public ActiveEstimation< D, B >
+        {
+            public:
+                OptimizationEstimation();
+                OptimizationEstimation(D const * estimated, typename B::data_type const * data);            
+                OptimizationEstimation(const OptimizationEstimation< T, D, B >& estimation);
 
-            size_t size() const;
+                size_t size() const;
 
-            const T get_step(const size_t& index) const;
+                const T get_step(const size_t& index) const;
 
-            class STATISKIT_CORE_API Estimator : public B::Estimator
-            {
-                public:
-                    Estimator();
-                    Estimator(const Estimator& estimator);
-                   
-                    const double& get_mindiff() const;
-                    void set_mindiff(const double& mindiff);
-                    
-                    unsigned int get_minits() const;
-                    void set_minits(const unsigned int& maxits);
+                class STATISKIT_CORE_API Estimator : public B::Estimator
+                {
+                    public:
+                        Estimator();
+                        Estimator(const Estimator& estimator);
+                       
+                        const double& get_mindiff() const;
+                        void set_mindiff(const double& mindiff);
+                        
+                        unsigned int get_minits() const;
+                        void set_minits(const unsigned int& maxits);
 
-                    unsigned int get_maxits() const;
-                    void set_maxits(const unsigned int& maxits);
+                        unsigned int get_maxits() const;
+                        void set_maxits(const unsigned int& maxits);
 
-                protected:
-                    double _mindiff;
-                    unsigned int _minits;
-                    unsigned int _maxits;
+                    protected:
+                        double _mindiff;
+                        unsigned int _minits;
+                        unsigned int _maxits;
 
-                    bool run(const unsigned int& its, const T& prev, const T& curr) const;
-            };
+                        bool run(const unsigned int& its, const T& prev, const T& curr) const;
+                };
 
-        protected:
-            std::vector< T > _steps;
+            protected:
+                std::vector< T > _steps;
+        };
+    }
+
+    template<class T, class D, class B> struct OptimizationEstimation : __impl::OptimizationEstimation<T, D, B >
+    {
+        using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
+        virtual ~OptimizationEstimation();
+    };
+
+    template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
+    {
+        using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
+        virtual ~OptimizationEstimation();
     };
 
     struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation
@@ -150,7 +180,7 @@ namespace statiskit
 
     struct MultivariateDistributionEstimation
     {
-        typedef MultivariateDataFrame data_type;
+        typedef MultivariateData data_type;
         typedef MultivariateDistribution estimated_type;
         typedef UnivariateDistributionEstimation marginal_type;
 
@@ -174,16 +204,12 @@ namespace statiskit
         struct Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    typedef IndependentMultivariateDistributionEstimation< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalIndependentMultivariateDistributionEstimation;
-
     struct DiscreteMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
         typedef DiscreteUnivariateDistributionEstimation marginal_type;
 
         struct Estimator : MultivariateDistributionEstimation::Estimator {};
     };
-
-    typedef IndependentMultivariateDistributionEstimation< DiscreteMultivariateDistribution, DiscreteMultivariateDistributionEstimation > DiscreteIndependentMultivariateDistributionEstimation;
 
     struct ContinuousMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {

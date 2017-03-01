@@ -17,3 +17,8 @@ try:
     from matplotlib import pyplot
 except ImportError:
     pyplot = NotImportedModule('matplotlib.pyplot')
+
+try:
+    import pandas
+except ImportError:
+    pandas = NotImportedModule('pandas')

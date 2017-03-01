@@ -26,14 +26,10 @@ void wrapper_227ebcabe93051fdb49f2bd6c608d881()
     boost::python::object module_e5e03034302f5c6ca9d068a205353d2a(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_e5e03034302f5c6ca9d068a205353d2a.c_str()))));
     boost::python::scope().attr("_negative_binomial_distribution_ml_estimation") = module_e5e03034302f5c6ca9d068a205353d2a;
     boost::python::scope scope_e5e03034302f5c6ca9d068a205353d2a = module_e5e03034302f5c6ca9d068a205353d2a;
-    class ::std::shared_ptr< struct ::statiskit::UnivariateDistributionEstimation >  (::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::*method_pointer_5c43f3f5f62353838a98d987314c4790)(class ::std::shared_ptr< struct ::statiskit::UnivariateData > const &, bool const &) const = &::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::operator();
-    boost::python::class_< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator, autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator, class ::statiskit::Optimization > > class_227ebcabe93051fdb49f2bd6c608d881("Estimator", "", boost::python::no_init);
-    class_227ebcabe93051fdb49f2bd6c608d881.def("__call__", method_pointer_5c43f3f5f62353838a98d987314c4790, "");
-
-    if(autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::is_class)
-    {
-        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, autowig::Held< class ::statiskit::Optimization >::Type >();
-    }
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::*method_pointer_ba9271ea1eb857249980f2ba801ce542)(struct ::statiskit::UnivariateData const &, bool const &) const = &::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::operator();
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > >  (::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::*method_pointer_1e4562d15c50584fa620a7ca038184a7)() const = &::statiskit::NegativeBinomialDistributionMLEstimation::Estimator::copy;
+    boost::python::class_< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator, autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type > class_227ebcabe93051fdb49f2bd6c608d881("Estimator", "", boost::python::no_init);
+    class_227ebcabe93051fdb49f2bd6c608d881.def("__call__", method_pointer_ba9271ea1eb857249980f2ba801ce542, "");
+    class_227ebcabe93051fdb49f2bd6c608d881.def("copy", method_pointer_1e4562d15c50584fa620a7ca038184a7, "");
 
 }

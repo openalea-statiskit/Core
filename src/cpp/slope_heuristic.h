@@ -143,6 +143,7 @@ namespace statiskit
             SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores);
             SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const SlopeHeuristicSolver& solver, const SlopeHeuristicSelector& selector);
             SlopeHeuristic(const SlopeHeuristic& sh);
+            virtual ~SlopeHeuristic();
 
             size_t size() const;
 
@@ -162,7 +163,7 @@ namespace statiskit
             void set_solver(const SlopeHeuristicSolver& solver);
 
             SlopeHeuristicSelector* get_selector();
-            void set_selector(const SlopeHeuristicSelector* _selector);
+            void set_selector(const SlopeHeuristicSelector& _selector);
             
         protected:
             std::vector< double > _penshapes;
@@ -176,18 +177,25 @@ namespace statiskit
             void finalize();
     };
 
-    template<class D> class SlopeHeuristicSelection : public SlopeHeuristic
+    template<class E> class SlopeHeuristicSelection : public SlopeHeuristic, public E
     {
         public:
-            SlopeHeuristicSelection();
-            SlopeHeuristicSelection(const SlopeHeuristicSelection< D >& she);
+            SlopeHeuristicSelection(const typename E::data_type* data);
+            SlopeHeuristicSelection(const SlopeHeuristicSelection< E >& she);
+            virtual ~SlopeHeuristicSelection();
 
-            const std::shared_ptr< D >& get_model(const size_t& index) const;
+            virtual typename E::estimated_type const * get_estimated() const;
+
+            const typename E::estimated_type* get_estimated(const size_t& index) const;
+
+            const typename E::data_type* get_data() const;
+
             
         protected:
-            std::vector< std::shared_ptr< D > > _models;
+            typename E::data_type* _data;
+            std::vector< typename E::estimated_type* > _estimated;
 
-            void add(const double& penshape, const double& score, const std::shared_ptr< D >& model);
+            void add(const double& penshape, const double& score, typename E::estimated_type* model);
     };
 }
 
