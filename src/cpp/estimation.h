@@ -26,11 +26,15 @@ namespace statiskit
         typedef UnivariateData data_type;
         typedef UnivariateDistribution estimated_type;
 
+        virtual ~UnivariateDistributionEstimation() = 0;
+
         virtual estimated_type const * get_estimated() const = 0;
         
         struct STATISKIT_CORE_API Estimator
         { 
             typedef UnivariateDistributionEstimation estimation_type;
+
+            virtual ~Estimator() = 0;
 
             virtual std::unique_ptr< estimation_type > operator() (const MultivariateData& data, const size_t& index) const;
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
@@ -120,6 +124,7 @@ namespace statiskit
                 OptimizationEstimation();
                 OptimizationEstimation(D const * estimated, typename B::data_type const * data);            
                 OptimizationEstimation(const OptimizationEstimation< T, D, B >& estimation);
+                virtual ~OptimizationEstimation();
 
                 size_t size() const;
 
@@ -130,7 +135,8 @@ namespace statiskit
                     public:
                         Estimator();
                         Estimator(const Estimator& estimator);
-                       
+                        virtual ~Estimator();
+
                         const double& get_mindiff() const;
                         void set_mindiff(const double& mindiff);
                         
@@ -158,8 +164,11 @@ namespace statiskit
         using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
         virtual ~OptimizationEstimation();
 
-        struct Estimator : public __impl::OptimizationEstimation<T, D, B >::Estimator
-        { using __impl::OptimizationEstimation<T, D, B >::Estimator::Estimator; };
+        struct Estimator : __impl::OptimizationEstimation<T, D, B >::Estimator
+        { 
+            using __impl::OptimizationEstimation<T, D, B >::Estimator::Estimator;
+            virtual ~Estimator();
+        };
     };
 
     template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
@@ -168,8 +177,11 @@ namespace statiskit
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
-        struct Estimator : public __impl::OptimizationEstimation<T*, D, B >::Estimator
-        { using __impl::OptimizationEstimation<T*, D, B >::Estimator::Estimator; };
+        struct Estimator : __impl::OptimizationEstimation<T*, D, B >::Estimator
+        { 
+            using __impl::OptimizationEstimation<T*, D, B >::Estimator::Estimator;
+            virtual ~Estimator();
+        };
     };
 
     struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation
@@ -184,44 +196,48 @@ namespace statiskit
     struct STATISKIT_CORE_API ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
 
-    struct MultivariateDistributionEstimation
+    struct STATISKIT_CORE_API MultivariateDistributionEstimation
     {
         typedef MultivariateData data_type;
         typedef MultivariateDistribution estimated_type;
         typedef UnivariateDistributionEstimation marginal_type;
 
+        virtual ~MultivariateDistributionEstimation() = 0;
+
         virtual estimated_type const * get_estimated() const = 0;
         
-        struct Estimator
+        struct STATISKIT_CORE_API Estimator
         {
             typedef MultivariateDistributionEstimation estimation_type;
             typedef UnivariateDistributionEstimation marginal_type;
 
+            virtual ~Estimator() = 0;
+
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
 
-            virtual std::unique_ptr< Estimator > copy() const;
+            virtual std::unique_ptr< Estimator > copy() const = 0;
         };
     };
 
-    struct CategoricalMultivariateDistributionEstimation : MultivariateDistributionEstimation
+    struct STATISKIT_CORE_API CategoricalMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
         typedef CategoricalUnivariateDistributionEstimation marginal_type;
 
-        struct Estimator : MultivariateDistributionEstimation::Estimator {};
+        struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    struct DiscreteMultivariateDistributionEstimation : MultivariateDistributionEstimation
+    struct STATISKIT_CORE_API DiscreteMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
         typedef DiscreteUnivariateDistributionEstimation marginal_type;
 
-        struct Estimator : MultivariateDistributionEstimation::Estimator {};
+        struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    struct ContinuousMultivariateDistributionEstimation : MultivariateDistributionEstimation
+    struct STATISKIT_CORE_API ContinuousMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
         typedef ContinuousUnivariateDistributionEstimation marginal_type;
 
-        struct Estimator : MultivariateDistributionEstimation::Estimator {};
+        struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 }
 

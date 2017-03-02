@@ -281,10 +281,10 @@ namespace statiskit
     template<class D>
         std::unique_ptr< MultivariateEvent > IndependentMultivariateDistribution< D >::simulate() const
         {
-            std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(get_nb_variables());
+            VectorEvent* event = new VectorEvent(get_nb_variables());
             for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
             { event->set(variable, *(_marginals[variable]->simulate().get())); }
-            return event;
+            return std::unique_ptr< MultivariateEvent >(event);
         }
 }
 

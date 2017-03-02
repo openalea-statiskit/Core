@@ -67,6 +67,9 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > CategoricalUnivariateDistributionEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
+    PoissonDistributionMLEstimation::~PoissonDistributionMLEstimation()
+    {}
+
     PoissonDistributionMLEstimation::Estimator::Estimator()
     {}
 
@@ -97,6 +100,9 @@ namespace statiskit
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > PoissonDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
+
+    BinomialDistributionMLEstimation::~BinomialDistributionMLEstimation()
+    {}
 
     BinomialDistributionMLEstimation::Estimator::~Estimator()
     {}
@@ -182,6 +188,9 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
+    BinomialDistributionMMEstimation::~BinomialDistributionMMEstimation()
+    {}
+
     BinomialDistributionMMEstimation::Estimator::Estimator()
     {
         _mean = new NaturalMeanEstimation::Estimator();
@@ -238,8 +247,11 @@ namespace statiskit
     void BinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
     { _variance = variance.copy().release(); }
 
+    NegativeBinomialDistributionMLEstimation::~NegativeBinomialDistributionMLEstimation()
+    {}
+
     NegativeBinomialDistributionMLEstimation::Estimator::~Estimator()
-    { }
+    {}
 
     std::unique_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
@@ -298,6 +310,9 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
+    NegativeBinomialDistributionMMEstimation::~NegativeBinomialDistributionMMEstimation()
+    {}
+
     NegativeBinomialDistributionMMEstimation::Estimator::Estimator()
     {
         _mean = new NaturalMeanEstimation::Estimator();
@@ -353,6 +368,12 @@ namespace statiskit
     void NegativeBinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
     { _variance = variance.copy().release(); }
 
+    NormalDistributionMLEstimation::~NormalDistributionMLEstimation()
+    {}
+
+    NormalDistributionMLEstimation::Estimator::~Estimator()
+    {}
+
     std::unique_ptr< UnivariateDistributionEstimation > NormalDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
         if(data.get_sample_space()->get_outcome() != CONTINUOUS)
@@ -378,11 +399,17 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > NormalDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
+    UnivariateHistogramDistributionEstimation::~UnivariateHistogramDistributionEstimation()
+    {}
+
     UnivariateHistogramDistributionEstimation::Estimator::Estimator()
     { _nb_bins = 0; }
 
     UnivariateHistogramDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
     { _nb_bins = estimator._nb_bins; }
+
+    UnivariateHistogramDistributionEstimation::Estimator::~Estimator()
+    {}
 
     std::unique_ptr< UnivariateDistributionEstimation > UnivariateHistogramDistributionEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
@@ -465,11 +492,17 @@ namespace statiskit
     void UnivariateHistogramDistributionEstimation::Estimator::set_nb_bins(const unsigned int& nb_bins)
     { _nb_bins = nb_bins; }
 
+    RegularUnivariateHistogramDistributionSlopeHeuristicSelection::~RegularUnivariateHistogramDistributionSlopeHeuristicSelection()
+    {}
+
     RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator()
     { _max_bins = 100; }
 
     RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator(const Estimator& estimator)
     { _max_bins = estimator._max_bins; }
+
+    RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::~Estimator()
+    {}
 
     std::unique_ptr< UnivariateDistributionEstimation > RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
@@ -519,6 +552,9 @@ namespace statiskit
         _max_bins = max_bins;
     }
 
+    IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::~IrregularUnivariateHistogramDistributionSlopeHeuristicSelection()
+    {}
+
     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator()
     {
         _max_bins = 100; 
@@ -530,6 +566,9 @@ namespace statiskit
         _max_bins = estimator._max_bins;
         _constant = estimator._constant;
     }
+
+    IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::~Estimator()
+    {}
 
     std::unique_ptr< UnivariateDistributionEstimation > IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {

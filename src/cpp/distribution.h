@@ -1603,7 +1603,7 @@ namespace statiskit
         typedef ContinuousUnivariateDistribution response_type;
     };      
 
-    struct MultivariateDistribution
+    struct STATISKIT_CORE_API MultivariateDistribution
     {
         typedef UnivariateDistribution marginal_type;
 
@@ -1630,17 +1630,17 @@ namespace statiskit
         virtual std::unique_ptr< MultivariateDistribution > copy() const = 0;
     };
 
-    struct CategoricalMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API CategoricalMultivariateDistribution : MultivariateDistribution
     {
         typedef CategoricalUnivariateDistribution marginal_type;
     };
 
-    struct DiscreteMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API DiscreteMultivariateDistribution : MultivariateDistribution
     {
         typedef DiscreteUnivariateDistribution marginal_type;
     };
 
-    struct ContinuousMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution
     {
         typedef ContinuousUnivariateDistribution marginal_type;
     };

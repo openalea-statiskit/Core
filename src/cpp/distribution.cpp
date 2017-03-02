@@ -1378,22 +1378,15 @@ namespace statiskit
     std::unique_ptr< UnivariateDistribution > GumbelMinDistribution::copy() const
     { return std::make_unique< GumbelMinDistribution >(*this); }      
      
-    /*NormalRegression::NormalRegression(const std::shared_ptr< ScalarPredictor >& predictor, const double& sigma) : NormalDistribution(std::numeric_limits< double >::quiet_NaN(), sigma)
+    double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {
-        _mu = std::numeric_limits< double >::quiet_NaN();
-        _sigma = sigma;
-        _predictor = predictor; 
+        double llh = 0.;
+        std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        while(generator->is_valid() && boost::math::isfinite(llh))
+        { 
+            llh += generator->weight() * probability(generator->event(), true);
+            ++(*generator);
+        }
+        return llh;
     }
-
-    NormalRegression::~NormalRegression()
-    {}
-
-    NormalRegression::NormalRegression(const NormalRegression& normal) : NormalDistribution(normal)
-    { _predictor = normal._predictor; }
-
-    void NormalRegression::conditioning(const MultivariateEvent& event)
-    { _mu = (*_predictor)(event); }
-    
-    const std::shared_ptr< ScalarPredictor >& NormalRegression::get_predictor() const
-    { return _predictor; }*/
 }

@@ -12,6 +12,10 @@
 namespace statiskit
 {    
     template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::~UnivariateFrequencyDistributionEstimation()
+        {}
+
+    template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::Estimator::Estimator()
         {}
 
@@ -70,6 +74,10 @@ namespace statiskit
         { return std::make_unique< Estimator >(*this); }
 
     template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::~IndependentMultivariateDistributionEstimation()
+        {}
+
+    template<class D, class E>
         size_t IndependentMultivariateDistributionEstimation< D, E >::size() const 
         { return _estimations.size(); }
 
@@ -96,6 +104,10 @@ namespace statiskit
             for(typename std::map< size_t, typename E::Estimator::marginal_type* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
             { _estimators[it->first] = it->second->copy().release(); }
         }
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::Estimator::~Estimator() 
+        {}
 
     template<class D, class E>
         std::unique_ptr< MultivariateDistributionEstimation > IndependentMultivariateDistributionEstimation< D, E >::Estimator::operator() (const MultivariateData& data, const bool& lazy) const 

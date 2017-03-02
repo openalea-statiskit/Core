@@ -11,19 +11,23 @@ from functools import wraps
 from matplotlib import pyplot as plt, patches
 import numpy as np
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import UnivariateDistribution,\
-        CategoricalEvent, CategoricalUnivariateDistribution, NominalDistribution, OrdinalDistribution,\
-        DiscreteEvent, DiscreteUnivariateDistribution, DiscreteUnivariateFrequencyDistribution, PoissonDistribution,\
-        ContinuousEvent, ContinuousUnivariateDistribution, ContinuousUnivariateFrequencyDistribution, UnivariateHistogramDistribution, NormalDistribution,\
-        _UnivariateFrequencyDistribution, _QuantitativeUnivariateFrequencyDistribution,\
-        MultivariateDistribution, _IndependentMultivariateDistribution,\
-        CategoricalMultivariateDistribution, CategoricalIndependentMultivariateDistribution,\
-        DiscreteMultivariateDistribution, DiscreteIndependentMultivariateDistribution,\
-        ContinuousMultivariateDistribution, ContinuousIndependentMultivariateDistribution
+import _core
+from __core.statiskit import (UnivariateDistribution,
+                              CategoricalUnivariateDistribution, NominalDistribution, OrdinalDistribution,
+                              DiscreteUnivariateDistribution, DiscreteUnivariateFrequencyDistribution, PoissonDistribution,
+                              ContinuousUnivariateDistribution, ContinuousUnivariateFrequencyDistribution, UnivariateHistogramDistribution, NormalDistribution,
+                              _UnivariateFrequencyDistribution, _QuantitativeUnivariateFrequencyDistribution,
+                              MultivariateDistribution, _IndependentMultivariateDistribution,
+                              CategoricalMultivariateDistribution, CategoricalIndependentMultivariateDistribution,
+                              DiscreteMultivariateDistribution, DiscreteIndependentMultivariateDistribution,
+                              ContinuousMultivariateDistribution, ContinuousIndependentMultivariateDistribution)
 
 from statiskit.core.controls import controls
-from statiskit.core.event import *
+from statiskit.core.event import (UnivariateEvent,
+                                  CategoricalEvent,
+                                  DiscreteEvent,
+                                  ContinuousEvent,
+                                  MultivariateEvent)
 
 __all__ = ['NominalDistribution', 'OrdinalDistribution',
            'DiscreteUnivariateFrequencyDistribution', 'PoissonDistribution',
@@ -58,9 +62,6 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
 
 CategoricalUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
-
-CategoricalUnivariateDistribution.pi = property(CategoricalUnivariateDistribution.get_pi)
-del CategoricalUnivariateDistribution.get_pi
 
 def wrapper(f):
     @wraps(f)
@@ -332,15 +333,8 @@ del ContinuousUnivariateDistribution.get_variance
 
 def statiskit_univariate_frequency_distribution_decorator(cls):
 
-    if cls.EventType == CategoricalEvent:
-
-        cls.pi = property(cls.pi.fget, cls.set_pi)
-        del cls.set_pi
-
-    else:
-
-        cls.pi = property(cls.get_pi, cls.set_pi)
-        del cls.get_pi, cls.set_pi
+    cls.pi = property(cls.get_pi, cls.set_pi)
+    del cls.get_pi, cls.set_pi
 
     if cls.EventType == DiscreteEvent:
 

@@ -4,7 +4,6 @@
 #include <boost/python.hpp>
 #include <type_traits>
 #include <statiskit/core/slope_heuristic.h>
-#include <statiskit/core/optimization.h>
 #include <statiskit/core/base.h>
 #include <statiskit/core/mixture.h>
 #include <statiskit/core/estimator.h>
