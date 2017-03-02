@@ -157,6 +157,9 @@ namespace statiskit
     {
         using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
         virtual ~OptimizationEstimation();
+
+        struct Estimator : public __impl::OptimizationEstimation<T, D, B >::Estimator
+        { using __impl::OptimizationEstimation<T, D, B >::Estimator::Estimator; };
     };
 
     template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
@@ -164,6 +167,9 @@ namespace statiskit
         using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
+
+        struct Estimator : public __impl::OptimizationEstimation<T*, D, B >::Estimator
+        { using __impl::OptimizationEstimation<T*, D, B >::Estimator::Estimator; };
     };
 
     struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation

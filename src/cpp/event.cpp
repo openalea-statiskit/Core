@@ -57,6 +57,9 @@ namespace statiskit
         _events.clear();
     }
 
+    size_t VectorEvent::size() const
+    { return _events.size(); }
+
     const UnivariateEvent* VectorEvent::get(const size_t& index) const
     {
         if(index > size())

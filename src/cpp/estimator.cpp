@@ -338,6 +338,9 @@ namespace statiskit
         return estimation;
     }
 
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMMEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+    
     MeanEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_mean()
     { return _mean; }
 
@@ -371,6 +374,9 @@ namespace statiskit
         }
         return estimation;
     }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > NormalDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     UnivariateHistogramDistributionEstimation::Estimator::Estimator()
     { _nb_bins = 0; }

@@ -9,8 +9,7 @@
 import types
 from functools import wraps
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import get_imin, get_imax, get_nn, get_zz, get_uimax, get_inf, get_rr, get_nr, get_pr, get_nan, get_random_generator, get_maxits, get_minits, get_epsilon
+from __core.statiskit import get_imin, get_imax, get_nn, get_zz, get_uimax, get_inf, get_rr, get_nr, get_pr, get_nan, get_random_generator, get_maxits, get_minits, get_epsilon
 
 __all__ = ['controls']
 

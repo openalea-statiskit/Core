@@ -138,7 +138,7 @@ namespace statiskit
          *
          * \see \ref ::statiskit::NegativeBinomialDistribution.
          * */
-        class STATISKIT_CORE_API Estimator : DiscreteUnivariateDistributionEstimation::Estimator
+        class STATISKIT_CORE_API Estimator : public DiscreteUnivariateDistributionEstimation::Estimator
         { 
             public:
                 Estimator();
@@ -157,7 +157,6 @@ namespace statiskit
                  *          \f]
                  * */
                 virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
-
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 

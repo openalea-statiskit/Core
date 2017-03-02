@@ -497,8 +497,7 @@ namespace statiskit
     }
 
     std::unique_ptr< MultivariateData::Generator > MultivariateDataFrame::generator() const
-    { return std::make_unique< MultivariateDataFrame::Generator >(this); }
-
+    { return std::make_unique< MultivariateDataFrame::Event::Generator >(this); }
 
     const MultivariateSampleSpace* MultivariateDataFrame::get_sample_space() const
     { return _sample_space; }
@@ -696,7 +695,25 @@ namespace statiskit
     {
         for(size_t _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
         { _variables[_index]->remove_event(index); }
-    } 
+    }
+
+    MultivariateDataFrame::SampleSpace::SampleSpace(const MultivariateDataFrame* data)
+    { _data = data; }
+
+    MultivariateDataFrame::SampleSpace::SampleSpace(const SampleSpace& sample_space)
+    { _data = sample_space._data; }
+
+    MultivariateDataFrame::SampleSpace::~SampleSpace()
+    {}
+
+    size_t MultivariateDataFrame::SampleSpace::size() const
+    { return _data->get_nb_variables(); }
+
+    const UnivariateSampleSpace* MultivariateDataFrame::SampleSpace::get(const size_t& index) const
+    { return _data->_variables[index]->get_sample_space(); }
+
+    std::unique_ptr< MultivariateSampleSpace > MultivariateDataFrame::SampleSpace::copy() const
+    { return std::make_unique< SampleSpace >(*this); }
 
     MultivariateDataFrame::Event::Event(const MultivariateDataFrame* data, const size_t& index)
     {
@@ -725,6 +742,27 @@ namespace statiskit
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::copy() const
     { return std::make_unique< MultivariateDataFrame::Event >(*this); }
+
+    MultivariateDataFrame::Event::Generator::Generator(const MultivariateDataFrame* data)
+    { _event = new MultivariateDataFrame::Event(data, 0); }
+
+    MultivariateDataFrame::Event::Generator::~Generator()
+    { delete _event; }
+
+    bool MultivariateDataFrame::Event::Generator::is_valid() const
+    { return _event->_index < _event->_data->get_nb_events(); }
+
+    MultivariateDataFrame::Generator& MultivariateDataFrame::Event::Generator::operator++()
+    {
+        ++(_event->_index);
+        return *this;
+    }
+
+    const MultivariateEvent* MultivariateDataFrame::Event::Generator::event() const
+    { return _event; }
+
+    double MultivariateDataFrame::Event::Generator::weight() const
+    { return 1.; }
 
     MultivariateDataFrame::UnivariateDataExtraction::UnivariateDataExtraction(const MultivariateDataFrame* data, const size_t& index)
     { _data = data->get_variable(index); }

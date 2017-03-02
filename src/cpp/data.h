@@ -250,24 +250,6 @@ namespace statiskit
                     const MultivariateDataFrame* _data;
             };
 
-            class STATISKIT_CORE_API Generator : public MultivariateData::Generator
-            {
-                public:
-                    Generator(const MultivariateDataFrame* data);
-                    virtual ~Generator();
-
-                    virtual bool is_valid() const;
-
-                    virtual MultivariateData::Generator& operator++();
-
-                    virtual const MultivariateEvent* event() const;
-                    virtual double weight() const;
-
-                protected:
-                    const MultivariateDataFrame* _data;
-                    size_t _index;
-            };       
-
             class STATISKIT_CORE_API Event : public MultivariateEvent
             {
                 public:
@@ -280,6 +262,23 @@ namespace statiskit
                     virtual const UnivariateEvent* get(const size_t& index) const;
 
                     virtual std::unique_ptr< MultivariateEvent > copy() const;
+
+                    class STATISKIT_CORE_API Generator : public MultivariateData::Generator
+                    {
+                        public:
+                            Generator(const MultivariateDataFrame* data);
+                            virtual ~Generator();
+
+                            virtual bool is_valid() const;
+
+                            virtual MultivariateData::Generator& operator++();
+
+                            virtual const MultivariateEvent* event() const;
+                            virtual double weight() const;
+
+                        protected:
+                            Event* _event;
+                    };     
 
                 protected:
                     const MultivariateDataFrame* _data;
