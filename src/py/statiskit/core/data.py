@@ -9,33 +9,92 @@
 from functools import wraps
 import warnings
 import re
+import ast
 
 import _core
-from __core.statiskit import NamedData, UnivariateDataFrame, WeightedUnivariateDataFrame, MultivariateDataFrame
+from __core.statiskit import (UnivariateData,
+                              NamedData,
+                              UnivariateDataFrame, WeightedUnivariateDataFrame,
+                              MultivariateData,
+                              MultivariateDataFrame)
 
 from controls import controls
 from event import outcome_type
-# from estimator import frequency_estimation, histogram_estimation
 
 __all__ = ['UnivariateDataFrame', 'WeightedUnivariateDataFrame', 'MultivariateDataFrame']
 
 UnivariateData.Generator.__nonzero__ = UnivariateData.Generator.is_valid
-del UnivariateData.Generator.is_valid
+MultivariateData.Generator.__nonzero__ = MultivariateData.Generator.is_valid
+del UnivariateData.Generator.is_valid, MultivariateData.Generator.is_valid
 
 UnivariateData.Generator.event = property(UnivariateData.Generator.event)
+MultivariateData.Generator.event = property(MultivariateData.Generator.event)
+
 UnivariateData.Generator.weight = property(UnivariateData.Generator.weight)
+MultivariateData.Generator.weight = property(MultivariateData.Generator.weight)
 
 def wrapper_next(f):
+
+    class IteratorState(object):
+
+        def __init__(self, generator):
+            self._event = generator.event
+            self._weight = generator.weight
+
+        @property
+        def event(self):
+            return self._event
+
+        @property
+        def weight(self):
+            return self._weight
+
     @wraps(f)
     def next(self):
         if not self:
             raise StopIteration()
         else:
-            return self.__next__()
+            state = IteratorState(self)
+            f(self)
+            return state
+
+    return next
 
 UnivariateData.Generator.next = wrapper_next(UnivariateData.Generator.__next__)
+del wrapper_next
+
+def wrapper_next(f):
+
+    class IteratorState(object):
+
+        def __init__(self, generator):
+            self._event = generator.event[:]
+            self._weight = generator.weight
+
+        @property
+        def event(self):
+            return self._event
+
+        @property
+        def weight(self):
+            return self._weight
+
+    @wraps(f)
+    def next(self):
+        if not self:
+            raise StopIteration()
+        else:
+            state = IteratorState(self)
+            f(self)
+            return state
+
+    return next
+
+MultivariateData.Generator.next = wrapper_next(MultivariateData.Generator.__next__)
+del wrapper_next
 
 UnivariateData.sample_space = property(UnivariateData.get_sample_space)
+MultivariateData.sample_space = property(MultivariateData.get_sample_space)
 del UnivariateData.get_sample_space
 
 UnivariateData.total = property(UnivariateData.compute_total)
@@ -45,101 +104,54 @@ UnivariateData.min = property(UnivariateData.compute_minimum)
 del UnivariateData.compute_minimum
 
 UnivariateData.max = property(UnivariateData.compute_maximum)
-del UnivariateData.compute_minimum
+del UnivariateData.compute_maximum
 
-def wrapper(f):
+def wrapper_set_name(f):
     @wraps(f)
-    def __init__(self, *args):
-        if len(args) > 0:
-            if isinstance(args[0], NamedData):
-                f(self, args[0])
-            else:
-                f(self, args[0])
-                if len(args) > 1:
-                    self.ascii = args[1]
-                    if len(args) > 2:
-                        self.latex = args[1]
-                elif not self.identifier == args[0]:
-                    self.ascii = args[0]
+    def set_name(self, name):
+        if not isinstance(name, basestring):
+            raise TypeError('expected basestring, but got {!r}'.format(type(name)))
+
+        is_name = True
+        try:
+            root = ast.parse(name)
+        except SyntaxError:
+            is_name = False
         else:
-            f(self)
-    return __init__
+            if not isinstance(root, ast.Module):
+                is_name = False
+            if len(root.body) != 1:
+                is_name = False
+            if not isinstance(root.body[0], ast.Expr):
+                is_name = False
+            if not isinstance(root.body[0].value, ast.Name):
+                is_name = False
+            if root.body[0].value.id != name:
+                is_name = False
+        if not is_name:
+            warn = "invalid identifier " + name
+            name = re.sub('[^0-9a-zA-Z_]', '', name)
+            name = re.sub('^[^a-zA-Z_]+', '', name)
+            warnings.warn(warn + " converted to " + name, SyntaxWarning)
 
-NamedData.__init__ = wrapper(NamedData.__init__)
-del wrapper
+        f(self, name)
+        
+    return set_name
 
-def wrapper(f):
-    @wraps(f)
-    def set_identifier(self, identifier):
-        f(self, identifier)
-    return set_identifier
+NamedData.name = property(NamedData.get_name, wrapper_set_name(NamedData.set_name))
+del wrapper_set_name, NamedData.get_name, NamedData.set_name
 
-NamedData.identifier = property(NamedData.get_identifier, wrapper(NamedData.set_identifier))
-del wrapper, NamedData.get_identifier, NamedData.set_identifier
+UnivariateDataFrame.sample_space = property(UnivariateData.sample_space.fget, UnivariateDataFrame.set_sample_space)
+del UnivariateDataFrame.set_sample_space
 
-# def wrapper(f):
-#     @wraps(f)
-#     def get_ascii(self):
-#         ascii = f(self)
-#         if ascii == '':
-#             return self.identifier
-#         else:
-#             return ascii
-#     return get_ascii
+UnivariateDataFrame.nb_events = property(UnivariateDataFrame.get_nb_events)
+del UnivariateDataFrame.get_nb_events
 
-# NamedData.ascii = property(wrapper(NamedData.get_ascii), NamedData.set_ascii)
-# del wrapper, NamedData.get_ascii, NamedData.set_ascii
-
-# def __repr__(self):
-#     return self.ascii
-
-# NamedData.__str__ = NamedData.__repr__
-# NamedData.__repr__ = __repr__
-# del __repr__
-
-# def wrapper(f):
-#     @wraps(f)
-#     def get_latex(self):
-#         latex = f(self)
-#         if latex == '':
-#             ascii = self.ascii
-#             if re.match("V([0-9]*)", ascii):
-#                 return r"$\text{V}_{" + ascii[1:] + "}$"
-#             else:
-#                 return r"$\text{" + ascii + "}$"
-#         else:
-#             return latex
-#     return get_latex
-
-# NamedData.latex = property(wrapper(NamedData.get_latex), NamedData.set_latex)
-# del wrapper, NamedData.get_latex, NamedData.set_latex
-
-# def _repr_latex_(self):
-#     return self.latex
-
-# NamedData._repr_latex_ = _repr_latex_
-# del _repr_latex_
-
-def wrapper(f):
-    @wraps(f)
-    def __init__(self, *args):
-        variables = UnivariateDataFrameVector()
-        for arg in args:
-            try:
-                variables.push_back(arg)
-            except:
-                raise
-        f(self, variables)
-    return __init__
-
-MultivariateDataFrame.__init__ = wrapper(MultivariateDataFrame.__init__)
-del wrapper
-
-def __repr__(self):
-    if len(self) > controls.head:
-        rows = [("", repr(self.name))] + [(repr(index), repr(event)) if event is not None else (repr(index), '?') for index, event in enumerate(self) if index < controls.head] + [('...', '...')] + [(repr(index), repr(event)) if event is not None else (repr(index), '?') for index, event in enumerate(self) if index > max(len(self) - controls.tail, controls.head)]
+def __str__(self):
+    if self.nb_events > controls.head:
+        rows = [("", str(self.name))] + [(str(index), str(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self) if index < controls.head] + [('...', '...')] + [(repr(index), repr(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self) if index > max(self.nb_events - controls.tail, controls.head)]
     else:
-        rows = [("", repr(self.name))] + [(repr(index), repr(event)) if event is not None else (repr(index), '?') for index, event in enumerate(self)]
+        rows = [("", str(self.name))] + [(str(index), str(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self)]
     columns = zip(*rows)
     maxima = [max(max(*[len(row) for row in column]), 3) + 2 for column in columns]
     string = []
@@ -147,25 +159,9 @@ def __repr__(self):
         string.append(' '.join(('{:<' + repr(maximum) + '}').format(row[index]) for index, maximum in enumerate(maxima)))
     return '\n'.join(string)
 
-UnivariateDataFrame.__str__ = UnivariateDataFrame.__repr__
-UnivariateDataFrame.__repr__ = __repr__
-del __repr__
-
-def __repr__(self):
-    if len(self) > controls.head:
-        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index < controls.head] + [['...'] + ['...'] * len(self.variables)] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index > max(len(self) - controls.tail, controls.head)]
-    else:
-        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self)]
-    columns = zip(*rows)
-    maxima = [max(max(*[len(row) for row in column]), 3) + 2 for column in columns]
-    string = []
-    for index, row in enumerate(rows):
-        string.append(' '.join(('{:<' + repr(maximum) + '}').format(row[index]) for index, maximum in enumerate(maxima)))
-    return '\n'.join(string)
-
-MultivariateDataFrame.__str__ = MultivariateDataFrame.__repr__
-MultivariateDataFrame.__repr__ = __repr__
-del __repr__
+UnivariateDataFrame.__str__ = UnivariateDataFrame.__str__
+UnivariateDataFrame.__repr__ = __str__
+del __str__
 
 def _repr_html_(self):
     sample_space = self.sample_space
@@ -190,223 +186,13 @@ def _repr_html_(self):
 UnivariateDataFrame._repr_html_ = _repr_html_
 del _repr_html_
 
-def _repr_html_(self):
-    string = '<table style="max-width: 100%;">'
-    string += '\n\t\t<tr>\n\t\t\t<th></th>'
-    for variable in self.variables:
-        string += '\n\t\t\t<th>$'+r'\mathbf{' + controls.remove_latex(variable.name._repr_latex_()) + '}$</th>'
-    string += '\n\t\t</tr>'
-    etc = False
-    for i, j in enumerate(self):
-        if i < controls.head or i >= max(controls.head, len(self) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>'
-            string += '\n\t\t\t<td>' + '</td>\n\t\t\t<td>'.join(l._repr_latex_() if l is not None else self.variables[k].sample_space._repr_latex_() for k, l in enumerate(j)) + '</td>'
-        elif not etc:
-            etc = True
-            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>' * len(j)
-    string += '\n\t</table>'
-    return string
-
-MultivariateDataFrame._repr_html_ = _repr_html_
-del _repr_html_
-
-UnivariateDataFrame.name = UnivariateDataFrame.identifier
-
-# class SampleSpaceProxy(object):
-
-#     def __init__(self, data):
-#         self.data = data
-
-#     def __repr__(self):
-#         return ' x '.join(repr(sample_space) for sample_space in self) + ')'
-
-#     def __len__(self):
-#         return len(self.data.variables)
-
-#     def __getitem__(self, index):
-#         return self.data.variables[index].sample_space
-
-#     def __setitem__(self, index, value):
-#         self.data.variables[index].sample_space = value
-
-#     def _repr_latex_(self):
-#         string = []
-#         previous = ''
-#         nb = 0
-#         for sample_space in self:
-#             current = controls.remove_latex(sample_space._repr_latex_())
-#             if previous == '' or current == previous:
-#                 nb += 1
-#             else:
-#                 if nb == 1:
-#                     string.append(previous)
-#                 else:
-#                     string.append('{' + previous + '}^{' + repr(nb) +'}')
-#                 nb = 1
-#             previous = current
-#         if nb == 1:
-#             string.append(previous)
-#         else:
-#             string.append('{' + previous + '}^{' + repr(nb) +'}')
-#         return '$' + r' \times '.join(string) + '$'
-
-# MultivariateDataFrame.sample_space = property(SampleSpaceProxy)
-
-# def wrapper(f):
-#     @wraps(f)
-#     def append(self, event=None):
-#         event = self.sample_space(event)
-#         if event is None:
-#             f(self)
-#         else:
-#             f(self, event)
-#     return append
-
-# UnivariateDataFrame.append = wrapper(UnivariateDataFrame.add_event)
-# MultivariateDataFrame.append = wrapper(MultivariateDataFrame.add_event)
-# del wrapper, UnivariateDataFrame.add_event, MultivariateDataFrame.add_event
-
-# def wrapper(f):
-#     @wraps(f)
-#     def insert(self, index, event=None):
-#         if index < 0:
-#             index += len(self)
-#         if not 0 <= index < len(self):
-#             raise IndexError
-#         event = self.sample_space(event)
-#         if event is None:
-#             f(self, index)
-#         else:
-#             f(self, index, event)
-#     return insert
-
-# UnivariateDataFrame.insert = wrapper(UnivariateDataFrame.insert_event)
-# MultivariateDataFrame.insert = wrapper(MultivariateDataFrame.insert_event)
-# del wrapper, UnivariateDataFrame.insert_event, MultivariateDataFrame.insert_event
-
-# def wrapper(f):
-#     @wraps(f)
-#     def remove(self, index=-1):
-#         if index < 0:
-#             index += len(self)
-#         if not 0 <= index < len(self):
-#             raise IndexError
-#         f(self, index)
-#     return remove
-
-# UnivariateDataFrame.remove = wrapper(UnivariateDataFrame.remove_event)
-# MultivariateDataFrame.remove = wrapper(MultivariateDataFrame.remove_event)
-# del wrapper, UnivariateDataFrame.remove_event, MultivariateDataFrame.remove_event
-
-class VariablesProxy(object):
-
-    def __init__(self, data):
-        self.data = data
-
-    def _repr_latex_(self):
-        return r'$\left(' + ', '.join(variable._repr_latex_() for variable in self) + r'\right)$'
-
-def __repr__(self):
-    return '(' + ', '.join(variable.__repr__()  for variable in self) + ')'
-
-VariablesProxy.__str__ = VariablesProxy.__repr__
-VariablesProxy.__repr__ = __repr__
-del __repr__
-
-def wrapper(f):
-    @wraps(f)
-    def __len__(self):
-        return f(self.data)
-    return __len__
-
-VariablesProxy.__len__ = wrapper(MultivariateDataFrame.get_nb_variables)
-del wrapper, MultivariateDataFrame.get_nb_variables
-
-def wrapper(f):
-    @wraps(f)
-    def __getitem__(self, index):
-        if index < 0:
-            index += len(self)
-        if not 0 <= index < len(self):
-            raise IndexError
-        return f(self.data, index)
-    return __getitem__
-
-VariablesProxy.__getitem__ = wrapper(MultivariateDataFrame.get_variable)
-del wrapper, MultivariateDataFrame.get_variable
-
-def wrapper(f):
-    @wraps(f)
-    def __setitem__(self, index, variable):
-        if index < 0:
-            index += len(self)
-        if not 0 <= index < len(self):
-            raise IndexError
-        f(self.data, index, variable)
-    return __setitem__
-
-VariablesProxy.__setitem__ = wrapper(MultivariateDataFrame.set_variable)
-del wrapper, MultivariateDataFrame.set_variable
-
-def wrapper(f):
-    @wraps(f)
-    def __setitem__(self, variable):
-        f(self.data, variable)
-    return __setitem__
-
-VariablesProxy.append = wrapper(MultivariateDataFrame.append_variable)
-del wrapper, MultivariateDataFrame.append_variable
-
-def wrapper(f):
-    @wraps(f)
-    def insert(self, index, variable):
-        if index < 0:
-            index += len(self)
-        if not 0 <= index < len(self):
-            raise IndexError
-        f(self.data, index, variable)
-    return insert
-
-#VariablesProxy.insert = wrapper(MultivariateDataFrame.insert_variable)
-#del wrapper, MultivariateDataFrame.insert_variable
-
-def wrapper(f):
-    @wraps(f)
-    def remove(self, index=-1):
-        if index < 0:
-            index += len(self)
-        if not 0 <= index < len(self):
-            raise IndexError
-        f(self.data, index)
-    return remove
-
-VariablesProxy.remove = wrapper(MultivariateDataFrame.remove_variable)
-del wrapper, MultivariateDataFrame.remove_variable
-
-MultivariateDataFrame.variables = property(VariablesProxy)
-
-def __dir__(self):
-    return [str(variable.name.identifier) for variable in self.variables]
-
-MultivariateDataFrame.__dir__ = __dir__
-del __dir__
-
-def __getattr__(self, attr):
-    try:
-        return self.variables[[str(variable.name.identifier) for variable in self.variables].index(attr)]
-    except:
-        raise AttributeError(attr)
-
-MultivariateDataFrame.__getattr__ = __getattr__
-del __getattr__
-
 def pdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
+    from estimation import frequency_estimation, histogram_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
     if isinstance(norm, bool):
         if not norm:
-            kwargs['norm'] = self.compute_total(True)
+            kwargs['norm'] = self.total
     elif isinstance(norm, (int, float)):
         if norm <= 0:
             raise ValueError('\'norm\' parameter')
@@ -433,11 +219,12 @@ UnivariateDataFrame.pdf_plot = pdf_plot
 del pdf_plot
 
 def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
+    from estimation import frequency_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
     if isinstance(norm, bool):
         if not norm:
-            kwargs['norm'] = self.compute_total(True)
+            kwargs['norm'] = self.total
     elif isinstance(norm, (int, float)):
         if norm <= 0:
             raise ValueError('\'norm\' parameter')
@@ -454,6 +241,68 @@ def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
 
 UnivariateDataFrame.cdf_plot = cdf_plot
 del cdf_plot
+
+MultivariateDataFrame.nb_events = property(MultivariateDataFrame.get_nb_events)
+MultivariateDataFrame.nb_variables = property(MultivariateDataFrame.get_nb_variables)
+
+def names(self):
+    return [str(self.get_variable(index).name) for index in range(self.nb_variables)]
+
+MultivariateDataFrame.names = property(names)
+del names
+
+def __dir__(self):
+    return sorted(self.names)
+
+MultivariateDataFrame.__dir__ = __dir__
+del __dir__
+
+def __getattr__(self, attr):
+    try:
+        return self.get_variable(self.names.index(attr))
+    except:
+        raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
+
+MultivariateDataFrame.__getattr__ = __getattr__
+del __getattr__
+
+def __repr__(self):
+    if self.nb_events > controls.head:
+        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index < controls.head] + [['...'] + ['...'] * len(self.variables)] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index > max(len(self) - controls.tail, controls.head)]
+    else:
+        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self)]
+    columns = zip(*rows)
+    maxima = [max(max(*[len(row) for row in column]), 3) + 2 for column in columns]
+    string = []
+    for index, row in enumerate(rows):
+        string.append(' '.join(('{:<' + repr(maximum) + '}').format(row[index]) for index, maximum in enumerate(maxima)))
+    return '\n'.join(string)
+
+MultivariateDataFrame.__str__ = MultivariateDataFrame.__repr__
+MultivariateDataFrame.__repr__ = __repr__
+del __repr__
+
+def _repr_html_(self):
+    string = '<table style="max-width: 100%;">'
+    string += '\n\t\t<tr>\n\t\t\t<th></th>'
+    for variable in range(self.nb_variables):
+        string += '\n\t\t\t<th>'+ self.get_variable(variable).name + '</th>'
+    string += '\n\t\t</tr>'
+    etc = False
+    for i, j in enumerate(self):
+        if i < controls.head or i >= max(controls.head, self.nb_events - controls.tail):
+            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
+            string += '</td>\n\t\t\t<td>'.join(j.event[k]._repr_latex_() if j.event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(j.event)))
+            string += '</td>'
+        elif not etc:
+            etc = True
+            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
+            string += '\n\t\t\t<td>$\dots$</td>' * len(j.event)
+    string += '\n\t</table>'
+    return string
+
+MultivariateDataFrame._repr_html_ = _repr_html_
+del _repr_html_
 
 #def lorenz_plot(self, axes=None, fmt='-', color='b', alpha=1., **kwargs):
 #    sample_space = self.sample_space

@@ -9,38 +9,53 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import _LazyEstimation, _ActiveEstimation,\
-        UnivariateDistributionEstimation,\
-        CategoricalUnivariateDistributionEstimation,\
-        DiscreteUnivariateDistributionEstimation, DiscreteUnivariateFrequencyDistributionEstimation,\
-        ContinuousUnivariateDistributionEstimation, ContinuousUnivariateFrequencyDistributionEstimation, NormalDistributionMLEstimation, UnivariateHistogramDistributionEstimation, RegularUnivariateHistogramDistributionSlopeHeuristicEstimation, IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation,\
-        MultivariateDistributionEstimation, _IndependentMultivariateDistributionEstimation, MixedIndependentMultivariateDistributionEstimation,\
-        CategoricalMultivariateDistributionEstimation, CategoricalIndependentMultivariateDistributionEstimation,\
-        DiscreteMultivariateDistributionEstimation, DiscreteIndependentMultivariateDistributionEstimation,\
-        ContinuousMultivariateDistributionEstimation, ContinuousIndependentMultivariateDistributionEstimation
+from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
+                                             UnivariateDistributionEstimation,
+                                                CategoricalUnivariateDistributionEstimation,
+                                                DiscreteUnivariateDistributionEstimation, 
+                                                    DiscreteUnivariateFrequencyDistributionEstimation, 
+                                                    PoissonDistributionMLEstimation,# PoissonDistributionMMEstimation,
+                                                    BinomialDistributionMLEstimation, BinomialDistributionMMEstimation,
+                                                    NegativeBinomialDistributionMLEstimation, NegativeBinomialDistributionMMEstimation,
+                                                ContinuousUnivariateDistributionEstimation,
+                                                    ContinuousUnivariateFrequencyDistributionEstimation,
+                                                    NormalDistributionMLEstimation,
+                                                    UnivariateHistogramDistributionEstimation,
+                                                    RegularUnivariateHistogramDistributionSlopeHeuristicSelection,
+                                                    IrregularUnivariateHistogramDistributionSlopeHeuristicSelection,
+                                             MultivariateDistributionEstimation,
+                                                _IndependentMultivariateDistributionEstimation,
+                                                MixedIndependentMultivariateDistributionEstimation,
+                                                CategoricalMultivariateDistributionEstimation,
+                                                    CategoricalIndependentMultivariateDistributionEstimation,
+                                                DiscreteMultivariateDistributionEstimation,
+                                                    DiscreteIndependentMultivariateDistributionEstimation,
+                                                ContinuousMultivariateDistributionEstimation,
+                                                    ContinuousIndependentMultivariateDistributionEstimation)
 
-from statiskit.core.event import outcome_type
-from statiskit.core.data_frame import UnivariateDataFrame, MultivariateDataFrame
-from statiskit.core.slope_heuristic import Proxy
-from statiskit.core.tools import unused_warning
+from event import outcome_type
+from data import UnivariateDataFrame, MultivariateDataFrame
+from slope_heuristic import Proxy
+from _tools import unused_warning
 
-__all__ = ['frequency_estimation',
-           'normal_estimation', 'histogram_estimation',
+__all__ = ['normal_estimation',
+           'frequency_estimation',
+           'histogram_estimation',
            'independent_estimation']
 
 UnivariateDistributionEstimation.estimated = property(UnivariateDistributionEstimation.get_estimated)
 del UnivariateDistributionEstimation.get_estimated
 
-def statiskit_active_estimation_decorator(cls):
+def active_estimation_decorator(cls):
 
-    cls.data_frame = property(cls.get_data_frame)
-    del cls.get_data_frame
+    cls.data = property(cls.get_data)
+    del cls.get_data
 
     def pdf_plot(self, axes=None, fmt=('|', '-'), color=('b', 'r'), alpha=(1., 1.), norm=False, **kwargs):
         axes = self.data_frame.pdf_plot(axes=axes, fmt=fmt[0], color=color[0], alpha=alpha[0], norm=norm, **kwargs.pop('data_frame', dict()))
         if isinstance(norm, bool):
             if not norm:
-                norm = self.data_frame.compute_total(True)
+                norm = self.data.total
             else:
                 norm = 1.
         return self.estimated.pdf_plot(axes=axes, fmt=fmt[1], color=color[1], alpha=alpha[1], norm=norm, **kwargs.pop('estimated', dict()))
@@ -49,7 +64,7 @@ def statiskit_active_estimation_decorator(cls):
     del pdf_plot
 
 for cls in _ActiveEstimation:
-    statiskit_active_estimation_decorator(cls)
+    active_estimation_decorator(cls)
 
 def frequency_estimation(data, **kwargs):
     if isinstance(data, UnivariateDataFrame) or isinstance(data, basestring) and data == 'univariate'[:len(data)]:
@@ -80,7 +95,7 @@ def frequency_estimation(data, **kwargs):
         unused_warning(**kwargs)
         return estimator(data, lazy)
 
-class ModelsProxy(Proxy):
+class Proxy(Proxy):
     pass
 
 def wrapper(f):
@@ -96,10 +111,10 @@ def wrapper(f):
             return f(self.obj, index)
     return __getitem__
 
-ModelsProxy.__getitem__ = wrapper(RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.get_model)
-RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.models = property(ModelsProxy)
-ModelsProxy.__getitem__ = wrapper(IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.get_model)
-IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.models = property(ModelsProxy)
+Proxy.__getitem__ = wrapper(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
+RegularUnivariateHistogramDistributionSlopeHeuristicSelection.estimated = property(Proxy)
+Proxy.__getitem__ = wrapper(IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
+IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.estimated = property(Proxy)
 
 def normal_estimation(algo='mle', **kwargs):
     """
@@ -121,11 +136,11 @@ def normal_estimation(algo='mle', **kwargs):
 UnivariateHistogramDistributionEstimation.Estimator.nb_bins = property(UnivariateHistogramDistributionEstimation.Estimator.get_nb_bins, UnivariateHistogramDistributionEstimation.Estimator.set_nb_bins)
 del UnivariateHistogramDistributionEstimation.Estimator.get_nb_bins, UnivariateHistogramDistributionEstimation.Estimator.set_nb_bins
 
-IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.max_bins = property(IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.get_max_bins, IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.set_max_bins)
-del IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.get_max_bins, IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.set_max_bins
+IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.max_bins = property(IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins)
+del IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins
 
-RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.max_bins = property(RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.set_max_bins)
-del RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator.set_max_bins
+RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.max_bins = property(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins)
+del RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins
 
 def histogram_estimation(data, **kwargs):
     """
@@ -138,9 +153,9 @@ def histogram_estimation(data, **kwargs):
             algorithm = algorithm.lower()
             if algorithm == 'she'[:len(algorithm)]:
                 if kwargs.pop('regular', not kwargs.pop('irregular', False)):
-                    estimator = RegularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator()
+                    estimator = RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator()
                 else:
-                    estimator = IrregularUnivariateHistogramDistributionSlopeHeuristicEstimation.Estimator()
+                    estimator = IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator()
             else:
                 raise ValueError('\'algorithm\' parameter')
     else:
@@ -159,13 +174,14 @@ def histogram_estimation(data, **kwargs):
 MultivariateDistributionEstimation.estimated = property(MultivariateDistributionEstimation.get_estimated)
 del MultivariateDistributionEstimation.get_estimated
 
-def statiskit_independent_multivariate_distribution_estimation_decorator(cls):
+def independent_multivariate_distribution_estimation_decorator(cls):
 
-    cls.marginals = property(cls.get_marginals)
-    del cls.get_marginals
+    pass    
+    # cls.marginals = property(cls.get_marginal)
+    # del cls.get_marginals
 
 for cls in _IndependentMultivariateDistributionEstimation:
-    statiskit_independent_multivariate_distribution_estimation_decorator(cls)
+    independent_multivariate_distribution_estimation_decorator(cls)
 
 def independent_estimation(data, **kwargs):
     if isinstance(data, MultivariateDataFrame):

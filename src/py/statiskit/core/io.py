@@ -6,71 +6,35 @@
 #                                                                                #
 ##################################################################################
 
-__all__ = ['read_csv', 'write_csv', 'from_pandas', 'to_pandas', 'from_list', 'to_list']
+__all__ = ['read_csv', 'from_list', 'from_pandas']
 
 import warnings
 from tempfile import NamedTemporaryFile
 import os
 
-import controls
+from controls import controls
 from data import UnivariateDataFrame, MultivariateDataFrame
-from sample_space import UnivariateSampleSpace
+from sample_space import NominalSampleSpace
 
-def read_csv(filepath, sep, header=False, **kwargs):
+def read_csv(filepath, sep=None, header=False, **kwargs):
     """
     """
-    if not isinstance(sep, basestring):
+    if sep and not isinstance(sep, basestring):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'r') as filehandler:
         lines = filehandler.readlines()
     if header:
-        names = [name.replace('\n', '').strip('"').strip("'").strip() for name in lines.pop(0).split(sep)]
+        names = [name.strip().strip('"').strip("'").strip() for name in lines.pop(0).split(sep)]
         data = [[] for name in names]
     else:
         data = [[] for event in lines[0].split(sep)]
     for line in lines:
         for index, event in enumerate(line.split(sep)):
-            data[index].append(event)
-    return from_list(data, **kwargs)
-
-def from_list(data, **kwargs):
-
-    if 'sample_spaces' in kwargs:
-        sample_spaces = kwargs.pop('sample_spaces')
-    else:
-        sample_spaces = []
-        for data in datas:
-            nbstr = 0
-            nbint = 0
-            nbflt = 0
-            for event in data:
-                try:
-                    controls.ZZ(event)
-                    nbint += 1
-                except:
-                    try:
-                        controls.RR(event)
-                        nbflt += 1
-                    except:
-                        nbstr += 1
-            if nbstr > nbint + nbflt:
-                sample_spaces.append(NominalSampleSpace(*data))
-            elif nbint > nbstr + nbflt:
-                sample_spaces.append(controls.ZZ)
-            elif nbflt > nbstr + nbint:
-                sample_spaces.append(controls.RR)
-            else:
-                raise ValueError
-    datas = [UnivariateDataFrame(sample_space) for sample_space in sample_spaces]
-    for index, data in enumerate(datas):
-        for event in data:
-            datas[index].append(event)
-    data = MultivariateDataFrame(*datas)
+            data[index].append(event.strip().strip('"').strip("'"))
+    data = from_list(*data, **kwargs)
     if header:
         for i, j in enumerate(names):
-            data.variables[i].name.identifier = j
-            if not data.variables[i].name.identifier == j:
-                data.variables[i].name.ascii = j
+            data.get_variable(i).name = j
     return data
 
 def write_csv(data, filepath, sep=';', header=False, censored=True):
@@ -119,6 +83,44 @@ def write_csv(data, filepath, sep=';', header=False, censored=True):
                         line.append(str(uevent.value))
                 filehandler.write(sep.join(line) + '\n')
 
+MultivariateDataFrame.write_csv = write_csv
+del write_csv
+
+def from_list(*data, **kwargs):
+    if 'sample_spaces' in kwargs:
+        sample_spaces = kwargs.pop('sample_spaces')
+    else:
+        sample_spaces = []
+        for _data in data:
+            nbstr = 0
+            nbint = 0
+            nbflt = 0
+            for event in _data:
+                try:
+                    controls.ZZ(event)
+                    nbint += 1
+                except:
+                    try:
+                        controls.RR(event)
+                        nbflt += 1
+                    except:
+                        nbstr += 1
+            if nbstr > nbint + nbflt:
+                sample_spaces.append(NominalSampleSpace(_data))
+            elif nbint > nbstr + nbflt:
+                sample_spaces.append(controls.ZZ)
+            elif nbflt > nbstr + nbint:
+                sample_spaces.append(controls.RR)
+            else:
+                raise NotImplementedError("cannot determine sample space")
+    dataframe = MultivariateDataFrame()
+    for index, sample_space in enumerate(sample_spaces):
+        _dataframe = UnivariateDataFrame(sample_space)
+        for event in data[index]:
+            _dataframe.add_event(sample_space(event))
+        dataframe.add_variable(_dataframe)
+    return dataframe
+
 def from_pandas(data):
     """
     """
@@ -136,3 +138,6 @@ def to_pandas(data):
     filehandler.close()
     write_csv(data, filehandler.name, sep=';', header=True, censored=False)
     return read_csv(filehandler.name, sep=';', header=0, na_values=['?', ''])
+
+MultivariateDataFrame.to_pandas = to_pandas
+del to_pandas

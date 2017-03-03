@@ -161,6 +161,9 @@ namespace statiskit
         return dummy;
     }
 
+    std::unique_ptr< OrdinalSampleSpace > NominalSampleSpace::as_ordinal() const
+    { return std::make_unique< OrdinalSampleSpace >(std::vector< std::string >(_values.cbegin(), _values.cend())); }
+
     std::unique_ptr< UnivariateSampleSpace > NominalSampleSpace::copy() const
     { return std::make_unique< NominalSampleSpace >(*this); }
 
@@ -263,6 +266,9 @@ namespace statiskit
 
     std::unique_ptr< UnivariateSampleSpace > OrdinalSampleSpace::copy() const
     { return std::make_unique< OrdinalSampleSpace >(*this); }
+
+    std::unique_ptr< NominalSampleSpace > OrdinalSampleSpace::as_nominal() const
+    { return std::make_unique< NominalSampleSpace >(_values); }
 
     outcome_type DiscreteSampleSpace::get_outcome() const
     { return DISCRETE; }

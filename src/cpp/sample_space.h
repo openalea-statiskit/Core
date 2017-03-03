@@ -70,6 +70,8 @@ namespace statiskit
             encoding_type _encoding;            
     };
 
+    class OrdinalSampleSpace;
+
     class STATISKIT_CORE_API NominalSampleSpace : public CategoricalSampleSpace
     {
         public:
@@ -87,6 +89,8 @@ namespace statiskit
             void set_encoding(const encoding_type& encoding);
 
             virtual Eigen::RowVectorXd encode(const std::string& value) const;
+
+            std::unique_ptr< OrdinalSampleSpace > as_ordinal() const;
 
             std::unique_ptr< UnivariateSampleSpace > copy() const;
 
@@ -113,6 +117,8 @@ namespace statiskit
             void set_encoding(const encoding_type& encoding);
 
             virtual Eigen::RowVectorXd encode(const std::string& value) const;
+
+            std::unique_ptr< NominalSampleSpace > as_nominal() const;
 
             virtual std::unique_ptr< UnivariateSampleSpace > copy() const;
 

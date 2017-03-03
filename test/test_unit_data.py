@@ -1,33 +1,76 @@
 import unittest
+from tempfile import NamedTemporaryFile
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
+
 from statiskit import core
+from statiskit.data import core as data
 
 class TestData(unittest.TestCase):
 
-    def test___read_multivariate_data(self):
-        """Test multivariate data initialization using a CSV file"""
-        capushe = core.read_data("capushe.csv", sep=',', header=True)
+    @classmethod
+    def setUpClass(cls):
+        """Test multivariate data construction"""
+        cls._data = data.load('capushe')
 
-    def test__assignement(self):
-        """Test matrix assignement"""
-        M = linalg.Matrix(3,3)
-        self.assertEqual(M[0,0], 0.)
-        M[0, 0] = 1.
-        self.assertEqual(M[0,0], 1.)
+    def test_iterator(self):
+        """Test multivariate data iterator"""
+        for iterator in self._data:
+            self.assertEqual(len(iterator.event), self._data.nb_variables)
+            self.assertEqual(iterator.weight, 1.)
+
+    def test_copy(self):
+        """Test multivariate data copy"""
+        data = self._data.copy()
+        del self.__class__._data
+        self.__class__._data = data
+        self.test_iterator()
+
+    def test_access(self):
+        """Test named data access"""
+        #self.assertIn('pen', self._data)
+        for iterators in zip(self._data.pen, self._data):
+            self.assertEqual(iterators[0].event.value, iterators[1].event[1].value)
 
     def test_str(self):
-        """Test matrix string representation"""
-        M = linalg.Matrix(3,3)
-        M[0,0] = 10.
-        self.assertEqual(str(M), "[10.0, 0.0, 0.0]\n[ 0.0, 0.0, 0.0]\n[ 0.0, 0.0, 0.0]")
+        """Test univariate and multivariate data string representation"""
+        for index in range(self._data.nb_variables):
+            self._data.get_variable(index).__str__()
+        self._data.__str__()
 
-    def test_repr(self):
-        """Test matrix string representation"""
-        M = linalg.Matrix(3,3)
-        M[-1,-1] = 10.
-        self.assertEqual(repr(M), "[0.0, 0.0,  0.0]\n[0.0, 0.0,  0.0]\n[0.0, 0.0, 10.0]")
+    def test_repr_html(self):
+        """Test univariate and multivariate data HTML representation"""
+        for index in range(self._data.nb_variables):
+            self._data.get_variable(index)._repr_html_()
+        self._data._repr_html_()
 
-    def test_repr_latex(self):
-        """Test matrix latex representation"""
-        M = linalg.Matrix(3,3)
-        M[0,0] = 10.
-        self.assertEqual(M._repr_latex_(), "$\\begin{pmatrix}\n10.0 & 0.0 & 0.0\\\\\t\n 0.0 & 0.0 & 0.0\\\\\t\n 0.0 & 0.0 & 0.0\\\\\n\\end{pmatrix}$")
+    def test_pdf_plot(self):
+        """Test univariate and multivariate data pdf plot"""
+        for index in range(self._data.nb_variables):
+            fig = pyplot.figure()
+            self._data.get_variable(index).pdf_plot()
+            pyplot.close()
+
+    def test_cdf_plot(self):
+        """Test univariate data cdf plot"""
+        for index in range(self._data.nb_variables):
+            fig = pyplot.figure()
+            self._data.get_variable(index).cdf_plot()
+            pyplot.close()
+
+    def test_write_csv(self):
+        """Test write data to csv"""
+        tmp = NamedTemporaryFile()
+        self.write_csv(tmp.name)
+        with open(tmp.name, 'r') as filehandler:
+            written = "".join(tmp.readlines())
+        with open(data.__file__, 'r') as filehandler:
+            read = "".join(tmp.readlines())
+        self.assertEqual(written, read)
+        os.unlink(tmp.name)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Test multivariate data deletion"""
+        del cls._data

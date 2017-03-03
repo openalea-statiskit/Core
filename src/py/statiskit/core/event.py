@@ -246,11 +246,14 @@ del ContinuousIntervalCensoredEvent.get_lower_bound
 def wrapper(f):
     @wraps(f)
     def __getitem__(self, index):
-        if index < 0:
-            index += len(self)
-        if not 0 <= index < len(self):
-            raise IndexError
-        return f(self, index)
+        if isinstance(index, slice):
+            return [self[_index] for _index in xrange(*index.indices(len(self)))]
+        else:
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError
+            return f(self, index)
     return __getitem__
 
 MultivariateEvent.__getitem__ = wrapper(MultivariateEvent.get)
@@ -272,11 +275,14 @@ del __repr__
 def wrapper(f):
     @wraps(f)
     def __setitem__(self, index, event):
+        if isinstance(index, slice):
+            for _index, _event in zip(xrange(*index.indices(len(self))), event):
+                self[_index] = _event
         if index < 0:
             index += len(self)
         if not 0 <= index < len(self):
             raise IndexError
-        return f(self, index, event)
+        f(self, index, event)
     return __setitem__
 
 VectorEvent.__setitem__ = wrapper(VectorEvent.set)

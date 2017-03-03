@@ -165,47 +165,25 @@ namespace statiskit
     unsigned int NamedData::__index = 0;
 
     NamedData::NamedData()
-    {
-        _identifier = "V" + __impl::to_string(__index); 
-        _ascii = "";
-        _latex = "";
+    { 
+        _name = "V" + __impl::to_string(__index); 
         ++__index;
     }
 
-    NamedData::NamedData(const std::string& identifier)
-    {
-        _identifier = identifier;
-        _ascii = "";
-        _latex = "";
-    }
+    NamedData::NamedData(const std::string& name)
+    { _name = name; }
 
     NamedData::NamedData(const NamedData& named_data)
-    {
-        _identifier = named_data._identifier;
-        _ascii = named_data._ascii;
-        _latex = named_data._latex;
-    }
+    { _name = named_data._name; }
 
     NamedData::~NamedData()
     {}
 
-    const std::string& NamedData::get_identifier() const
-    { return _identifier; }
+    const std::string& NamedData::get_name() const
+    { return _name; }
 
-    void NamedData::set_identifier(const std::string& identifier)
-    { _identifier = identifier; }
-
-    const std::string& NamedData::get_ascii() const
-    { return _ascii; }
-
-    void NamedData::set_ascii(const std::string& ascii)
-    { _ascii = ascii; }
-
-    const std::string& NamedData::get_latex() const
-    { return _latex; }
-
-    void NamedData::set_latex(const std::string& latex)
-    { _latex = latex; }
+    void NamedData::set_name(const std::string& name)
+    { _name = name; }
 
     UnivariateDataFrame::UnivariateDataFrame(const UnivariateSampleSpace& sample_space) : NamedData()
     {
@@ -222,12 +200,12 @@ namespace statiskit
             if(data._events[index])
             { _events[index] = data._events[index]->copy().release(); }
         }
-        _events = data._events;
     }
 
     UnivariateDataFrame::~UnivariateDataFrame()
     {
-        delete _sample_space;
+        if(_sample_space)
+        { delete _sample_space; }
         _sample_space = nullptr;
         for(size_t index = 0, max_index = get_nb_events(); index < max_index; ++index)
         {
@@ -235,6 +213,7 @@ namespace statiskit
             { delete _events[index]; }
             _events[index] = nullptr;
         }
+        _events.clear();
     }
 
     std::unique_ptr< UnivariateData::Generator > UnivariateDataFrame::generator() const

@@ -12,6 +12,6 @@ exclude = """
 
 sources = [source for source in sources if not source.name in exclude]
 
-targets = test_env.Nosetests(sources)
+targets = test_env.Nosetests(sources, cover_package='statiskit.core')
 test_env.Depends(targets, "py")
 Alias("test", targets)

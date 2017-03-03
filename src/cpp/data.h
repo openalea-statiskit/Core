@@ -47,23 +47,16 @@ namespace statiskit
     {
         public:
             NamedData();
-            NamedData(const std::string& identifier);
+            NamedData(const std::string& name);
             NamedData(const NamedData& named_data);
             ~NamedData();
 
-            const std::string& get_identifier() const;
-            void set_identifier(const std::string& identifier);
-
-            const std::string& get_ascii() const;
-            void set_ascii(const std::string& ascii);
-
-            const std::string& get_latex() const;
-            void set_latex(const std::string& latex);
+            const std::string& get_name() const;
+            void set_name(const std::string& name);
 
         protected:
-            std::string _identifier;
-            std::string _ascii;
-            std::string _latex;
+            std::string _name;
+
 
         private:
             static unsigned int __index;

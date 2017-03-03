@@ -87,8 +87,8 @@ namespace statiskit
         {
         	if(pi.rows() == _values.size()-1)
         	{
-		    	size_t j=0; 
-		    	while(pi[j] >= 0. && j<pi.rows())
+		    	size_t j = 0; 
+		    	while(j < pi.rows() && pi[j] >= 0.)
 		    	{ ++j; }
 		    	if(j < pi.rows())
 		    	{ throw parameter_error("pi", "contains negative values"); } 
@@ -103,8 +103,8 @@ namespace statiskit
         	}
         	else if(pi.rows() == _values.size())
         	{
-		    	size_t j=0; 
-		    	while(pi[j] >= 0. && j<pi.rows())
+		    	size_t j = 0; 
+		    	while(j < pi.rows() && pi[j] >= 0.)
 		    	{ ++j; }
 		    	if(j < pi.rows())
 		    	{ throw parameter_error("pi", "contains negative values"); } 
