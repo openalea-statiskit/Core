@@ -29,6 +29,8 @@ void wrapper_850400feaf015819b89ae0fb0bc38962()
     void  (::statiskit::OrdinalSampleSpace::*method_pointer_343159b54c8a5f0da44d25b4d4786073)() = &::statiskit::OrdinalSampleSpace::randomize;
     void  (::statiskit::OrdinalSampleSpace::*method_pointer_edfa0e4b94e45976a29c7feb6e6ce2cd)(enum ::statiskit::encoding_type const &) = &::statiskit::OrdinalSampleSpace::set_encoding;
     class ::Eigen::Matrix< double, 1, -1, 1, 1, -1 >  (::statiskit::OrdinalSampleSpace::*method_pointer_a6fc254f01485d0193e2feb2d6f16f53)(class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > const &) const = &::statiskit::OrdinalSampleSpace::encode;
+    class ::std::unique_ptr< class ::statiskit::NominalSampleSpace, struct ::std::default_delete< class ::statiskit::NominalSampleSpace > >  (::statiskit::OrdinalSampleSpace::*method_pointer_57b6fbac4790575084fe42696914a551)() const = &::statiskit::OrdinalSampleSpace::as_nominal;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > >  (::statiskit::OrdinalSampleSpace::*method_pointer_2465210770605984a9d843f444adfc47)() const = &::statiskit::OrdinalSampleSpace::copy;
     boost::python::class_< class ::statiskit::OrdinalSampleSpace, autowig::Held< class ::statiskit::OrdinalSampleSpace >::Type, boost::python::bases< struct ::statiskit::CategoricalSampleSpace > > class_850400feaf015819b89ae0fb0bc38962("OrdinalSampleSpace", "", boost::python::no_init);
     class_850400feaf015819b89ae0fb0bc38962.def(boost::python::init< class ::std::vector< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > > const & >(""));
     class_850400feaf015819b89ae0fb0bc38962.def(boost::python::init< class ::statiskit::OrdinalSampleSpace const & >(""));
@@ -39,6 +41,8 @@ void wrapper_850400feaf015819b89ae0fb0bc38962()
     class_850400feaf015819b89ae0fb0bc38962.def("randomize", method_pointer_343159b54c8a5f0da44d25b4d4786073, "");
     class_850400feaf015819b89ae0fb0bc38962.def("set_encoding", method_pointer_edfa0e4b94e45976a29c7feb6e6ce2cd, "");
     class_850400feaf015819b89ae0fb0bc38962.def("encode", method_pointer_a6fc254f01485d0193e2feb2d6f16f53, "");
+    class_850400feaf015819b89ae0fb0bc38962.def("as_nominal", method_pointer_57b6fbac4790575084fe42696914a551, "");
+    class_850400feaf015819b89ae0fb0bc38962.def("copy", method_pointer_2465210770605984a9d843f444adfc47, "");
 
     if(autowig::Held< class ::statiskit::OrdinalSampleSpace >::is_class)
     {

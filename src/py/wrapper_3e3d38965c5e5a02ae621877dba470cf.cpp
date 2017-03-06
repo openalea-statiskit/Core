@@ -23,7 +23,9 @@ void wrapper_3e3d38965c5e5a02ae621877dba470cf()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     ::std::size_t  (::statiskit::SlopeHeuristicSelector::*method_pointer_df1ee527da8655d4b2d9d5bb1e30ff8e)(class ::statiskit::SlopeHeuristic const &) const = &::statiskit::SlopeHeuristicSelector::operator();
+    class ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > >  (::statiskit::SlopeHeuristicSelector::*method_pointer_b99a360f77cf53eb8f24401404499387)() const = &::statiskit::SlopeHeuristicSelector::copy;
     boost::python::class_< struct ::statiskit::SlopeHeuristicSelector, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, boost::noncopyable > class_3e3d38965c5e5a02ae621877dba470cf("SlopeHeuristicSelector", "", boost::python::no_init);
     class_3e3d38965c5e5a02ae621877dba470cf.def("__call__", method_pointer_df1ee527da8655d4b2d9d5bb1e30ff8e, "");
+    class_3e3d38965c5e5a02ae621877dba470cf.def("copy", method_pointer_b99a360f77cf53eb8f24401404499387, "");
 
 }
