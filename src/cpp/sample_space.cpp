@@ -10,6 +10,9 @@
 
 namespace statiskit
 {
+    UnivariateSampleSpace::~UnivariateSampleSpace()
+    {}
+
     CategoricalSampleSpace::CategoricalSampleSpace(const std::set< std::string >& values)
     { _values = values; }
 
@@ -18,7 +21,10 @@ namespace statiskit
     	_values = sample_space._values; 
     	_encoding = sample_space._encoding;
     }
-    
+
+    CategoricalSampleSpace::~CategoricalSampleSpace() 
+    {}
+
     const std::set< std::string >& CategoricalSampleSpace::get_values() const
     { return _values; }
     
@@ -605,16 +611,10 @@ namespace statiskit
                 { _sample_spaces[index] = marginal_sample_space; }
             }
         }
-    }
+    }*/
 
     MultivariateSampleSpace::~MultivariateSampleSpace()
     {}
-
-    size_t MultivariateSampleSpace::size() const
-    { return _sample_spaces.size(); }
-
-    const std::shared_ptr< UnivariateSampleSpace >& MultivariateSampleSpace::get_sample_space(const size_t& index) const
-    { return _sample_spaces[index]; }*/
 
     bool MultivariateSampleSpace::is_compatible(const MultivariateEvent* event) const
     {

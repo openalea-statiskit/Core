@@ -142,7 +142,7 @@ namespace statiskit
             else
             {
                 IndependentMultivariateDistributionEstimation< D, E >* _estimation =  new IndependentMultivariateDistributionEstimation< D, E >(distribution, &data);
-                _estimation._estimations = estimations;
+                _estimation->_estimations = estimations;
                 estimation.reset(_estimation);
             }
             return estimation;

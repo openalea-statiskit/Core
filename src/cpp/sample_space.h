@@ -30,6 +30,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API UnivariateSampleSpace
     {
+        virtual UnivariateSampleSpace() = 0;
+
         virtual outcome_type get_outcome() const = 0;
 
         virtual ordering_type get_ordering() const = 0;
@@ -51,6 +53,7 @@ namespace statiskit
         public:
             CategoricalSampleSpace(const std::set< std::string >& values);
             CategoricalSampleSpace(const CategoricalSampleSpace& sample_space);
+            virtual ~CategoricalSampleSpace();
 
             virtual bool is_compatible(const UnivariateEvent* event) const;
             
@@ -193,6 +196,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API MultivariateSampleSpace
     {
+        virtual ~MultivariateSampleSpace() = 0;
+
         virtual size_t size() const = 0;
         
         virtual const UnivariateSampleSpace* get(const size_t& index) const = 0;

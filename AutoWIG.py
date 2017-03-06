@@ -15,7 +15,7 @@ for dependency in ['LinAlg', 'STL']:
 
 asg = autowig.parser(asg, list(path(os.path.join(sys.prefix, 'include', 'statiskit', 'core')).walkfiles('*.h')),
                      ['-x', 'c++', '-std=c++11', '-ferror-limit=0', '-I' + os.path.join(sys.prefix, 'include')],
-                     bootstrap=1)
+                     bootstrap=False)
 
 asg = autowig.controller(asg)
 for cls in asg['class ::std::less'].specializations():
