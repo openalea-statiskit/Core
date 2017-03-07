@@ -1,0 +1,1 @@
+from autowig.site.controller.statiskit_stl import controller

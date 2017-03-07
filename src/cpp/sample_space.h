@@ -30,7 +30,7 @@ namespace statiskit
 
     struct STATISKIT_CORE_API UnivariateSampleSpace
     {
-        virtual UnivariateSampleSpace() = 0;
+        virtual ~UnivariateSampleSpace() = 0;
 
         virtual outcome_type get_outcome() const = 0;
 
