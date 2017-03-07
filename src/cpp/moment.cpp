@@ -10,6 +10,9 @@
 
 namespace statiskit
 {
+    qualitative_sample_space_error::qualitative_sample_space_error() : parameter_error("data", "unexpected " + __impl::to_string(CATEGORICAL) + " outcome")
+    {}
+
     NaturalMeanEstimation::NaturalMeanEstimation(const double& mean)
     { _mean = mean; }
 
@@ -25,20 +28,18 @@ namespace statiskit
     NaturalMeanEstimation::Estimator::Estimator(const Estimator& estimator)
     {}
 
-    std::shared_ptr< MeanEstimation > NaturalMeanEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
+    std::unique_ptr< MeanEstimation > NaturalMeanEstimation::Estimator::operator() (const UnivariateData& data) const
     {
-        if(!data)
-        { throw std::runtime_error("None"); }
-        double total = data->compute_total();
+        double total = data.compute_total();
         double mean = 0.;
-        std::shared_ptr< MeanEstimation > estimation;
+        std::unique_ptr< MeanEstimation > estimation;
         if(total > 0)
         {
-            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-            switch(data->get_sample_space()->get_outcome())
+            std::unique_ptr< UnivariateData::Generator > generator = data.generator();
+            switch(data.get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(mean) && generator->is_valid())
+                    while(generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -47,7 +48,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(mean) && generator->is_valid())
+                    while(generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -56,14 +57,18 @@ namespace statiskit
                     }
                     break;
                 default:
-                    mean = std::numeric_limits< double >::quiet_NaN();
+                    throw qualitative_sample_space_error();
                     break;
             }
-            if(boost::math::isfinite(mean))
-            { estimation = std::make_shared< NaturalMeanEstimation >(mean); }
+            estimation = std::make_unique< NaturalMeanEstimation >(mean);
         }
+        else
+        { throw sample_size_error(1); }
         return estimation;
     }
+
+    std::unique_ptr< MeanEstimation::Estimator > NaturalMeanEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     VarianceEstimation::VarianceEstimation(const double& mean)
     { _mean = mean; }
@@ -74,7 +79,7 @@ namespace statiskit
     const double& VarianceEstimation::get_mean() const
     { return _mean; }
 
-    std::shared_ptr< VarianceEstimation > VarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
+    std::unique_ptr< VarianceEstimation > VarianceEstimation::Estimator::operator() (const UnivariateData& data) const
     { 
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
         return (*this)(data, estimator(data)->get_mean());
@@ -104,20 +109,18 @@ namespace statiskit
     NaturalVarianceEstimation::Estimator::Estimator(const Estimator& estimator)
     { _bias = estimator._bias; }
     
-    std::shared_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const
+    std::unique_ptr< VarianceEstimation > NaturalVarianceEstimation::Estimator::operator() (const UnivariateData& data, const double& mean) const
     { 
-        if(!data)
-        { throw std::runtime_error("None"); }
-        double total = data->compute_total(), total_square = 0.;
-        std::shared_ptr< VarianceEstimation > estimation;
+        double total = data.compute_total(), total_square = 0.;
+        std::unique_ptr< VarianceEstimation > estimation;
         if(total > 0)
         {
             double variance = 0.;
-            std::unique_ptr< UnivariateData::Generator > generator = data->generator();
-            switch(data->get_sample_space()->get_outcome())
+            std::unique_ptr< UnivariateData::Generator > generator = data.generator();
+            switch(data.get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    while(boost::math::isfinite(variance) && generator->is_valid())
+                    while(generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -129,7 +132,7 @@ namespace statiskit
                     }
                     break;
                 case CONTINUOUS:
-                    while(boost::math::isfinite(variance) && generator->is_valid())
+                    while(generator->is_valid())
                     {
                         const UnivariateEvent* event = generator->event();
                         if(event && event->get_event() == ELEMENTARY)
@@ -141,7 +144,7 @@ namespace statiskit
                     }
                     break;
                 default:
-                    variance = std::numeric_limits< double >::quiet_NaN();
+                    throw qualitative_sample_space_error();
                     break;
             }
             if(!_bias)
@@ -149,11 +152,15 @@ namespace statiskit
                 total *= total;
                 variance *= total/(total - total_square);
             }
-            if(boost::math::isfinite(variance))
-            { estimation = std::make_shared< NaturalVarianceEstimation >(mean, _bias, variance); }
+            estimation = std::make_unique< NaturalVarianceEstimation >(mean, _bias, variance);
         }
+        else
+        { throw sample_size_error(1); }
         return estimation;
     }
+
+    std::unique_ptr< VarianceEstimation::Estimator > NaturalVarianceEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
 
     const bool& NaturalVarianceEstimation::Estimator::get_bias() const
     { return _bias; }
@@ -170,28 +177,28 @@ namespace statiskit
     const std::array< double, 2 >& CoVarianceEstimation::get_means() const
     { return _means; }
     
-    std::shared_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data) const
+    std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const UnivariateData& data) const
     {
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > estimation = estimator(data);
+        std::unique_ptr< MeanEstimation > estimation = estimator(data);
         double mean = estimation->get_mean();
         return operator() (data, mean);
     }
 
-    std::shared_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const std::shared_ptr< UnivariateData > data, const double& mean) const
+    std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const UnivariateData& data, const double& mean) const
     {
-        std::shared_ptr< MultivariateDataFrame > datas = std::make_shared< MultivariateDataFrame >();
+        std::unique_ptr< MultivariateDataFrame > datas = std::make_unique< MultivariateDataFrame >();
         datas->append_variable(data);
         datas->append_variable(data);
         std::array< double, 2 > means{ {mean, mean} };
         return operator() (0, 1, datas, means);
     }
 
-    std::shared_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::shared_ptr< MultivariateDataFrame > data) const
+    std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data) const
     {
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        std::shared_ptr< MeanEstimation > estimation_i = estimator(data->get_variable(i));
-        std::shared_ptr< MeanEstimation > estimation_j = estimator(data->get_variable(j));
+        std::unique_ptr< MeanEstimation > estimation_i = estimator(data.get_variable(i));
+        std::unique_ptr< MeanEstimation > estimation_j = estimator(data.get_variable(j));
         std::array< double, 2 > means{ {estimation_i->get_mean(), estimation_j->get_mean()} };
         return operator() (i, j, data, means);
     }
@@ -220,18 +227,18 @@ namespace statiskit
     NaturalCoVarianceEstimation::Estimator::Estimator(const Estimator& estimator)
     { _bias = estimator._bias; }
 
-    std::shared_ptr< CoVarianceEstimation > NaturalCoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::shared_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const
+    std::unique_ptr< CoVarianceEstimation > NaturalCoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const
     {
         if(!data)
         { throw std::runtime_error("None"); }
         if(!*data)
         { throw std::runtime_error("invalid"); }
-        double total = data->compute_total(), covariance;
-        if(total > 0 && data->size() > 0 && boost::math::isfinite(means.at(0) + means.at(1)))
+        double total = data.compute_total(), covariance;
+        if(total > 0 && data.size() > 0 && boost::math::isfinite(means.at(0) + means.at(1)))
         {
-            size_t index = 0, max_index = data->size();
+            size_t index = 0, max_index = data.size();
             double total_square = 0;
-            const std::shared_ptr< UnivariateData >& data_i = data->get_variable(i), data_j = data->get_variable(j);
+            const UnivariateData&& data_i = data.get_variable(i), data_j = data.get_variable(j);
             switch(data_i->get_sample_space()->get_outcome())
             {
                 case CATEGORICAL:
@@ -253,8 +260,8 @@ namespace statiskit
                                     const UnivariateEvent* event_j = data_j->get_event(index);
                                     if(event_j && event_j->get_event() == ELEMENTARY)
                                     { 
-                                        covariance += data->get_weight(index) * (static_cast< const DiscreteElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const DiscreteElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
-                                        total_square += pow(data->get_weight(index), 2);
+                                        covariance += data.get_weight(index) * (static_cast< const DiscreteElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const DiscreteElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
+                                        total_square += pow(data.get_weight(index), 2);
                                     }
                                 }
                                 ++index;
@@ -270,8 +277,8 @@ namespace statiskit
                                     const UnivariateEvent* event_j = data_j->get_event(index);
                                     if(event_j && event_j->get_event() == ELEMENTARY)
                                     { 
-                                        covariance += data->get_weight(index) * (static_cast< const DiscreteElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const ContinuousElementaryEvent* >(event_j)->get_value() - means.at(j)) / total; 
-                                        total_square += pow(data->get_weight(index), 2);                                        
+                                        covariance += data.get_weight(index) * (static_cast< const DiscreteElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const ContinuousElementaryEvent* >(event_j)->get_value() - means.at(j)) / total; 
+                                        total_square += pow(data.get_weight(index), 2);                                        
                                     }
                                 }
                                 ++index;
@@ -295,8 +302,8 @@ namespace statiskit
                                     const UnivariateEvent* event_j = data_j->get_event(index);
                                     if(event_j && event_j->get_event() == ELEMENTARY)
                                     {
-                                        covariance += data->get_weight(index) * (static_cast< const ContinuousElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const DiscreteElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
-                                        total_square += pow(data->get_weight(index), 2);                                        
+                                        covariance += data.get_weight(index) * (static_cast< const ContinuousElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const DiscreteElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
+                                        total_square += pow(data.get_weight(index), 2);                                        
                                     }
                                 }
                                 ++index;
@@ -312,8 +319,8 @@ namespace statiskit
                                     const UnivariateEvent* event_j = data_j->get_event(index);
                                     if(event_j && event_j->get_event() == ELEMENTARY)
                                     { 
-                                        covariance += data->get_weight(index) * (static_cast< const ContinuousElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const ContinuousElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
-                                        total_square += pow(data->get_weight(index), 2);                                        
+                                        covariance += data.get_weight(index) * (static_cast< const ContinuousElementaryEvent* >(event_i)->get_value() - means.at(i)) * (static_cast< const ContinuousElementaryEvent* >(event_j)->get_value() - means.at(j)) / total;
+                                        total_square += pow(data.get_weight(index), 2);                                        
                                     }
                                 }
                                 ++index;
@@ -330,7 +337,7 @@ namespace statiskit
         }
         else
         { covariance = std::numeric_limits< double >::quiet_NaN(); }
-        return std::make_shared< NaturalCoVarianceEstimation >(means, covariance, _bias);
+        return std::make_unique< NaturalCoVarianceEstimation >(means, covariance, _bias);
     }
 
     const bool& NaturalCoVarianceEstimation::Estimator::get_bias() const
@@ -941,6 +948,6 @@ namespace statiskit
     const bool& NaturalMomentEstimator::get_biased() const
     { return _biased; }
 
-    std::shared_ptr< MomentEstimator > NaturalMomentEstimator::copy() const
-    { return std::make_shared< NaturalMomentEstimator >(*this); }*/
+    std::unique_ptr< MomentEstimator > NaturalMomentEstimator::copy() const
+    { return std::make_unique< NaturalMomentEstimator >(*this); }*/
 }

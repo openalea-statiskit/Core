@@ -7,7 +7,7 @@
 ##################################################################################
 
 from functools import wraps
-from matplotlib import pyplot as plt
+from optionals import pyplot
 
 import statiskit.core._core
 from statiskit.core.__core.statiskit import SlopeHeuristic
@@ -25,8 +25,8 @@ def wrapper(f):
         return f(self.obj)
     return __len__
 
-Proxy.__len__ = wrapper(SlopeHeuristic.size)
-del SlopeHeuristic.size
+Proxy.__len__ = wrapper(SlopeHeuristic.__len__)
+del SlopeHeuristic.__len__
 
 def wrapper(f):
     @wraps(f)
@@ -99,7 +99,7 @@ SlopeHeuristic.selected = property(SelectedProxy)
 
 def plot(self, axes=None, **kwargs):
     if axes is None:
-        axes = plt.subplot(2, 1, 1), plt.subplot(2, 1, 2)
+        axes = pyplot.subplot(2, 1, 1), pyplot.subplot(2, 1, 2)
     else:
         divider = make_axes_locatable(axes)
         axes = axes, divider.append_axes('bottom', size='50%')
@@ -113,7 +113,7 @@ del plot
 
 def score_plot(self, axes=None, fmt='o', predicted=True, *args, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     if predicted:
         index = self.selector(self)
         alpha, beta = self.intercepts[index], self.slopes[index]
@@ -129,7 +129,7 @@ del score_plot
 
 def slope_plot(self, axes=None, fmt='-', *args, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     axes.plot(self.slopes[:], fmt, *args, **kwargs)
     axes.set_xlabel('Number of points considered')
     axes.set_ylabel('Slope value')
@@ -140,7 +140,7 @@ del slope_plot
 
 def selected_plot(self, axes=None, fmt='-', *args, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     axes.plot(self.selected[:], fmt, *args, **kwargs)
     axes.set_xlabel('Number of points considered')
     axes.set_ylabel('Index of selected model')

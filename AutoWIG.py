@@ -22,17 +22,20 @@ for cls in asg['class ::std::less'].specializations():
     cls.boost_python_export = False
 for cls in asg['class ::std::allocator'].specializations():
     cls.boost_python_export = False
-for cls in asg['class ::std::shared_ptr'].specializations():
-    cls.boost_python_export = False
+# for cls in asg['class ::std::shared_ptr'].specializations():
+#     cls.boost_python_export = False
 for cls in asg['class ::std::reverse_iterator'].specializations():
     cls.boost_python_export = False
 for cls in asg['class ::std::initializer_list'].specializations():
+    cls.boost_python_export = False
+for cls in asg['class ::std::default_delete'].specializations():
     cls.boost_python_export = False
 autowig.generator.plugin = 'boost_python_internal'
 wrappers = autowig.generator(asg, module='src/py/_core.cpp',
                                   decorator='src/py/statiskit/core/_core.py',
                                   closure=True,
                                   helder='std::shared_ptr')
+wrappers.decorator.get_content()
 wrappers.write()
 
 # s = subprocess.Popen(['scons', 'py', '-j7', '-k', '--eigen-static-assert=yes'], stderr=subprocess.PIPE)

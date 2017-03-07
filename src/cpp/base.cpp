@@ -15,6 +15,23 @@
 
 namespace statiskit
 {
+    namespace __impl
+    {
+        double reldiff(const double& prev, const double& curr)
+        { return fabs(curr-prev) / fabs(prev); }
+
+        double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr)
+        { return (curr-prev).norm() / prev.norm(); }
+
+        double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr)
+        { return (curr-prev).norm() / prev.norm(); }
+
+        boost::mt19937 _random_generator = boost::mt19937(0);
+
+        boost::mt19937& get_random_generator()
+        { return _random_generator; }
+    }
+
     not_implemented_error::not_implemented_error() : std::exception()
     {}
 
@@ -24,23 +41,9 @@ namespace statiskit
     parameter_error::parameter_error(const std::string& parameter, const std::string& error) : std::runtime_error("'" + parameter + "' parameter: " + error)
     {}
 
-    size_error::size_error(const std::string& parameter, const size_t& self, const size_t& other, const size_type& size) : parameter_error(parameter, "size of " + to_string(self) + " instead of " + to_string(other))
+    size_error::size_error(const std::string& parameter, const size_t& self, const size_t& other, const size_type& size) : parameter_error(parameter, "size of " + __impl::to_string(self) + " instead of " + __impl::to_string(other))
     {}
 
     nullptr_error::nullptr_error(const std::string& parameter) : parameter_error(parameter, "cannot be set to nullptr")
     {}
-    
-    boost::mt19937 _random_generator = boost::mt19937(0);
-
-    boost::mt19937& get_random_generator()
-    { return _random_generator; }
-
-    double get_mindiff()
-    { return 1e-4; }
-
-    unsigned int get_maxits()
-    { return 1e6; }
-
-    unsigned int get_minits()
-    { return 1e2; }
 }

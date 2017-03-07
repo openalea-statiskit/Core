@@ -10,13 +10,29 @@
 
 namespace statiskit
 {
+    SlopeHeuristicSolver::SlopeHeuristicSolver()
+    { _solver = linalg::llt; }
+
+    SlopeHeuristicSolver::SlopeHeuristicSolver(const SlopeHeuristicSolver& solver)
+    { _solver = solver._solver; }
+
+
+    linalg::solver_type SlopeHeuristicSolver::get_solver() const
+    { return _solver; }
+
+    void SlopeHeuristicSolver::set_solver(const linalg::solver_type& solver)
+    { _solver = solver;; }
+
     Eigen::VectorXd SlopeHeuristicOLSSolver::operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
-    { return (X.transpose() * X).llt().solve(X.transpose() * y); }
+    { return linalg::solve(X.transpose() * X, (X.transpose() * y).eval(), _solver); }
+
+    std::unique_ptr< SlopeHeuristicSolver > SlopeHeuristicOLSSolver::copy() const
+    { return std::make_unique< SlopeHeuristicOLSSolver >(); }
 
     SlopeHeuristicIWLSSolver::SlopeHeuristicIWLSSolver()
     { 
-        _epsilon = get_epsilon();
-        _maxits = 10;//get_maxits();
+        _epsilon = 1e-6;
+        _maxits = 10;
     }
 
     SlopeHeuristicIWLSSolver::SlopeHeuristicIWLSSolver(const SlopeHeuristicIWLSSolver& shs)
@@ -28,13 +44,13 @@ namespace statiskit
     Eigen::VectorXd SlopeHeuristicIWLSSolver::operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
     {
         Eigen::MatrixXd W = (Eigen::VectorXd::Ones(y.rows())).asDiagonal();
-        Eigen::VectorXd bp, bc = (X.transpose() * X).llt().solve(X.transpose() * y);
+        Eigen::VectorXd bp, bc = linalg::solve(X.transpose() * X, (X.transpose() * y).eval(), _solver);
         unsigned int its = 0;
         do
         {
             bp = bc;
             update(bp, W, X, y);
-            bc = (X.transpose() * W * X).llt().solve(X.transpose() * W * y);
+            bc = linalg::solve(X.transpose() * W * X, (X.transpose() * W * y).eval(), _solver);
             ++its;
         } while(((bc - bp).cwiseQuotient(bp)).squaredNorm() > _epsilon && its < _maxits);
         return bc;
@@ -57,6 +73,9 @@ namespace statiskit
 
     SlopeHeuristicHuberSolver::SlopeHeuristicHuberSolver(const SlopeHeuristicHuberSolver& shs) : SlopeHeuristicIWLSSolver(shs)
     { _k = shs._k; }
+
+    std::unique_ptr< SlopeHeuristicSolver > SlopeHeuristicHuberSolver::copy() const
+    { return std::make_unique< SlopeHeuristicHuberSolver >(*this); }
 
     const double& SlopeHeuristicHuberSolver::get_k() const
     { return _k; }
@@ -84,6 +103,9 @@ namespace statiskit
     SlopeHeuristicBiSquareSolver::SlopeHeuristicBiSquareSolver(const SlopeHeuristicBiSquareSolver& shs) : SlopeHeuristicIWLSSolver(shs)
     { _k = shs._k; }
 
+    std::unique_ptr< SlopeHeuristicSolver > SlopeHeuristicBiSquareSolver::copy() const
+    { return std::make_unique< SlopeHeuristicBiSquareSolver >(*this); }
+
     const double& SlopeHeuristicBiSquareSolver::get_k() const
     { return _k; }
 
@@ -103,6 +125,12 @@ namespace statiskit
             { W(index, index) = 0.; }
         }
     }
+
+    SlopeHeuristicMaximalSelector::SlopeHeuristicMaximalSelector()
+    {}
+
+    SlopeHeuristicMaximalSelector::SlopeHeuristicMaximalSelector(const SlopeHeuristicMaximalSelector& selector)
+    {}
 
     size_t SlopeHeuristicMaximalSelector::operator() (const SlopeHeuristic& sh) const
     {
@@ -124,6 +152,10 @@ namespace statiskit
         return index;
     }
 
+    std::unique_ptr< SlopeHeuristicSelector > SlopeHeuristicMaximalSelector::copy() const
+    { return std::make_unique< SlopeHeuristicMaximalSelector >(*this); }
+
+    
     SlopeHeuristicSuperiorSelector::SlopeHeuristicSuperiorSelector()
     { _threshold = .20; }
 
@@ -163,6 +195,9 @@ namespace statiskit
         return index;
     }
 
+    std::unique_ptr< SlopeHeuristicSelector > SlopeHeuristicSuperiorSelector::copy() const
+    { return std::make_unique< SlopeHeuristicSuperiorSelector >(*this); }
+
     const double& SlopeHeuristicSuperiorSelector::get_threshold() const
     { return _threshold; }
 
@@ -176,23 +211,44 @@ namespace statiskit
         _intercepts.clear();
         _slopes.clear();
         _selected.clear();
-        _solver = std::make_shared< SlopeHeuristicBiSquareSolver >();
-        _selector = std::make_shared< SlopeHeuristicSuperiorSelector >();
+        _solver = new SlopeHeuristicBiSquareSolver();
+        _selector = new SlopeHeuristicSuperiorSelector();
     }
 
-    SlopeHeuristic::SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector)
+    SlopeHeuristic::SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores)
     {
         _penshapes = std::vector< double >(penshapes.cbegin(), penshapes.cend());
         if(scores.size() != penshapes.size())
         { throw size_error("scores", scores.size(), penshapes.size()); }
         _scores = scores;
-        if(!solver)
-        { throw nullptr_error("solver"); }
-        _solver = solver;
-        if(!selector)
-        { throw nullptr_error("selector"); }
-        _selector = selector;
+        _solver = new SlopeHeuristicBiSquareSolver();
+        _selector = new SlopeHeuristicSuperiorSelector();
         finalize();
+    }
+
+    SlopeHeuristic::SlopeHeuristic(const std::set< double >& penshapes, const std::vector< double >& scores, const SlopeHeuristicSolver& solver, const SlopeHeuristicSelector& selector)
+    {
+        _penshapes = std::vector< double >(penshapes.cbegin(), penshapes.cend());
+        if(scores.size() != penshapes.size())
+        { throw size_error("scores", scores.size(), penshapes.size()); }
+        _scores = scores;
+        _solver = solver.copy().release();
+        _selector = selector.copy().release();
+        finalize();
+    }
+
+    SlopeHeuristic::~SlopeHeuristic()
+    {
+        if(_solver)
+        {
+            delete _solver;
+            _solver = nullptr;
+        }
+        if(_selector)
+        {
+            delete _selector;
+            _selector = nullptr;
+        }
     }
 
     SlopeHeuristic::SlopeHeuristic(const SlopeHeuristic& sh)
@@ -202,8 +258,8 @@ namespace statiskit
         _intercepts = sh._intercepts;
         _slopes = sh._slopes;
         _selected = sh._selected;
-        _solver = sh._solver;
-        _selector = sh._selector;
+        _solver = sh._solver->copy().release();
+        _selector = sh._selector->copy().release();
     }
 
     size_t SlopeHeuristic::size() const
@@ -224,20 +280,36 @@ namespace statiskit
     const size_t& SlopeHeuristic::get_selected(const size_t& index) const
     { return _selected[index]; }
 
-    const std::shared_ptr< SlopeHeuristicSolver >& SlopeHeuristic::get_solver() const
+    double SlopeHeuristic::compute_r_squared(const size_t& index) const
+    { 
+        size_t max_index = size();
+        Eigen::MatrixXd X(index, 2);
+        Eigen::VectorXd y(index), beta(2);
+        beta(0) = _intercepts[index];
+        beta(1) = _slopes[index];
+        for(size_t shift = 0; shift < index; ++shift)
+        { 
+            X(shift, 0) = 1;
+            X(shift, 1) = _penshapes[max_index - shift - 1];
+            y(shift) = _scores[max_index - shift - 1]; 
+        }
+        return 1. - (y - X * beta).squaredNorm() / (y.array() - y.mean()).matrix().squaredNorm();
+    }
+
+    SlopeHeuristicSolver* SlopeHeuristic::get_solver()
     { return _solver; }
 
-    void SlopeHeuristic::set_solver(const std::shared_ptr< SlopeHeuristicSolver >& solver)
+    void SlopeHeuristic::set_solver(const SlopeHeuristicSolver& solver)
     { 
-        _solver = solver;
+        _solver = solver.copy().release();
         finalize();
     }
 
-    const std::shared_ptr< SlopeHeuristicSelector >& SlopeHeuristic::get_selector() const
+    SlopeHeuristicSelector* SlopeHeuristic::get_selector()
     { return _selector; }
 
-    void SlopeHeuristic::set_selector(const std::shared_ptr< SlopeHeuristicSelector >& selector)
-    { _selector = selector; }
+    void SlopeHeuristic::set_selector(const SlopeHeuristicSelector& selector)
+    { _selector = selector.copy().release(); }
 
     void SlopeHeuristic::finalize() 
     {
@@ -245,8 +317,8 @@ namespace statiskit
         _slopes = std::vector< double >(size(), std::numeric_limits< double >::quiet_NaN());
         for(size_t index = 2, max_index = size(); index < max_index; ++index)
         {
-            Eigen::MatrixXd X(index, 2);//, arma::fill::ones);
-            Eigen::VectorXd y(index);//, arma::fill::zeros);
+            Eigen::MatrixXd X(index, 2);
+            Eigen::VectorXd y(index);
             for(size_t shift = 0; shift < index; ++shift)
             {
                 X(shift, 0) = 1;

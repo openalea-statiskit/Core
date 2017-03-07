@@ -1,13 +1,9 @@
 # -*-python-*-
 
-import os
-import platform
-
-system = platform.system().lower()
-
 Import("env")
 
-cppenv = env.Clone(tools = ['cpp'])
+cppenv = env.Clone(tools = ['cpp',
+                            'wig'])
 
 cppenv.AppendUnique(CPPDEFINES = ['LIBSTATISKIT_CORE'])
 
@@ -18,4 +14,16 @@ sources = [source for source in cppenv.Glob('*.*') if not source.name in exclude
 
 targets = cppenv.CppLibrary("statiskit_core", sources)
 Alias("cpp", targets)
+Alias("autowig", targets)
 Alias("install", "cpp")
+
+sources = [source for source in cppenv.Glob('*.h') if not source.name in exclude]
+
+targets = cppenv.BoostPythonWIG('statiskit_core', sources,
+                                module='../py/statiskit/_core.cpp',
+                                decorator='../py/statiskit/core/_core.py',
+                                parser_bootstrap=1,
+                                controller='AutoWIG.py',
+                                dependencies=['statiskit_linalg', 'statiskit_stl'])
+Alias("autowig", targets)
+Alias("install", targets)

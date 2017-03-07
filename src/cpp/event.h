@@ -181,9 +181,26 @@ namespace statiskit
         virtual size_t size() const = 0;
                 
         virtual const UnivariateEvent* get(const size_t& index) const = 0;
-        virtual void set(const size_t& index, const UnivariateEvent* event) = 0;
 
         virtual std::unique_ptr< MultivariateEvent > copy() const = 0;
+    };
+
+    class STATISKIT_CORE_API VectorEvent : public MultivariateEvent
+    {
+        public:
+            VectorEvent(const size_t& size);
+            VectorEvent(const VectorEvent& event);
+            virtual ~VectorEvent();
+
+            virtual size_t size() const;
+                    
+            virtual const UnivariateEvent* get(const size_t& index) const;
+            virtual void set(const size_t& index, const UnivariateEvent& event);
+
+            virtual std::unique_ptr< MultivariateEvent > copy() const;
+
+        protected:
+            std::vector< UnivariateEvent* > _events;
     };
 }
 

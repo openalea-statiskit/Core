@@ -1603,34 +1603,44 @@ namespace statiskit
         typedef ContinuousUnivariateDistribution response_type;
     };      
 
-    /*struct MultivariateDistribution
+    struct STATISKIT_CORE_API MultivariateDistribution
     {
         typedef UnivariateDistribution marginal_type;
 
-        virtual std::shared_ptr< MultivariateSampleSpace > get_sample_space() const = 0;
+        /// \brief Get the sample space of the distribution.
+        virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const = 0;
             
+        /// \brief Get the number of variables of the distribution.
         virtual size_t get_nb_variables() const = 0;
 
+        /// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
         
-        virtual double probability(const MultivariateEvent& event, const bool& logarithm) const = 0;
+        virtual double probability(const MultivariateEvent* event, const bool& logarithm) const = 0;
 
-        std::shared_ptr< MultivariateDataFrame > simulation(const unsigned int& nb) const;
+        /** \brief Compute the log-likelihood of an univariate dataset according to the considered multiivariate distribution.
+         *
+         * \param data The considered multivariate dataset.
+         * */ 
+        double loglikelihood(const MultivariateData& data) const;
 
-        virtual std::shared_ptr< MultivariateEvent > simulate() const = 0;
+        /// Simulate an elementary event according to the considered univariate distribution.
+        virtual std::unique_ptr< MultivariateEvent > simulate() const = 0;
+
+        virtual std::unique_ptr< MultivariateDistribution > copy() const = 0;
     };
 
-    struct CategoricalMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API CategoricalMultivariateDistribution : MultivariateDistribution
     {
         typedef CategoricalUnivariateDistribution marginal_type;
     };
 
-    struct DiscreteMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API DiscreteMultivariateDistribution : MultivariateDistribution
     {
         typedef DiscreteUnivariateDistribution marginal_type;
     };
 
-    struct ContinuousMultivariateDistribution : MultivariateDistribution
+    struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution
     {
         typedef ContinuousUnivariateDistribution marginal_type;
     };
@@ -1638,45 +1648,45 @@ namespace statiskit
     template<class D> class IndependentMultivariateDistribution : public D
     {
         public:
-            IndependentMultivariateDistribution(const std::vector< std::shared_ptr< typename D::marginal_type > >& marginals);
+            IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals);
             IndependentMultivariateDistribution(const IndependentMultivariateDistribution< D >& independent);
-
-            virtual std::shared_ptr< MultivariateSampleSpace > get_sample_space() const;
+            virtual ~IndependentMultivariateDistribution();
+            
+            virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const;
 
             virtual size_t get_nb_variables() const;
 
             virtual unsigned int get_nb_parameters() const;
 
-            virtual double probability(const MultivariateEvent& event, const bool& logarithm) const;
+            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            const std::shared_ptr< typename D::marginal_type >& get_marginal(const size_t& index) const;
+            typename D::marginal_type* get_marginal(const size_t& index) const;
+            void set_marginal(const size_t& index, const typename D::marginal_type& marginal);
 
-            void set_marginal(const size_t& index, const std::shared_ptr< typename D::marginal_type >& marginal);
-
-            virtual std::shared_ptr< MultivariateEvent > simulate() const;
+            virtual std::unique_ptr< MultivariateEvent > simulate() const;
 
         protected:
-            std::vector< std::shared_ptr< typename D::marginal_type > > _marginals; 
+            std::vector< typename D::marginal_type* > _marginals;
     };
 
     typedef IndependentMultivariateDistribution< MultivariateDistribution > MixedIndependentMultivariateDistribution;
     typedef IndependentMultivariateDistribution< CategoricalMultivariateDistribution > CategoricalIndependentMultivariateDistribution;
     typedef IndependentMultivariateDistribution< DiscreteMultivariateDistribution > DiscreteIndependentMultivariateDistribution;
-    typedef IndependentMultivariateDistribution< ContinuousMultivariateDistribution > ContinuousIndependentMultivariateDistribution;*/
+    typedef IndependentMultivariateDistribution< ContinuousMultivariateDistribution > ContinuousIndependentMultivariateDistribution;
 
     /*class NormalRegression : public NormalDistribution, public ConditionalDistribution
     {
         public:
-            NormalRegression(const std::shared_ptr< ScalarPredictor >& predictor, const double& sigma);
+            NormalRegression(const std::unique_ptr< ScalarPredictor >& predictor, const double& sigma);
             virtual ~NormalRegression();
             NormalRegression(const NormalRegression& normal);
 
             virtual void conditioning(const MultivariateEvent& event);
 
-            const std::shared_ptr< ScalarPredictor >& get_predictor() const;
+            const std::unique_ptr< ScalarPredictor >& get_predictor() const;
 
         protected:
-            std::shared_ptr< ScalarPredictor > _predictor;
+            std::unique_ptr< ScalarPredictor > _predictor;
     };*/
 }
 

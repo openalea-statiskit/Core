@@ -30,6 +30,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API UnivariateSampleSpace
     {
+        virtual ~UnivariateSampleSpace() = 0;
+
         virtual outcome_type get_outcome() const = 0;
 
         virtual ordering_type get_ordering() const = 0;
@@ -38,9 +40,6 @@ namespace statiskit
 
         virtual std::unique_ptr< UnivariateSampleSpace > copy() const = 0;
     };
-
-    struct STATISKIT_CORE_API sample_space_error : parameter_error
-    { sample_space_error(const std::string& parameter, const outcome_type& expected); };
 
     enum encoding_type 
     {
@@ -54,6 +53,7 @@ namespace statiskit
         public:
             CategoricalSampleSpace(const std::set< std::string >& values);
             CategoricalSampleSpace(const CategoricalSampleSpace& sample_space);
+            virtual ~CategoricalSampleSpace();
 
             virtual bool is_compatible(const UnivariateEvent* event) const;
             
@@ -73,6 +73,8 @@ namespace statiskit
             encoding_type _encoding;            
     };
 
+    class OrdinalSampleSpace;
+
     class STATISKIT_CORE_API NominalSampleSpace : public CategoricalSampleSpace
     {
         public:
@@ -90,6 +92,8 @@ namespace statiskit
             void set_encoding(const encoding_type& encoding);
 
             virtual Eigen::RowVectorXd encode(const std::string& value) const;
+
+            std::unique_ptr< OrdinalSampleSpace > as_ordinal() const;
 
             std::unique_ptr< UnivariateSampleSpace > copy() const;
 
@@ -116,6 +120,8 @@ namespace statiskit
             void set_encoding(const encoding_type& encoding);
 
             virtual Eigen::RowVectorXd encode(const std::string& value) const;
+
+            std::unique_ptr< NominalSampleSpace > as_nominal() const;
 
             virtual std::unique_ptr< UnivariateSampleSpace > copy() const;
 
@@ -190,15 +196,37 @@ namespace statiskit
 
     struct STATISKIT_CORE_API MultivariateSampleSpace
     {
+        virtual ~MultivariateSampleSpace() = 0;
+
         virtual size_t size() const = 0;
         
         virtual const UnivariateSampleSpace* get(const size_t& index) const = 0;
+
+        virtual bool is_compatible(const MultivariateEvent* event) const;
         
         virtual size_t encode() const;
         
         virtual Eigen::RowVectorXd encode(const MultivariateEvent& event) const;
         
         virtual std::unique_ptr< MultivariateSampleSpace > copy() const = 0;
+    };
+
+    class STATISKIT_CORE_API VectorSampleSpace : public MultivariateSampleSpace
+    {
+        public:
+            VectorSampleSpace(const std::vector< UnivariateSampleSpace* >& sample_spaces);
+            VectorSampleSpace(const VectorSampleSpace& sample_space);
+            virtual ~VectorSampleSpace();
+
+            virtual size_t size() const;
+            
+            virtual const UnivariateSampleSpace* get(const size_t& index) const;
+            virtual void set(const size_t& index, const UnivariateSampleSpace& sample_space);
+            
+            virtual std::unique_ptr< MultivariateSampleSpace > copy() const;       
+
+        protected:
+            std::vector< UnivariateSampleSpace* > _sample_spaces;
     };
 
 }
