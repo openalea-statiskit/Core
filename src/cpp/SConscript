@@ -1,9 +1,10 @@
 # -*-python-*-
 
+from SCons.Errors import EnvironmentError
+
 Import("env")
 
-cppenv = env.Clone(tools = ['cpp',
-                            'wig'])
+cppenv = env.Clone(tools = ['cpp'])
 
 cppenv.AppendUnique(CPPDEFINES = ['LIBSTATISKIT_CORE'])
 
@@ -17,13 +18,18 @@ Alias("cpp", targets)
 Alias("autowig", targets)
 Alias("install", "cpp")
 
-sources = [source for source in cppenv.Glob('*.h') if not source.name in exclude]
+try:
+    wigenv = cppenv.Clone(tools = ['wig'])
 
-targets = cppenv.BoostPythonWIG('statiskit_core', sources,
-                                module='../py/statiskit/_core.cpp',
-                                decorator='../py/statiskit/core/_core.py',
-                                parser_bootstrap=1,
-                                controller='AutoWIG.py',
-                                dependencies=['statiskit_linalg', 'statiskit_stl'])
-Alias("autowig", targets)
-Alias("install", targets)
+    targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
+                                    module='../py/_core.cpp',
+                                    decorator='../py/tatiskit/_core/_core.py',
+                                    parser_bootstrap=1,
+                                    controller='AutoWIG.py',
+                                    depends=['statiskit_linalg', 'statiskit_stl'])
+    Alias("autowig", targets)
+    Alias("install", targets)
+except EnvironmentError:
+    pass
+except Exception:
+    raise
