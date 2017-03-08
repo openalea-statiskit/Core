@@ -130,7 +130,7 @@ namespace statiskit
 
                 const T get_step(const size_t& index) const;
 
-                class STATISKIT_CORE_API Estimator : public B::Estimator
+                class Estimator : public B::Estimator
                 {
                     public:
                         Estimator();
