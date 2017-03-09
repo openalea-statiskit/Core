@@ -13,7 +13,10 @@ namespace autowig
             virtual struct ::statiskit::MultivariateEvent const * event() const
             { return this->get_override("event")(); }
             virtual struct ::statiskit::MultivariateData::Generator & operator++() 
-            { return this->get_override("operator++")(); }
+            {
+                 ::statiskit::MultivariateData::Generator* result = this->get_override("operator++")();
+                 return *result;
+            }                        
             virtual bool  is_valid() const
             { return this->get_override("is_valid")(); }
 

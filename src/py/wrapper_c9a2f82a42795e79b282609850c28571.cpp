@@ -9,7 +9,10 @@ namespace autowig
         public:
             
             virtual double const & get_mean() const
-            { return this->get_override("get_mean")(); }
+            {
+                 double* result = this->get_override("get_mean")();
+                 return *result;
+            }                        
 
         protected:
             

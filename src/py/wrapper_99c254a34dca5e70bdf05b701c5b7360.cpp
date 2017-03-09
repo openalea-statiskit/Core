@@ -9,7 +9,10 @@ namespace autowig
         public:
             
             virtual double const & get_variance() const
-            { return this->get_override("get_variance")(); }
+            {
+                 double* result = this->get_override("get_variance")();
+                 return *result;
+            }                        
 
         protected:
             

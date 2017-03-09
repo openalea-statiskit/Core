@@ -9,7 +9,10 @@ namespace autowig
         public:
             
             virtual class ::std::set< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, struct ::std::less< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > > const & get_values() const
-            { return this->get_override("get_values")(); }
+            {
+                 ::std::set< class ::std::basic_string< char, ::std::char_traits< char >, class ::std::allocator< char > >, struct ::std::less< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > >* result = this->get_override("get_values")();
+                 return *result;
+            }                        
             virtual double  pdf(int const & param_0) const
             { return this->get_override("pdf")(param_0); }
             virtual double  pdf(class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > const & param_0) const
