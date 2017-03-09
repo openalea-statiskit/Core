@@ -23,7 +23,7 @@ try:
 
     targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
                                     module='../py/_core.cpp',
-                                    decorator='../py/tatiskit/_core/_core.py',
+                                    decorator='../py/statiskit/core/_core.py',
                                     parser_bootstrap=1,
                                     controller='AutoWIG.py',
                                     depends=['statiskit_linalg', 'statiskit_stl'])
