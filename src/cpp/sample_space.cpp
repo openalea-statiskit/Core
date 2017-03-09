@@ -231,25 +231,45 @@ namespace statiskit
         return values;
     }
 
-    const std::vector< size_t >& OrdinalSampleSpace::get_rank() const
-    { return _rank; }
+    // const std::vector< size_t >& OrdinalSampleSpace::get_rank() const
+    // { return _rank; }
 
-    void OrdinalSampleSpace::set_rank(const std::vector< size_t >& rank)
+    // void OrdinalSampleSpace::set_rank(const std::vector< size_t >& rank)
+    // {
+    //     if(rank.size() != _values.size())
+    //     { throw std::runtime_error("rank"); }
+    //     std::set< size_t > order = std::set< size_t >();
+    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     { order.insert(order.end(), size); }
+    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     {
+    //         std::set< size_t >::iterator it = order.find(rank[size]);
+    //         if(it == order.end())
+    //         { throw std::runtime_error("rank"); }
+    //         order.erase(it);
+    //     }
+    //     if(order.size() != 0)
+    //     { throw std::runtime_error("rank"); }
+    //     _rank = rank;
+    // }
+
+    void OrdinalSampleSpace::set_ordered(const std::vector< std::string >& ordered)
     {
-        if(rank.size() != _values.size())
+        if(ordered.size() != _values.size())
         { throw std::runtime_error("rank"); }
-        std::set< size_t > order = std::set< size_t >();
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
-        { order.insert(order.end(), size); }
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+        std::vector< size_t > rank(ordered.size(), ordered.size());
+        for(size_t size = 0, max_size = ordered.size(); size < max_size; ++size)
         {
-            std::set< size_t >::iterator it = order.find(rank[size]);
-            if(it == order.end())
+            std::set< std::string >::iterator it = _values.find(ordered[size]);
+            if(it == _values.end())
             { throw std::runtime_error("rank"); }
-            order.erase(it);
+            rank[distance(_values.begin(), it)] = size;
         }
-        if(order.size() != 0)
-        { throw std::runtime_error("rank"); }
+        for(size_t size = 0, max_size = ordered.size(); size < max_size; ++size)
+        {
+            if(rank[size] >= ordered.size())
+            { throw std::runtime_error("ordered"); }
+        }
         _rank = rank;
     }
 

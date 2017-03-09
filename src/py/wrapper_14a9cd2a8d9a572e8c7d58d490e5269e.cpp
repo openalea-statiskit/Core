@@ -10,15 +10,19 @@ namespace autowig
             
             virtual class ::Eigen::Matrix< double, 1, -1, 1, 1, -1 >  encode(class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > const & param_0) const
             { return this->get_override("encode")(param_0); }
+                        
             virtual void  set_encoding(enum ::statiskit::encoding_type const & param_0) 
             { this->get_override("set_encoding")(param_0); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > >  copy() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > (result);
             }
+                        
             virtual enum ::statiskit::ordering_type  get_ordering() const
             { return this->get_override("get_ordering")(); }
+                        
 
         protected:
             

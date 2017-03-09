@@ -160,7 +160,7 @@ namespace statiskit
              * \param rank The specified vector of rank.
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
-            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const Eigen::VectorXd& pi);
+            OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi);
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
@@ -186,11 +186,11 @@ namespace statiskit
 		    * */
             std::string quantile(const double& p) const;
 
-            /// \brief Get the rank of each category in lexicographic order.
-            const std::vector< size_t >& get_rank() const;
+            // /// \brief Get the rank of each category in lexicographic order.
+            // const std::vector< size_t >& get_rank() const;
             
-            /// \brief Set the rank of each category in lexicographic order.
-            void set_rank(const std::vector< size_t >& rank);
+            // /// \brief Set the rank of each category in lexicographic order.
+            // void set_rank(const std::vector< size_t >& rank);
 
 			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;

@@ -13,22 +13,28 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > (result);
             }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  simulate() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("simulate")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
             }
+                        
             virtual double  probability(struct ::statiskit::MultivariateEvent const * param_0, bool const & param_1) const
             { return this->get_override("probability")(param_0, param_1); }
+                        
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
+                        
             virtual ::std::size_t  get_nb_variables() const
             { return this->get_override("get_nb_variables")(); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > (result);
             }
+                        
 
         protected:
             

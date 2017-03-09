@@ -13,8 +13,10 @@ namespace autowig
                  ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > (result);
             }
+                        
             virtual class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >  operator()(class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > const & param_0, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & param_1) const
             { return this->get_override("operator()")(param_0, param_1); }
+                        
 
         protected:
             

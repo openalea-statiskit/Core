@@ -90,8 +90,12 @@ namespace statiskit
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    OrdinalDistribution::OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
-    { set_rank(rank); }
+    OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(std::set< std::string >(values.cbegin(), values.cend()), pi)
+    {
+        _rank = std::vector< size_t >(_values.size());
+        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+        { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
+    }
 
     OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(ordinal)
     { _rank = ordinal._rank; }
@@ -143,27 +147,27 @@ namespace statiskit
         return ordered[size];
     }
 
-    const std::vector< size_t >& OrdinalDistribution::get_rank() const
-    { return _rank; }
+    // const std::vector< size_t >& OrdinalDistribution::get_rank() const
+    // { return _rank; }
 
-    void OrdinalDistribution::set_rank(const std::vector< size_t >& rank)
-    {
-        if(rank.size() != _values.size())
-        { throw size_error("rank", rank.size(), _values.size()); }
-        std::set< size_t > order = std::set< size_t >();
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
-        { order.insert(order.end(), size); }
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
-        {
-            if(rank[size] >= _values.size())
-            { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
-            std::set< size_t >::iterator it = order.find(rank[size]);
-            if(it == order.end())
-            { throw duplicated_value_error("rank", rank[size]); }
-            order.erase(it);
-        }
-        _rank = rank;
-    }
+    // void OrdinalDistribution::set_rank(const std::vector< size_t >& rank)
+    // {
+    //     if(rank.size() != _values.size())
+    //     { throw size_error("rank", rank.size(), _values.size()); }
+    //     std::set< size_t > order = std::set< size_t >();
+    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     { order.insert(order.end(), size); }
+    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     {
+    //         if(rank[size] >= _values.size())
+    //         { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
+    //         std::set< size_t >::iterator it = order.find(rank[size]);
+    //         if(it == order.end())
+    //         { throw duplicated_value_error("rank", rank[size]); }
+    //         order.erase(it);
+    //     }
+    //     _rank = rank;
+    // }
 
     std::vector< std::string > OrdinalDistribution::get_ordered() const
     {

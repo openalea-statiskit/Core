@@ -13,12 +13,16 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > (result);
             }
+                        
             virtual bool  is_compatible(struct ::statiskit::UnivariateEvent const * param_0) const
             { return this->get_override("is_compatible")(param_0); }
+                        
             virtual enum ::statiskit::ordering_type  get_ordering() const
             { return this->get_override("get_ordering")(); }
+                        
             virtual enum ::statiskit::outcome_type  get_outcome() const
             { return this->get_override("get_outcome")(); }
+                        
 
         protected:
             

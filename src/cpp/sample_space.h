@@ -111,9 +111,10 @@ namespace statiskit
             virtual ordering_type get_ordering() const;
 
             std::vector< std::string > get_ordered() const;
-
-            const std::vector< size_t >& get_rank() const;
-            void set_rank(const std::vector< size_t >& rank);
+            void set_ordered(const std::vector< std::string >& ordered);
+            
+            // const std::vector< size_t >& get_rank() const;
+            // void set_rank(const std::vector< size_t >& rank);
 
             void randomize();
 

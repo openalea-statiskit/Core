@@ -13,10 +13,13 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
             }
+                        
             virtual struct ::statiskit::UnivariateEvent const * get(::std::size_t const & param_0) const
             { return this->get_override("get")(param_0); }
+                        
             virtual ::std::size_t  size() const
             { return this->get_override("size")(); }
+                        
 
         protected:
             

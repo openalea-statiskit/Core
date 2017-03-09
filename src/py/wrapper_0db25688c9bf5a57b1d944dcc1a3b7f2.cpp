@@ -10,17 +10,22 @@ namespace autowig
             
             virtual double  get_variance() const
             { return this->get_override("get_variance")(); }
+                        
             virtual double  get_mean() const
             { return this->get_override("get_mean")(); }
+                        
             virtual int  quantile(double const & param_0) const
             { return this->get_override("quantile")(param_0); }
+                        
             virtual double  cdf(int const & param_0) const
             { return this->get_override("cdf")(param_0); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  copy() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > > (result);
             }
+                        
 
         protected:
             

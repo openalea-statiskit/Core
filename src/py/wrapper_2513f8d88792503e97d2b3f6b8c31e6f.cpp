@@ -13,13 +13,16 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > (result);
             }
+                        
             virtual struct ::statiskit::UnivariateSampleSpace const * get_sample_space() const
             { return this->get_override("get_sample_space")(); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > >  generator() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > > ::element_type* result = this->get_override("generator")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > > (result);
             }
+                        
 
         protected:
             

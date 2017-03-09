@@ -53,7 +53,7 @@ namespace statiskit
                     distribution = new NominalDistribution(values, masses);
                     break;
                 case TOTAL:
-                    distribution = new OrdinalDistribution(values, static_cast< const OrdinalSampleSpace* >(sample_space)->get_rank(), masses);
+                    distribution = new OrdinalDistribution(static_cast< const OrdinalSampleSpace* >(sample_space)->get_ordered(), masses);
                     break;
             }
             if(lazy)

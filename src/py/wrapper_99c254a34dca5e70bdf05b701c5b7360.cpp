@@ -12,7 +12,8 @@ namespace autowig
             {
                  double* result = this->get_override("get_variance")();
                  return *result;
-            }                        
+            }                 
+                        
 
         protected:
             

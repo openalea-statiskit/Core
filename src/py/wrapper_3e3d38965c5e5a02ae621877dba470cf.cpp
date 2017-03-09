@@ -13,8 +13,10 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > (result);
             }
+                        
             virtual ::std::size_t  operator()(class ::statiskit::SlopeHeuristic const & param_0) const
             { return this->get_override("operator()")(param_0); }
+                        
 
         protected:
             

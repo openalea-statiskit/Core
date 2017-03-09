@@ -13,11 +13,13 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::VarianceEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::VarianceEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::VarianceEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::VarianceEstimation::Estimator > > (result);
             }
+                        
             virtual class ::std::unique_ptr< class ::statiskit::VarianceEstimation, struct ::std::default_delete< class ::statiskit::VarianceEstimation > >  operator()(struct ::statiskit::UnivariateData const & param_0, double const & param_1) const
             {
                  ::std::unique_ptr< class ::statiskit::VarianceEstimation, struct ::std::default_delete< class ::statiskit::VarianceEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1);
                  return ::std::unique_ptr< class ::statiskit::VarianceEstimation, struct ::std::default_delete< class ::statiskit::VarianceEstimation > > (result);
             }
+                        
 
         protected:
             

@@ -10,6 +10,7 @@ namespace autowig
             
             virtual ::statiskit::UnivariateDistributionEstimation::estimated_type const * get_estimated() const
             { return this->get_override("get_estimated")(); }
+                        
 
         protected:
             

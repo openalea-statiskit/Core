@@ -10,15 +10,19 @@ namespace autowig
             
             virtual double  weight() const
             { return this->get_override("weight")(); }
+                        
             virtual struct ::statiskit::UnivariateEvent const * event() const
             { return this->get_override("event")(); }
+                        
             virtual struct ::statiskit::UnivariateData::Generator & operator++() 
             {
                  ::statiskit::UnivariateData::Generator* result = this->get_override("operator++")();
                  return *result;
-            }                        
+            }                 
+                        
             virtual bool  is_valid() const
             { return this->get_override("is_valid")(); }
+                        
 
         protected:
             
