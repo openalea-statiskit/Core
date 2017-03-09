@@ -33,6 +33,6 @@ test:
     - numpy
     - python-dev 
   source_files:                                
-    - test/test_*.py
+    - test/test_*.py
   commands:                                       
-   - nosetests test -x -s -v
+    - nosetests test -x -s -v
