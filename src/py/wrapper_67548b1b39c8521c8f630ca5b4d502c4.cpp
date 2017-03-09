@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_67548b1b39c8521c8f630ca5b4d502c4()

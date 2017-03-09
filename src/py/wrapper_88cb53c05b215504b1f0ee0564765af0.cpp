@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile * get_pointer<autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile >(autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -48,6 +40,16 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile * get_pointer<autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile >(autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_88cb53c05b215504b1f0ee0564765af0()

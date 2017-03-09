@@ -1,6 +1,13 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_769a75103aea5cbfad86e8b5c022c015(class ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > const & instance, struct ::statiskit::SlopeHeuristicSelector & param_out)     { instance.operator*() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,11 +17,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_769a75103aea5cbfad86e8b5c022c015(class ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > const & instance, struct ::statiskit::SlopeHeuristicSelector & param_out)     { instance.operator*() = param_out; }
-}
 
 
 void wrapper_b2f3c2f39c61584abb2d15ebc8f7a063()

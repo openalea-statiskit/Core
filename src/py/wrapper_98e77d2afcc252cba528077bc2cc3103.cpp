@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile * get_pointer<autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile >(autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -35,6 +27,16 @@ namespace autowig
 
     void method_decorator_63b969fdfda0571a865b8fd09d42ff6f(struct ::statiskit::MultivariateData::Generator & instance, struct ::statiskit::MultivariateData::Generator & param_out)     { instance.operator++() = param_out; }
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile * get_pointer<autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile >(autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_98e77d2afcc252cba528077bc2cc3103()

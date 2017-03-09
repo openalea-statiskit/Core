@@ -166,7 +166,8 @@ namespace statiskit
 
         struct Estimator : __impl::OptimizationEstimation<T, D, B >::Estimator
         { 
-            using __impl::OptimizationEstimation<T, D, B >::Estimator::Estimator;
+            Estimator();
+            Estimator(const Estimator& estimator);
             virtual ~Estimator();
         };
     };
@@ -179,7 +180,8 @@ namespace statiskit
 
         struct Estimator : __impl::OptimizationEstimation<T*, D, B >::Estimator
         { 
-            using __impl::OptimizationEstimation<T*, D, B >::Estimator::Estimator;
+            Estimator();
+            Estimator(const Estimator& estimator);
             virtual ~Estimator();
         };
     };

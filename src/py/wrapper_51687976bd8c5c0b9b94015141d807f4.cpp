@@ -1,6 +1,13 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_dcafe6784ad0578094810e9dc6ceb523(class ::std::unique_ptr< class ::statiskit::VarianceEstimation, struct ::std::default_delete< class ::statiskit::VarianceEstimation > > const & instance, class ::statiskit::VarianceEstimation & param_out)     { instance.operator*() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,11 +17,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_dcafe6784ad0578094810e9dc6ceb523(class ::std::unique_ptr< class ::statiskit::VarianceEstimation, struct ::std::default_delete< class ::statiskit::VarianceEstimation > > const & instance, class ::statiskit::VarianceEstimation & param_out)     { instance.operator*() = param_out; }
-}
 
 
 void wrapper_51687976bd8c5c0b9b94015141d807f4()

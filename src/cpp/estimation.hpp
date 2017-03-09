@@ -320,6 +320,14 @@ namespace statiskit
         {}
 
     template<class T, class D, class B>
+        OptimizationEstimation< T, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T, D, B >::Estimator::Estimator()
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T, D, B >::Estimator::Estimator(estimator)
+        {}
+
+    template<class T, class D, class B>
         OptimizationEstimation< T, D, B >::Estimator::~Estimator()
         {}
 
@@ -339,6 +347,14 @@ namespace statiskit
                 this->_steps[index] = nullptr; 
             }
         }
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T*, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T*, D, B >::Estimator::Estimator()
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T*, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T*, D, B >::Estimator::Estimator(estimator)
+        {}
 
     template<class T, class D, class B>
         OptimizationEstimation< T*, D, B >::Estimator::~Estimator()

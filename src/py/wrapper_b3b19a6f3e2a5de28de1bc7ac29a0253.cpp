@@ -1,6 +1,13 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_3cc287511a945c1589b02aa98845972b(class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > const & instance, struct ::statiskit::UnivariateData & param_out)     { instance.operator*() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,11 +17,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_3cc287511a945c1589b02aa98845972b(class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > const & instance, struct ::statiskit::UnivariateData & param_out)     { instance.operator*() = param_out; }
-}
 
 
 void wrapper_b3b19a6f3e2a5de28de1bc7ac29a0253()
