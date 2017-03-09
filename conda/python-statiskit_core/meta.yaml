@@ -31,10 +31,8 @@ test:
   requires:
     - matplotlib
     - numpy
-    - python-dev
-  imports:
-    - statiskit.core  
+    - python-dev 
   source_files:                                
     - test/test_*.py
-   commands:                                       
+  commands:                                       
    - nosetests test -x -s -v
