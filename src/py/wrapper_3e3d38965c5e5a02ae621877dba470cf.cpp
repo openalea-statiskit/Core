@@ -33,6 +33,7 @@ namespace autowig
 namespace boost
 {
     template <> autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf const volatile * get_pointer<autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf const volatile >(autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf const volatile *c) { return c; }
+    template <> struct ::statiskit::SlopeHeuristicSelector const volatile * get_pointer<struct ::statiskit::SlopeHeuristicSelector const volatile >(struct ::statiskit::SlopeHeuristicSelector const volatile *c) { return c; }
 }
     #endif
 #endif

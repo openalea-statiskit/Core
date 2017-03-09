@@ -51,6 +51,7 @@ namespace autowig
 namespace boost
 {
     template <> autowig::Wrap_4540538b16205d90be33cf08feed0673 const volatile * get_pointer<autowig::Wrap_4540538b16205d90be33cf08feed0673 const volatile >(autowig::Wrap_4540538b16205d90be33cf08feed0673 const volatile *c) { return c; }
+    template <> struct ::statiskit::MultivariateDistribution const volatile * get_pointer<struct ::statiskit::MultivariateDistribution const volatile >(struct ::statiskit::MultivariateDistribution const volatile *c) { return c; }
 }
     #endif
 #endif
@@ -76,7 +77,7 @@ void wrapper_4540538b16205d90be33cf08feed0673()
     class_4540538b16205d90be33cf08feed0673.def("get_nb_variables", boost::python::pure_virtual(method_pointer_b2ce3869dd2f5372a8ffa3386ff2e5be), "Get the number of variables of the distribution.\n\n:Return Type:\n    :cpp:any:`unsigned` long int\n\n");
     class_4540538b16205d90be33cf08feed0673.def("get_nb_parameters", boost::python::pure_virtual(method_pointer_d6b37eb7a2815c508032d7111fe27b25), "Get the number of parameters of the distribution.\n\n:Return Type:\n    :cpp:any:`unsigned` int\n\n");
     class_4540538b16205d90be33cf08feed0673.def("probability", boost::python::pure_virtual(method_pointer_1b1aa04affe25769a45aa61f808a0a19), "");
-    class_4540538b16205d90be33cf08feed0673.def("loglikelihood", method_pointer_6285df200fdc5073aaa5aab9a61032f1, "Compute the log-likelihood of an univariate dataset according to the\nconsidered multiivariate distribution.\n\n:Parameter:\n    `data` (:py:class:`.statiskit.MultivariateData`) - The considered multivariate dataset.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
+    class_4540538b16205d90be33cf08feed0673.def("loglikelihood", method_pointer_6285df200fdc5073aaa5aab9a61032f1, "Compute the log-likelihood of an univariate dataset according to the\nconsidered multiivariate distribution.\n\n:Parameter:\n    `data` (:py:class:`statiskit.core.statiskit.MultivariateData`) - The considered multivariate dataset.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
     class_4540538b16205d90be33cf08feed0673.def("simulate", boost::python::pure_virtual(method_pointer_4ea4050829d754ffad293bbb7a971a31), ":Return Type:\n    :cpp:any:`::std::unique_ptr<` struct\n    ::statiskit::MultivariateEvent, struct ::std::default\\_delete< struct\n    ::statiskit::MultivariateEvent > >\n\n");
     class_4540538b16205d90be33cf08feed0673.def("copy", boost::python::pure_virtual(method_pointer_bfcc78e34f6259b6a33f959f459c73aa), "");
     if(autowig::Held< struct ::statiskit::MultivariateDistribution >::is_class)
