@@ -26,7 +26,7 @@ namespace autowig
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         
-            virtual ::std::size_t  get_nb_variables() const
+            virtual ::statiskit::Index  get_nb_variables() const
             { return this->get_override("get_nb_variables")(); }
                         
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
@@ -65,7 +65,7 @@ void wrapper_4540538b16205d90be33cf08feed0673()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  (::statiskit::MultivariateDistribution::*method_pointer_f4dbd4e02f095d4d9217adfff6fad3e1)() const = &::statiskit::MultivariateDistribution::get_sample_space;
-    ::std::size_t  (::statiskit::MultivariateDistribution::*method_pointer_b2ce3869dd2f5372a8ffa3386ff2e5be)() const = &::statiskit::MultivariateDistribution::get_nb_variables;
+    ::statiskit::Index  (::statiskit::MultivariateDistribution::*method_pointer_b2ce3869dd2f5372a8ffa3386ff2e5be)() const = &::statiskit::MultivariateDistribution::get_nb_variables;
     unsigned int  (::statiskit::MultivariateDistribution::*method_pointer_d6b37eb7a2815c508032d7111fe27b25)() const = &::statiskit::MultivariateDistribution::get_nb_parameters;
     double  (::statiskit::MultivariateDistribution::*method_pointer_1b1aa04affe25769a45aa61f808a0a19)(struct ::statiskit::MultivariateEvent const *, bool const &) const = &::statiskit::MultivariateDistribution::probability;
     double  (::statiskit::MultivariateDistribution::*method_pointer_6285df200fdc5073aaa5aab9a61032f1)(struct ::statiskit::MultivariateData const &) const = &::statiskit::MultivariateDistribution::loglikelihood;

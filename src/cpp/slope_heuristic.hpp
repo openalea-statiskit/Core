@@ -25,7 +25,7 @@ namespace statiskit
         SlopeHeuristicSelection< E >::SlopeHeuristicSelection(const SlopeHeuristicSelection< E >& she) : SlopeHeuristic(she)
         {
             _estimated = std::vector< typename E::estimated_type* >(she._estimated.size(), nullptr);
-            for(size_t index = 0, max_index = _estimated.size(); index < max_index; ++index)
+            for(Index index = 0, max_index = _estimated.size(); index < max_index; ++index)
             { _estimated[index] = static_cast< typename E::estimated_type* >(she._estimated[index]->copy().release()); }
             if(she._data)
             { _data = static_cast< typename E::data_type* >(she._data->copy().release()); }
@@ -44,7 +44,7 @@ namespace statiskit
     template<class E>
         SlopeHeuristicSelection< E >::~SlopeHeuristicSelection()
         { 
-            for(size_t index = 0, max_index = _estimated.size(); index < max_index; ++index)
+            for(Index index = 0, max_index = _estimated.size(); index < max_index; ++index)
             {
                 delete _estimated[index];
                 _estimated[index] = nullptr;
@@ -67,7 +67,7 @@ namespace statiskit
         }
 
     template<class E>
-        const typename E::estimated_type* SlopeHeuristicSelection< E >::get_estimated(const size_t& index) const
+        const typename E::estimated_type* SlopeHeuristicSelection< E >::get_estimated(const Index& index) const
         { return _estimated[index]; }
 
     template<class E>
@@ -88,7 +88,7 @@ namespace statiskit
                 }
                 else if(*it == penshape)
                 {
-                    size_t index = distance(this->_penshapes.begin(), it);
+                    Index index = distance(this->_penshapes.begin(), it);
                     if(this->_scores[index] < score)
                     {
                         this->_scores[index] = score;
@@ -97,7 +97,7 @@ namespace statiskit
                 }
                 else
                 {
-                    size_t index = distance(this->_penshapes.begin(), it);
+                    Index index = distance(this->_penshapes.begin(), it);
                     this->_penshapes.insert(it, penshape);
                     this->_scores.insert(this->_scores.begin() + index, score);
                     _estimated.insert(_estimated.begin() + index, estimated);

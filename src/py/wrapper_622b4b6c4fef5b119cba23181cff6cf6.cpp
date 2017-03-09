@@ -26,7 +26,7 @@ namespace autowig
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         
-            virtual ::std::size_t  get_nb_variables() const
+            virtual ::statiskit::Index  get_nb_variables() const
             { return this->get_override("get_nb_variables")(); }
                         
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const

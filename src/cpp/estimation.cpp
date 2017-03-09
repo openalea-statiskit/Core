@@ -20,7 +20,7 @@ namespace statiskit
     UnivariateDistributionEstimation::Estimator::~Estimator()
     {}
 
-    std::unique_ptr< UnivariateDistributionEstimation > UnivariateDistributionEstimation::Estimator::operator() (const MultivariateData& data, const size_t& index) const
+    std::unique_ptr< UnivariateDistributionEstimation > UnivariateDistributionEstimation::Estimator::operator() (const MultivariateData& data, const Index& index) const
     { 
         std::unique_ptr< UnivariateData > _data = data.extract(index);
         return this->operator() (*_data);

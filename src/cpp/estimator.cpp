@@ -436,7 +436,7 @@ namespace statiskit
         if(_nb_bins != 0)
         { nb_bins = _nb_bins; }
         bins.insert(min - .5 / total * (max - min));
-        for(size_t index = 1; index < nb_bins; ++index)
+        for(Index index = 1; index < nb_bins; ++index)
         { bins.insert(*(bins.rbegin()) + 1. / nb_bins * (max-min)); }
         bins.insert(max + .5 / nb_bins * (max - min));
         if(bins.size() > 1)
@@ -515,7 +515,7 @@ namespace statiskit
         { cache = new RegularUnivariateHistogramDistributionSlopeHeuristicSelection(&data); }
         std::set< double > bins = std::set< double >();
         UnivariateHistogramDistributionEstimation::Estimator estimator = UnivariateHistogramDistributionEstimation::Estimator();
-        for(size_t nb_bins = _max_bins; nb_bins > 0; --nb_bins)
+        for(Index nb_bins = _max_bins; nb_bins > 0; --nb_bins)
         {
             estimator.set_nb_bins(nb_bins);
             try
@@ -595,7 +595,7 @@ namespace statiskit
             ++(*generator);
         }
         bins.insert(min - .5 / total * (max - min));
-        for(size_t index = 1; index < total; ++index)
+        for(Index index = 1; index < total; ++index)
         { bins.insert(*(bins.rbegin()) + 1. / total * (max-min)); }
         bins.insert(max + .5 / total * (max - min));
         if(bins.size() > 1)
@@ -632,7 +632,7 @@ namespace statiskit
                 ++(*generator);
             }
             std::vector< double > entropies = std::vector< double >(densities.size()-1, std::numeric_limits< double >::quiet_NaN());
-            for(size_t index = 0, max_index = densities.size()-1; index < max_index; ++index)
+            for(Index index = 0, max_index = densities.size()-1; index < max_index; ++index)
             {
                 entropies[index] = 0;
                 if(densities[index] > 0.)
@@ -677,7 +677,7 @@ namespace statiskit
                 bins.erase(itb);
                 // TODO optimize
                 entropies = std::vector< double >(densities.size()-1, std::numeric_limits< double >::quiet_NaN());
-                for(size_t index = 0, max_index = densities.size()-1; index < max_index; ++index)
+                for(Index index = 0, max_index = densities.size()-1; index < max_index; ++index)
                 { 
                     entropies[index] = 0;
                     if(densities[index] > 0.)

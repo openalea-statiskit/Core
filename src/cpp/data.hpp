@@ -27,11 +27,11 @@ namespace statiskit
         const typename D::sample_space_type* DataMask< D >::get_sample_space() const
         { return _masked->get_sample_space(); }
         
-    //const UnivariateEvent* UnivariateDataMask::get_event(const size_t& index) const
+    //const UnivariateEvent* UnivariateDataMask::get_event(const Index& index) const
     //{ return _masked->get_event(compute_index(index)); }
 
     template<class D>
-        void DataMask< D >::set_event(const size_t& index, const typename D::event_type* event)
+        void DataMask< D >::set_event(const Index& index, const typename D::event_type* event)
         { _masked->set_event(compute_index(index), event); }
 
     template<class D>
@@ -39,7 +39,7 @@ namespace statiskit
         { return _masked->is_weighted(); }
     
     template<class D>
-        double DataMask< D >::get_weight(const size_t& index) const
+        double DataMask< D >::get_weight(const Index& index) const
         { return _masked->get_weight(compute_index(index)); }
 
     template<class D>
@@ -55,13 +55,13 @@ namespace statiskit
         { return _masked->is_locked(); }
 
     template<class D>
-        const typename D::event_type* DataMask< D >::get_event(const size_t& index) const
+        const typename D::event_type* DataMask< D >::get_event(const Index& index) const
         { return _masked->get_event(compute_index(index)); }
 
     template<class D>
         RandomizedData< D >::RandomizedData(const std::shared_ptr< D >& randomized) : DataMask< D >(randomized)
         {
-            _randomization = std::vector< size_t >(randomized->size(), 0);
+            _randomization = std::vector< Index >(randomized->size(), 0);
             randomize();
         }
 
@@ -70,11 +70,11 @@ namespace statiskit
         { _randomization = data._randomization; }
 
     template<class D>
-        size_t RandomizedData< D >::size() const
+        Index RandomizedData< D >::size() const
         { return _randomization.size(); }
 
     template<class D>
-        const std::vector< size_t >& RandomizedData< D >::get_randomization() const
+        const std::vector< Index >& RandomizedData< D >::get_randomization() const
         { return _randomization; }
 
     template<class D>
@@ -82,9 +82,9 @@ namespace statiskit
         {
             if(this->is_locked())
             { throw std::runtime_error("data is locked"); }
-            for(size_t index = 0, max_index = size(); index < max_index; ++index)
+            for(Index index = 0, max_index = size(); index < max_index; ++index)
             { _randomization[index] = index; }
-            for(size_t index = 1, max_index = size(); index < max_index; ++index)
+            for(Index index = 1, max_index = size(); index < max_index; ++index)
             {
                 boost::random::uniform_int_distribution<> dist(0, index);
                 boost::variate_generator<boost::mt19937&, boost::random::uniform_int_distribution<>  > simulator(get_random_generator(), dist);
@@ -97,11 +97,11 @@ namespace statiskit
         { return std::make_unique< RandomizedData< D > >(*this); }
 
     template<class D>
-        size_t RandomizedData< D >::compute_index(const size_t& index) const
+        Index RandomizedData< D >::compute_index(const Index& index) const
         { return _randomization[index]; }
 
     template<class D>
-        DataIntervalMask< D >::DataIntervalMask(const std::shared_ptr< D >& masked, const size_t& lower, const size_t& upper, const bool& inside) : DataMask< D >(masked)
+        DataIntervalMask< D >::DataIntervalMask(const std::shared_ptr< D >& masked, const Index& lower, const Index& upper, const bool& inside) : DataMask< D >(masked)
         {
             if(lower < upper)
             {
@@ -125,9 +125,9 @@ namespace statiskit
         }
 
     template<class D>
-        size_t DataIntervalMask< D >::size() const
+        Index DataIntervalMask< D >::size() const
         { 
-            size_t size = _upper - _lower;
+            Index size = _upper - _lower;
             if(!_inside)
             { size = this->_masked->size() - size; }
             return size;
@@ -146,9 +146,9 @@ namespace statiskit
         }
 
     template<class D>
-        size_t DataIntervalMask< D >::compute_index(const size_t& index) const
+        Index DataIntervalMask< D >::compute_index(const Index& index) const
         { 
-            size_t _index = index;
+            Index _index = index;
             if(_inside)
             { _index += _lower; }
             else if(index > _lower)

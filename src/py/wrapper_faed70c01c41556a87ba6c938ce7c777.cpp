@@ -14,10 +14,10 @@ namespace autowig
                  return ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > (result);
             }
                         
-            virtual struct ::statiskit::UnivariateSampleSpace const * get(::std::size_t const & param_0) const
+            virtual struct ::statiskit::UnivariateSampleSpace const * get(::statiskit::Index const & param_0) const
             { return this->get_override("get")(param_0); }
                         
-            virtual ::std::size_t  size() const
+            virtual ::statiskit::Index  size() const
             { return this->get_override("size")(); }
                         
 
@@ -49,10 +49,10 @@ void wrapper_faed70c01c41556a87ba6c938ce7c777()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    ::std::size_t  (::statiskit::MultivariateSampleSpace::*method_pointer_34b56241180a545dbbc2cc99f5f4650e)() const = &::statiskit::MultivariateSampleSpace::size;
-    struct ::statiskit::UnivariateSampleSpace const * (::statiskit::MultivariateSampleSpace::*method_pointer_89faf58ffa485b8fafccbd250d1fe75d)(::std::size_t const &) const = &::statiskit::MultivariateSampleSpace::get;
+    ::statiskit::Index  (::statiskit::MultivariateSampleSpace::*method_pointer_34b56241180a545dbbc2cc99f5f4650e)() const = &::statiskit::MultivariateSampleSpace::size;
+    struct ::statiskit::UnivariateSampleSpace const * (::statiskit::MultivariateSampleSpace::*method_pointer_89faf58ffa485b8fafccbd250d1fe75d)(::statiskit::Index const &) const = &::statiskit::MultivariateSampleSpace::get;
     bool  (::statiskit::MultivariateSampleSpace::*method_pointer_817740fe51f5581ca0b50fe3fdee1e78)(struct ::statiskit::MultivariateEvent const *) const = &::statiskit::MultivariateSampleSpace::is_compatible;
-    ::std::size_t  (::statiskit::MultivariateSampleSpace::*method_pointer_58045e2837b651c18e64ce6ac4e0be9e)() const = &::statiskit::MultivariateSampleSpace::encode;
+    ::statiskit::Index  (::statiskit::MultivariateSampleSpace::*method_pointer_58045e2837b651c18e64ce6ac4e0be9e)() const = &::statiskit::MultivariateSampleSpace::encode;
     class ::Eigen::Matrix< double, 1, -1, 1, 1, -1 >  (::statiskit::MultivariateSampleSpace::*method_pointer_453c7ae8bd33563d9ea0317dca724475)(struct ::statiskit::MultivariateEvent const &) const = &::statiskit::MultivariateSampleSpace::encode;
     class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  (::statiskit::MultivariateSampleSpace::*method_pointer_40d149de873956828c7a7bb6efb1b291)() const = &::statiskit::MultivariateSampleSpace::copy;
     boost::python::class_< autowig::Wrap_faed70c01c41556a87ba6c938ce7c777, autowig::Held< autowig::Wrap_faed70c01c41556a87ba6c938ce7c777 >::Type, boost::noncopyable > class_faed70c01c41556a87ba6c938ce7c777("MultivariateSampleSpace", "", boost::python::no_init);

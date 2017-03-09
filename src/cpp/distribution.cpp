@@ -85,15 +85,15 @@ namespace statiskit
    
     OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(std::set< std::string >(values.cbegin(), values.cend()))
     {
-        _rank = std::vector< size_t >(_values.size());
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+        _rank = std::vector< Index >(_values.size());
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
     OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(std::set< std::string >(values.cbegin(), values.cend()), pi)
     {
-        _rank = std::vector< size_t >(_values.size());
-        for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+        _rank = std::vector< Index >(_values.size());
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
@@ -126,7 +126,7 @@ namespace statiskit
         std::set< std::string >::const_iterator it = _values.find(value);
         if(it != _values.cend())
         {
-            for(size_t size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
+            for(Index size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
             { p += _pi[size]; }
         }
         return p;
@@ -135,7 +135,7 @@ namespace statiskit
     std::string OrdinalDistribution::quantile(const double& p) const
     {
         std::vector< std::string > ordered = get_ordered();
-        size_t size = 0, max_size = ordered.size() - 1;
+        Index size = 0, max_size = ordered.size() - 1;
         double _p = _pi[size];
         while(_p < p && size < max_size)
         {
@@ -147,21 +147,21 @@ namespace statiskit
         return ordered[size];
     }
 
-    // const std::vector< size_t >& OrdinalDistribution::get_rank() const
+    // const std::vector< Index >& OrdinalDistribution::get_rank() const
     // { return _rank; }
 
-    // void OrdinalDistribution::set_rank(const std::vector< size_t >& rank)
+    // void OrdinalDistribution::set_rank(const std::vector< Index >& rank)
     // {
     //     if(rank.size() != _values.size())
     //     { throw size_error("rank", rank.size(), _values.size()); }
-    //     std::set< size_t > order = std::set< size_t >();
-    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     std::set< Index > order = std::set< Index >();
+    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
     //     { order.insert(order.end(), size); }
-    //     for(size_t size = 0, max_size = _values.size(); size < max_size; ++size)
+    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
     //     {
     //         if(rank[size] >= _values.size())
     //         { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
-    //         std::set< size_t >::iterator it = order.find(rank[size]);
+    //         std::set< Index >::iterator it = order.find(rank[size]);
     //         if(it == order.end())
     //         { throw duplicated_value_error("rank", rank[size]); }
     //         order.erase(it);

@@ -187,10 +187,10 @@ namespace statiskit
             std::string quantile(const double& p) const;
 
             // /// \brief Get the rank of each category in lexicographic order.
-            // const std::vector< size_t >& get_rank() const;
+            // const std::vector< Index >& get_rank() const;
             
             // /// \brief Set the rank of each category in lexicographic order.
-            // void set_rank(const std::vector< size_t >& rank);
+            // void set_rank(const std::vector< Index >& rank);
 
 			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;
@@ -198,7 +198,7 @@ namespace statiskit
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
 
         protected:
-            std::vector< size_t > _rank;
+            std::vector< Index > _rank;
     };
  
     template<class T> struct QuantitativeUnivariateFrequencyDistribution : UnivariateFrequencyDistribution< T >
@@ -1611,7 +1611,7 @@ namespace statiskit
         virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const = 0;
             
         /// \brief Get the number of variables of the distribution.
-        virtual size_t get_nb_variables() const = 0;
+        virtual Index get_nb_variables() const = 0;
 
         /// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -1654,14 +1654,14 @@ namespace statiskit
             
             virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const;
 
-            virtual size_t get_nb_variables() const;
+            virtual Index get_nb_variables() const;
 
             virtual unsigned int get_nb_parameters() const;
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            typename D::marginal_type* get_marginal(const size_t& index) const;
-            void set_marginal(const size_t& index, const typename D::marginal_type& marginal);
+            typename D::marginal_type* get_marginal(const Index& index) const;
+            void set_marginal(const Index& index, const typename D::marginal_type& marginal);
 
             virtual std::unique_ptr< MultivariateEvent > simulate() const;
 

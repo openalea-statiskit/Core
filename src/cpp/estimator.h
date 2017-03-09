@@ -277,9 +277,9 @@ namespace statiskit
             using ActiveEstimation< IndependentMultivariateDistribution< D >, E >::ActiveEstimation;
             virtual ~IndependentMultivariateDistributionEstimation();
             
-            size_t size() const;
+            Index size() const;
 
-            const UnivariateDistributionEstimation* get_estimation(const size_t& index) const;
+            const UnivariateDistributionEstimation* get_estimation(const Index& index) const;
 
             class Estimator : public E::Estimator
             {
@@ -295,13 +295,13 @@ namespace statiskit
                     const typename E::Estimator::marginal_type* get_default_estimator() const;
                     void set_default_estimator(const typename E::Estimator::marginal_type& estimator);
 
-                    const typename E::Estimator::marginal_type* get_estimator(const size_t& index) const;
-                    void unset_estimator(const size_t& index);
-                    void set_estimator(const size_t& index, const typename E::Estimator::marginal_type& estimator);
+                    const typename E::Estimator::marginal_type* get_estimator(const Index& index) const;
+                    void unset_estimator(const Index& index);
+                    void set_estimator(const Index& index, const typename E::Estimator::marginal_type& estimator);
 
                 protected:
                     typename E::Estimator::marginal_type* _default_estimator;
-                    std::map< size_t, typename E::Estimator::marginal_type* > _estimators;
+                    std::map< Index, typename E::Estimator::marginal_type* > _estimators;
             };
 
         protected:

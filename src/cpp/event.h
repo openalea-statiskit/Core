@@ -178,9 +178,9 @@ namespace statiskit
 
     struct STATISKIT_CORE_API MultivariateEvent
     {        
-        virtual size_t size() const = 0;
+        virtual Index size() const = 0;
                 
-        virtual const UnivariateEvent* get(const size_t& index) const = 0;
+        virtual const UnivariateEvent* get(const Index& index) const = 0;
 
         virtual std::unique_ptr< MultivariateEvent > copy() const = 0;
     };
@@ -188,14 +188,14 @@ namespace statiskit
     class STATISKIT_CORE_API VectorEvent : public MultivariateEvent
     {
         public:
-            VectorEvent(const size_t& size);
+            VectorEvent(const Index& size);
             VectorEvent(const VectorEvent& event);
             virtual ~VectorEvent();
 
-            virtual size_t size() const;
+            virtual Index size() const;
                     
-            virtual const UnivariateEvent* get(const size_t& index) const;
-            virtual void set(const size_t& index, const UnivariateEvent& event);
+            virtual const UnivariateEvent* get(const Index& index) const;
+            virtual void set(const Index& index, const UnivariateEvent& event);
 
             virtual std::unique_ptr< MultivariateEvent > copy() const;
 

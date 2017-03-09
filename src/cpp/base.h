@@ -44,6 +44,8 @@
 
 namespace statiskit
 {
+    typedef unsigned long int Index;
+
     namespace __impl
     {
         double reldiff(const double& prev, const double& curr);
@@ -80,7 +82,7 @@ namespace statiskit
             superior,
         };
 
-        size_error(const std::string& parameter, const size_t& self, const size_t& other, const size_type& size=size_type::equal);
+        size_error(const std::string& parameter, const Index& self, const Index& other, const size_type& size=size_type::equal);
     };
 
     struct STATISKIT_CORE_API nullptr_error : parameter_error

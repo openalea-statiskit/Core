@@ -194,7 +194,7 @@ namespace statiskit
         return operator() (0, 1, datas, means);
     }
 
-    std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data) const
+    std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data) const
     {
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
         std::unique_ptr< MeanEstimation > estimation_i = estimator(data.get_variable(i));
@@ -227,7 +227,7 @@ namespace statiskit
     NaturalCoVarianceEstimation::Estimator::Estimator(const Estimator& estimator)
     { _bias = estimator._bias; }
 
-    std::unique_ptr< CoVarianceEstimation > NaturalCoVarianceEstimation::Estimator::operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const
+    std::unique_ptr< CoVarianceEstimation > NaturalCoVarianceEstimation::Estimator::operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const
     {
         if(!data)
         { throw std::runtime_error("None"); }
@@ -236,7 +236,7 @@ namespace statiskit
         double total = data.compute_total(), covariance;
         if(total > 0 && data.size() > 0 && boost::math::isfinite(means.at(0) + means.at(1)))
         {
-            size_t index = 0, max_index = data.size();
+            Index index = 0, max_index = data.size();
             double total_square = 0;
             const UnivariateData&& data_i = data.get_variable(i), data_j = data.get_variable(j);
             switch(data_i->get_sample_space()->get_outcome())
@@ -410,11 +410,11 @@ namespace statiskit
             switch(df->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
-                    for(size_t index = 0, max_index = df->size(); index < max_index; ++index)
+                    for(Index index = 0, max_index = df->size(); index < max_index; ++index)
                     { mean += get_value< DiscreteEvent >(df, index, na_omit)/total; }
                     break;
                 case CONTINUOUS:
-                    for(size_t index = 0, max_index = df->size(); index < max_index; ++index)
+                    for(Index index = 0, max_index = df->size(); index < max_index; ++index)
                     { mean += get_value< ContinuousEvent >(df, index, na_omit)/total; }
                     break;
                 default:
@@ -438,8 +438,8 @@ namespace statiskit
         if(boost::math::isfinite(total))
         {
             covariance = 0.;
-            size_t index = 0;
-            std::array< size_t, 2 > max_index{ {df.at(0)->size(), df.at(1)->size()} };
+            Index index = 0;
+            std::array< Index, 2 > max_index{ {df.at(0)->size(), df.at(1)->size()} };
             switch(df.at(0)->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
@@ -513,8 +513,8 @@ namespace statiskit
         if(boost::math::isfinite(total))
         {
             coskewness = 0.;
-            size_t index = 0;
-            std::array< size_t, 3 > max_index{ {df.at(0)->size(), df.at(1)->size(), df.at(2)->size()} };
+            Index index = 0;
+            std::array< Index, 3 > max_index{ {df.at(0)->size(), df.at(1)->size(), df.at(2)->size()} };
             switch(df.at(0)->get_sample_space()->get_outcome())
             {
                 case DISCRETE:
@@ -660,8 +660,8 @@ namespace statiskit
         if(boost::math::isfinite(total))
         {
             cokurtosis = 0.;
-            size_t index = 0;
-            std::array< size_t, 4 > max_index = { {df.at(0)->size(), df.at(1)->size(), df.at(2)->size(), df.at(3)->size()} };
+            Index index = 0;
+            std::array< Index, 4 > max_index = { {df.at(0)->size(), df.at(1)->size(), df.at(2)->size(), df.at(3)->size()} };
             switch(df.at(0)->get_sample_space()->get_outcome())
             {
                 case DISCRETE:

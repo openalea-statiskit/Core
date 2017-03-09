@@ -59,7 +59,7 @@ namespace statiskit
             
             virtual outcome_type get_outcome() const; 
             
-            size_t get_cardinality() const;
+            Index get_cardinality() const;
 
             const std::set< std::string >& get_values() const;        
                 
@@ -113,8 +113,8 @@ namespace statiskit
             std::vector< std::string > get_ordered() const;
             void set_ordered(const std::vector< std::string >& ordered);
             
-            // const std::vector< size_t >& get_rank() const;
-            // void set_rank(const std::vector< size_t >& rank);
+            // const std::vector< Index >& get_rank() const;
+            // void set_rank(const std::vector< Index >& rank);
 
             void randomize();
 
@@ -127,7 +127,7 @@ namespace statiskit
             virtual std::unique_ptr< UnivariateSampleSpace > copy() const;
 
         protected:
-            std::vector< size_t > _rank;
+            std::vector< Index > _rank;
     };
 
     struct STATISKIT_CORE_API DiscreteSampleSpace : public UnivariateSampleSpace
@@ -199,13 +199,13 @@ namespace statiskit
     {
         virtual ~MultivariateSampleSpace() = 0;
 
-        virtual size_t size() const = 0;
+        virtual Index size() const = 0;
         
-        virtual const UnivariateSampleSpace* get(const size_t& index) const = 0;
+        virtual const UnivariateSampleSpace* get(const Index& index) const = 0;
 
         virtual bool is_compatible(const MultivariateEvent* event) const;
         
-        virtual size_t encode() const;
+        virtual Index encode() const;
         
         virtual Eigen::RowVectorXd encode(const MultivariateEvent& event) const;
         
@@ -219,10 +219,10 @@ namespace statiskit
             VectorSampleSpace(const VectorSampleSpace& sample_space);
             virtual ~VectorSampleSpace();
 
-            virtual size_t size() const;
+            virtual Index size() const;
             
-            virtual const UnivariateSampleSpace* get(const size_t& index) const;
-            virtual void set(const size_t& index, const UnivariateSampleSpace& sample_space);
+            virtual const UnivariateSampleSpace* get(const Index& index) const;
+            virtual void set(const Index& index, const UnivariateSampleSpace& sample_space);
             
             virtual std::unique_ptr< MultivariateSampleSpace > copy() const;       
 
