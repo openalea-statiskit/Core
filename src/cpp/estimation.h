@@ -86,7 +86,7 @@ namespace statiskit
 
             const double& get_score(const size_t& index) const;
 
-            class STATISKIT_CORE_API Estimator : public B::Estimator
+            class Estimator : public B::Estimator
             {
                 public:
                     Estimator();
