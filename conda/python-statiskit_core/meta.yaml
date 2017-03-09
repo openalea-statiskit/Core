@@ -27,12 +27,14 @@ requirements:
     - python-statiskit_stl
     - python
 
-test:     
+test:
+  requires:
+    - matplotlib
+    - numpy
+    - python-dev
   imports:
-    - statiskit.core.__core
-  # source_files:                                
-  # - test/test_*.py
-  # requires:
-  #   - python-dbg
-  # commands:                                       
-  #  - nosetests test -x -s -v
+    - statiskit.core  
+  source_files:                                
+    - test/test_*.py
+   commands:                                       
+   - nosetests test -x -s -v
