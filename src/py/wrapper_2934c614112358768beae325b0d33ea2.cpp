@@ -40,6 +40,7 @@ void wrapper_2934c614112358768beae325b0d33ea2()
     if(autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::PoissonDistributionMLEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation::Estimator >::Type, struct ::statiskit::PoissonDistributionMLEstimation::Estimator > > >();
     }
 
 }

@@ -31,6 +31,7 @@ void wrapper_cc9b200ad98c51108cfb0b6bf6bf2bd0()
     if(autowig::Held< struct ::statiskit::NegativeBinomialDistributionMMEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMMEstimation >::Type, autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::NegativeBinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMMEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::NegativeBinomialDistributionMMEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMMEstimation >::Type, struct ::statiskit::NegativeBinomialDistributionMMEstimation > > >();
     }
 
 }

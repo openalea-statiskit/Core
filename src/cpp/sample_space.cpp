@@ -231,28 +231,6 @@ namespace statiskit
         return values;
     }
 
-    // const std::vector< Index >& OrdinalSampleSpace::get_rank() const
-    // { return _rank; }
-
-    // void OrdinalSampleSpace::set_rank(const std::vector< Index >& rank)
-    // {
-    //     if(rank.size() != _values.size())
-    //     { throw std::runtime_error("rank"); }
-    //     std::set< Index > order = std::set< Index >();
-    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
-    //     { order.insert(order.end(), size); }
-    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
-    //     {
-    //         std::set< Index >::iterator it = order.find(rank[size]);
-    //         if(it == order.end())
-    //         { throw std::runtime_error("rank"); }
-    //         order.erase(it);
-    //     }
-    //     if(order.size() != 0)
-    //     { throw std::runtime_error("rank"); }
-    //     _rank = rank;
-    // }
-
     void OrdinalSampleSpace::set_ordered(const std::vector< std::string >& ordered)
     {
         if(ordered.size() != _values.size())
@@ -270,6 +248,28 @@ namespace statiskit
             if(rank[size] >= ordered.size())
             { throw std::runtime_error("ordered"); }
         }
+        _rank = rank;
+    }
+    
+    const std::vector< Index >& OrdinalSampleSpace::get_rank() const
+    { return _rank; }
+
+    void OrdinalSampleSpace::set_rank(const std::vector< Index >& rank)
+    {
+        if(rank.size() != _values.size())
+        { throw std::runtime_error("rank"); }
+        std::set< Index > order = std::set< Index >();
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
+        { order.insert(order.end(), size); }
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
+        {
+            std::set< Index >::iterator it = order.find(rank[size]);
+            if(it == order.end())
+            { throw std::runtime_error("rank"); }
+            order.erase(it);
+        }
+        if(order.size() != 0)
+        { throw std::runtime_error("rank"); }
         _rank = rank;
     }
 

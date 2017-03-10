@@ -38,7 +38,7 @@ void wrapper_836f90f02ebd5eee9cf678e466bfba83()
     double  (::statiskit::GumbelMinDistribution::*method_pointer_53ceccb331895fc3b7234e75ca301c22)() const = &::statiskit::GumbelMinDistribution::get_mean;
     double  (::statiskit::GumbelMinDistribution::*method_pointer_f06a03f4252d52b5a8a48a48874448a6)() const = &::statiskit::GumbelMinDistribution::get_variance;
     class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::GumbelMinDistribution::*method_pointer_df0e45e08f60505abbb87189b4396ccd)() const = &::statiskit::GumbelMinDistribution::copy;
-    boost::python::class_< class ::statiskit::GumbelMinDistribution, autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_836f90f02ebd5eee9cf678e466bfba83("GumbelMinDistribution", "This class GumbelMinDistribution represents a Gumbel distribution\n(minimum).\n\nA random variable :math:`X` is said to folloow a Gumbel distribution\n(minimum) if :math:`Y=-X` follows a Gumbel distribution (maximum). The\nGumbel distribution (minimum) is an univariate continuous distribution.\nIt is also called extreme value type I distribution (minimum). The\nsupport is the set of real values :math:`\\mathbb{R}`. @see\nstatiskit::GumbelMaxDistribution\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::GumbelMinDistribution, autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_836f90f02ebd5eee9cf678e466bfba83("GumbelMinDistribution", "This class GumbelMinDistribution represents a Gumbel distribution\n(minimum).\n\nA random component :math:`X` is said to folloow a Gumbel distribution\n(minimum) if :math:`Y=-X` follows a Gumbel distribution (maximum). The\nGumbel distribution (minimum) is an univariate continuous distribution.\nIt is also called extreme value type I distribution (minimum). The\nsupport is the set of real values :math:`\\mathbb{R}`. @see\nstatiskit::GumbelMaxDistribution\n\n", boost::python::no_init);
     class_836f90f02ebd5eee9cf678e466bfba83.def(boost::python::init<  >(""));
     class_836f90f02ebd5eee9cf678e466bfba83.def(boost::python::init< double const &, double const & >(""));
     class_836f90f02ebd5eee9cf678e466bfba83.def(boost::python::init< class ::statiskit::GumbelMinDistribution const & >(""));
@@ -59,6 +59,7 @@ void wrapper_836f90f02ebd5eee9cf678e466bfba83()
     if(autowig::Held< class ::statiskit::GumbelMinDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::GumbelMinDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, class ::statiskit::GumbelMinDistribution > > >();
     }
 
 }

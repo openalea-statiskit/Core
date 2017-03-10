@@ -59,6 +59,7 @@ void wrapper_14b77d76dd2d51e1acac41ef7ea4a4ca()
     if(autowig::Held< class ::statiskit::NegativeBinomialDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NegativeBinomialDistribution >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NegativeBinomialDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NegativeBinomialDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NegativeBinomialDistribution >::Type, class ::statiskit::NegativeBinomialDistribution > > >();
     }
 
 }

@@ -32,6 +32,12 @@ namespace statiskit
         { return _random_generator; }
     }
 
+    void set_seed()
+    { __impl::_random_generator.seed(); }
+
+    void set_seed(const Index& seed)
+    { __impl::_random_generator.seed(seed); }
+
     not_implemented_error::not_implemented_error() : std::exception()
     {}
 

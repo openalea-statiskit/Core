@@ -147,27 +147,27 @@ namespace statiskit
         return ordered[size];
     }
 
-    // const std::vector< Index >& OrdinalDistribution::get_rank() const
-    // { return _rank; }
+    const std::vector< Index >& OrdinalDistribution::get_rank() const
+    { return _rank; }
 
-    // void OrdinalDistribution::set_rank(const std::vector< Index >& rank)
-    // {
-    //     if(rank.size() != _values.size())
-    //     { throw size_error("rank", rank.size(), _values.size()); }
-    //     std::set< Index > order = std::set< Index >();
-    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
-    //     { order.insert(order.end(), size); }
-    //     for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
-    //     {
-    //         if(rank[size] >= _values.size())
-    //         { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
-    //         std::set< Index >::iterator it = order.find(rank[size]);
-    //         if(it == order.end())
-    //         { throw duplicated_value_error("rank", rank[size]); }
-    //         order.erase(it);
-    //     }
-    //     _rank = rank;
-    // }
+    void OrdinalDistribution::set_rank(const std::vector< Index >& rank)
+    {
+        if(rank.size() != _values.size())
+        { throw size_error("rank", rank.size(), _values.size()); }
+        std::set< Index > order = std::set< Index >();
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
+        { order.insert(order.end(), size); }
+        for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
+        {
+            if(rank[size] >= _values.size())
+            { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
+            std::set< Index >::iterator it = order.find(rank[size]);
+            if(it == order.end())
+            { throw duplicated_value_error("rank", rank[size]); }
+            order.erase(it);
+        }
+        _rank = rank;
+    }
 
     std::vector< std::string > OrdinalDistribution::get_ordered() const
     {

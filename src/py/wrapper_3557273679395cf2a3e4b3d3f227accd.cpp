@@ -59,6 +59,7 @@ void wrapper_3557273679395cf2a3e4b3d3f227accd()
     if(autowig::Held< class ::statiskit::LaplaceDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::LaplaceDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, class ::statiskit::LaplaceDistribution > > >();
     }
 
 }

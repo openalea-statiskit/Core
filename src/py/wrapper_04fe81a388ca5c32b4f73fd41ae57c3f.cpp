@@ -42,7 +42,7 @@ void wrapper_04fe81a388ca5c32b4f73fd41ae57c3f()
     double  (::statiskit::GeneralizedStudentDistribution::*method_pointer_fd540daa26e25807990d1992581827fc)() const = &::statiskit::GeneralizedStudentDistribution::get_mean;
     double  (::statiskit::GeneralizedStudentDistribution::*method_pointer_030a9d4a2f6059c18e6adc6679ba716b)() const = &::statiskit::GeneralizedStudentDistribution::get_variance;
     class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::GeneralizedStudentDistribution::*method_pointer_fa5bf3ce7fb35a92a77d8f5199de2318)() const = &::statiskit::GeneralizedStudentDistribution::copy;
-    boost::python::class_< class ::statiskit::GeneralizedStudentDistribution, autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_04fe81a388ca5c32b4f73fd41ae57c3f("GeneralizedStudentDistribution", "This class GeneralizedStudentDistribution represents a non central\nStudent distribution which is also non standardized.\n\nA random variable :math:`W=\\sigma T + \\mu` is said to follow a\ngeneralized Student distribution if :math:`T` follows a non-central\ndistribution. The generalized Student distribution is an univariate\ncontinuous distribution. The support is the set of real values\n:math:`\\mathbb{R}`.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::GeneralizedStudentDistribution, autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_04fe81a388ca5c32b4f73fd41ae57c3f("GeneralizedStudentDistribution", "This class GeneralizedStudentDistribution represents a non central\nStudent distribution which is also non standardized.\n\nA random component :math:`W=\\sigma T + \\mu` is said to follow a\ngeneralized Student distribution if :math:`T` follows a non-central\ndistribution. The generalized Student distribution is an univariate\ncontinuous distribution. The support is the set of real values\n:math:`\\mathbb{R}`.\n\n", boost::python::no_init);
     class_04fe81a388ca5c32b4f73fd41ae57c3f.def(boost::python::init<  >(""));
     class_04fe81a388ca5c32b4f73fd41ae57c3f.def(boost::python::init< double const &, double const &, double const &, double const & >(""));
     class_04fe81a388ca5c32b4f73fd41ae57c3f.def(boost::python::init< class ::statiskit::GeneralizedStudentDistribution const & >(""));
@@ -67,6 +67,7 @@ void wrapper_04fe81a388ca5c32b4f73fd41ae57c3f()
     if(autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::GeneralizedStudentDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, class ::statiskit::GeneralizedStudentDistribution > > >();
     }
 
 }

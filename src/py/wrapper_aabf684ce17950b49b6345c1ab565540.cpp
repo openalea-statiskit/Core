@@ -31,6 +31,7 @@ void wrapper_aabf684ce17950b49b6345c1ab565540()
     if(autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::Type, autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::NormalDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::NormalDistributionMLEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::Type, struct ::statiskit::NormalDistributionMLEstimation > > >();
     }
 
 }

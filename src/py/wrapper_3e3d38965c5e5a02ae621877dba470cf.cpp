@@ -54,7 +54,9 @@ void wrapper_3e3d38965c5e5a02ae621877dba470cf()
     class_3e3d38965c5e5a02ae621877dba470cf.def("copy", boost::python::pure_virtual(method_pointer_b99a360f77cf53eb8f24401404499387), "");
     if(autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::SlopeHeuristicSelector, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, struct ::statiskit::SlopeHeuristicSelector > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::SlopeHeuristicSelector, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, struct ::statiskit::SlopeHeuristicSelector > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
     }    
 

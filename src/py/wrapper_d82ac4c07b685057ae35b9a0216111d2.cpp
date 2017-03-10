@@ -36,6 +36,7 @@ void wrapper_d82ac4c07b685057ae35b9a0216111d2()
     if(autowig::Held< struct ::statiskit::SlopeHeuristicMaximalSelector >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::SlopeHeuristicMaximalSelector >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::SlopeHeuristicMaximalSelector >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::SlopeHeuristicMaximalSelector, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::SlopeHeuristicMaximalSelector >::Type, struct ::statiskit::SlopeHeuristicMaximalSelector > > >();
     }
 
 }

@@ -64,7 +64,7 @@ namespace statiskit
                 if(lazy)
                 { estimation = std::make_unique< LazyEstimation< D, B > >(new D(values, masses)); }
                 else
-                { estimation = std::make_unique< UnivariateFrequencyDistributionEstimation< D, B > >(new D(values, masses), data); }
+                { estimation = std::make_unique< UnivariateFrequencyDistributionEstimation< D, B > >(new D(values, masses), &data); }
             }
             return estimation;
         }
@@ -116,27 +116,27 @@ namespace statiskit
             typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend();
             typename E::Estimator::marginal_type* estimator;
             std::vector< UnivariateDistributionEstimation* > estimations(data.get_sample_space()->size(), nullptr);
-            for(Index variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
+            for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
             {
-                while(it != it_end && it->first < variable)
+                while(it != it_end && it->first < component)
                 { ++it; }
-                if(it != it_end && it->first == variable)
+                if(it != it_end && it->first == component)
                 { estimator = it->second; }
                 else
                 { estimator = _default_estimator; }
-                estimations[variable] = (*estimator)(*(data.extract(variable).get()), lazy).release();
+                estimations[component] = (*estimator)(*(data.extract(component).get()), lazy).release();
             }
             std::vector< typename D::marginal_type > distributions(estimations.size());
-            for(Index variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
-            { distributions[variable] = *static_cast< typename D::marginal_type* >(estimations[variable]->get_estimated()); }
+            for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
+            { distributions[component] = *static_cast< typename D::marginal_type* >(estimations[component]->get_estimated()); }
             IndependentMultivariateDistribution< D > * distribution = new IndependentMultivariateDistribution< D >(distributions);
             if(lazy)
             {
                 estimation = std::make_unique< LazyEstimation< IndependentMultivariateDistribution< D >, E > >(distribution);
-                for(Index variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
+                for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
                 {
-                    delete estimations[variable];
-                    estimations[variable] = nullptr;
+                    delete estimations[component];
+                    estimations[component] = nullptr;
                 }
             }
             else

@@ -113,8 +113,8 @@ namespace statiskit
             std::vector< std::string > get_ordered() const;
             void set_ordered(const std::vector< std::string >& ordered);
             
-            // const std::vector< Index >& get_rank() const;
-            // void set_rank(const std::vector< Index >& rank);
+            const std::vector< Index >& get_rank() const;
+            void set_rank(const std::vector< Index >& rank);
 
             void randomize();
 

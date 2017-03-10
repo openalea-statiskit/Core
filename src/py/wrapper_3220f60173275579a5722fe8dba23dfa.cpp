@@ -40,6 +40,7 @@ void wrapper_3220f60173275579a5722fe8dba23dfa()
     if(autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicSuperiorSelector, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, class ::statiskit::SlopeHeuristicSuperiorSelector > > >();
     }
 
 }

@@ -520,14 +520,14 @@ namespace statiskit
             estimator.set_nb_bins(nb_bins);
             try
             {
-                std::unique_ptr< UnivariateDistributionEstimation > estimation = estimator(data, false);
+                std::unique_ptr< UnivariateDistributionEstimation > estimation = estimator(data, true);
                 UnivariateHistogramDistribution* estimated = const_cast< UnivariateHistogramDistribution* >(static_cast< const UnivariateHistogramDistribution* >(estimation->get_estimated()));
-                cache->add(estimated->get_nb_parameters(), estimated->loglikelihood(data), estimated);
+                cache->add(estimated->get_nb_parameters(), estimated->loglikelihood(data), static_cast< UnivariateHistogramDistribution* >(estimated->copy().release()));
             } 
             catch(const std::exception& error)
             {}
-            cache->finalize();
         }
+        cache->finalize();
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
         if(lazy)
         {
@@ -572,6 +572,7 @@ namespace statiskit
 
     std::unique_ptr< UnivariateDistributionEstimation > IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
+        std::cout << "BK 00" << std::endl; 
         if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error(CONTINUOUS); }
         IrregularUnivariateHistogramDistributionSlopeHeuristicSelection* cache;
@@ -703,6 +704,7 @@ namespace statiskit
         }
         else
         { estimation.reset(cache); }
+        std::cout << "BK 01" << std::endl; 
         return estimation;
     }
 

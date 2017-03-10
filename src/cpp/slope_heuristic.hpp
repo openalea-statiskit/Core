@@ -60,7 +60,7 @@ namespace statiskit
     template<class E>
         typename E::estimated_type const * SlopeHeuristicSelection< E >::get_estimated() const
         { 
-            typename E::estimated_type* estimated;
+            typename E::estimated_type const * estimated;
             if(this->_selected.size() > 0)
             { estimated = _estimated[this->_selected[(*this->_selector)(*this)]]; }
             return estimated;

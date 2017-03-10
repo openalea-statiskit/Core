@@ -59,6 +59,7 @@ void wrapper_aa4348c3ceb5595a843d8fc5a6c54231()
     if(autowig::Held< class ::statiskit::BinomialDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::BinomialDistribution >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::BinomialDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::BinomialDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::BinomialDistribution >::Type, class ::statiskit::BinomialDistribution > > >();
     }
 
 }

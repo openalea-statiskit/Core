@@ -31,13 +31,13 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_86c4eec981d358ffb89d951709ca042f)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_0ab68ca083ea50fb8331aae3f3cc6f20)(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const &) const = &::statiskit::MultivariateDataFrame::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_7e101dc71c4750358ade0510b89d977c)() const = &::statiskit::MultivariateDataFrame::copy;
-    ::statiskit::Index  (::statiskit::MultivariateDataFrame::*method_pointer_675858e74804540f867575e4e24f1873)() const = &::statiskit::MultivariateDataFrame::get_nb_variables;
-    class ::statiskit::UnivariateDataFrame const * (::statiskit::MultivariateDataFrame::*method_pointer_682c4154102f5c40b36d9216cff2cda1)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::get_variable;
-    void  (::statiskit::MultivariateDataFrame::*method_pointer_aa8deeaf32bb5bfdaec1cf6adfaf07e7)(::statiskit::Index const &, class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::set_variable;
-    void  (::statiskit::MultivariateDataFrame::*method_pointer_17b0a5af15e657a9980dadc6f692e531)(class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::add_variable;
-    class ::std::unique_ptr< class ::statiskit::UnivariateDataFrame, struct ::std::default_delete< class ::statiskit::UnivariateDataFrame > >  (::statiskit::MultivariateDataFrame::*method_pointer_62d39d0a827d5d0bb8bf0c862c9a5684)() = &::statiskit::MultivariateDataFrame::pop_variable;
-    void  (::statiskit::MultivariateDataFrame::*method_pointer_3eedcca7cb1a5633b9a0c9394b3de631)(::statiskit::Index const &, class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::insert_variable;
-    void  (::statiskit::MultivariateDataFrame::*method_pointer_fa2a4da314ab5578bda0e45a3509407a)(::statiskit::Index const &) = &::statiskit::MultivariateDataFrame::remove_variable;
+    ::statiskit::Index  (::statiskit::MultivariateDataFrame::*method_pointer_3d40300675955653b701c20d2aa3e360)() const = &::statiskit::MultivariateDataFrame::get_nb_components;
+    class ::statiskit::UnivariateDataFrame const * (::statiskit::MultivariateDataFrame::*method_pointer_b9d069c00f5c563587cb7bb977d07267)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::get_component;
+    void  (::statiskit::MultivariateDataFrame::*method_pointer_bd6f29af832854fd90b48c846aef5083)(::statiskit::Index const &, class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::set_component;
+    void  (::statiskit::MultivariateDataFrame::*method_pointer_e10b9c47f5cd51a68b8b0640eb4af2a4)(class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::add_component;
+    class ::std::unique_ptr< class ::statiskit::UnivariateDataFrame, struct ::std::default_delete< class ::statiskit::UnivariateDataFrame > >  (::statiskit::MultivariateDataFrame::*method_pointer_0e36cd3c6b7554bb8faab5320f147d49)() = &::statiskit::MultivariateDataFrame::pop_component;
+    void  (::statiskit::MultivariateDataFrame::*method_pointer_fc707ff04a2653ea8e21bf6a890a5abb)(::statiskit::Index const &, class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::insert_component;
+    void  (::statiskit::MultivariateDataFrame::*method_pointer_600b4f5b6cc15bb1b7a8e0601af0e7f9)(::statiskit::Index const &) = &::statiskit::MultivariateDataFrame::remove_component;
     ::statiskit::Index  (::statiskit::MultivariateDataFrame::*method_pointer_10ac8325c1085cec9a39efd69ba41c3c)() const = &::statiskit::MultivariateDataFrame::get_nb_events;
     class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  (::statiskit::MultivariateDataFrame::*method_pointer_6ad6e1f3747d5172b5d3ab1dcc010a9f)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::get_event;
     void  (::statiskit::MultivariateDataFrame::*method_pointer_b0f5e788fdc65ce699e64f98105b4c7c)(::statiskit::Index const &, struct ::statiskit::MultivariateEvent const *) = &::statiskit::MultivariateDataFrame::set_event;
@@ -54,13 +54,13 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     class_c3848ca82c6150b480894755016faabf.def("extract", method_pointer_86c4eec981d358ffb89d951709ca042f, "");
     class_c3848ca82c6150b480894755016faabf.def("extract", method_pointer_0ab68ca083ea50fb8331aae3f3cc6f20, "");
     class_c3848ca82c6150b480894755016faabf.def("copy", method_pointer_7e101dc71c4750358ade0510b89d977c, "");
-    class_c3848ca82c6150b480894755016faabf.def("get_nb_variables", method_pointer_675858e74804540f867575e4e24f1873, "");
-    class_c3848ca82c6150b480894755016faabf.def("get_variable", method_pointer_682c4154102f5c40b36d9216cff2cda1, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
-    class_c3848ca82c6150b480894755016faabf.def("set_variable", method_pointer_aa8deeaf32bb5bfdaec1cf6adfaf07e7, "");
-    class_c3848ca82c6150b480894755016faabf.def("add_variable", method_pointer_17b0a5af15e657a9980dadc6f692e531, "");
-    class_c3848ca82c6150b480894755016faabf.def("pop_variable", method_pointer_62d39d0a827d5d0bb8bf0c862c9a5684, "");
-    class_c3848ca82c6150b480894755016faabf.def("insert_variable", method_pointer_3eedcca7cb1a5633b9a0c9394b3de631, "");
-    class_c3848ca82c6150b480894755016faabf.def("remove_variable", method_pointer_fa2a4da314ab5578bda0e45a3509407a, "");
+    class_c3848ca82c6150b480894755016faabf.def("get_nb_components", method_pointer_3d40300675955653b701c20d2aa3e360, "");
+    class_c3848ca82c6150b480894755016faabf.def("get_component", method_pointer_b9d069c00f5c563587cb7bb977d07267, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
+    class_c3848ca82c6150b480894755016faabf.def("set_component", method_pointer_bd6f29af832854fd90b48c846aef5083, "");
+    class_c3848ca82c6150b480894755016faabf.def("add_component", method_pointer_e10b9c47f5cd51a68b8b0640eb4af2a4, "");
+    class_c3848ca82c6150b480894755016faabf.def("pop_component", method_pointer_0e36cd3c6b7554bb8faab5320f147d49, "");
+    class_c3848ca82c6150b480894755016faabf.def("insert_component", method_pointer_fc707ff04a2653ea8e21bf6a890a5abb, "");
+    class_c3848ca82c6150b480894755016faabf.def("remove_component", method_pointer_600b4f5b6cc15bb1b7a8e0601af0e7f9, "");
     class_c3848ca82c6150b480894755016faabf.def("get_nb_events", method_pointer_10ac8325c1085cec9a39efd69ba41c3c, "");
     class_c3848ca82c6150b480894755016faabf.def("get_event", method_pointer_6ad6e1f3747d5172b5d3ab1dcc010a9f, "");
     class_c3848ca82c6150b480894755016faabf.def("set_event", method_pointer_b0f5e788fdc65ce699e64f98105b4c7c, "");
@@ -72,6 +72,7 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     if(autowig::Held< class ::statiskit::MultivariateDataFrame >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, autowig::Held< struct ::statiskit::MultivariateData >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::MultivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, class ::statiskit::MultivariateDataFrame > > >();
     }
 
 }

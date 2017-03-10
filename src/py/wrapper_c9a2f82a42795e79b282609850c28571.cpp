@@ -49,7 +49,9 @@ void wrapper_c9a2f82a42795e79b282609850c28571()
     class_c9a2f82a42795e79b282609850c28571.def("get_mean", boost::python::pure_virtual(method_pointer_84ec59a1ad2b5bd0a929a94ebc54efe3), boost::python::return_value_policy< boost::python::return_by_value >(), "");
     if(autowig::Held< struct ::statiskit::MeanEstimation >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation >::Type, struct ::statiskit::MeanEstimation > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation >::Type, struct ::statiskit::MeanEstimation > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
     }    
 

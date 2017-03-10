@@ -198,16 +198,16 @@ namespace statiskit
 
             virtual std::unique_ptr< MultivariateData > copy() const;
 
-            virtual Index get_nb_variables() const;
+            virtual Index get_nb_components() const;
 
-            virtual const UnivariateDataFrame* get_variable(const Index& index) const;
-            virtual void set_variable(const Index& index, const UnivariateDataFrame& variable);
+            virtual const UnivariateDataFrame* get_component(const Index& index) const;
+            virtual void set_component(const Index& index, const UnivariateDataFrame& component);
 
-            virtual void add_variable(const UnivariateDataFrame& variable);
-            virtual std::unique_ptr< UnivariateDataFrame > pop_variable();
+            virtual void add_component(const UnivariateDataFrame& component);
+            virtual std::unique_ptr< UnivariateDataFrame > pop_component();
 
-            virtual void insert_variable(const Index& index, const UnivariateDataFrame& variable);
-            virtual void remove_variable(const Index& index);
+            virtual void insert_component(const Index& index, const UnivariateDataFrame& component);
+            virtual void remove_component(const Index& index);
 
             virtual Index get_nb_events() const;
 
@@ -224,7 +224,7 @@ namespace statiskit
             class SampleSpace;
 
             SampleSpace* _sample_space;
-            std::vector< UnivariateDataFrame* > _variables;
+            std::vector< UnivariateDataFrame* > _components;
 
             class STATISKIT_CORE_API SampleSpace : public MultivariateSampleSpace
             {

@@ -26,8 +26,8 @@ namespace autowig
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         
-            virtual ::statiskit::Index  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
                         
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
@@ -69,9 +69,10 @@ void wrapper_c1af1f263c37571f8e1257a72f39fd05()
 
     if(autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, autowig::Held< struct ::statiskit::MultivariateDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, struct ::statiskit::CategoricalMultivariateDistribution > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, struct ::statiskit::CategoricalMultivariateDistribution > > >();
     }
 
 }

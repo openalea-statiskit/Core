@@ -10,6 +10,7 @@
 #define STATISKIT_CORE_BASE_H
 
 #include <statiskit/linalg/Eigen.h>
+#include <statiskit/stl/STL.h>
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/math/constants/constants.hpp>
@@ -44,8 +45,6 @@
 
 namespace statiskit
 {
-    typedef unsigned long int Index;
-
     namespace __impl
     {
         double reldiff(const double& prev, const double& curr);
@@ -64,6 +63,9 @@ namespace statiskit
          */
         STATISKIT_CORE_API boost::mt19937& get_random_generator();
     }
+
+    STATISKIT_CORE_API void set_seed();
+    STATISKIT_CORE_API void set_seed(const Index& seed);
 
     struct STATISKIT_CORE_API not_implemented_error : std::exception
     { not_implemented_error(); };

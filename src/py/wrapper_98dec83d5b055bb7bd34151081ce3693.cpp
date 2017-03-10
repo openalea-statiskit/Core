@@ -40,6 +40,7 @@ void wrapper_98dec83d5b055bb7bd34151081ce3693()
     if(autowig::Held< class ::statiskit::VectorSampleSpace >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::VectorSampleSpace >::Type, autowig::Held< struct ::statiskit::MultivariateSampleSpace >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::VectorSampleSpace >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::VectorSampleSpace, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::VectorSampleSpace >::Type, class ::statiskit::VectorSampleSpace > > >();
     }
 
 }

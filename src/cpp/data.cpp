@@ -191,7 +191,7 @@ namespace statiskit
         _events.clear();
     }
 
-    UnivariateDataFrame::UnivariateDataFrame(const UnivariateDataFrame& data)
+    UnivariateDataFrame::UnivariateDataFrame(const UnivariateDataFrame& data) : NamedData(data)
     {
         _sample_space = data._sample_space->copy().release();
         _events.resize(data.get_nb_events());
@@ -453,26 +453,26 @@ namespace statiskit
     MultivariateDataFrame::MultivariateDataFrame()
     {
         _sample_space = new SampleSpace(this);
-        _variables.clear();
+        _components.clear();
     }
 
     MultivariateDataFrame::MultivariateDataFrame(const MultivariateDataFrame& data)
     {
         _sample_space = new SampleSpace(this);
-        _variables.resize(data.get_nb_variables());
-        for(Index index = 0, max_index = data.get_nb_variables(); index < max_index; ++index)
-        { _variables[index] = static_cast< UnivariateDataFrame* >(data._variables[index]->copy().release()); }
+        _components.resize(data.get_nb_components());
+        for(Index index = 0, max_index = data.get_nb_components(); index < max_index; ++index)
+        { _components[index] = static_cast< UnivariateDataFrame* >(data._components[index]->copy().release()); }
     }
 
     MultivariateDataFrame::~MultivariateDataFrame()
     { 
-        for(Index index = 0, max_index = get_nb_variables(); index < max_index; ++index)
+        for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
         {
-            if(_variables[index])
-            { delete _variables[index]; }
-            _variables[index] = nullptr;
+            if(_components[index])
+            { delete _components[index]; }
+            _components[index] = nullptr;
         }
-        _variables.clear();
+        _components.clear();
     }
 
     std::unique_ptr< MultivariateData::Generator > MultivariateDataFrame::generator() const
@@ -487,12 +487,12 @@ namespace statiskit
         std::vector< UnivariateSampleSpace* > __sample_space;
         try
         {
-            if(max_index == get_nb_variables())
+            if(max_index == get_nb_components())
             {
                 while(index < max_index)
                 {
                     __sample_space.push_back(_sample_space->get(index)->copy().release());
-                    _variables[index]->set_sample_space(*sample_space.get(index));
+                    _components[index]->set_sample_space(*sample_space.get(index));
                     ++index;
                 }
             }
@@ -503,7 +503,7 @@ namespace statiskit
             __sample_space.pop_back();
             while(__sample_space.size() > 0)
             {
-                _variables[index - 1]->set_sample_space(*__sample_space.back());
+                _components[index - 1]->set_sample_space(*__sample_space.back());
                 delete __sample_space.back();
                 __sample_space.pop_back();
                 --index;
@@ -514,8 +514,8 @@ namespace statiskit
 
     std::unique_ptr< UnivariateData > MultivariateDataFrame::extract(const Index& index) const
     { 
-        if(index >= get_nb_variables())
-        { throw size_error("index", get_nb_variables(), size_error::inferior); }
+        if(index >= get_nb_components())
+        { throw size_error("index", get_nb_components(), size_error::inferior); }
         return std::make_unique< UnivariateDataExtraction >(this, index);
     }
 
@@ -523,8 +523,8 @@ namespace statiskit
     {
         for(std::set< Index >::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
         {
-            if(*it >= get_nb_variables())
-            { throw size_error("indices", get_nb_variables(), size_error::inferior); }
+            if(*it >= get_nb_components())
+            { throw size_error("indices", get_nb_components(), size_error::inferior); }
         }
         return std::make_unique< MultivariateDataExtraction >(this, indices);
       }
@@ -532,68 +532,68 @@ namespace statiskit
     std::unique_ptr< MultivariateData > MultivariateDataFrame::copy() const
     { return std::make_unique< MultivariateDataFrame >(*this); }
 
-    Index MultivariateDataFrame::get_nb_variables() const
-    { return _variables.size(); }
+    Index MultivariateDataFrame::get_nb_components() const
+    { return _components.size(); }
 
-    const UnivariateDataFrame* MultivariateDataFrame::get_variable(const Index& index) const
+    const UnivariateDataFrame* MultivariateDataFrame::get_component(const Index& index) const
     {
-        if(index > get_nb_variables())
-        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
-        return _variables[index];
+        if(index > get_nb_components())
+        { throw size_error("index", get_nb_components(), size_error::inferior); }       
+        return _components[index];
     }
 
-    void MultivariateDataFrame::set_variable(const Index& index, const UnivariateDataFrame& variable)
+    void MultivariateDataFrame::set_component(const Index& index, const UnivariateDataFrame& component)
     {
-        if(index > get_nb_variables())
-        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
-        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
-        { throw size_error("variable", get_nb_events(), size_error::equal); }  
-        delete _variables[index];
-        _variables[index] = static_cast< UnivariateDataFrame* >(variable.copy().release());
+        if(index > get_nb_components())
+        { throw size_error("index", get_nb_components(), size_error::inferior); }       
+        if(get_nb_components() != 0 && component.get_nb_events() != get_nb_events())
+        { throw size_error("component", get_nb_events(), size_error::equal); }  
+        delete _components[index];
+        _components[index] = static_cast< UnivariateDataFrame* >(component.copy().release());
     }
 
-    void MultivariateDataFrame::add_variable(const UnivariateDataFrame& variable)
+    void MultivariateDataFrame::add_component(const UnivariateDataFrame& component)
     {  
-        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
-        { throw size_error("variable", get_nb_events(), size_error::equal); }
-        _variables.push_back(static_cast< UnivariateDataFrame* >(variable.copy().release()));
+        if(get_nb_components() != 0 && component.get_nb_events() != get_nb_events())
+        { throw size_error("component", get_nb_events(), size_error::equal); }
+        _components.push_back(static_cast< UnivariateDataFrame* >(component.copy().release()));
     }
 
-    std::unique_ptr< UnivariateDataFrame > MultivariateDataFrame::pop_variable()
+    std::unique_ptr< UnivariateDataFrame > MultivariateDataFrame::pop_component()
     {  
-        std::unique_ptr< UnivariateDataFrame > variable;
-        variable.reset(_variables.back());
-        _variables.pop_back();
-        return variable;
+        std::unique_ptr< UnivariateDataFrame > component;
+        component.reset(_components.back());
+        _components.pop_back();
+        return component;
     }
 
-    void MultivariateDataFrame::insert_variable(const Index& index, const UnivariateDataFrame& variable)
+    void MultivariateDataFrame::insert_component(const Index& index, const UnivariateDataFrame& component)
     {
-        if(index > get_nb_variables())
-        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
-        if(get_nb_variables() != 0 && variable.get_nb_events() != get_nb_events())
-        { throw size_error("variable", get_nb_events(), size_error::equal); }  
-        std::vector< UnivariateDataFrame* >::iterator it = _variables.begin();
+        if(index > get_nb_components())
+        { throw size_error("index", get_nb_components(), size_error::inferior); }       
+        if(get_nb_components() != 0 && component.get_nb_events() != get_nb_events())
+        { throw size_error("component", get_nb_events(), size_error::equal); }  
+        std::vector< UnivariateDataFrame* >::iterator it = _components.begin();
         advance(it, index);
-        _variables.insert(it, static_cast< UnivariateDataFrame* >(variable.copy().release()));
+        _components.insert(it, static_cast< UnivariateDataFrame* >(component.copy().release()));
     }
 
-    void MultivariateDataFrame::remove_variable(const Index& index)
+    void MultivariateDataFrame::remove_component(const Index& index)
     {
-        if(index > get_nb_variables())
-        { throw size_error("index", get_nb_variables(), size_error::inferior); }       
-        std::vector< UnivariateDataFrame* >::iterator it = _variables.begin();
+        if(index > get_nb_components())
+        { throw size_error("index", get_nb_components(), size_error::inferior); }       
+        std::vector< UnivariateDataFrame* >::iterator it = _components.begin();
         advance(it, index);
         delete *it;
         *it = nullptr;
-        _variables.erase(it);
+        _components.erase(it);
     }
 
     Index MultivariateDataFrame::get_nb_events() const
     {
         Index nb_event = 0;
-        if(get_nb_variables() > 0)
-        { nb_event = _variables[0]->get_nb_events(); }
+        if(get_nb_components() > 0)
+        { nb_event = _components[0]->get_nb_events(); }
         return nb_event;
     }
 
@@ -611,16 +611,16 @@ namespace statiskit
         {
             if(_sample_space->is_compatible(event))
             {
-                for(Index _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
-                { _variables[_index]->set_event(index, event->get(_index)); }
+                for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
+                { _components[_index]->set_event(index, event->get(_index)); }
             }
             else
             { throw statiskit::parameter_error("event", "incompatible"); } 
         }
         else
         {
-            for(Index _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
-            { _variables[_index]->set_event(index, nullptr); }
+            for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
+            { _components[_index]->set_event(index, nullptr); }
         }
     }
     
@@ -630,24 +630,24 @@ namespace statiskit
         {
             if(_sample_space->is_compatible(event))
             {
-                for(Index index = 0, max_index = get_nb_variables(); index < max_index; ++index)
-                { _variables[index]->add_event(event->get(index)); }
+                for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
+                { _components[index]->add_event(event->get(index)); }
             }
             else
             { throw statiskit::parameter_error("event", "incompatible"); } 
         }
         else
         {
-            for(Index index = 0, max_index = get_nb_variables(); index < max_index; ++index)
-            { _variables[index]->add_event(nullptr); }
+            for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
+            { _components[index]->add_event(nullptr); }
         }
     }
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::pop_event()
     {
-        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(get_nb_variables());
-        for(Index index = 0, max_index = get_nb_variables(); index < max_index; ++index)
-        { event->set(index, *(_variables[index]->pop_event().get())); }
+        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(get_nb_components());
+        for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
+        { event->set(index, *(_components[index]->pop_event().get())); }
         return event;
     }
 
@@ -657,23 +657,23 @@ namespace statiskit
         {
             if(_sample_space->is_compatible(event))
             {
-                for(Index _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
-                { _variables[_index]->insert_event(index, event->get(_index)); }
+                for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
+                { _components[_index]->insert_event(index, event->get(_index)); }
             }
             else
             { throw parameter_error("event", "incompatible"); }
         }
         else
         {
-            for(Index _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
-            { _variables[_index]->insert_event(index, nullptr); }
+            for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
+            { _components[_index]->insert_event(index, nullptr); }
         }
     }
     
     void MultivariateDataFrame::remove_event(const Index& index)
     {
-        for(Index _index = 0, _max_index = get_nb_variables(); _index < _max_index; ++_index)
-        { _variables[_index]->remove_event(index); }
+        for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
+        { _components[_index]->remove_event(index); }
     }
 
     MultivariateDataFrame::SampleSpace::SampleSpace(const MultivariateDataFrame* data)
@@ -686,10 +686,10 @@ namespace statiskit
     {}
 
     Index MultivariateDataFrame::SampleSpace::size() const
-    { return _data->get_nb_variables(); }
+    { return _data->get_nb_components(); }
 
     const UnivariateSampleSpace* MultivariateDataFrame::SampleSpace::get(const Index& index) const
-    { return _data->_variables[index]->get_sample_space(); }
+    { return _data->_components[index]->get_sample_space(); }
 
     std::unique_ptr< MultivariateSampleSpace > MultivariateDataFrame::SampleSpace::copy() const
     { return std::make_unique< SampleSpace >(*this); }
@@ -710,13 +710,13 @@ namespace statiskit
     {}
 
     Index MultivariateDataFrame::Event::size() const
-    { return _data->get_nb_variables(); }
+    { return _data->get_nb_components(); }
 
     const UnivariateEvent* MultivariateDataFrame::Event::get(const Index& index) const
     {
         if(index >= size())
         { throw lower_bound_error("index", index, size(), true); }
-        return _data->_variables[index]->get_event(_index);
+        return _data->_components[index]->get_event(_index);
     }
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::copy() const
@@ -744,7 +744,7 @@ namespace statiskit
     { return 1.; }
 
     MultivariateDataFrame::UnivariateDataExtraction::UnivariateDataExtraction(const MultivariateDataFrame* data, const Index& index)
-    { _data = data->get_variable(index); }
+    { _data = data->get_component(index); }
 
     MultivariateDataFrame::UnivariateDataExtraction::~UnivariateDataExtraction()
     {}
@@ -819,7 +819,7 @@ namespace statiskit
     {
         if(index >= size())
         { throw lower_bound_error("index", index, size(), true); }
-        return _data->_data->_variables[_data->_indices[index]]->get_event(_index);
+        return _data->_data->_components[_data->_indices[index]]->get_event(_index);
     }
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::MultivariateDataExtraction::Event::copy() const

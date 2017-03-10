@@ -45,9 +45,10 @@ void wrapper_b14b3594a74c5ccc968141047b5145f4()
 
     if(autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_b14b3594a74c5ccc968141047b5145f4 >::Type, autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteMultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type, struct ::statiskit::DiscreteMultivariateDistributionEstimation > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_b14b3594a74c5ccc968141047b5145f4 >::Type, autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteMultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation >::Type, struct ::statiskit::DiscreteMultivariateDistributionEstimation > > >();
     }
 
 }

@@ -63,7 +63,9 @@ void wrapper_ce83e073e997563e890b79b6b3db0bed()
     class_ce83e073e997563e890b79b6b3db0bed.def("copy", boost::python::pure_virtual(method_pointer_1dbb2c59cd0e59c29b37c6ea1fe7c63c), "");
     if(autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::VarianceEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type, struct ::statiskit::VarianceEstimation::Estimator > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_ce83e073e997563e890b79b6b3db0bed >::Type, autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::VarianceEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type, struct ::statiskit::VarianceEstimation::Estimator > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_ce83e073e997563e890b79b6b3db0bed >::Type, autowig::Held< struct ::statiskit::VarianceEstimation::Estimator >::Type >();
     }    
 

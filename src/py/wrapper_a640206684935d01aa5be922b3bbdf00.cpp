@@ -31,6 +31,7 @@ void wrapper_a640206684935d01aa5be922b3bbdf00()
     if(autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, autowig::Held< struct ::statiskit::OptimizationEstimation< unsigned int, class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::BinomialDistributionMLEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::BinomialDistributionMLEstimation >::Type, struct ::statiskit::BinomialDistributionMLEstimation > > >();
     }
 
 }

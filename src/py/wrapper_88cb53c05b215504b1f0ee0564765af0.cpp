@@ -80,7 +80,9 @@ void wrapper_88cb53c05b215504b1f0ee0564765af0()
     class_88cb53c05b215504b1f0ee0564765af0.def("compute_total", method_pointer_21b09584f6625e14abe2acdb420c6b08, "");
     if(autowig::Held< struct ::statiskit::MultivariateData >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData >::Type, struct ::statiskit::MultivariateData > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 >::Type, autowig::Held< struct ::statiskit::MultivariateData >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateData >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData >::Type, struct ::statiskit::MultivariateData > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 >::Type, autowig::Held< struct ::statiskit::MultivariateData >::Type >();
     }    
 

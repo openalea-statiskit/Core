@@ -188,8 +188,8 @@ namespace statiskit
     std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const UnivariateData& data, const double& mean) const
     {
         std::unique_ptr< MultivariateDataFrame > datas = std::make_unique< MultivariateDataFrame >();
-        datas->append_variable(data);
-        datas->append_variable(data);
+        datas->append_component(data);
+        datas->append_component(data);
         std::array< double, 2 > means{ {mean, mean} };
         return operator() (0, 1, datas, means);
     }
@@ -197,8 +197,8 @@ namespace statiskit
     std::unique_ptr< CoVarianceEstimation > CoVarianceEstimation::Estimator::operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data) const
     {
         NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > estimation_i = estimator(data.get_variable(i));
-        std::unique_ptr< MeanEstimation > estimation_j = estimator(data.get_variable(j));
+        std::unique_ptr< MeanEstimation > estimation_i = estimator(data.get_component(i));
+        std::unique_ptr< MeanEstimation > estimation_j = estimator(data.get_component(j));
         std::array< double, 2 > means{ {estimation_i->get_mean(), estimation_j->get_mean()} };
         return operator() (i, j, data, means);
     }
@@ -238,7 +238,7 @@ namespace statiskit
         {
             Index index = 0, max_index = data.size();
             double total_square = 0;
-            const UnivariateData&& data_i = data.get_variable(i), data_j = data.get_variable(j);
+            const UnivariateData&& data_i = data.get_component(i), data_j = data.get_component(j);
             switch(data_i->get_sample_space()->get_outcome())
             {
                 case CATEGORICAL:

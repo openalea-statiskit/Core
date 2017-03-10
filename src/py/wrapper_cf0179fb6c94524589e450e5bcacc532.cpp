@@ -53,9 +53,10 @@ void wrapper_cf0179fb6c94524589e450e5bcacc532()
 
     if(autowig::Held< struct ::statiskit::CategoricalEvent >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_cf0179fb6c94524589e450e5bcacc532 >::Type, autowig::Held< struct ::statiskit::CategoricalEvent >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalEvent >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalEvent >::Type, autowig::Held< struct ::statiskit::UnivariateEvent >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalEvent >::Type, struct ::statiskit::CategoricalEvent > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_cf0179fb6c94524589e450e5bcacc532 >::Type, autowig::Held< struct ::statiskit::CategoricalEvent >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalEvent >::Type, struct ::statiskit::CategoricalEvent > > >();
     }
 
 }

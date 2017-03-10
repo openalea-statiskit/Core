@@ -10,7 +10,7 @@ import types
 from functools import wraps
 
 import _core
-from __core.statiskit import get_nn, get_zz, get_rr, get_nr, get_pr
+from __core.statiskit import get_nn, get_zz, get_rr, get_nr, get_pr, set_seed
 
 __all__ = ['controls']
 
@@ -18,6 +18,8 @@ class Controls(types.ModuleType):
 
     head = 10
     tail = 10
+
+    set_seed = classmethod(set_seed)
 
 def wrapper_get_NN(f):
     @wraps(f)

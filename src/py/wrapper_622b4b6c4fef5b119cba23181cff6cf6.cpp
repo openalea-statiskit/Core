@@ -26,8 +26,8 @@ namespace autowig
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         
-            virtual ::statiskit::Index  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
                         
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
@@ -69,9 +69,10 @@ void wrapper_622b4b6c4fef5b119cba23181cff6cf6()
 
     if(autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_622b4b6c4fef5b119cba23181cff6cf6 >::Type, autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type, autowig::Held< struct ::statiskit::MultivariateDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type, struct ::statiskit::ContinuousMultivariateDistribution > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_622b4b6c4fef5b119cba23181cff6cf6 >::Type, autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousMultivariateDistribution >::Type, struct ::statiskit::ContinuousMultivariateDistribution > > >();
     }
 
 }

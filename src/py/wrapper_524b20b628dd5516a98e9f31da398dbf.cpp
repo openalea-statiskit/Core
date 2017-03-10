@@ -59,6 +59,7 @@ void wrapper_524b20b628dd5516a98e9f31da398dbf()
     if(autowig::Held< class ::statiskit::GumbelMaxDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::GumbelMaxDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::GumbelMaxDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::GumbelMaxDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::GumbelMaxDistribution >::Type, class ::statiskit::GumbelMaxDistribution > > >();
     }
 
 }

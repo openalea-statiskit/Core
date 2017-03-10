@@ -58,9 +58,10 @@ void wrapper_413148ff15d05180b4dbaaac395b3625()
 
     if(autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_413148ff15d05180b4dbaaac395b3625 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type, struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_413148ff15d05180b4dbaaac395b3625 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator >::Type, struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator > > >();
     }
 
 }

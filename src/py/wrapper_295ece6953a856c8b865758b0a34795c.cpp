@@ -63,9 +63,10 @@ void wrapper_295ece6953a856c8b865758b0a34795c()
 
     if(autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_295ece6953a856c8b865758b0a34795c >::Type, autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type, autowig::Held< struct ::statiskit::UnivariateConditionalDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalUnivariateConditionalDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type, struct ::statiskit::CategoricalUnivariateConditionalDistribution > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_295ece6953a856c8b865758b0a34795c >::Type, autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalUnivariateConditionalDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalUnivariateConditionalDistribution >::Type, struct ::statiskit::CategoricalUnivariateConditionalDistribution > > >();
     }
 
 }

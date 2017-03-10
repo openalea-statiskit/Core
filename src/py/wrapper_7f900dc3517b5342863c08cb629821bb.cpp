@@ -48,6 +48,7 @@ void wrapper_7f900dc3517b5342863c08cb629821bb()
     if(autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, autowig::Held< class ::statiskit::UnivariateDataFrame >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::WeightedUnivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, class ::statiskit::WeightedUnivariateDataFrame > > >();
     }
 
 }

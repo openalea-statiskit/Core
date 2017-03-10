@@ -45,9 +45,10 @@ void wrapper_f09c97b097575bf2b4af254e6faa082c()
 
     if(autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_f09c97b097575bf2b4af254e6faa082c >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type, struct ::statiskit::CategoricalMultivariateDistributionEstimation > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_f09c97b097575bf2b4af254e6faa082c >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Type, struct ::statiskit::CategoricalMultivariateDistributionEstimation > > >();
     }
 
 }

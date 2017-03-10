@@ -70,7 +70,9 @@ void wrapper_98e77d2afcc252cba528077bc2cc3103()
     class_98e77d2afcc252cba528077bc2cc3103.def("weight", boost::python::pure_virtual(method_pointer_97dd3ac3ad43541faf4f468d1c840930), "");
     if(autowig::Held< struct ::statiskit::MultivariateData::Generator >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData::Generator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, struct ::statiskit::MultivariateData::Generator > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData::Generator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, struct ::statiskit::MultivariateData::Generator > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
     }    
 

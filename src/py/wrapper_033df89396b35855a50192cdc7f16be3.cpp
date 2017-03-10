@@ -55,6 +55,7 @@ void wrapper_033df89396b35855a50192cdc7f16be3()
     if(autowig::Held< class ::statiskit::PoissonDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::PoissonDistribution >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::PoissonDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::PoissonDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::PoissonDistribution >::Type, class ::statiskit::PoissonDistribution > > >();
     }
 
 }

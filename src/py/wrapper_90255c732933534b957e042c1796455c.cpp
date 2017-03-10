@@ -63,6 +63,7 @@ void wrapper_90255c732933534b957e042c1796455c()
     if(autowig::Held< class ::statiskit::NonStandardStudentDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NonStandardStudentDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NonStandardStudentDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NonStandardStudentDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NonStandardStudentDistribution >::Type, class ::statiskit::NonStandardStudentDistribution > > >();
     }
 
 }

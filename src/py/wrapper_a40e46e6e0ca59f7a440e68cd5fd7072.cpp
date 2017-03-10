@@ -59,7 +59,9 @@ void wrapper_a40e46e6e0ca59f7a440e68cd5fd7072()
     class_a40e46e6e0ca59f7a440e68cd5fd7072.def("copy", boost::python::pure_virtual(method_pointer_ee0381fa29a75d5782f895a637e2a8d5), "");
     if(autowig::Held< struct ::statiskit::MultivariateEvent >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateEvent >::Type, struct ::statiskit::MultivariateEvent > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_a40e46e6e0ca59f7a440e68cd5fd7072 >::Type, autowig::Held< struct ::statiskit::MultivariateEvent >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateEvent >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateEvent >::Type, struct ::statiskit::MultivariateEvent > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_a40e46e6e0ca59f7a440e68cd5fd7072 >::Type, autowig::Held< struct ::statiskit::MultivariateEvent >::Type >();
     }    
 

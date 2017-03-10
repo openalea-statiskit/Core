@@ -46,7 +46,9 @@ void wrapper_43ff7c79dcd15ad9995fd0d0ccc6d440()
     class_43ff7c79dcd15ad9995fd0d0ccc6d440.def("get_estimated", boost::python::pure_virtual(method_pointer_123ca6ff048a55c3916851be0f12a662), boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     if(autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type, struct ::statiskit::MultivariateDistributionEstimation > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_43ff7c79dcd15ad9995fd0d0ccc6d440 >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type, struct ::statiskit::MultivariateDistributionEstimation > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_43ff7c79dcd15ad9995fd0d0ccc6d440 >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();
     }    
 

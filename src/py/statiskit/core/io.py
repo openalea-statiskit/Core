@@ -6,6 +6,8 @@
 #                                                                                #
 ##################################################################################
 
+import _core
+
 __all__ = ['read_csv', 'from_list', 'from_pandas']
 
 import warnings
@@ -34,10 +36,10 @@ def read_csv(filepath, sep=None, header=False, **kwargs):
     data = from_list(*data, **kwargs)
     if header:
         for i, j in enumerate(names):
-            data.get_variable(i).name = j
+            data.components[i].name = j
     return data
 
-def write_csv(data, filepath, sep=';', header=False, censored=True):
+def write_csv(data, filepath, sep=' ', header=False, censored=True):
     """
     """
     if not isinstance(data, MultivariateDataFrame):
@@ -46,26 +48,26 @@ def write_csv(data, filepath, sep=';', header=False, censored=True):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'w') as filehandler:
         if header:
-            filehandler.write(sep.join(variable.name.ascii for variable in data.variables)+'\n')
+            filehandler.write(sep.join(component.name for component in data.components)+'\n')
         if censored:
-            for mevent in data:
+            for mevent in data.events:
                 line = []
                 for uevent in mevent:
                     if uevent is None:
                         line.append('?')
                     else:
-                        if isinstance(uevent, __statiskit_core._ElementaryEvent):
+                        if isinstance(uevent, _core.__core.statiskit._ElementaryEvent):
                             line.append(str(uevent.value))
-                        elif isinstance(uevent, __statiskit_core._SetCensoredEvent):
+                        elif isinstance(uevent, _core.__core.statiskit._SetCensoredEvent):
                             line.append('{' + ', '.join(str(value) for value in uevent.values) + '}')
-                        elif isinstance(uevent, __statiskit_core._LeftCensoredEvent):
+                        elif isinstance(uevent, _core.__core.statiskit._LeftCensoredEvent):
                             line.append(str(uevent.upper_bound)+'-')
-                        elif isinstance(uevent, __statiskit_core._RightCensoredEvent):
+                        elif isinstance(uevent, _core.__core.statiskit._RightCensoredEvent):
                             line.append(str(uevent.lower_bound)+'+')
-                        elif isinstance(uevent, __statiskit_core._IntervalCensoredEvent):
-                            if isinstance(uevent, __statiskit_core.DiscreteEvent):
+                        elif isinstance(uevent, _core.__core.statiskit._IntervalCensoredEvent):
+                            if isinstance(uevent, _core.__core.statiskit.DiscreteEvent):
                                 line.append('[' + str(uevent.lower_bound) + ', ' + str(uevent.upper_bound)+']')
-                            elif isinstance(uevent, __statiskit_core.ContinuousEvent):
+                            elif isinstance(uevent, _core.__core.statiskit.ContinuousEvent):
                                 line.append(']' + str(uevent.lower_bound) + ', ' + str(uevent.upper_bound)+'[')
                             else:
                                 raise NotImplementedError
@@ -73,7 +75,7 @@ def write_csv(data, filepath, sep=';', header=False, censored=True):
                             raise NotImplementedError
                 filehandler.write(sep.join(line)+'\n')
         else:
-            for mevent in data:
+            for mevent in data.events:
                 line = []
                 for uevent in mevent:
                     if uevent is None or not isinstance(uevent, __statiskit_core._ElementaryEvent):
@@ -118,7 +120,7 @@ def from_list(*data, **kwargs):
         _dataframe = UnivariateDataFrame(sample_space)
         for event in data[index]:
             _dataframe.add_event(sample_space(event))
-        dataframe.add_variable(_dataframe)
+        dataframe.add_component(_dataframe)
     return dataframe
 
 def from_pandas(data):
