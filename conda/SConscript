@@ -1,31 +1,32 @@
 # -*-python-*-
 
-Import("env")
+from SCons.Errors import EnvironmentError
 
-conda_env = env.Clone(tools = ['conda'])
+try:
+    Import("env")
 
-sources = conda_env.Glob('*')
+    conda_env = env.Clone(tools = ['conda'])
 
-# Exclude here all Conda recipes that must not be built
-exclude = """
-""".split()
+    sources = conda_env.Glob('*')
 
-sources = [source for source in sources if not source.name in exclude]
+    exclude = """
+    """.split()
 
-targets = conda_env.CondaPackages(sources)
-Alias("conda-build", targets)
+    sources = [source for source in sources if not source.name in exclude]
 
-# targets = conda_env.AnacondaUpload(sources)
-# Alias("anaconda-upload", targets)
+    targets = conda_env.CondaPackages(sources)
+    Alias("conda-build", targets)
 
-# Exclude here all Conda recipes that must not be installed
-# in the current Environment. These recipes that must not be
-# installed corresponds to all recipes for which code source
-# is located in the current repository.
-exclude = """
-""".split()
+    exclude = """
+    """.split()
 
-sources = [source for source in sources if not source.name in exclude]
+    sources = [source for source in sources if not source.name in exclude]
 
-targets = conda_env.CondaEnvironment(sources)
-Alias("conda-install", targets)
+    targets = conda_env.CondaEnvironment(sources)
+    Alias("conda-install", targets)
+except EnvironmentError:
+    Alias("conda-build", [])
+    Alias("conda-install", [])
+    pass
+except Exception:
+    raise

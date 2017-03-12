@@ -1,4 +1,4 @@
-# # -*-python-*-
+# -*-python-*-
 
 from SCons.Errors import EnvironmentError
 
