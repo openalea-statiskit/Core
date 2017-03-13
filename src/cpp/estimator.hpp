@@ -94,7 +94,7 @@ namespace statiskit
         {}
 
     template<class D, class E>
-        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimation)
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation(const IndependentMultivariateDistributionEstimation< D, E >& estimation) : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimation)
         {}
 
     template<class D, class E>
