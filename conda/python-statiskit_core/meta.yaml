@@ -19,12 +19,6 @@ requirements:
     - libboost
     - libstatiskit_core
     - python
-    - matplotlib [win]
-    - numpy      [win]
-    - python-statiskit_linalg [win]
-    - python-statiskit_stl [win]
-    - librun [win]
-    - python-dev [win]
   run:
     - librun
     - libboost
@@ -35,7 +29,7 @@ requirements:
 
 test:
   requires:
-    - matplotlib 1.5.3
+    - matplotlib
     - numpy
     - python-dev 
   source_files:                                
