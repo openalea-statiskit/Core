@@ -19,6 +19,8 @@ requirements:
     - libboost
     - libstatiskit_core
     - python
+    - matplotlib [win]
+    - numpy      [win]
   run:
     - librun
     - libboost
