@@ -161,7 +161,10 @@ namespace statiskit
 
     template<class T, class D, class B> struct OptimizationEstimation : __impl::OptimizationEstimation<T, D, B >
     {
-        using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
+        // using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
+        OptimizationEstimation();
+        OptimizationEstimation(D const * estimated, typename B::data_type const * data);
+        OptimizationEstimation(const OptimizationEstimation< T, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
         struct Estimator : __impl::OptimizationEstimation<T, D, B >::Estimator
@@ -174,7 +177,9 @@ namespace statiskit
 
     template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
     {
-        using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        // using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        OptimizationEstimation();
+        OptimizationEstimation(D const * estimated, typename B::data_type const * data);
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
 

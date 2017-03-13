@@ -316,6 +316,18 @@ namespace statiskit
     }
 
     template<class T, class D, class B>
+        OptimizationEstimation< T, D, B >::OptimizationEstimation() : __impl::OptimizationEstimation< T, D, B >()
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T, D, B >::OptimizationEstimation(D const * estimated, typename B::data_type const * data) : __impl::OptimizationEstimation< T, D, B >(estimated, data)
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T, D, B >::OptimizationEstimation(const OptimizationEstimation< T, D, B>& estimation) : __impl::OptimizationEstimation< T, D, B >(estimation)
+        {}
+
+    template<class T, class D, class B>
         OptimizationEstimation< T, D, B >::~OptimizationEstimation()
         {}
 
@@ -329,6 +341,14 @@ namespace statiskit
 
     template<class T, class D, class B>
         OptimizationEstimation< T, D, B >::Estimator::~Estimator()
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T*, D, B >::OptimizationEstimation() : __impl::OptimizationEstimation< T*, D, B >()
+        {}
+
+    template<class T, class D, class B>
+        OptimizationEstimation< T*, D, B >::OptimizationEstimation(D const * estimated, typename B::data_type const * data) : __impl::OptimizationEstimation< T*, D, B >(estimated, data)
         {}
 
     template<class T, class D, class B>

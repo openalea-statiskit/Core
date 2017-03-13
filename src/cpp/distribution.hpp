@@ -115,6 +115,18 @@ namespace statiskit
         }
 
     template<class T>
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values) : UnivariateFrequencyDistribution< T >(values)
+        {}
+
+    template<class T>
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< T >(values, pi)
+        {}
+
+    template<class T>
+         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& QuantitativeUnivariateFrequencyDistribution) :UnivariateFrequencyDistribution< T >(frequency)
+         {}
+
+    template<class T>
         double QuantitativeUnivariateFrequencyDistribution< T >::cdf(const typename T::event_type::value_type& value) const
         {
             double p = 0.;

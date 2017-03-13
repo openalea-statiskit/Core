@@ -71,6 +71,15 @@ namespace statiskit
         return p;
     }
 
+    NominalDistribution::NominalDistribution(const std::set< std::string >& values) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values)
+    {}
+
+    NominalDistribution::NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
+    {}
+
+    NominalDistribution::NominalDistribution(const NominalDistribution& nominal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(nominal)
+    {}
+
     std::unique_ptr< UnivariateSampleSpace > NominalDistribution::get_sample_space() const
     { return std::make_unique< NominalSampleSpace >(_values); }
     

@@ -12,6 +12,18 @@
 namespace statiskit
 {    
     template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()
+        {}
+
+    template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation(D const * estimated, typename B::data_type const * data) : ActiveEstimation< D, B >(estimated, data)
+        {}
+
+     template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation(const UnivariateFrequencyDistributionEstimation< D, B >& estimation) : ActiveEstimation< D, B >(estimation)
+        {}
+
+    template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::~UnivariateFrequencyDistributionEstimation()
         {}
 
@@ -72,6 +84,18 @@ namespace statiskit
     template<class D, class B>
         std::unique_ptr< UnivariateDistributionEstimation::Estimator > UnivariateFrequencyDistributionEstimation< D, B >::Estimator::copy() const
         { return std::make_unique< Estimator >(*this); }
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()
+        {}
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation(IndependentMultivariateDistribution< D > const * estimated, typename E::data_type const * data) : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimated, data)
+        {}
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimation)
+        {}
 
     template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::~IndependentMultivariateDistributionEstimation()

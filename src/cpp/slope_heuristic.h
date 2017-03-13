@@ -38,7 +38,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API SlopeHeuristicOLSSolver : SlopeHeuristicSolver
     {
-        using SlopeHeuristicSolver::SlopeHeuristicSolver;
+        SlopeHeuristicOLSSolver();
+        SlopeHeuristicOLSSolver(const SlopeHeuristicOLSSolver& solver);
 
         virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const; 
 

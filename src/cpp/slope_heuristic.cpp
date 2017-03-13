@@ -22,6 +22,12 @@ namespace statiskit
     void SlopeHeuristicSolver::set_solver(const linalg::solver_type& solver)
     { _solver = solver;; }
 
+    SlopeHeuristicOLSSolver::SlopeHeuristicOLSSolver() : SlopeHeuristicSolver()
+    {}
+
+    SlopeHeuristicOLSSolver::SlopeHeuristicOLSSolver(const SlopeHeuristicOLSSolver& solver) : SlopeHeuristicSolver(solver)
+    {}
+
     Eigen::VectorXd SlopeHeuristicOLSSolver::operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
     { return linalg::solve(X.transpose() * X, (X.transpose() * y).eval(), _solver); }
 

@@ -125,7 +125,10 @@ namespace statiskit
      * */
     struct STATISKIT_CORE_API NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     { 
-        using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
+        // using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
+        NominalDistribution(const std::set< std::string >& values);
+        NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi);
+        NominalDistribution(const NominalDistribution& nominal);
 
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
 
@@ -203,7 +206,10 @@ namespace statiskit
  
     template<class T> struct QuantitativeUnivariateFrequencyDistribution : UnivariateFrequencyDistribution< T >
     {
-        using UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution;
+        // using UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution;
+        QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values);
+        QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi);
+        QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& QuantitativeUnivariateFrequencyDistribution);
 
         virtual double cdf(const typename T::event_type::value_type& value) const;
         
