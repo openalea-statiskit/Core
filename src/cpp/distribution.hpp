@@ -123,7 +123,7 @@ namespace statiskit
         {}
 
     template<class T>
-         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& QuantitativeUnivariateFrequencyDistribution) :UnivariateFrequencyDistribution< T >(frequency)
+         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency) : UnivariateFrequencyDistribution< T >(frequency)
          {}
 
     template<class T>
