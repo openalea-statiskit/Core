@@ -23,6 +23,8 @@ requirements:
     - numpy      [win]
     - python-statiskit_linalg [win]
     - python-statiskit_stl [win]
+    - librun [win]
+    - python-dev [win]
   run:
     - librun
     - libboost
