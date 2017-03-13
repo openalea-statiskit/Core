@@ -21,7 +21,7 @@ namespace statiskit
     { 
         virtual const double& get_mean() const = 0;
 
-        struct Estimator
+        struct STATISKIT_CORE_API Estimator
         { 
             virtual std::unique_ptr< MeanEstimation > operator() (const UnivariateData& data) const = 0; 
 
@@ -37,7 +37,7 @@ namespace statiskit
 
             virtual const double& get_mean() const;
          
-            struct Estimator : MeanEstimation::Estimator
+            struct STATISKIT_CORE_API Estimator : MeanEstimation::Estimator
             { 
                 Estimator();
                 Estimator(const Estimator& estimator);
@@ -61,7 +61,7 @@ namespace statiskit
 
             virtual const double& get_variance() const = 0;
            
-            struct Estimator
+            struct STATISKIT_CORE_API Estimator
             {
                 virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data) const;
                 virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const = 0;
@@ -83,7 +83,7 @@ namespace statiskit
 
             virtual const double& get_variance() const;
 
-            class Estimator : public VarianceEstimation::Estimator
+            class STATISKIT_CORE_API Estimator : public VarianceEstimation::Estimator
             {
                 public:
                     Estimator(const bool& bias);
