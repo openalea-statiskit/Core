@@ -118,7 +118,7 @@ namespace statiskit
 
     namespace __impl 
     {
-        template<class T, class D, class B> class __OptimizationEstimationImpl : public ActiveEstimation< D, B >
+        template<class T, class D, class B> class OptimizationEstimation : public ActiveEstimation< D, B >
         {
             public:
                 OptimizationEstimation();
