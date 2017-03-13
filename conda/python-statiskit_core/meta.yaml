@@ -21,6 +21,8 @@ requirements:
     - python
     - matplotlib [win]
     - numpy      [win]
+    - python-statiskit_linalg [win]
+    - python-statiskit_stl [win]
   run:
     - librun
     - libboost
