@@ -645,10 +645,10 @@ namespace statiskit
 
     std::unique_ptr< MultivariateEvent > MultivariateDataFrame::pop_event()
     {
-        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(get_nb_components());
+        VectorEvent* event = new VectorEvent(get_nb_components());
         for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
         { event->set(index, *(_components[index]->pop_event().get())); }
-        return event;
+        return std::unique_ptr< VectorEvent >(event);
     }
 
     void MultivariateDataFrame::insert_event(const Index& index, const MultivariateEvent* event)
