@@ -8,7 +8,7 @@
 
 from functools import wraps
 
-from matplotlib import pyplot as plt, patches
+from optionals import pyplot
 import numpy as np
 
 import _core
@@ -60,7 +60,7 @@ del UnivariateDistribution.get_nb_parameters
 
 def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     labels = self.values
     x, labels = zip(*[(index, label) for index, label in enumerate(labels)])
     y = self.pi
@@ -120,7 +120,7 @@ del wrapper, OrdinalDistribution.get_ordered
 
 def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     labels = self.ordered
     x, labels = zip(*[(index, label) for index, label in enumerate(labels)])
     y = self.pi
@@ -148,8 +148,8 @@ del cdf_plot
 
 def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
-    elif not isinstance(axes, plt.Axes):
+        axes = pyplot.subplot(1,1,1)
+    elif not isinstance(axes, pyplot.Axes):
         raise TypeError('`axes` parameter')
     if not len(whiskers) == 2:
         raise IndexError('`whiskers` parameter')
@@ -190,7 +190,7 @@ del box_plot
 
 def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     else:
         qmin, qmax = axes.get_xlim()
         if 'qmin' not in kwargs and 'pmin' not in kwargs:
@@ -217,7 +217,7 @@ del pdf_plot
 
 def cdf_plot(self, axes=None, fmt='o-', color='r', alpha=1., **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     else:
         qmin, qmax = axes.get_xlim()
         if 'qmin' not in kwargs and 'pmin' not in kwargs:
@@ -242,8 +242,8 @@ del cdf_plot
 
 def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
-    elif not isinstance(axes, plt.Axes):
+        axes = pyplot.subplot(1,1,1)
+    elif not isinstance(axes, pyplot.Axes):
         raise TypeError('`axes` parameter')
     if not len(whiskers) == 2:
         raise IndexError('`whiskers` parameter')
@@ -280,7 +280,7 @@ del box_plot
 
 #def lorenz_plot(self, axes=None, fmt='o-', color='r', alpha=1., equality=True, **kwargs):
 #    if axes is None:
-#        axes = plt.subplot(1,1,1)
+#        axes = pyplot.subplot(1,1,1)
 #    else:
 #        qmin, qmax = axes.get_xlim()
 #        if 'qmin' not in kwargs and 'pmin' not in kwargs:
@@ -304,7 +304,7 @@ del PoissonDistribution.get_theta, PoissonDistribution.set_theta
 
 def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     else:
         qmin, qmax = axes.get_xlim()
         if 'qmin' not in kwargs and 'pmin' not in kwargs:
@@ -328,7 +328,7 @@ del pdf_plot
 
 def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
     else:
         qmin, qmax = axes.get_xlim()
         if 'qmin' not in kwargs and 'pmin' not in kwargs:
@@ -479,7 +479,7 @@ UnivariateHistogramDistribution.densities = property(UnivariateHistogramDistribu
 
 def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs):
     if axes is None:
-        axes = plt.subplot(1,1,1)
+        axes = pyplot.subplot(1,1,1)
         xmin, xmax = float("inf"), -1 * float("inf")
         ymin, ymax = float("inf"), -1 * float("inf")
     else:

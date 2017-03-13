@@ -1,6 +1,6 @@
-# import matplotlib
-# matplotlib.use('Agg')
-# from matplotlib import pyplot
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot
 
 from statiskit import core
 from statiskit.data import core as data
