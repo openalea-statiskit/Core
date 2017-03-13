@@ -1,6 +1,15 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_a6c072f3d22452a0a03fc2e7fa32a0b5(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::size_type  param_in_0, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.at(param_in_0) = param_out; }
+    void method_decorator_9d231f8feb5a530a9be6a0a456258b64(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.front() = param_out; }
+    void method_decorator_8c90f6a1688451bd89c1bacee415a70a(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.back() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,13 +19,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_a6c072f3d22452a0a03fc2e7fa32a0b5(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::size_type  param_in_0, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.at(param_in_0) = param_out; }
-    void method_decorator_9d231f8feb5a530a9be6a0a456258b64(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.front() = param_out; }
-    void method_decorator_8c90f6a1688451bd89c1bacee415a70a(class ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > > & instance, ::std::vector< struct ::statiskit::UnivariateSampleSpace *, class ::std::allocator< struct ::statiskit::UnivariateSampleSpace * > >::reference  param_out)     { instance.back() = param_out; }
-}
 
 
 void wrapper_160b713997e259caa9b19848803d29f1()

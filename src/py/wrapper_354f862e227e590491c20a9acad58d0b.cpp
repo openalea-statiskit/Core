@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile * get_pointer<autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile >(autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,17 +13,22 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > (result);
             }
+                        
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
+                        
             virtual struct ::statiskit::MultivariateSampleSpace const * get_explanatory_space() const
             { return this->get_override("get_explanatory_space")(); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > >  get_response_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > ::element_type* result = this->get_override("get_response_space")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > (result);
             }
+                        
             virtual struct ::statiskit::UnivariateDistribution const * operator()(struct ::statiskit::MultivariateEvent const & param_0) 
             { return this->get_override("operator()")(param_0); }
+                        
 
         protected:
             
@@ -42,6 +39,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile * get_pointer<autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile >(autowig::Wrap_354f862e227e590491c20a9acad58d0b const volatile *c) { return c; }
+    template <> struct ::statiskit::DiscreteUnivariateConditionalDistribution const volatile * get_pointer<struct ::statiskit::DiscreteUnivariateConditionalDistribution const volatile >(struct ::statiskit::DiscreteUnivariateConditionalDistribution const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_354f862e227e590491c20a9acad58d0b()
@@ -55,9 +63,10 @@ void wrapper_354f862e227e590491c20a9acad58d0b()
 
     if(autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_354f862e227e590491c20a9acad58d0b >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type, autowig::Held< struct ::statiskit::UnivariateConditionalDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteUnivariateConditionalDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type, struct ::statiskit::DiscreteUnivariateConditionalDistribution > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_354f862e227e590491c20a9acad58d0b >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteUnivariateConditionalDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteUnivariateConditionalDistribution >::Type, struct ::statiskit::DiscreteUnivariateConditionalDistribution > > >();
     }
 
 }

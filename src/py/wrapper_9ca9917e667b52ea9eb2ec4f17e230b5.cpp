@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_9ca9917e667b52ea9eb2ec4f17e230b5()
@@ -52,6 +54,7 @@ void wrapper_9ca9917e667b52ea9eb2ec4f17e230b5()
     if(autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateHistogramDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, class ::statiskit::UnivariateHistogramDistribution > > >();
     }
 
 }

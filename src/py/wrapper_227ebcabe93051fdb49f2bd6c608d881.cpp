@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_227ebcabe93051fdb49f2bd6c608d881()
@@ -36,6 +38,7 @@ void wrapper_227ebcabe93051fdb49f2bd6c608d881()
     if(autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::OptimizationEstimation< double, class ::statiskit::NegativeBinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator >::Type, struct ::statiskit::NegativeBinomialDistributionMLEstimation::Estimator > > >();
     }
 
 }

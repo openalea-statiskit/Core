@@ -23,76 +23,6 @@ from event import outcome_type
 
 __all__ = ['UnivariateDataFrame', 'WeightedUnivariateDataFrame', 'MultivariateDataFrame']
 
-UnivariateData.Generator.__nonzero__ = UnivariateData.Generator.is_valid
-MultivariateData.Generator.__nonzero__ = MultivariateData.Generator.is_valid
-del UnivariateData.Generator.is_valid, MultivariateData.Generator.is_valid
-
-UnivariateData.Generator.event = property(UnivariateData.Generator.event)
-MultivariateData.Generator.event = property(MultivariateData.Generator.event)
-
-UnivariateData.Generator.weight = property(UnivariateData.Generator.weight)
-MultivariateData.Generator.weight = property(MultivariateData.Generator.weight)
-
-def wrapper_next(f):
-
-    class IteratorState(object):
-
-        def __init__(self, generator):
-            self._event = generator.event
-            self._weight = generator.weight
-
-        @property
-        def event(self):
-            return self._event
-
-        @property
-        def weight(self):
-            return self._weight
-
-    @wraps(f)
-    def next(self):
-        if not self:
-            raise StopIteration()
-        else:
-            state = IteratorState(self)
-            f(self)
-            return state
-
-    return next
-
-UnivariateData.Generator.next = wrapper_next(UnivariateData.Generator.__next__)
-del wrapper_next
-
-def wrapper_next(f):
-
-    class IteratorState(object):
-
-        def __init__(self, generator):
-            self._event = generator.event[:]
-            self._weight = generator.weight
-
-        @property
-        def event(self):
-            return self._event
-
-        @property
-        def weight(self):
-            return self._weight
-
-    @wraps(f)
-    def next(self):
-        if not self:
-            raise StopIteration()
-        else:
-            state = IteratorState(self)
-            f(self)
-            return state
-
-    return next
-
-MultivariateData.Generator.next = wrapper_next(MultivariateData.Generator.__next__)
-del wrapper_next
-
 UnivariateData.sample_space = property(UnivariateData.get_sample_space)
 MultivariateData.sample_space = property(MultivariateData.get_sample_space)
 del UnivariateData.get_sample_space
@@ -111,7 +41,6 @@ def wrapper_set_name(f):
     def set_name(self, name):
         if not isinstance(name, basestring):
             raise TypeError('expected basestring, but got {!r}'.format(type(name)))
-
         is_name = True
         try:
             root = ast.parse(name)
@@ -136,22 +65,89 @@ def wrapper_set_name(f):
 
         f(self, name)
         
+
     return set_name
 
 NamedData.name = property(NamedData.get_name, wrapper_set_name(NamedData.set_name))
 del wrapper_set_name, NamedData.get_name, NamedData.set_name
 
+class Events(object):
+
+    def __init__(self, dataframe):
+        self._dataframe = dataframe
+
+    def __iter__(self):
+
+        class Iterator(object):
+
+            def __init__(self, events):
+                self._events = events
+                self._index = 0
+
+            def next(self):
+                if self._index < len(self._events):
+                    event = self._events[self._index]
+                    self._index += 1
+                    return event
+                else:
+                    raise StopIteration()
+
+        return Iterator(self)
+
+def wrapper_events(f0, f1, f2):
+
+    @wraps(f0)
+    def __len__(self):
+        return f0(self._dataframe)
+
+    @wraps(f1)
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self[index] for index in xrange(*index.indices(len(self)))]
+        else:
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+            return f1(self._dataframe, index)
+
+    @wraps(f2)
+    def __setitem__(self, index, value):
+        if isinstance(index, slice):
+            try:
+                indices = index
+                values = self[index]
+                for index, value in zip(index.indices(len(self)), value):
+                    self[index] = value
+            except:
+                for index, value in zip(indices, values):
+                     self[index] = value
+                raise
+        else:
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+            return f2(self._dataframe, index, value)
+
+    return __len__, __getitem__, __setitem__
+
+class UnivariateEvents(Events):
+    pass
+
+UnivariateEvents.__len__, UnivariateEvents.__getitem__, UnivariateEvents.__setitem__ = wrapper_events(UnivariateDataFrame.get_nb_events, UnivariateDataFrame.get_event, UnivariateDataFrame.set_event)
+del UnivariateDataFrame.get_nb_events, UnivariateDataFrame.get_event, UnivariateDataFrame.set_event
+UnivariateDataFrame.events = property(UnivariateEvents)
+
 UnivariateDataFrame.sample_space = property(UnivariateData.sample_space.fget, UnivariateDataFrame.set_sample_space)
 del UnivariateDataFrame.set_sample_space
 
-UnivariateDataFrame.nb_events = property(UnivariateDataFrame.get_nb_events)
-del UnivariateDataFrame.get_nb_events
-
 def __str__(self):
-    if self.nb_events > controls.head:
-        rows = [("", str(self.name))] + [(str(index), str(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self) if index < controls.head] + [('...', '...')] + [(repr(index), repr(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self) if index > max(self.nb_events - controls.tail, controls.head)]
+    events = self.events
+    if len(events) > controls.head:
+        rows = [("", str(self.name))] + [(str(index), str(event)) if event is not None else (repr(index), '?') for index, event in enumerate(events) if index < controls.head] + [('...', '...')] + [(repr(index), repr(event)) if event is not None else (repr(index), '?') for index, event in enumerate(events) if index > max(len(events) - controls.tail, controls.head)]
     else:
-        rows = [("", str(self.name))] + [(str(index), str(it.event)) if it.event is not None else (repr(index), '?') for index, it in enumerate(self)]
+        rows = [("", str(self.name))] + [(str(index), str(event)) if event is not None else (repr(index), '?') for index, event in enumerate(events)]
     columns = zip(*rows)
     maxima = [max(max(*[len(row) for row in column]), 3) + 2 for column in columns]
     string = []
@@ -165,14 +161,15 @@ del __str__
 
 def _repr_html_(self):
     sample_space = self.sample_space
-    string = '<table style="max-width: 100%;">\n\t\t<tr>\n\t\t\t<th></th>\n\t\t\t<th>$'+ r'\mathbf{' + controls.remove_latex(self.name._repr_latex_()) + '}$</th>\n\t\t</tr>'
+    string = '<table style="max-width: 100%;">\n\t\t<tr>\n\t\t\t<th></th>\n\t\t\t<th>$'+ r'\mathbf{' + self.name + '}$</th>\n\t\t</tr>'
     etc = False
-    for i, j in enumerate(self):
-        if i < controls.head or i >= max(controls.head, len(self) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>\n'
+    events = self.events
+    for index, event in enumerate(events):
+        if index < controls.head or index >= max(controls.head, len(events) - controls.tail):
+            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(index) + '</th>\n'
             string += '\n\t\t\t<td>'
-            if j is not None:
-                string += j._repr_latex_()
+            if event is not None:
+                string += event._repr_latex_()
             else:
                 string += sample_space._repr_latex_()
             string += '</td>'
@@ -206,9 +203,10 @@ def pdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
         axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, pmin=0., pmax=1., **kwargs)
     elif sample_space.outcome is outcome_type.CONTINUOUS:
+        fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
             estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(lazy=True)))
-            axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, **kwargs)
+            axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, fmt=fmt, **kwargs)
         elif fmt == '-':
             raise NotImplementedError
     else:
@@ -242,11 +240,8 @@ def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
 UnivariateDataFrame.cdf_plot = cdf_plot
 del cdf_plot
 
-MultivariateDataFrame.nb_events = property(MultivariateDataFrame.get_nb_events)
-MultivariateDataFrame.nb_variables = property(MultivariateDataFrame.get_nb_variables)
-
 def names(self):
-    return [str(self.get_variable(index).name) for index in range(self.nb_variables)]
+    return [str(component.name) for component in self.components]
 
 MultivariateDataFrame.names = property(names)
 del names
@@ -259,18 +254,79 @@ del __dir__
 
 def __getattr__(self, attr):
     try:
-        return self.get_variable(self.names.index(attr))
+        names = self.names
+        index = names.index(attr)
+        return self.components[index]
     except:
         raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
 
 MultivariateDataFrame.__getattr__ = __getattr__
 del __getattr__
 
+class MultivariateEvents(Events):
+    pass
+
+MultivariateEvents.__len__, MultivariateEvents.__getitem__, MultivariateEvents.__setitem__ = wrapper_events(MultivariateDataFrame.get_nb_events, MultivariateDataFrame.get_event, MultivariateDataFrame.set_event)
+del MultivariateDataFrame.get_nb_events, MultivariateDataFrame.get_event, MultivariateDataFrame.set_event
+MultivariateDataFrame.events = property(MultivariateEvents)
+
+class Components(object):
+
+    def __init__(self, dataframe):
+        self._dataframe = dataframe
+
+    def __iter__(self):
+
+        class Iterator(object):
+
+            def __init__(self, components):
+                self._components = components
+                self._index = 0
+
+            def next(self):
+                if self._index < len(self._components):
+                    component = self._components[self._index]
+                    self._index += 1
+                    return component
+                else:
+                    raise StopIteration()
+
+        return Iterator(self)
+        
+def wrapper_components(f0, f1, f2):
+
+    @wraps(f0)
+    def __len__(self):
+        return f0(self._dataframe)
+
+    @wraps(f1)
+    def __getitem__(self, index):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+        return f1(self._dataframe, index)
+
+    @wraps(f2)
+    def __setitem__(self, index, value):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+        return f2(self._dataframe, index, value)
+
+    return __len__, __getitem__, __setitem__
+
+Components.__len__, Components.__getitem__, Components.__setitem__ = wrapper_components(MultivariateDataFrame.get_nb_components, MultivariateDataFrame.get_component, MultivariateDataFrame.set_component)
+del wrapper_components, MultivariateDataFrame.get_nb_components, MultivariateDataFrame.get_component, MultivariateDataFrame.set_component
+MultivariateDataFrame.components = property(Components)
+
 def __repr__(self):
-    if self.nb_events > controls.head:
-        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index < controls.head] + [['...'] + ['...'] * len(self.variables)] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self) if index > max(len(self) - controls.tail, controls.head)]
+    events = self.events
+    if len(events) > controls.head:
+        rows = [[""] + [repr(component.name) for component in self.components]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(events) if index < controls.head] + [['...'] + ['...'] * len(self.components)] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(events) if index > max(len(events) - controls.tail, controls.head)]
     else:
-        rows = [[""] + [repr(variable.name) for variable in self.variables]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(self)]
+        rows = [[""] + [repr(component.name) for component in self.components]] + [[repr(index)] + [repr(uevent) if uevent is not None else '?' for uevent in mevent] for index, mevent in enumerate(events)]
     columns = zip(*rows)
     maxima = [max(max(*[len(row) for row in column]), 3) + 2 for column in columns]
     string = []
@@ -285,19 +341,20 @@ del __repr__
 def _repr_html_(self):
     string = '<table style="max-width: 100%;">'
     string += '\n\t\t<tr>\n\t\t\t<th></th>'
-    for variable in range(self.nb_variables):
-        string += '\n\t\t\t<th>'+ self.get_variable(variable).name + '</th>'
+    for component in self.components:
+        string += '\n\t\t\t<th>'+ component.name + '</th>'
     string += '\n\t\t</tr>'
     etc = False
-    for i, j in enumerate(self):
-        if i < controls.head or i >= max(controls.head, self.nb_events - controls.tail):
+    events = self.events
+    for i, event in enumerate(events):
+        if i < controls.head or i >= max(controls.head, len(events) - controls.tail):
             string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
-            string += '</td>\n\t\t\t<td>'.join(j.event[k]._repr_latex_() if j.event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(j.event)))
+            string += '</td>\n\t\t\t<td>'.join(event[k]._repr_latex_() if event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(event)))
             string += '</td>'
         elif not etc:
             etc = True
             string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>' * len(j.event)
+            string += '\n\t\t\t<td>$\dots$</td>' * len(event)
     string += '\n\t</table>'
     return string
 

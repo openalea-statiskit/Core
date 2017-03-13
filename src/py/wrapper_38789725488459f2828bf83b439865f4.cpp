@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile * get_pointer<autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile >(autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,11 +13,13 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MeanEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MeanEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MeanEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MeanEstimation::Estimator > > (result);
             }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MeanEstimation, struct ::std::default_delete< struct ::statiskit::MeanEstimation > >  operator()(struct ::statiskit::UnivariateData const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MeanEstimation, struct ::std::default_delete< struct ::statiskit::MeanEstimation > > ::element_type* result = this->get_override("operator()")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MeanEstimation, struct ::std::default_delete< struct ::statiskit::MeanEstimation > > (result);
             }
+                        
 
         protected:
             
@@ -36,6 +30,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile * get_pointer<autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile >(autowig::Wrap_38789725488459f2828bf83b439865f4 const volatile *c) { return c; }
+    template <> struct ::statiskit::MeanEstimation::Estimator const volatile * get_pointer<struct ::statiskit::MeanEstimation::Estimator const volatile >(struct ::statiskit::MeanEstimation::Estimator const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_38789725488459f2828bf83b439865f4()
@@ -56,7 +61,9 @@ void wrapper_38789725488459f2828bf83b439865f4()
     class_38789725488459f2828bf83b439865f4.def("copy", boost::python::pure_virtual(method_pointer_3d6a258ff5d45ca6a2bb4726cf25c193), "");
     if(autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type, struct ::statiskit::MeanEstimation::Estimator > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_38789725488459f2828bf83b439865f4 >::Type, autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type, struct ::statiskit::MeanEstimation::Estimator > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_38789725488459f2828bf83b439865f4 >::Type, autowig::Held< struct ::statiskit::MeanEstimation::Estimator >::Type >();
     }    
 

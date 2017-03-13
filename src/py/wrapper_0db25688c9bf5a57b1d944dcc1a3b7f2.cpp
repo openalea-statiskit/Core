@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile * get_pointer<autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile >(autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -18,17 +10,22 @@ namespace autowig
             
             virtual double  get_variance() const
             { return this->get_override("get_variance")(); }
+                        
             virtual double  get_mean() const
             { return this->get_override("get_mean")(); }
+                        
             virtual int  quantile(double const & param_0) const
             { return this->get_override("quantile")(param_0); }
+                        
             virtual double  cdf(int const & param_0) const
             { return this->get_override("cdf")(param_0); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  copy() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > > (result);
             }
+                        
 
         protected:
             
@@ -39,6 +36,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile * get_pointer<autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile >(autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 const volatile *c) { return c; }
+    template <> class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const volatile * get_pointer<class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const volatile >(class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_0db25688c9bf5a57b1d944dcc1a3b7f2()
@@ -66,9 +74,10 @@ void wrapper_0db25688c9bf5a57b1d944dcc1a3b7f2()
 
     if(autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 >::Type, autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_0db25688c9bf5a57b1d944dcc1a3b7f2 >::Type, autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > > > >();
     }
 
 }

@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile * get_pointer<autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile >(autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,11 +13,13 @@ namespace autowig
                  ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > (result);
             }
+                        
 
         protected:
             
             virtual void  update(class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & param_0, class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > & param_1, class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > const & param_2, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & param_3) const
             { this->get_override("update")(param_0, param_1, param_2, param_3); }
+                        
 
         private:
             
@@ -33,6 +27,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile * get_pointer<autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile >(autowig::Wrap_643847dccc2b560082343f2bbda15cba const volatile *c) { return c; }
+    template <> class ::statiskit::SlopeHeuristicIWLSSolver const volatile * get_pointer<class ::statiskit::SlopeHeuristicIWLSSolver const volatile >(class ::statiskit::SlopeHeuristicIWLSSolver const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_643847dccc2b560082343f2bbda15cba()
@@ -56,9 +61,10 @@ void wrapper_643847dccc2b560082343f2bbda15cba()
 
     if(autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_643847dccc2b560082343f2bbda15cba >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, autowig::Held< class ::statiskit::SlopeHeuristicSolver >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicIWLSSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, class ::statiskit::SlopeHeuristicIWLSSolver > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_643847dccc2b560082343f2bbda15cba >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicIWLSSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, class ::statiskit::SlopeHeuristicIWLSSolver > > >();
     }
 
 }

@@ -76,16 +76,16 @@ namespace statiskit
 
             virtual std::unique_ptr< UnivariateData > copy() const;
 
-            virtual size_t get_nb_events() const;
+            virtual Index get_nb_events() const;
 
-            virtual const UnivariateEvent* get_event(const size_t& index) const;
-            virtual void set_event(const size_t& index, const UnivariateEvent* event);
+            virtual const UnivariateEvent* get_event(const Index& index) const;
+            virtual void set_event(const Index& index, const UnivariateEvent* event);
 
             virtual void add_event(const UnivariateEvent* event);
             virtual std::unique_ptr< UnivariateEvent > pop_event();
 
-            virtual void insert_event(const size_t& index, const UnivariateEvent* event);
-            virtual void remove_event(const size_t& index);
+            virtual void insert_event(const Index& index, const UnivariateEvent* event);
+            virtual void remove_event(const Index& index);
 
         protected:
             UnivariateSampleSpace* _sample_space;
@@ -106,7 +106,7 @@ namespace statiskit
 
                 protected:
                     const UnivariateDataFrame* _data;
-                    size_t _index;
+                    Index _index;
             };            
     };
 
@@ -124,11 +124,11 @@ namespace statiskit
             virtual void add_event(const UnivariateEvent* event);
             virtual std::unique_ptr< UnivariateEvent > pop_event();
 
-            virtual void insert_event(const size_t& index, const UnivariateEvent* event);
-            virtual void remove_event(const size_t& index);
+            virtual void insert_event(const Index& index, const UnivariateEvent* event);
+            virtual void remove_event(const Index& index);
 
-            virtual double get_weight(const size_t& index) const;     
-            void set_weight(const size_t& index, const double& weight);       
+            virtual double get_weight(const Index& index) const;     
+            void set_weight(const Index& index, const double& weight);       
 
         protected:
             std::vector< double > _weights;
@@ -148,7 +148,7 @@ namespace statiskit
 
                 protected:
                     const WeightedUnivariateDataFrame* _data;
-                    size_t _index;
+                    Index _index;
             };      
     };
 
@@ -171,8 +171,8 @@ namespace statiskit
 
         virtual const MultivariateSampleSpace* get_sample_space() const = 0;
 
-        virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const = 0;
-        virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const = 0;
+        virtual std::unique_ptr< UnivariateData > extract(const Index& index) const = 0;
+        virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const = 0;
 
         virtual std::unique_ptr< MultivariateData > copy() const = 0;
 
@@ -193,38 +193,38 @@ namespace statiskit
             virtual const MultivariateSampleSpace* get_sample_space() const;
             void set_sample_space(const MultivariateSampleSpace& sample_space);
             
-            virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const;
-            virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const;
+            virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
+            virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
 
             virtual std::unique_ptr< MultivariateData > copy() const;
 
-            virtual size_t get_nb_variables() const;
+            virtual Index get_nb_components() const;
 
-            virtual const UnivariateDataFrame* get_variable(const size_t& index) const;
-            virtual void set_variable(const size_t& index, const UnivariateDataFrame& variable);
+            virtual const UnivariateDataFrame* get_component(const Index& index) const;
+            virtual void set_component(const Index& index, const UnivariateDataFrame& component);
 
-            virtual void add_variable(const UnivariateDataFrame& variable);
-            virtual std::unique_ptr< UnivariateDataFrame > pop_variable();
+            virtual void add_component(const UnivariateDataFrame& component);
+            virtual std::unique_ptr< UnivariateDataFrame > pop_component();
 
-            virtual void insert_variable(const size_t& index, const UnivariateDataFrame& variable);
-            virtual void remove_variable(const size_t& index);
+            virtual void insert_component(const Index& index, const UnivariateDataFrame& component);
+            virtual void remove_component(const Index& index);
 
-            virtual size_t get_nb_events() const;
+            virtual Index get_nb_events() const;
 
-            virtual std::unique_ptr< MultivariateEvent > get_event(const size_t& index) const;
-            virtual void set_event(const size_t& index, const MultivariateEvent* event);
+            virtual std::unique_ptr< MultivariateEvent > get_event(const Index& index) const;
+            virtual void set_event(const Index& index, const MultivariateEvent* event);
 
             virtual void add_event(const MultivariateEvent* event);
             virtual std::unique_ptr< MultivariateEvent > pop_event();
 
-            virtual void insert_event(const size_t& index, const MultivariateEvent* event);
-            virtual void remove_event(const size_t& index);
+            virtual void insert_event(const Index& index, const MultivariateEvent* event);
+            virtual void remove_event(const Index& index);
 
         protected:
             class SampleSpace;
 
             SampleSpace* _sample_space;
-            std::vector< UnivariateDataFrame* > _variables;
+            std::vector< UnivariateDataFrame* > _components;
 
             class STATISKIT_CORE_API SampleSpace : public MultivariateSampleSpace
             {
@@ -233,9 +233,9 @@ namespace statiskit
                     SampleSpace(const SampleSpace& sample_space);
                     virtual ~SampleSpace();
 
-                    virtual size_t size() const;
+                    virtual Index size() const;
                     
-                    virtual const UnivariateSampleSpace* get(const size_t& index) const;
+                    virtual const UnivariateSampleSpace* get(const Index& index) const;
                                                             
                     virtual std::unique_ptr< MultivariateSampleSpace > copy() const;
 
@@ -246,13 +246,13 @@ namespace statiskit
             class STATISKIT_CORE_API Event : public MultivariateEvent
             {
                 public:
-                    Event(const MultivariateDataFrame* data, const size_t& index);
+                    Event(const MultivariateDataFrame* data, const Index& index);
                     Event(const Event& event);
                     virtual ~Event();
 
-                    virtual size_t size() const;
+                    virtual Index size() const;
                             
-                    virtual const UnivariateEvent* get(const size_t& index) const;
+                    virtual const UnivariateEvent* get(const Index& index) const;
 
                     virtual std::unique_ptr< MultivariateEvent > copy() const;
 
@@ -275,13 +275,13 @@ namespace statiskit
 
                 protected:
                     const MultivariateDataFrame* _data;
-                    size_t _index;
+                    Index _index;
             };
 
             class STATISKIT_CORE_API UnivariateDataExtraction : public UnivariateData
             {
                 public:
-                    UnivariateDataExtraction(const MultivariateDataFrame* data, const size_t& index);
+                    UnivariateDataExtraction(const MultivariateDataFrame* data, const Index& index);
                     virtual ~UnivariateDataExtraction();
 
                     virtual std::unique_ptr< UnivariateData::Generator > generator() const;
@@ -297,23 +297,23 @@ namespace statiskit
             class STATISKIT_CORE_API MultivariateDataExtraction : public MultivariateData
             {
                 public:
-                    MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< size_t >& index);
+                    MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< Index >& index);
                     virtual ~MultivariateDataExtraction();
 
                     virtual std::unique_ptr< MultivariateData::Generator > generator() const;
 
                     virtual const MultivariateSampleSpace* get_sample_space() const;
 
-                    virtual std::unique_ptr< UnivariateData > extract(const size_t& index) const;
+                    virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
 
-                    virtual std::unique_ptr< MultivariateData > extract(const std::set< size_t >& indices) const;
+                    virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
 
                     virtual std::unique_ptr< MultivariateData > copy() const;
 
                 protected:
                     const MultivariateDataFrame* _data;
                     const MultivariateSampleSpace* _sample_space;
-                    std::vector< size_t > _indices;
+                    std::vector< Index > _indices;
 
                     class STATISKIT_CORE_API SampleSpace : public MultivariateSampleSpace
                     {
@@ -321,9 +321,9 @@ namespace statiskit
                             SampleSpace(const MultivariateDataExtraction* data);
                             virtual ~SampleSpace();
 
-                            virtual size_t size() const;
+                            virtual Index size() const;
                             
-                            virtual const UnivariateSampleSpace* get(const size_t& index) const;
+                            virtual const UnivariateSampleSpace* get(const Index& index) const;
                                                                     
                             virtual std::unique_ptr< MultivariateSampleSpace > copy() const;
 
@@ -334,12 +334,12 @@ namespace statiskit
                     class STATISKIT_CORE_API Event : public MultivariateEvent
                     {
                         public:
-                            Event(const MultivariateDataExtraction* data, const size_t& index);
+                            Event(const MultivariateDataExtraction* data, const Index& index);
                             virtual ~Event();
 
-                            virtual size_t size() const;
+                            virtual Index size() const;
                                     
-                            virtual const UnivariateEvent* get(const size_t& index) const;
+                            virtual const UnivariateEvent* get(const Index& index) const;
 
                             virtual std::unique_ptr< MultivariateEvent > copy() const;
 
@@ -362,7 +362,7 @@ namespace statiskit
 
                         protected:
                             const MultivariateDataExtraction* _data;
-                            size_t _index;
+                            Index _index;
                     };
             };
     };
@@ -378,12 +378,12 @@ namespace statiskit
 
             virtual const typename D::sample_space_type* get_sample_space() const;
                          
-            virtual const typename D::event_type * get_event(const size_t& index) const;
-            virtual void set_event(const size_t& index, const typename D::event_type* event);
+            virtual const typename D::event_type * get_event(const Index& index) const;
+            virtual void set_event(const Index& index, const typename D::event_type* event);
            
             virtual bool is_weighted() const;
 
-            virtual double get_weight(const size_t& index) const;
+            virtual double get_weight(const Index& index) const;
             
             virtual void lock();
             virtual void unlock();
@@ -392,7 +392,7 @@ namespace statiskit
         protected:
             std::shared_ptr< D > _masked;
             
-            virtual size_t compute_index(const size_t& index) const = 0;
+            virtual Index compute_index(const Index& index) const = 0;
     };
 
     template<class D>
@@ -402,20 +402,20 @@ namespace statiskit
             RandomizedData(const std::shared_ptr< D >& randomized);
             RandomizedData(const RandomizedData< D >& data);
             
-            virtual size_t size() const;
+            virtual Index size() const;
 
             const std::shared_ptr< D >& get_randomized() const;
 
-            const std::vector< size_t >& get_randomization() const;
+            const std::vector< Index >& get_randomization() const;
 
             void randomize();
 
             virtual std::unique_ptr< D > copy() const;
 
         protected:
-            std::vector< size_t > _randomization;
+            std::vector< Index > _randomization;
             
-            virtual size_t compute_index(const size_t& index) const;       
+            virtual Index compute_index(const Index& index) const;       
     };
 
   
@@ -423,10 +423,10 @@ namespace statiskit
     class DataIntervalMask : public DataMask< D >
     {
         public:
-            DataIntervalMask(const std::shared_ptr< D >& masked, const size_t& lower, const size_t& upper, const bool& inside);
+            DataIntervalMask(const std::shared_ptr< D >& masked, const Index& lower, const Index& upper, const bool& inside);
             DataIntervalMask(const DataIntervalMask< D >& data);
             
-            virtual size_t size() const;
+            virtual Index size() const;
             
             const bool& get_inside() const;
             void set_inside(const bool& inside);
@@ -434,11 +434,11 @@ namespace statiskit
             virtual std::unique_ptr< D > copy() const;
 
         protected:
-            size_t _lower;
-            size_t _upper;
+            Index _lower;
+            Index _upper;
             bool _inside;
             
-            virtual size_t compute_index(const size_t& index) const;                    
+            virtual Index compute_index(const Index& index) const;                    
     };*/
 }
 

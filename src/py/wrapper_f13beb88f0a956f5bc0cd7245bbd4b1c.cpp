@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile * get_pointer<autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile >(autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -18,6 +10,7 @@ namespace autowig
             
             virtual ::statiskit::UnivariateDistributionEstimation::estimated_type const * get_estimated() const
             { return this->get_override("get_estimated")(); }
+                        
 
         protected:
             
@@ -28,6 +21,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile * get_pointer<autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile >(autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c const volatile *c) { return c; }
+    template <> struct ::statiskit::ContinuousUnivariateDistributionEstimation const volatile * get_pointer<struct ::statiskit::ContinuousUnivariateDistributionEstimation const volatile >(struct ::statiskit::ContinuousUnivariateDistributionEstimation const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_f13beb88f0a956f5bc0cd7245bbd4b1c()
@@ -41,9 +45,10 @@ void wrapper_f13beb88f0a956f5bc0cd7245bbd4b1c()
 
     if(autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type, autowig::Held< struct ::statiskit::UnivariateDistributionEstimation >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousUnivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type, struct ::statiskit::ContinuousUnivariateDistributionEstimation > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_f13beb88f0a956f5bc0cd7245bbd4b1c >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousUnivariateDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type, struct ::statiskit::ContinuousUnivariateDistributionEstimation > > >();
     }
 
 }

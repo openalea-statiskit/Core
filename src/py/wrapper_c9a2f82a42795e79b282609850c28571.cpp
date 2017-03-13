@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile * get_pointer<autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile >(autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -17,7 +9,11 @@ namespace autowig
         public:
             
             virtual double const & get_mean() const
-            { return this->get_override("get_mean")(); }
+            {
+                 double* result = this->get_override("get_mean")();
+                 return *result;
+            }                 
+                        
 
         protected:
             
@@ -28,6 +24,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile * get_pointer<autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile >(autowig::Wrap_c9a2f82a42795e79b282609850c28571 const volatile *c) { return c; }
+    template <> struct ::statiskit::MeanEstimation const volatile * get_pointer<struct ::statiskit::MeanEstimation const volatile >(struct ::statiskit::MeanEstimation const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_c9a2f82a42795e79b282609850c28571()
@@ -42,7 +49,9 @@ void wrapper_c9a2f82a42795e79b282609850c28571()
     class_c9a2f82a42795e79b282609850c28571.def("get_mean", boost::python::pure_virtual(method_pointer_84ec59a1ad2b5bd0a929a94ebc54efe3), boost::python::return_value_policy< boost::python::return_by_value >(), "");
     if(autowig::Held< struct ::statiskit::MeanEstimation >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation >::Type, struct ::statiskit::MeanEstimation > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation >::Type, struct ::statiskit::MeanEstimation > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
     }    
 

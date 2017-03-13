@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_05ca2ab336025cf2a8fa3266fedb4a1e()
@@ -29,6 +31,7 @@ void wrapper_05ca2ab336025cf2a8fa3266fedb4a1e()
     if(autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::Type, autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::Type, struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection > > >();
     }
 
 }

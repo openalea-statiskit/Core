@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_8efea02ccdc156c4aa5aae37b04b810a()
@@ -32,9 +34,9 @@ void wrapper_8efea02ccdc156c4aa5aae37b04b810a()
     void  (::statiskit::OrdinalDistribution::*method_pointer_db526d174fc9507eb1d122f82bc9993d)(class ::std::vector< unsigned long int, class ::std::allocator< unsigned long int > > const &) = &::statiskit::OrdinalDistribution::set_rank;
     class ::std::vector< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > >  (::statiskit::OrdinalDistribution::*method_pointer_b8013b81a24259fea33820ec55ea508a)() const = &::statiskit::OrdinalDistribution::get_ordered;
     class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::OrdinalDistribution::*method_pointer_aad89d42b36956988f8249423ec8cab1)() const = &::statiskit::OrdinalDistribution::copy;
-    boost::python::class_< class ::statiskit::OrdinalDistribution, autowig::Held< class ::statiskit::OrdinalDistribution >::Type, boost::python::bases< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::CategoricalUnivariateDistribution > > > class_8efea02ccdc156c4aa5aae37b04b810a("OrdinalDistribution", "This class OrdinalDistribution represents the distribution of a random\nordinal variable $ S$. The support is a finite ordered set of categories\n(string) $ :raw-latex:`\\mathcal{S}`\n=:raw-latex:`\\left`:raw-latex:`\\lbrace `s\\_1, :raw-latex:`\\ldots`, s\\_J\n:raw-latex:`\\right`:raw-latex:`\\rbrace `$ and we have $\n:raw-latex:`\\sum`\\_{j=1}^J P(S=s\\_j) = 1 $.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::OrdinalDistribution, autowig::Held< class ::statiskit::OrdinalDistribution >::Type, boost::python::bases< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::CategoricalUnivariateDistribution > > > class_8efea02ccdc156c4aa5aae37b04b810a("OrdinalDistribution", "This class OrdinalDistribution represents the distribution of a random\nordinal component $ S$. The support is a finite ordered set of\ncategories (string) $ :raw-latex:`\\mathcal{S}`\n=:raw-latex:`\\left`:raw-latex:`\\lbrace `s\\_1, :raw-latex:`\\ldots`, s\\_J\n:raw-latex:`\\right`:raw-latex:`\\rbrace `$ and we have $\n:raw-latex:`\\sum`\\_{j=1}^J P(S=s\\_j) = 1 $.\n\n", boost::python::no_init);
     class_8efea02ccdc156c4aa5aae37b04b810a.def(boost::python::init< class ::std::vector< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > > const & >(""));
-    class_8efea02ccdc156c4aa5aae37b04b810a.def(boost::python::init< class ::std::set< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, struct ::std::less< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > > const &, class ::std::vector< unsigned long int, class ::std::allocator< unsigned long int > > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
+    class_8efea02ccdc156c4aa5aae37b04b810a.def(boost::python::init< class ::std::vector< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
     class_8efea02ccdc156c4aa5aae37b04b810a.def(boost::python::init< class ::statiskit::OrdinalDistribution const & >(""));
     class_8efea02ccdc156c4aa5aae37b04b810a.def("get_sample_space", method_pointer_1e8a13f491f55a9ab5c735d5e2db82b2, "");
     class_8efea02ccdc156c4aa5aae37b04b810a.def("pdf", method_pointer_1febf156dc75517cbc2a17e81047eb74, "");
@@ -49,6 +51,7 @@ void wrapper_8efea02ccdc156c4aa5aae37b04b810a()
     if(autowig::Held< class ::statiskit::OrdinalDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, autowig::Held< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::CategoricalUnivariateDistribution > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::OrdinalDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, class ::statiskit::OrdinalDistribution > > >();
     }
 
 }

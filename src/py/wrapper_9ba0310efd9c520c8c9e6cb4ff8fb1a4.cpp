@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_9ba0310efd9c520c8c9e6cb4ff8fb1a4()
@@ -24,7 +26,7 @@ void wrapper_9ba0310efd9c520c8c9e6cb4ff8fb1a4()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     struct ::statiskit::UnivariateDistribution const * (::statiskit::SlopeHeuristicSelection< ::statiskit::ContinuousUnivariateDistributionEstimation >::*method_pointer_f187888ec40e5bd2afc51fb06bef5e3e)() const = &::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::get_estimated;
-    struct ::statiskit::UnivariateDistribution const * (::statiskit::SlopeHeuristicSelection< ::statiskit::ContinuousUnivariateDistributionEstimation >::*method_pointer_4547ff1a69785df1bfeea3ef31757065)(::std::size_t const &) const = &::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::get_estimated;
+    struct ::statiskit::UnivariateDistribution const * (::statiskit::SlopeHeuristicSelection< ::statiskit::ContinuousUnivariateDistributionEstimation >::*method_pointer_4547ff1a69785df1bfeea3ef31757065)(::statiskit::Index const &) const = &::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::get_estimated;
     struct ::statiskit::UnivariateData const * (::statiskit::SlopeHeuristicSelection< ::statiskit::ContinuousUnivariateDistributionEstimation >::*method_pointer_2ccd9b83f3265937aabf1b8641fbbba0)() const = &::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::get_data;
     boost::python::class_< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, boost::python::bases< class ::statiskit::SlopeHeuristic, struct ::statiskit::ContinuousUnivariateDistributionEstimation > > class_9ba0310efd9c520c8c9e6cb4ff8fb1a4("_SlopeHeuristicSelection_9ba0310efd9c520c8c9e6cb4ff8fb1a4", "", boost::python::no_init);
     class_9ba0310efd9c520c8c9e6cb4ff8fb1a4.def(boost::python::init< struct ::statiskit::UnivariateData const * >(""));
@@ -37,6 +39,7 @@ void wrapper_9ba0310efd9c520c8c9e6cb4ff8fb1a4()
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, autowig::Held< class ::statiskit::SlopeHeuristic >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > > > >();
     }
 
 }

@@ -2,34 +2,42 @@
 
 from SCons.Errors import EnvironmentError
 
-Import("env")
-
-cppenv = env.Clone(tools = ['cpp'])
-
-cppenv.AppendUnique(CPPDEFINES = ['LIBSTATISKIT_CORE'])
-
-exclude = """
-""".split()
-
-sources = [source for source in cppenv.Glob('*.*') if not source.name in exclude]
-
-targets = cppenv.CppLibrary("statiskit_core", sources)
-Alias("cpp", targets)
-Alias("autowig", targets)
-Alias("install", "cpp")
-
 try:
-    wigenv = cppenv.Clone(tools = ['wig'])
+    Import("env")
 
-    targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
-                                    module='../py/_core.cpp',
-                                    decorator='../py/tatiskit/_core/_core.py',
-                                    parser_bootstrap=1,
-                                    controller='AutoWIG.py',
-                                    depends=['statiskit_linalg', 'statiskit_stl'])
+    cppenv = env.Clone(tools = ['cpp'])
+
+    cppenv.AppendUnique(CPPDEFINES = ['LIBSTATISKIT_CORE'])
+
+    exclude = """
+    """.split()
+
+    sources = [source for source in cppenv.Glob('*.*') if not source.name in exclude]
+
+    targets = cppenv.CppLibrary("statiskit_core", sources)
+    Alias("cpp", targets)
     Alias("autowig", targets)
     Alias("install", targets)
+    try:
+        wigenv = cppenv.Clone(tools = ['wig'])
+
+        targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
+                                        module='../py/_core.cpp',
+                                        decorator='../py/statiskit/core/_core.py',
+                                        parser_bootstrap=1,
+                                        controller='AutoWIG.py',
+                                        depends=['statiskit_linalg', 'statiskit_stl'])
+        Alias("autowig", targets)
+        wigenv.Depends(targets, "cpp")
+    except EnvironmentError:
+        Alias("autowig", [])
+        pass
+    except Exception:
+        raise
 except EnvironmentError:
+    Alias("cpp", [])
+    Alias("autowig", [])
+    Alias("install", [])
     pass
 except Exception:
     raise

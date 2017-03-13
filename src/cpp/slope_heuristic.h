@@ -38,7 +38,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API SlopeHeuristicOLSSolver : SlopeHeuristicSolver
     {
-        using SlopeHeuristicSolver::SlopeHeuristicSolver;
+        SlopeHeuristicOLSSolver();
+        SlopeHeuristicOLSSolver(const SlopeHeuristicOLSSolver& solver);
 
         virtual Eigen::VectorXd operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const; 
 
@@ -104,7 +105,7 @@ namespace statiskit
 
     struct STATISKIT_CORE_API SlopeHeuristicSelector
     { 
-        virtual size_t operator() (const SlopeHeuristic& sh) const = 0;
+        virtual Index operator() (const SlopeHeuristic& sh) const = 0;
 
         virtual std::unique_ptr< SlopeHeuristicSelector > copy() const = 0; 
     };
@@ -114,7 +115,7 @@ namespace statiskit
         SlopeHeuristicMaximalSelector();
         SlopeHeuristicMaximalSelector(const SlopeHeuristicMaximalSelector& selector);
 
-        virtual size_t operator() (const SlopeHeuristic& sh) const; 
+        virtual Index operator() (const SlopeHeuristic& sh) const; 
 
         virtual std::unique_ptr< SlopeHeuristicSelector > copy() const; 
     };
@@ -125,7 +126,7 @@ namespace statiskit
             SlopeHeuristicSuperiorSelector();
             SlopeHeuristicSuperiorSelector(const SlopeHeuristicSuperiorSelector& selector);
 
-            virtual size_t operator() (const SlopeHeuristic& sh) const;
+            virtual Index operator() (const SlopeHeuristic& sh) const;
 
             virtual std::unique_ptr< SlopeHeuristicSelector > copy() const; 
 
@@ -145,19 +146,19 @@ namespace statiskit
             SlopeHeuristic(const SlopeHeuristic& sh);
             virtual ~SlopeHeuristic();
 
-            size_t size() const;
+            Index size() const;
 
-            const double& get_score(const size_t& index) const;
+            const double& get_score(const Index& index) const;
 
-            const double& get_penshape(const size_t& index) const;
+            const double& get_penshape(const Index& index) const;
 
-            const double& get_intercept(const size_t& index) const;
+            const double& get_intercept(const Index& index) const;
 
-            const double& get_slope(const size_t& index) const;
+            const double& get_slope(const Index& index) const;
 
-            const size_t& get_selected(const size_t& index) const;
+            const Index& get_selected(const Index& index) const;
 
-            double compute_r_squared(const size_t& index) const;
+            double compute_r_squared(const Index& index) const;
 
             SlopeHeuristicSolver* get_solver();
             void set_solver(const SlopeHeuristicSolver& solver);
@@ -170,7 +171,7 @@ namespace statiskit
             std::vector< double > _scores;
             std::vector< double > _intercepts;
             std::vector< double > _slopes;
-            std::vector< size_t > _selected;
+            std::vector< Index > _selected;
             SlopeHeuristicSolver* _solver;
             SlopeHeuristicSelector* _selector;
 
@@ -186,7 +187,7 @@ namespace statiskit
 
             virtual typename E::estimated_type const * get_estimated() const;
 
-            const typename E::estimated_type* get_estimated(const size_t& index) const;
+            const typename E::estimated_type* get_estimated(const Index& index) const;
 
             const typename E::data_type* get_data() const;
 

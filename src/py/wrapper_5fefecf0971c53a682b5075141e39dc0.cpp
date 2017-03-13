@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_5fefecf0971c53a682b5075141e39dc0()
@@ -36,6 +38,7 @@ void wrapper_5fefecf0971c53a682b5075141e39dc0()
     if(autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicBiSquareSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, class ::statiskit::SlopeHeuristicBiSquareSolver > > >();
     }
 
 }

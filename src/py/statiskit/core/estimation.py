@@ -185,11 +185,11 @@ for cls in _IndependentMultivariateDistributionEstimation:
 
 def independent_estimation(data, **kwargs):
     if isinstance(data, MultivariateDataFrame):
-        if all(variable.sample_space.outcome is outcome_type.CATEGORICAL for variable in data.variables):
+        if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
             estimator = CategoricalIndependentMultivariateDistributionEstimation.Estimator()
-        elif all(variable.sample_space.outcome is outcome_type.DISCRETE for variable in data.variables):
+        elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
             estimator = DiscreteIndependentMultivariateDistributionEstimation.Estimator()
-        elif all(variable.sample_space.outcome is outcome_type.CONTINUOUS for variable in data.variables):
+        elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
             estimator = ContinuousIndependentMultivariateDistributionEstimation.Estimator()
         else:
             estimator = MixedIndependentMultivariateDistributionEstimation.Estimator()

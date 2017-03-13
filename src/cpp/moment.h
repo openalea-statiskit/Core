@@ -119,8 +119,8 @@ namespace statiskit
             {
                 std::unique_ptr< CoVarianceEstimation > operator() (const UnivariateData& data) const;
                 std::unique_ptr< CoVarianceEstimation > operator() (const UnivariateData& data, const double& mean) const;
-                std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data) const;
-                virtual std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const = 0;            
+                std::unique_ptr< CoVarianceEstimation > operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data) const;
+                virtual std::unique_ptr< CoVarianceEstimation > operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const = 0;            
             };
 
         protected:
@@ -144,7 +144,7 @@ namespace statiskit
                     Estimator(const Estimator& estimator);
                       
                     using CoVarianceEstimation::Estimator::operator();
-                    virtual std::unique_ptr< CoVarianceEstimation > operator() (const size_t& i, const size_t& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const;
+                    virtual std::unique_ptr< CoVarianceEstimation > operator() (const Index& i, const Index& j, const std::unique_ptr< MultivariateDataFrame > data, const std::array< double, 2 >& means) const;
 
                     const bool& get_bias() const;
                     void set_bias(const bool& bias);
@@ -161,13 +161,13 @@ namespace statiskit
     /*struct CoSkewnessEstimator
     {
         virtual double operator() (const UnivariateData& df) const;
-        virtual double operator() (const size_t& i, const size_t& j, const size_t& k, const MultivariateDataFrame& df, const bool& na_omit=true) const = 0;
+        virtual double operator() (const Index& i, const Index& j, const Index& k, const MultivariateDataFrame& df, const bool& na_omit=true) const = 0;
     };
 
     struct CoKurtosisEstimator
     {
         virtual double operator() (const UnivariateData& df, const bool& na_omit=true) const;
-        virtual double operator() (const size_t& i, const size_t& j, const size_t& k, const size_t& l, const MultivariateDataFrame& df, const bool& na_omit=true) const = 0;
+        virtual double operator() (const Index& i, const Index& j, const Index& k, const Index& l, const MultivariateDataFrame& df, const bool& na_omit=true) const = 0;
     };*/
 
     /*struct MomentEstimator
@@ -204,8 +204,8 @@ namespace statiskit
         protected:
             bool _biased;
 
-            template<class E> double get_value(const UnivariateData* data, const size_t& index, const bool& na_omit=true) const;
-            template<class E> double get_value(const UnivariateData* data, const size_t& index, const double& mean, const bool& na_omit=true) const;
+            template<class E> double get_value(const UnivariateData* data, const Index& index, const bool& na_omit=true) const;
+            template<class E> double get_value(const UnivariateData* data, const Index& index, const double& mean, const bool& na_omit=true) const;
             template<class E> double get_value(const UnivariateEvent* event, const double& completion, const bool& na_omit=true) const;
     };*/
 }

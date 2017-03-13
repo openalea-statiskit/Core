@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_fa5e2baabb585a5e93632d2563d88b33()
@@ -36,6 +38,7 @@ void wrapper_fa5e2baabb585a5e93632d2563d88b33()
     if(autowig::Held< class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent > >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, class ::statiskit::CensoredEvent< struct ::statiskit::ContinuousEvent > > > >();
     }
 
 }

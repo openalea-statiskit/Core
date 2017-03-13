@@ -9,8 +9,8 @@ def load(*args):
     if 'capushe' in kwargs or len(args) == 0:
         filepath = os.path.join(os.path.dirname(__file__), "capushe.csv")
         capushe = read_csv(filepath, header=True)
-        variable = capushe.get_variable(0)
-        variable.sample_space = variable.sample_space.as_ordinal()
+        component = capushe.components[0]
+        component.sample_space = component.sample_space.as_ordinal()
         kwargs['capushe'] = capushe
 
     args = [kwargs[arg] for arg in args]

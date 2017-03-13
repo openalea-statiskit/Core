@@ -24,7 +24,7 @@
 
 namespace statiskit
 {
-    /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate variable \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
+    /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate component \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct STATISKIT_CORE_API UnivariateDistribution
     {	
     	/// \brief Get the sample space of the distribution.
@@ -79,7 +79,7 @@ namespace statiskit
             Eigen::VectorXd _pi;
     };
     
-    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical variable \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+    /** \brief This virtual class CategoricalUnivariateDistribution represents the distribution of a random categorical component \f$ X \f$. The support is a finite set of categories (string) \f$ \mathcal{X} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
     struct STATISKIT_CORE_API CategoricalUnivariateDistribution : UnivariateDistribution
@@ -120,12 +120,15 @@ namespace statiskit
         virtual const std::set< std::string >& get_values() const = 0;
     };
     
-    /** \brief This class NominalDistribution represents the distribution of a random nominal variable \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
+    /** \brief This class NominalDistribution represents the distribution of a random nominal component \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
     struct STATISKIT_CORE_API NominalDistribution : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
     { 
-        using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
+        // using UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >::UnivariateFrequencyDistribution;
+        NominalDistribution(const std::set< std::string >& values);
+        NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi);
+        NominalDistribution(const NominalDistribution& nominal);
 
         virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
 
@@ -134,7 +137,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
     
-    /** \brief This class OrdinalDistribution represents the distribution of a random ordinal variable \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
+    /** \brief This class OrdinalDistribution represents the distribution of a random ordinal component \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
      * 
      * */
     class STATISKIT_CORE_API  OrdinalDistribution : public UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >
@@ -160,7 +163,7 @@ namespace statiskit
              * \param rank The specified vector of rank.
              * \param pi The specified vector of probabilities \f$ \pi=\left\lbrace P(S=s_1),\ldots,P(S=s_J) \right\rbrace \f$.
              * */            
-            OrdinalDistribution(const std::set< std::string >& values, const std::vector< size_t >& rank, const Eigen::VectorXd& pi);
+            OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi);
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
@@ -187,10 +190,10 @@ namespace statiskit
             std::string quantile(const double& p) const;
 
             /// \brief Get the rank of each category in lexicographic order.
-            const std::vector< size_t >& get_rank() const;
+            const std::vector< Index >& get_rank() const;
             
             /// \brief Set the rank of each category in lexicographic order.
-            void set_rank(const std::vector< size_t >& rank);
+            void set_rank(const std::vector< Index >& rank);
 
 			/// \brief Get the vector of ordered categories.
             std::vector< std::string > get_ordered() const;
@@ -198,12 +201,15 @@ namespace statiskit
             virtual std::unique_ptr< UnivariateDistribution > copy() const;
 
         protected:
-            std::vector< size_t > _rank;
+            std::vector< Index > _rank;
     };
  
     template<class T> struct QuantitativeUnivariateFrequencyDistribution : UnivariateFrequencyDistribution< T >
     {
-        using UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution;
+        // using UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution;
+        QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values);
+        QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi);
+        QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& QuantitativeUnivariateFrequencyDistribution);
 
         virtual double cdf(const typename T::event_type::value_type& value) const;
         
@@ -216,7 +222,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
     
-    /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete variable \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.
+    /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete component \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.
      * 
      * */
     struct STATISKIT_CORE_API DiscreteUnivariateDistribution : UnivariateDistribution
@@ -262,10 +268,10 @@ namespace statiskit
         * */
         virtual int quantile(const double& p) const = 0;
         
-        /// \brief Get mean of a discrete random variable \f$ E(N) = \sum_{n\in\mathbb{Z}} n P(N=n) \f$.
+        /// \brief Get mean of a discrete random component \f$ E(N) = \sum_{n\in\mathbb{Z}} n P(N=n) \f$.
         virtual double get_mean() const = 0;
         
-        /// \brief Get variance of a discrete random variable \f$ V(N) = \sum_{n\in\mathbb{Z}} \lbrace n-E(n) \rbrace^2 P(N=n) \f$  \f$ \mathbb{N} \f$.
+        /// \brief Get variance of a discrete random component \f$ V(N) = \sum_{n\in\mathbb{Z}} \lbrace n-E(n) \rbrace^2 P(N=n) \f$  \f$ \mathbb{N} \f$.
         virtual double get_variance() const = 0;
     };
 
@@ -587,7 +593,7 @@ namespace statiskit
             double _pi;
     };
     
-    /** \brief This virtual class ContinuousUnivariateDistribution represents the distribution of a random continuous variable \f$ X\f$. The support is \f$ \mathbb{R} \f$ and we have \f$ \int_{-\infty}^{\infty} f(x) dx = 1\f$.
+    /** \brief This virtual class ContinuousUnivariateDistribution represents the distribution of a random continuous component \f$ X\f$. The support is \f$ \mathbb{R} \f$ and we have \f$ \int_{-\infty}^{\infty} f(x) dx = 1\f$.
      * 
      * */
     struct STATISKIT_CORE_API ContinuousUnivariateDistribution : UnivariateDistribution
@@ -630,10 +636,10 @@ namespace statiskit
         * */        
         virtual double quantile(const double& p) const = 0;
         
-        /// \brief Get mean of a continuous random variable \f$ E(X) = \int_{-\infty}^{\infty} x f(x) dx \f$.
+        /// \brief Get mean of a continuous random component \f$ E(X) = \int_{-\infty}^{\infty} x f(x) dx \f$.
         virtual double get_mean() const = 0;
         
-        /// \brief Get variance of a continuous random variable \f$ V(X) = \int_{-\infty}^{\infty} \lbrace x-E(X) \rbrace^2 f(x) dx \f$.
+        /// \brief Get variance of a continuous random component \f$ V(X) = \int_{-\infty}^{\infty} \lbrace x-E(X) \rbrace^2 f(x) dx \f$.
         virtual double get_variance() const = 0;    
     };
 
@@ -1218,7 +1224,7 @@ namespace statiskit
 
     /** \brief This class GeneralizedStudentDistribution represents a <a href="https://en.wikipedia.org/wiki/Noncentral_t-distribution">non central Student distribution</a> which is also non standardized.
      * 
-     * \details A random variable $W=\sigma T + \mu$ is said to follow a generalized Student distribution if $T$ follows a non-central distribution.
+     * \details A random component $W=\sigma T + \mu$ is said to follow a generalized Student distribution if $T$ follows a non-central distribution.
      *			The generalized Student distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
@@ -1465,7 +1471,7 @@ namespace statiskit
     
     /** \brief This class GumbelMinDistribution represents a Gumbel distribution (minimum).
      * 
-     * \details A random variable \f$X\f$ is said to folloow a Gumbel distribution (minimum) if \f$Y=-X\f$ follows a Gumbel distribution (maximum).
+     * \details A random component \f$X\f$ is said to folloow a Gumbel distribution (minimum) if \f$Y=-X\f$ follows a Gumbel distribution (maximum).
      *         The Gumbel distribution (minimum) is an univariate continuous distribution.
      *			It is also called extreme value type I distribution (minimum).
      *         The support is the set of real values \f$\mathbb{R}\f$.
@@ -1564,7 +1570,7 @@ namespace statiskit
     };
 
 
-    /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random variable \f$ Y\f$ given a multivariate variable \f$ \boldsymbol{X} \f$.
+    /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random component \f$ Y\f$ given a multivariate component \f$ \boldsymbol{X} \f$.
      *
      */
     struct STATISKIT_CORE_API UnivariateConditionalDistribution
@@ -1574,10 +1580,10 @@ namespace statiskit
         /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
         virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
-    	/// \Brief Get the sample space of the response variable \f$ Y \f$.
+    	/// \Brief Get the sample space of the response component \f$ Y \f$.
         virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
-    	/// \Brief Get the sample space of the explanatory variables \f$ \boldsymbol{X} \f$.
+    	/// \Brief Get the sample space of the explanatory components \f$ \boldsymbol{X} \f$.
         virtual const MultivariateSampleSpace* get_explanatory_space() const = 0;
 
     	/// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
@@ -1610,8 +1616,8 @@ namespace statiskit
         /// \brief Get the sample space of the distribution.
         virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const = 0;
             
-        /// \brief Get the number of variables of the distribution.
-        virtual size_t get_nb_variables() const = 0;
+        /// \brief Get the number of components of the distribution.
+        virtual Index get_nb_components() const = 0;
 
         /// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -1654,14 +1660,14 @@ namespace statiskit
             
             virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const;
 
-            virtual size_t get_nb_variables() const;
+            virtual Index get_nb_components() const;
 
             virtual unsigned int get_nb_parameters() const;
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            typename D::marginal_type* get_marginal(const size_t& index) const;
-            void set_marginal(const size_t& index, const typename D::marginal_type& marginal);
+            typename D::marginal_type* get_marginal(const Index& index) const;
+            void set_marginal(const Index& index, const typename D::marginal_type& marginal);
 
             virtual std::unique_ptr< MultivariateEvent > simulate() const;
 

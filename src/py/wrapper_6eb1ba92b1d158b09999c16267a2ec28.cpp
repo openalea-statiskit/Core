@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile * get_pointer<autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile >(autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,11 +13,13 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation::Estimator > > (result);
             }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > >  operator()(::statiskit::MultivariateDistributionEstimation::data_type const & param_0, bool const & param_1) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > (result);
             }
+                        
 
         protected:
             
@@ -36,6 +30,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile * get_pointer<autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile >(autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 const volatile *c) { return c; }
+    template <> struct ::statiskit::MultivariateDistributionEstimation::Estimator const volatile * get_pointer<struct ::statiskit::MultivariateDistributionEstimation::Estimator const volatile >(struct ::statiskit::MultivariateDistributionEstimation::Estimator const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_6eb1ba92b1d158b09999c16267a2ec28()
@@ -56,7 +61,9 @@ void wrapper_6eb1ba92b1d158b09999c16267a2ec28()
     class_6eb1ba92b1d158b09999c16267a2ec28.def("copy", boost::python::pure_virtual(method_pointer_20397b66478a59f481c4e33cec98b652), "");
     if(autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type, struct ::statiskit::MultivariateDistributionEstimation::Estimator > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type, struct ::statiskit::MultivariateDistributionEstimation::Estimator > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_6eb1ba92b1d158b09999c16267a2ec28 >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type >();
     }    
 

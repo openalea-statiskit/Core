@@ -16,12 +16,17 @@ namespace statiskit
     SlopeHeuristicSolver::SlopeHeuristicSolver(const SlopeHeuristicSolver& solver)
     { _solver = solver._solver; }
 
-
     linalg::solver_type SlopeHeuristicSolver::get_solver() const
     { return _solver; }
 
     void SlopeHeuristicSolver::set_solver(const linalg::solver_type& solver)
     { _solver = solver;; }
+
+    SlopeHeuristicOLSSolver::SlopeHeuristicOLSSolver() : SlopeHeuristicSolver()
+    {}
+
+    SlopeHeuristicOLSSolver::SlopeHeuristicOLSSolver(const SlopeHeuristicOLSSolver& solver) : SlopeHeuristicSolver(solver)
+    {}
 
     Eigen::VectorXd SlopeHeuristicOLSSolver::operator() (const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
     { return linalg::solve(X.transpose() * X, (X.transpose() * y).eval(), _solver); }
@@ -88,7 +93,7 @@ namespace statiskit
         Eigen::VectorXd errors = y - X * beta;
         double sigma = _k * errors.squaredNorm() / sqrt(y.size() - 1);
         errors = errors.cwiseAbs();
-        for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
+        for(Index index = 0, max_index = y.size(); index < max_index; ++index)
         {
             if(errors(index) <= sigma)
             { W(index, index) = 1; }
@@ -117,7 +122,7 @@ namespace statiskit
         Eigen::VectorXd errors = y - X * beta;
         double sigma = _k * errors.squaredNorm() / sqrt(y.size() - 1);
         errors = errors.cwiseAbs();
-        for(size_t index = 0, max_index = y.size(); index < max_index; ++index)
+        for(Index index = 0, max_index = y.size(); index < max_index; ++index)
         {
             if(errors(index) <= sigma)
             { W(index, index) = pow(1-pow(errors(index) / sigma, 2), 2); }
@@ -132,11 +137,11 @@ namespace statiskit
     SlopeHeuristicMaximalSelector::SlopeHeuristicMaximalSelector(const SlopeHeuristicMaximalSelector& selector)
     {}
 
-    size_t SlopeHeuristicMaximalSelector::operator() (const SlopeHeuristic& sh) const
+    Index SlopeHeuristicMaximalSelector::operator() (const SlopeHeuristic& sh) const
     {
-        size_t index, lower = 0, upper = 1, max_index = sh.size();
+        Index index, lower = 0, upper = 1, max_index = sh.size();
         index = max_index;
-        size_t length = 0;
+        Index length = 0;
         while(upper < max_index)
         {
             while(upper < max_index && sh.get_selected(lower) == sh.get_selected(upper))
@@ -162,9 +167,9 @@ namespace statiskit
     SlopeHeuristicSuperiorSelector::SlopeHeuristicSuperiorSelector(const SlopeHeuristicSuperiorSelector& selector)
     { _threshold = selector._threshold; }
 
-    size_t SlopeHeuristicSuperiorSelector::operator() (const SlopeHeuristic& sh) const
+    Index SlopeHeuristicSuperiorSelector::operator() (const SlopeHeuristic& sh) const
     {
-        size_t index, lower = 0, upper = 1, max_index = sh.size();
+        Index index, lower = 0, upper = 1, max_index = sh.size();
         index = max_index;
         while(index == max_index && upper < max_index)
         {
@@ -178,7 +183,7 @@ namespace statiskit
         if(index == max_index)
         {
             lower = 0, upper = 1;
-            size_t length = 0;
+            Index length = 0;
             while(upper < max_index)
             {
                 while(upper < max_index && sh.get_selected(lower) == sh.get_selected(upper))
@@ -262,32 +267,32 @@ namespace statiskit
         _selector = sh._selector->copy().release();
     }
 
-    size_t SlopeHeuristic::size() const
+    Index SlopeHeuristic::size() const
     { return _penshapes.size(); }
 
-    const double& SlopeHeuristic::get_score(const size_t& index) const
+    const double& SlopeHeuristic::get_score(const Index& index) const
     { return _scores[index]; }
 
-    const double& SlopeHeuristic::get_penshape(const size_t& index) const
+    const double& SlopeHeuristic::get_penshape(const Index& index) const
     { return _penshapes[index]; }
 
-    const double& SlopeHeuristic::get_intercept(const size_t& index) const
+    const double& SlopeHeuristic::get_intercept(const Index& index) const
     { return _intercepts[index]; }
 
-    const double& SlopeHeuristic::get_slope(const size_t& index) const
+    const double& SlopeHeuristic::get_slope(const Index& index) const
     { return _slopes[index]; }
 
-    const size_t& SlopeHeuristic::get_selected(const size_t& index) const
+    const Index& SlopeHeuristic::get_selected(const Index& index) const
     { return _selected[index]; }
 
-    double SlopeHeuristic::compute_r_squared(const size_t& index) const
+    double SlopeHeuristic::compute_r_squared(const Index& index) const
     { 
-        size_t max_index = size();
+        Index max_index = size();
         Eigen::MatrixXd X(index, 2);
         Eigen::VectorXd y(index), beta(2);
         beta(0) = _intercepts[index];
         beta(1) = _slopes[index];
-        for(size_t shift = 0; shift < index; ++shift)
+        for(Index shift = 0; shift < index; ++shift)
         { 
             X(shift, 0) = 1;
             X(shift, 1) = _penshapes[max_index - shift - 1];
@@ -315,11 +320,11 @@ namespace statiskit
     {
         _intercepts = std::vector< double >(size(), std::numeric_limits< double >::quiet_NaN());
         _slopes = std::vector< double >(size(), std::numeric_limits< double >::quiet_NaN());
-        for(size_t index = 2, max_index = size(); index < max_index; ++index)
+        for(Index index = 2, max_index = size(); index < max_index; ++index)
         {
             Eigen::MatrixXd X(index, 2);
             Eigen::VectorXd y(index);
-            for(size_t shift = 0; shift < index; ++shift)
+            for(Index shift = 0; shift < index; ++shift)
             {
                 X(shift, 0) = 1;
                 X(shift, 1) = _penshapes[max_index - shift - 1];
@@ -334,13 +339,13 @@ namespace statiskit
             catch(const std::exception& error)
             {}
         }
-        _selected = std::vector< size_t >(_slopes.size());
-        for(size_t index = 1, max_index = size(); index < max_index; ++index)
+        _selected = std::vector< Index >(_slopes.size());
+        for(Index index = 1, max_index = size(); index < max_index; ++index)
         {
-            std::pair< double, size_t > max = std::make_pair(-1*std::numeric_limits< double >::infinity(), size());
+            std::pair< double, Index > max = std::make_pair(-1*std::numeric_limits< double >::infinity(), size());
             if(boost::math::isfinite(_slopes[index]))
             {
-                for(size_t shift = 0; shift < max_index; ++shift)
+                for(Index shift = 0; shift < max_index; ++shift)
                 {
                     double score = _scores[shift] - 2 * _slopes[index] * _penshapes[shift];                        
                     if(boost::math::isfinite(score) && score > max.first)

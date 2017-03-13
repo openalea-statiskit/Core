@@ -12,6 +12,18 @@
 namespace statiskit
 {    
     template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()
+        {}
+
+    template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation(D const * estimated, typename B::data_type const * data) : ActiveEstimation< D, B >(estimated, data)
+        {}
+
+     template<class D, class B>
+        UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation(const UnivariateFrequencyDistributionEstimation< D, B >& estimation) : ActiveEstimation< D, B >(estimation)
+        {}
+
+    template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::~UnivariateFrequencyDistributionEstimation()
         {}
 
@@ -64,7 +76,7 @@ namespace statiskit
                 if(lazy)
                 { estimation = std::make_unique< LazyEstimation< D, B > >(new D(values, masses)); }
                 else
-                { estimation = std::make_unique< UnivariateFrequencyDistributionEstimation< D, B > >(new D(values, masses), data); }
+                { estimation = std::make_unique< UnivariateFrequencyDistributionEstimation< D, B > >(new D(values, masses), &data); }
             }
             return estimation;
         }
@@ -74,15 +86,27 @@ namespace statiskit
         { return std::make_unique< Estimator >(*this); }
 
     template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()
+        {}
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation(IndependentMultivariateDistribution< D > const * estimated, typename E::data_type const * data) : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimated, data)
+        {}
+
+    template<class D, class E>
+        IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation(const IndependentMultivariateDistributionEstimation< D, E >& estimation) : ActiveEstimation< IndependentMultivariateDistribution< D >, E >(estimation)
+        {}
+
+    template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::~IndependentMultivariateDistributionEstimation()
         {}
 
     template<class D, class E>
-        size_t IndependentMultivariateDistributionEstimation< D, E >::size() const 
+        Index IndependentMultivariateDistributionEstimation< D, E >::size() const 
         { return _estimations.size(); }
 
     template<class D, class E>
-        const UnivariateDistributionEstimation* IndependentMultivariateDistributionEstimation< D, E >::get_estimation(const size_t& index) const 
+        const UnivariateDistributionEstimation* IndependentMultivariateDistributionEstimation< D, E >::get_estimation(const Index& index) const 
         { 
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
@@ -101,7 +125,7 @@ namespace statiskit
         {
             _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator._default_estimator->copy().release());
             _estimators.clear();
-            for(typename std::map< size_t, typename E::Estimator::marginal_type* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
+            for(typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
             { _estimators[it->first] = it->second->copy().release(); }
         }
 
@@ -113,30 +137,30 @@ namespace statiskit
         std::unique_ptr< MultivariateDistributionEstimation > IndependentMultivariateDistributionEstimation< D, E >::Estimator::operator() (const MultivariateData& data, const bool& lazy) const 
         { 
             std::unique_ptr< MultivariateDistributionEstimation > estimation;
-            typename std::map< size_t, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend();
+            typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend();
             typename E::Estimator::marginal_type* estimator;
             std::vector< UnivariateDistributionEstimation* > estimations(data.get_sample_space()->size(), nullptr);
-            for(size_t variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
+            for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
             {
-                while(it != it_end && it->first < variable)
+                while(it != it_end && it->first < component)
                 { ++it; }
-                if(it != it_end && it->first == variable)
+                if(it != it_end && it->first == component)
                 { estimator = it->second; }
                 else
                 { estimator = _default_estimator; }
-                estimations[variable] = (*estimator)(*(data.extract(variable).get()), lazy).release();
+                estimations[component] = (*estimator)(*(data.extract(component).get()), lazy).release();
             }
             std::vector< typename D::marginal_type > distributions(estimations.size());
-            for(size_t variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
-            { distributions[variable] = *static_cast< typename D::marginal_type* >(estimations[variable]->get_estimated()); }
+            for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
+            { distributions[component] = *static_cast< typename D::marginal_type* >(estimations[component]->get_estimated()); }
             IndependentMultivariateDistribution< D > * distribution = new IndependentMultivariateDistribution< D >(distributions);
             if(lazy)
             {
                 estimation = std::make_unique< LazyEstimation< IndependentMultivariateDistribution< D >, E > >(distribution);
-                for(size_t variable = 0, max_variable = estimations.size(); variable < max_variable; ++variable)
+                for(Index component = 0, max_component = estimations.size(); component < max_component; ++component)
                 {
-                    delete estimations[variable];
-                    estimations[variable] = nullptr;
+                    delete estimations[component];
+                    estimations[component] = nullptr;
                 }
             }
             else
@@ -161,9 +185,9 @@ namespace statiskit
         { _default_estimator = estimator; }
 
     template<class D, class E>
-        const typename E::Estimator::marginal_type* IndependentMultivariateDistributionEstimation< D, E >::Estimator::get_estimator(const size_t& index) const
+        const typename E::Estimator::marginal_type* IndependentMultivariateDistributionEstimation< D, E >::Estimator::get_estimator(const Index& index) const
         { 
-            typename std::map< size_t, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.find(index);
+            typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.find(index);
             typename E::Estimator::marginal_type* estimator;
             if(it == _estimators.cend())
             { estimator = _default_estimator; }
@@ -173,15 +197,15 @@ namespace statiskit
         }
 
     template<class D, class E>
-        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::unset_estimator(const size_t& index)
+        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::unset_estimator(const Index& index)
         { 
-            typename std::map< size_t, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.find(index);
+            typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.find(index);
             if(it != _estimators.cend())
             { _estimators.erase(it); }
         }
 
     template<class D, class E>
-        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_estimator(const size_t& index, const typename E::Estimator::marginal_type& estimator)
+        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_estimator(const Index& index, const typename E::Estimator::marginal_type& estimator)
         { _estimators[index] = estimator; }
 }
 

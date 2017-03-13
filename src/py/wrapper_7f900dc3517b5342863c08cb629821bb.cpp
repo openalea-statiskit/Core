@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_7f900dc3517b5342863c08cb629821bb()
@@ -27,10 +29,10 @@ void wrapper_7f900dc3517b5342863c08cb629821bb()
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_87074468296b5901b79216a9be2133b2)() const = &::statiskit::WeightedUnivariateDataFrame::copy;
     void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_81223f17f2a5523291a037e27e1cb60a)(struct ::statiskit::UnivariateEvent const *) = &::statiskit::WeightedUnivariateDataFrame::add_event;
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_d2708b57e96e595db940b19db207598b)() = &::statiskit::WeightedUnivariateDataFrame::pop_event;
-    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_d4626bd7c5c85613952f7d300a46d149)(::std::size_t const &, struct ::statiskit::UnivariateEvent const *) = &::statiskit::WeightedUnivariateDataFrame::insert_event;
-    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_5529d75f626a5dd799fdbfa79de9aa96)(::std::size_t const &) = &::statiskit::WeightedUnivariateDataFrame::remove_event;
-    double  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_aaec3f4645e25be5a849ec49c4098f8b)(::std::size_t const &) const = &::statiskit::WeightedUnivariateDataFrame::get_weight;
-    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_fe2e0d5ab3a95d599f4f2d0de9f64421)(::std::size_t const &, double const &) = &::statiskit::WeightedUnivariateDataFrame::set_weight;
+    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_d4626bd7c5c85613952f7d300a46d149)(::statiskit::Index const &, struct ::statiskit::UnivariateEvent const *) = &::statiskit::WeightedUnivariateDataFrame::insert_event;
+    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_5529d75f626a5dd799fdbfa79de9aa96)(::statiskit::Index const &) = &::statiskit::WeightedUnivariateDataFrame::remove_event;
+    double  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_aaec3f4645e25be5a849ec49c4098f8b)(::statiskit::Index const &) const = &::statiskit::WeightedUnivariateDataFrame::get_weight;
+    void  (::statiskit::WeightedUnivariateDataFrame::*method_pointer_fe2e0d5ab3a95d599f4f2d0de9f64421)(::statiskit::Index const &, double const &) = &::statiskit::WeightedUnivariateDataFrame::set_weight;
     boost::python::class_< class ::statiskit::WeightedUnivariateDataFrame, autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, boost::python::bases< class ::statiskit::UnivariateDataFrame > > class_7f900dc3517b5342863c08cb629821bb("WeightedUnivariateDataFrame", "", boost::python::no_init);
     class_7f900dc3517b5342863c08cb629821bb.def(boost::python::init< struct ::statiskit::UnivariateSampleSpace const & >(""));
     class_7f900dc3517b5342863c08cb629821bb.def(boost::python::init< class ::statiskit::WeightedUnivariateDataFrame const & >(""));
@@ -46,6 +48,7 @@ void wrapper_7f900dc3517b5342863c08cb629821bb()
     if(autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, autowig::Held< class ::statiskit::UnivariateDataFrame >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::WeightedUnivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::WeightedUnivariateDataFrame >::Type, class ::statiskit::WeightedUnivariateDataFrame > > >();
     }
 
 }

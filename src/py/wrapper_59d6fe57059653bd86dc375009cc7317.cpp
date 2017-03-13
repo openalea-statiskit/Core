@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_59d6fe57059653bd86dc375009cc7317()
@@ -37,6 +39,7 @@ void wrapper_59d6fe57059653bd86dc375009cc7317()
     if(autowig::Held< class ::statiskit::IntegerSampleSpace >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::IntegerSampleSpace >::Type, autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::IntegerSampleSpace >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::IntegerSampleSpace, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::IntegerSampleSpace >::Type, class ::statiskit::IntegerSampleSpace > > >();
     }
 
 }

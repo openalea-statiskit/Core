@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_3220f60173275579a5722fe8dba23dfa()
@@ -23,7 +25,7 @@ void wrapper_3220f60173275579a5722fe8dba23dfa()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    ::std::size_t  (::statiskit::SlopeHeuristicSuperiorSelector::*method_pointer_08256793d1a55196905fd6f1f2a8c1d6)(class ::statiskit::SlopeHeuristic const &) const = &::statiskit::SlopeHeuristicSuperiorSelector::operator();
+    ::statiskit::Index  (::statiskit::SlopeHeuristicSuperiorSelector::*method_pointer_08256793d1a55196905fd6f1f2a8c1d6)(class ::statiskit::SlopeHeuristic const &) const = &::statiskit::SlopeHeuristicSuperiorSelector::operator();
     class ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > >  (::statiskit::SlopeHeuristicSuperiorSelector::*method_pointer_70a3c7af788452878855da1bdf908d27)() const = &::statiskit::SlopeHeuristicSuperiorSelector::copy;
     double const & (::statiskit::SlopeHeuristicSuperiorSelector::*method_pointer_e4d1e5ff572a52868a58cd42498837f8)() const = &::statiskit::SlopeHeuristicSuperiorSelector::get_threshold;
     void  (::statiskit::SlopeHeuristicSuperiorSelector::*method_pointer_5fb00356a0aa5e3db19c85359e6b403d)(double const &) = &::statiskit::SlopeHeuristicSuperiorSelector::set_threshold;
@@ -38,6 +40,7 @@ void wrapper_3220f60173275579a5722fe8dba23dfa()
     if(autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicSuperiorSelector, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicSuperiorSelector >::Type, class ::statiskit::SlopeHeuristicSuperiorSelector > > >();
     }
 
 }

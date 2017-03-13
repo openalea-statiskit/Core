@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile * get_pointer<autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile >(autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,22 +13,28 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > (result);
             }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  simulate() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("simulate")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
             }
+                        
             virtual double  probability(struct ::statiskit::MultivariateEvent const * param_0, bool const & param_1) const
             { return this->get_override("probability")(param_0, param_1); }
+                        
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
-            virtual ::std::size_t  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+                        
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > (result);
             }
+                        
 
         protected:
             
@@ -47,6 +45,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile * get_pointer<autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile >(autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 const volatile *c) { return c; }
+    template <> struct ::statiskit::CategoricalMultivariateDistribution const volatile * get_pointer<struct ::statiskit::CategoricalMultivariateDistribution const volatile >(struct ::statiskit::CategoricalMultivariateDistribution const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_c1af1f263c37571f8e1257a72f39fd05()
@@ -60,9 +69,10 @@ void wrapper_c1af1f263c37571f8e1257a72f39fd05()
 
     if(autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, autowig::Held< struct ::statiskit::MultivariateDistribution >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, struct ::statiskit::CategoricalMultivariateDistribution > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c1af1f263c37571f8e1257a72f39fd05 >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type, struct ::statiskit::CategoricalMultivariateDistribution > > >();
     }
 
 }

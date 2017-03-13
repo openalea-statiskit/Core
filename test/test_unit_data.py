@@ -1,11 +1,15 @@
-import unittest
-from tempfile import NamedTemporaryFile
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot
 
 from statiskit import core
 from statiskit.data import core as data
+
+import unittest
+import os
+from tempfile import NamedTemporaryFile
+
+
 
 class TestData(unittest.TestCase):
 
@@ -14,61 +18,49 @@ class TestData(unittest.TestCase):
         """Test multivariate data construction"""
         cls._data = data.load('capushe')
 
-    def test_iterator(self):
-        """Test multivariate data iterator"""
-        for iterator in self._data:
-            self.assertEqual(len(iterator.event), self._data.nb_variables)
-            self.assertEqual(iterator.weight, 1.)
-
     def test_copy(self):
         """Test multivariate data copy"""
         data = self._data.copy()
         del self.__class__._data
         self.__class__._data = data
-        self.test_iterator()
 
     def test_access(self):
         """Test named data access"""
-        #self.assertIn('pen', self._data)
-        for iterators in zip(self._data.pen, self._data):
-            self.assertEqual(iterators[0].event.value, iterators[1].event[1].value)
+        for uevent, mevent in zip(self._data.pen.events, self._data.events):
+            self.assertEqual(uevent.value, mevent[1].value)
 
-    def test_str(self):
+    def test_repr(self):
         """Test univariate and multivariate data string representation"""
-        for index in range(self._data.nb_variables):
-            self._data.get_variable(index).__str__()
-        self._data.__str__()
+        for component in self._data.components:
+            repr(component)
+        repr(self._data)
 
     def test_repr_html(self):
         """Test univariate and multivariate data HTML representation"""
-        for index in range(self._data.nb_variables):
-            self._data.get_variable(index)._repr_html_()
+        for component in self._data.components:
+            component._repr_html_()
         self._data._repr_html_()
 
     def test_pdf_plot(self):
         """Test univariate and multivariate data pdf plot"""
-        for index in range(self._data.nb_variables):
+        for component in self._data.components:
             fig = pyplot.figure()
-            self._data.get_variable(index).pdf_plot()
-            pyplot.close()
+            component.pdf_plot()
+            pyplot.close(fig)
 
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
-        for index in range(self._data.nb_variables):
+        for component in self._data.components:
             fig = pyplot.figure()
-            self._data.get_variable(index).cdf_plot()
-            pyplot.close()
+            component.cdf_plot()
+            pyplot.close(fig)
 
     def test_write_csv(self):
         """Test write data to csv"""
         tmp = NamedTemporaryFile()
-        self.write_csv(tmp.name)
-        with open(tmp.name, 'r') as filehandler:
-            written = "".join(tmp.readlines())
-        with open(data.__file__, 'r') as filehandler:
-            read = "".join(tmp.readlines())
-        self.assertEqual(written, read)
-        os.unlink(tmp.name)
+        self._data.write_csv(tmp.name, header=True)
+        data = core.read_csv(tmp.name, header=True)
+        self.assertEqual(repr(data), repr(self._data))
 
     @classmethod
     def tearDownClass(cls):

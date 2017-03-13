@@ -1,6 +1,13 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_f93c1e93a0245b05b5e5bf3026df3134(class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > const & instance, struct ::statiskit::MultivariateDistributionEstimation & param_out)     { instance.operator*() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,11 +17,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_f93c1e93a0245b05b5e5bf3026df3134(class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > const & instance, struct ::statiskit::MultivariateDistributionEstimation & param_out)     { instance.operator*() = param_out; }
-}
 
 
 void wrapper_97ddfd5be73a5e91b93724af3ea449cd()

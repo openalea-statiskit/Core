@@ -87,7 +87,7 @@ namespace statiskit
         {
         	if(pi.rows() == _values.size()-1)
         	{
-		    	size_t j = 0; 
+		    	Index j = 0; 
 		    	while(j < pi.rows() && pi[j] >= 0.)
 		    	{ ++j; }
 		    	if(j < pi.rows())
@@ -103,7 +103,7 @@ namespace statiskit
         	}
         	else if(pi.rows() == _values.size())
         	{
-		    	size_t j = 0; 
+		    	Index j = 0; 
 		    	while(j < pi.rows() && pi[j] >= 0.)
 		    	{ ++j; }
 		    	if(j < pi.rows())
@@ -113,6 +113,18 @@ namespace statiskit
             else
             { throw parameter_error("pi", "number of parameters"); } 	           
         }
+
+    template<class T>
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values) : UnivariateFrequencyDistribution< T >(values)
+        {}
+
+    template<class T>
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< T >(values, pi)
+        {}
+
+    template<class T>
+         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& QuantitativeUnivariateFrequencyDistribution) :UnivariateFrequencyDistribution< T >(frequency)
+         {}
 
     template<class T>
         double QuantitativeUnivariateFrequencyDistribution< T >::cdf(const typename T::event_type::value_type& value) const
@@ -173,27 +185,27 @@ namespace statiskit
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals)
         {
             _marginals.resize(marginals.size(), nullptr);
-            for(size_t variable = 0, max_variable = marginals.size(); variable < max_variable; ++variable)
-            { _marginals[variable] = static_cast< typename D::marginal_type* >(marginals[index].copy().release()); }
+            for(Index component = 0, max_component = marginals.size(); component < max_component; ++component)
+            { _marginals[component] = static_cast< typename D::marginal_type* >(marginals[index].copy().release()); }
         }
 
     template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const IndependentMultivariateDistribution< D >& independent)
         {
-            _marginals.resize(independent.get_nb_variables(), nullptr);
-            for(size_t variable = 0, max_variable = independent.get_nb_variables(); variable < max_variable; ++variable)
-            { _marginals[variable] = static_cast< typename D::marginal_type* >(independent._marginals[variable]->copy().release()); }
+            _marginals.resize(independent.get_nb_components(), nullptr);
+            for(Index component = 0, max_component = independent.get_nb_components(); component < max_component; ++component)
+            { _marginals[component] = static_cast< typename D::marginal_type* >(independent._marginals[component]->copy().release()); }
          }
 
     template<class D>
         IndependentMultivariateDistribution< D >::~IndependentMultivariateDistribution()
         {
-            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
+            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
             {
-                if(_marginals[variable])
+                if(_marginals[component])
                 { 
-                    delete _marginals[variable];
-                    _marginals[variable] = nullptr;
+                    delete _marginals[component];
+                    _marginals[component] = nullptr;
                 }
             }
             _marginals.clear();
@@ -202,36 +214,36 @@ namespace statiskit
     template<class D>
         std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
         {
-            std::vector< UnivariateSampleSpace* > sample_spaces(get_nb_variables(), nullptr);
-            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-            { sample_spaces[variable] = _marginals[variable]->get_sample_space().release(); }
+            std::vector< UnivariateSampleSpace* > sample_spaces(get_nb_components(), nullptr);
+            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+            { sample_spaces[component] = _marginals[component]->get_sample_space().release(); }
             return std::make_unique< VectorSampleSpace >(sample_spaces);
-            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
+            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
             { 
-                delete sample_spaces[variable];
-                sample_spaces[variable] = nullptr;
+                delete sample_spaces[component];
+                sample_spaces[component] = nullptr;
             }
         }
 
     // template<class D>
     //     std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
     //     {
-    //         std::vector< std::unique_ptr< UnivariateSampleSpace > > sample_spaces(get_nb_variables());
-    //         for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-    //         { sample_spaces.push_back(_marginals[variable]->get_sample_space()); }
+    //         std::vector< std::unique_ptr< UnivariateSampleSpace > > sample_spaces(get_nb_components());
+    //         for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+    //         { sample_spaces.push_back(_marginals[component]->get_sample_space()); }
     //         return std::make_unique< VectorSampleSpace >(sample_spaces);
     //     }
         
     template<class D>
-        size_t IndependentMultivariateDistribution< D >::get_nb_variables() const
+        Index IndependentMultivariateDistribution< D >::get_nb_components() const
         { return _marginals.size(); }
 
     template<class D>
         unsigned int IndependentMultivariateDistribution< D >::get_nb_parameters() const
         {
             unsigned int nb_parameters = 0;
-            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-            { nb_parameters += _marginals[variable]->get_nb_parameters(); }
+            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+            { nb_parameters += _marginals[component]->get_nb_parameters(); }
             return nb_parameters; 
         }
 
@@ -241,13 +253,13 @@ namespace statiskit
             double p = 0.;
             if(event)
             {
-                if(event->size() == get_nb_variables())
+                if(event->size() == get_nb_components())
                 {
-                    for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-                    { p += _marginals[variable]->probability(event->get(variable), true); }
+                    for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+                    { p += _marginals[component]->probability(event->get(component), true); }
                 }
                 else
-                { throw size_error("event", get_nb_variables(), size_error::equal); }
+                { throw size_error("event", get_nb_components(), size_error::equal); }
                 if(!logarithm)
                 { p = exp(p); }
             }
@@ -259,19 +271,19 @@ namespace statiskit
         }
 
     template<class D>
-        typename D::marginal_type* IndependentMultivariateDistribution< D >:: get_marginal(const size_t& index) const
+        typename D::marginal_type* IndependentMultivariateDistribution< D >:: get_marginal(const Index& index) const
         {
-            if(index > get_nb_variables())
-            { throw size_error("index", get_nb_variables(), size_error::inferior); }
+            if(index > get_nb_components())
+            { throw size_error("index", get_nb_components(), size_error::inferior); }
             return _marginals[index];
         }
 
 
     template<class D>
-        void IndependentMultivariateDistribution< D >::set_marginal(const size_t& index, const typename D::marginal_type& marginal) 
+        void IndependentMultivariateDistribution< D >::set_marginal(const Index& index, const typename D::marginal_type& marginal) 
         {
-            if(index > get_nb_variables())
-            { throw size_error("index", get_nb_variables(), size_error::inferior); }
+            if(index > get_nb_components())
+            { throw size_error("index", get_nb_components(), size_error::inferior); }
             if(_marginals[index]->get_sample_space()->get_outcome() != marginal.get_sample_space()->get_outcome())
             { throw parameter_error("marginal", "incompatible sample space"); }
             delete _marginals[index];
@@ -281,9 +293,9 @@ namespace statiskit
     template<class D>
         std::unique_ptr< MultivariateEvent > IndependentMultivariateDistribution< D >::simulate() const
         {
-            VectorEvent* event = new VectorEvent(get_nb_variables());
-            for(size_t variable = 0, max_variable = get_nb_variables(); variable < max_variable; ++variable)
-            { event->set(variable, *(_marginals[variable]->simulate().get())); }
+            VectorEvent* event = new VectorEvent(get_nb_components());
+            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+            { event->set(component, *(_marginals[component]->simulate().get())); }
             return std::unique_ptr< MultivariateEvent >(event);
         }
 }

@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile * get_pointer<autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile >(autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,8 +13,10 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::UnivariateSampleSpace > > (result);
             }
+                        
             virtual bool  is_compatible(struct ::statiskit::UnivariateEvent const * param_0) const
             { return this->get_override("is_compatible")(param_0); }
+                        
 
         protected:
             
@@ -33,6 +27,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile * get_pointer<autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile >(autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 const volatile *c) { return c; }
+    template <> struct ::statiskit::ContinuousSampleSpace const volatile * get_pointer<struct ::statiskit::ContinuousSampleSpace const volatile >(struct ::statiskit::ContinuousSampleSpace const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_aa6b2bab0be654649ef497aa71dff2e3()
@@ -50,9 +55,10 @@ void wrapper_aa6b2bab0be654649ef497aa71dff2e3()
 
     if(autowig::Held< struct ::statiskit::ContinuousSampleSpace >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 >::Type, autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type, autowig::Held< struct ::statiskit::UnivariateSampleSpace >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousSampleSpace, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type, struct ::statiskit::ContinuousSampleSpace > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_aa6b2bab0be654649ef497aa71dff2e3 >::Type, autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousSampleSpace, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousSampleSpace >::Type, struct ::statiskit::ContinuousSampleSpace > > >();
     }
 
 }

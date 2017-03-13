@@ -13,25 +13,46 @@ import numpy as np
 
 import _core
 from __core.statiskit import (UnivariateDistribution,
-                              CategoricalUnivariateDistribution, NominalDistribution, OrdinalDistribution,
-                              DiscreteUnivariateDistribution, DiscreteUnivariateFrequencyDistribution, PoissonDistribution,
-                              ContinuousUnivariateDistribution, ContinuousUnivariateFrequencyDistribution, UnivariateHistogramDistribution, NormalDistribution,
-                              _UnivariateFrequencyDistribution, _QuantitativeUnivariateFrequencyDistribution,
-                              MultivariateDistribution, _IndependentMultivariateDistribution,
-                              CategoricalMultivariateDistribution, CategoricalIndependentMultivariateDistribution,
-                              DiscreteMultivariateDistribution, DiscreteIndependentMultivariateDistribution,
-                              ContinuousMultivariateDistribution, ContinuousIndependentMultivariateDistribution)
+                                _UnivariateFrequencyDistribution,
+                                _QuantitativeUnivariateFrequencyDistribution,
+                                CategoricalUnivariateDistribution,
+                                    NominalDistribution,
+                                    OrdinalDistribution,
+                                DiscreteUnivariateDistribution,
+                                    DiscreteUnivariateFrequencyDistribution,
+                                    PoissonDistribution,
+                                    BinomialDistribution,
+                                    NegativeBinomialDistribution,
+                                ContinuousUnivariateDistribution,
+                                    ContinuousUnivariateFrequencyDistribution,
+                                    UnivariateHistogramDistribution,
+                                    NormalDistribution,
+                              MultivariateDistribution,
+                                _IndependentMultivariateDistribution,
+                                CategoricalMultivariateDistribution,
+                                    CategoricalIndependentMultivariateDistribution,
+                                DiscreteMultivariateDistribution,
+                                    DiscreteIndependentMultivariateDistribution,
+                                ContinuousMultivariateDistribution,
+                                    ContinuousIndependentMultivariateDistribution)
 
 from statiskit.core.controls import controls
 from statiskit.core.event import (UnivariateEvent,
-                                  CategoricalEvent,
-                                  DiscreteEvent,
-                                  ContinuousEvent,
+                                    CategoricalEvent,
+                                        CategoricalElementaryEvent,
+                                    DiscreteEvent,
+                                    ContinuousEvent,
                                   MultivariateEvent)
 
-__all__ = ['NominalDistribution', 'OrdinalDistribution',
-           'DiscreteUnivariateFrequencyDistribution', 'PoissonDistribution',
-           'ContinuousUnivariateFrequencyDistribution', 'UnivariateHistogramDistribution', 'NormalDistribution',
+__all__ = ['NominalDistribution',
+           'OrdinalDistribution',
+           'DiscreteUnivariateFrequencyDistribution',
+           'PoissonDistribution',
+           'BinomialDistribution',
+           'NegativeBinomialDistribution',
+           'ContinuousUnivariateFrequencyDistribution',
+           'UnivariateHistogramDistribution',
+           'NormalDistribution',
            'IndependentMultivariateDistribution']
 
 UnivariateDistribution.nb_parameters = property(UnivariateDistribution.get_nb_parameters)

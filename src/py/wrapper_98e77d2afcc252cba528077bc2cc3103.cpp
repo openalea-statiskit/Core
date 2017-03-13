@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile * get_pointer<autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile >(autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -18,12 +10,19 @@ namespace autowig
             
             virtual double  weight() const
             { return this->get_override("weight")(); }
+                        
             virtual struct ::statiskit::MultivariateEvent const * event() const
             { return this->get_override("event")(); }
+                        
             virtual struct ::statiskit::MultivariateData::Generator & operator++() 
-            { return this->get_override("operator++")(); }
+            {
+                 ::statiskit::MultivariateData::Generator* result = this->get_override("operator++")();
+                 return *result;
+            }                 
+                        
             virtual bool  is_valid() const
             { return this->get_override("is_valid")(); }
+                        
 
         protected:
             
@@ -35,6 +34,17 @@ namespace autowig
 
     void method_decorator_63b969fdfda0571a865b8fd09d42ff6f(struct ::statiskit::MultivariateData::Generator & instance, struct ::statiskit::MultivariateData::Generator & param_out)     { instance.operator++() = param_out; }
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile * get_pointer<autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile >(autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 const volatile *c) { return c; }
+    template <> struct ::statiskit::MultivariateData::Generator const volatile * get_pointer<struct ::statiskit::MultivariateData::Generator const volatile >(struct ::statiskit::MultivariateData::Generator const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_98e77d2afcc252cba528077bc2cc3103()
@@ -60,7 +70,9 @@ void wrapper_98e77d2afcc252cba528077bc2cc3103()
     class_98e77d2afcc252cba528077bc2cc3103.def("weight", boost::python::pure_virtual(method_pointer_97dd3ac3ad43541faf4f468d1c840930), "");
     if(autowig::Held< struct ::statiskit::MultivariateData::Generator >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData::Generator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, struct ::statiskit::MultivariateData::Generator > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData::Generator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, struct ::statiskit::MultivariateData::Generator > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
     }    
 

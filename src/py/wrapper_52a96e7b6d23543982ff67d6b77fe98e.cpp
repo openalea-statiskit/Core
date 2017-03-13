@@ -1,6 +1,12 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,10 +16,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-}
 
 
 void wrapper_52a96e7b6d23543982ff67d6b77fe98e()
@@ -34,6 +36,7 @@ void wrapper_52a96e7b6d23543982ff67d6b77fe98e()
     if(autowig::Held< class ::statiskit::NaturalVarianceEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NaturalVarianceEstimation >::Type, autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NaturalVarianceEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NaturalVarianceEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NaturalVarianceEstimation >::Type, class ::statiskit::NaturalVarianceEstimation > > >();
     }
 
 }

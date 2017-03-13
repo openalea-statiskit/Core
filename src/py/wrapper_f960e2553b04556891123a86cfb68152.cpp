@@ -1,6 +1,13 @@
 #include "_core.h"
 
 
+
+namespace autowig
+{
+
+    void method_decorator_098aef898fd2538e8aaeb9bc5bef7eb7(class ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > const & instance, class ::statiskit::SlopeHeuristicSolver & param_out)     { instance.operator*() = param_out; }
+}
+
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1900)
 namespace boost
@@ -10,11 +17,6 @@ namespace boost
     #endif
 #endif
 
-namespace autowig
-{
-
-    void method_decorator_098aef898fd2538e8aaeb9bc5bef7eb7(class ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > const & instance, class ::statiskit::SlopeHeuristicSolver & param_out)     { instance.operator*() = param_out; }
-}
 
 
 void wrapper_f960e2553b04556891123a86cfb68152()

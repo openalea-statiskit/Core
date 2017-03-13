@@ -142,7 +142,7 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::SlopeHeuristicSelector, struct ::std::default_delete< struct ::statiskit::SlopeHeuristicSelector > > (result);
             }
-            virtual ::std::size_t  operator()(class ::statiskit::SlopeHeuristic const & param_0) const
+            virtual ::statiskit::Index  operator()(class ::statiskit::SlopeHeuristic const & param_0) const
             { return this->get_override("operator()")(param_0); }
 
         protected:
@@ -209,8 +209,8 @@ namespace autowig
             { return this->get_override("probability")(param_0, param_1); }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
-            virtual ::std::size_t  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
@@ -311,7 +311,7 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
             }
-            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  extract(::std::size_t const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  extract(::statiskit::Index const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > (result);
@@ -377,9 +377,9 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
             }
-            virtual struct ::statiskit::UnivariateEvent const * get(::std::size_t const & param_0) const
+            virtual struct ::statiskit::UnivariateEvent const * get(::statiskit::Index const & param_0) const
             { return this->get_override("get")(param_0); }
-            virtual ::std::size_t  size() const
+            virtual ::statiskit::Index  size() const
             { return this->get_override("size")(); }
 
         protected:
@@ -491,9 +491,9 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > (result);
             }
-            virtual struct ::statiskit::UnivariateSampleSpace const * get(::std::size_t const & param_0) const
+            virtual struct ::statiskit::UnivariateSampleSpace const * get(::statiskit::Index const & param_0) const
             { return this->get_override("get")(param_0); }
-            virtual ::std::size_t  size() const
+            virtual ::statiskit::Index  size() const
             { return this->get_override("size")(); }
 
         protected:
@@ -659,8 +659,8 @@ namespace autowig
             { return this->get_override("probability")(param_0, param_1); }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
-            virtual ::std::size_t  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
@@ -802,8 +802,8 @@ namespace autowig
             { return this->get_override("probability")(param_0, param_1); }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
-            virtual ::std::size_t  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
@@ -1015,8 +1015,8 @@ namespace autowig
             { return this->get_override("probability")(param_0, param_1); }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
-            virtual ::std::size_t  get_nb_variables() const
-            { return this->get_override("get_nb_variables")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
             virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();

@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile * get_pointer<autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile >(autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -17,7 +9,11 @@ namespace autowig
         public:
             
             virtual double const & get_variance() const
-            { return this->get_override("get_variance")(); }
+            {
+                 double* result = this->get_override("get_variance")();
+                 return *result;
+            }                 
+                        
 
         protected:
             
@@ -28,6 +24,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile * get_pointer<autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile >(autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 const volatile *c) { return c; }
+    template <> class ::statiskit::VarianceEstimation const volatile * get_pointer<class ::statiskit::VarianceEstimation const volatile >(class ::statiskit::VarianceEstimation const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_99c254a34dca5e70bdf05b701c5b7360()
@@ -44,7 +51,9 @@ void wrapper_99c254a34dca5e70bdf05b701c5b7360()
     class_99c254a34dca5e70bdf05b701c5b7360.def("get_variance", boost::python::pure_virtual(method_pointer_af6fd74a0de15abbb34a83f63ed1939b), boost::python::return_value_policy< boost::python::return_by_value >(), "");
     if(autowig::Held< class ::statiskit::VarianceEstimation >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::VarianceEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::VarianceEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::VarianceEstimation >::Type, class ::statiskit::VarianceEstimation > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 >::Type, autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::VarianceEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::VarianceEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::VarianceEstimation >::Type, class ::statiskit::VarianceEstimation > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 >::Type, autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
     }    
 

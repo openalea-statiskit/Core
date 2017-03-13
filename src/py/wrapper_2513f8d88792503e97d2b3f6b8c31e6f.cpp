@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile * get_pointer<autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile >(autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,13 +13,16 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > > (result);
             }
+                        
             virtual struct ::statiskit::UnivariateSampleSpace const * get_sample_space() const
             { return this->get_override("get_sample_space")(); }
+                        
             virtual class ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > >  generator() const
             {
                  ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > > ::element_type* result = this->get_override("generator")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > > (result);
             }
+                        
 
         protected:
             
@@ -38,6 +33,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile * get_pointer<autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile >(autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f const volatile *c) { return c; }
+    template <> struct ::statiskit::UnivariateData const volatile * get_pointer<struct ::statiskit::UnivariateData const volatile >(struct ::statiskit::UnivariateData const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_2513f8d88792503e97d2b3f6b8c31e6f()
@@ -62,7 +68,9 @@ void wrapper_2513f8d88792503e97d2b3f6b8c31e6f()
     class_2513f8d88792503e97d2b3f6b8c31e6f.def("compute_maximum", method_pointer_6114a404726e5acdafff1da68ca6210d, "");
     if(autowig::Held< struct ::statiskit::UnivariateData >::is_class)
     {
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::UnivariateData >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::UnivariateData, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::UnivariateData >::Type, struct ::statiskit::UnivariateData > > >();
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f >::Type, autowig::Held< struct ::statiskit::UnivariateData >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::UnivariateData >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::UnivariateData >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::UnivariateData, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::UnivariateData >::Type, struct ::statiskit::UnivariateData > > >();
         //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_2513f8d88792503e97d2b3f6b8c31e6f >::Type, autowig::Held< struct ::statiskit::UnivariateData >::Type >();
     }    
 

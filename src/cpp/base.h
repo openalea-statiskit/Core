@@ -10,6 +10,7 @@
 #define STATISKIT_CORE_BASE_H
 
 #include <statiskit/linalg/Eigen.h>
+#include <statiskit/stl/STL.h>
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/math/constants/constants.hpp>
@@ -63,6 +64,9 @@ namespace statiskit
         STATISKIT_CORE_API boost::mt19937& get_random_generator();
     }
 
+    STATISKIT_CORE_API void set_seed();
+    STATISKIT_CORE_API void set_seed(const Index& seed);
+
     struct STATISKIT_CORE_API not_implemented_error : std::exception
     { not_implemented_error(); };
 
@@ -80,7 +84,7 @@ namespace statiskit
             superior,
         };
 
-        size_error(const std::string& parameter, const size_t& self, const size_t& other, const size_type& size=size_type::equal);
+        size_error(const std::string& parameter, const Index& self, const Index& other, const size_type& size=size_type::equal);
     };
 
     struct STATISKIT_CORE_API nullptr_error : parameter_error

@@ -36,7 +36,7 @@ namespace statiskit
 
             virtual ~Estimator() = 0;
 
-            virtual std::unique_ptr< estimation_type > operator() (const MultivariateData& data, const size_t& index) const;
+            virtual std::unique_ptr< estimation_type > operator() (const MultivariateData& data, const Index& index) const;
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
 
             virtual std::unique_ptr< Estimator > copy() const = 0;
@@ -80,13 +80,13 @@ namespace statiskit
             ListEstimation(const ListEstimation< D, B >& estimation);
             virtual ~ListEstimation();
 
-            size_t size() const;
+            Index size() const;
 
-            B const * get_estimation(const size_t& index) const;
+            B const * get_estimation(const Index& index) const;
 
-            const double& get_score(const size_t& index) const;
+            const double& get_score(const Index& index) const;
 
-            class STATISKIT_CORE_API Estimator : public B::Estimator
+            class Estimator : public B::Estimator
             {
                 public:
                     Estimator();
@@ -95,13 +95,13 @@ namespace statiskit
                   
                     virtual std::unique_ptr< typename B::estimation_type > operator() (typename B::estimation_type::data_type const & data, const bool& lazy=true) const;
 
-                    size_t size() const;
+                    Index size() const;
 
-                    typename B::Estimator * get_estimator(const size_t& index);
-                    void set_estimator(const size_t& index, const typename B::Estimator& estimator);
+                    typename B::Estimator * get_estimator(const Index& index);
+                    void set_estimator(const Index& index, const typename B::Estimator& estimator);
 
                     void add_estimator(const typename B::Estimator& estimator);
-                    void remove_estimator(const size_t& index);
+                    void remove_estimator(const Index& index);
 
                 protected:
                     std::vector< typename B::Estimator * > _estimators;
@@ -126,9 +126,9 @@ namespace statiskit
                 OptimizationEstimation(const OptimizationEstimation< T, D, B >& estimation);
                 virtual ~OptimizationEstimation();
 
-                size_t size() const;
+                Index size() const;
 
-                const T get_step(const size_t& index) const;
+                const T get_step(const Index& index) const;
 
                 class Estimator : public B::Estimator
                 {
@@ -161,25 +161,32 @@ namespace statiskit
 
     template<class T, class D, class B> struct OptimizationEstimation : __impl::OptimizationEstimation<T, D, B >
     {
-        using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
+        // using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
+        OptimizationEstimation();
+        OptimizationEstimation(D const * estimated, typename B::data_type const * data);
+        OptimizationEstimation(const OptimizationEstimation< T, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
         struct Estimator : __impl::OptimizationEstimation<T, D, B >::Estimator
         { 
-            using __impl::OptimizationEstimation<T, D, B >::Estimator::Estimator;
+            Estimator();
+            Estimator(const Estimator& estimator);
             virtual ~Estimator();
         };
     };
 
     template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
     {
-        using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        // using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        OptimizationEstimation();
+        OptimizationEstimation(D const * estimated, typename B::data_type const * data);
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
         struct Estimator : __impl::OptimizationEstimation<T*, D, B >::Estimator
         { 
-            using __impl::OptimizationEstimation<T*, D, B >::Estimator::Estimator;
+            Estimator();
+            Estimator(const Estimator& estimator);
             virtual ~Estimator();
         };
     };

@@ -1,14 +1,6 @@
 #include "_core.h"
 
 
-#if defined(_MSC_VER)
-    #if (_MSC_VER == 1900)
-namespace boost
-{
-    template <> autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile * get_pointer<autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile >(autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile *c) { return c; }
-}
-    #endif
-#endif
 
 namespace autowig
 {
@@ -21,8 +13,10 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > (result);
             }
+                        
             virtual enum ::statiskit::event_type  get_event() const
             { return this->get_override("get_event")(); }
+                        
 
         protected:
             
@@ -33,6 +27,17 @@ namespace autowig
     };
 
 }
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile * get_pointer<autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile >(autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 const volatile *c) { return c; }
+    template <> struct ::statiskit::ContinuousEvent const volatile * get_pointer<struct ::statiskit::ContinuousEvent const volatile >(struct ::statiskit::ContinuousEvent const volatile *c) { return c; }
+}
+    #endif
+#endif
+
 
 
 void wrapper_69ca358c24cd5cabb1a6b9e1358519e4()
@@ -48,9 +53,10 @@ void wrapper_69ca358c24cd5cabb1a6b9e1358519e4()
 
     if(autowig::Held< struct ::statiskit::ContinuousEvent >::is_class)
     {
+        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 >::Type, autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
+        boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, autowig::Held< struct ::statiskit::UnivariateEvent >::Type >();
-        boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, struct ::statiskit::ContinuousEvent > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 >::Type, autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, struct ::statiskit::ContinuousEvent > > >();
     }
 
 }
