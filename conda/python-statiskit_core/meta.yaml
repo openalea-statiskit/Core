@@ -35,7 +35,7 @@ requirements:
 
 test:
   requires:
-    - matplotlib
+    - matplotlib 1.5.3
     - numpy
     - python-dev 
   source_files:                                
