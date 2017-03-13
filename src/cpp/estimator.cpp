@@ -122,10 +122,10 @@ namespace statiskit
     BinomialDistributionMLEstimation::~BinomialDistributionMLEstimation()
     {}
 
-    BinomialDistributionMLEstimation::Estimator::Estimator() : ::statiskit::OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
+    BinomialDistributionMLEstimation::Estimator::Estimator() : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
     {}
     
-    BinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : ::statiskit::OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
+    BinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
     {}
 
     BinomialDistributionMLEstimation::Estimator::~Estimator()

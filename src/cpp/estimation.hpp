@@ -332,11 +332,11 @@ namespace statiskit
         {}
 
     template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T, D, B >::Estimator::Estimator()
+        OptimizationEstimation< T, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T, D, B >::Estimator()
         {}
 
     template<class T, class D, class B>
-        OptimizationEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T, D, B >::Estimator::Estimator(estimator)
+        OptimizationEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T, D, B >::Estimator(estimator)
         {}
 
     template<class T, class D, class B>
@@ -369,11 +369,11 @@ namespace statiskit
         }
 
     template<class T, class D, class B>
-        OptimizationEstimation< T*, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T*, D, B >::Estimator::Estimator()
+        OptimizationEstimation< T*, D, B >::Estimator::Estimator() : __impl::OptimizationEstimation< T*, D, B >::Estimator()
         {}
 
     template<class T, class D, class B>
-        OptimizationEstimation< T*, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T*, D, B >::Estimator::Estimator(estimator)
+        OptimizationEstimation< T*, D, B >::Estimator::Estimator(const Estimator& estimator) : __impl::OptimizationEstimation< T*, D, B >::Estimator(estimator)
         {}
 
     template<class T, class D, class B>
