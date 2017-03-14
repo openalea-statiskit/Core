@@ -1,16 +1,25 @@
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot
+except:
+    import warnings
+    warnings.warn("No module named matplotlib")
 
 from statiskit import core
 from statiskit.data import core as data
 
 import unittest
+from nose.plugins.attrib import attr
+
 import os
 from tempfile import NamedTemporaryFile
 
 
-
+@attr(linux=True,
+      osx=True,
+      win=True,
+      level=1)
 class TestData(unittest.TestCase):
 
     @classmethod
@@ -41,6 +50,7 @@ class TestData(unittest.TestCase):
             component._repr_html_()
         self._data._repr_html_()
 
+    @attr(win=False)
     def test_pdf_plot(self):
         """Test univariate and multivariate data pdf plot"""
         for component in self._data.components:
@@ -48,6 +58,7 @@ class TestData(unittest.TestCase):
             component.pdf_plot()
             pyplot.close(fig)
 
+    @attr(win=False)
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:
