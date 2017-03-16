@@ -26,7 +26,9 @@ void wrapper_36823ab42b0c57b48d903606aa743329()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< struct ::statiskit::PoissonDistributionMLEstimation, autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation >::Type, boost::python::bases< class ::statiskit::ActiveEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_36823ab42b0c57b48d903606aa743329("PoissonDistributionMLEstimation", "", boost::python::no_init);
+    class_36823ab42b0c57b48d903606aa743329.def(boost::python::init<  >(""));
     class_36823ab42b0c57b48d903606aa743329.def(boost::python::init< class ::statiskit::PoissonDistribution const *, struct ::statiskit::UnivariateData const * >(""));
+    class_36823ab42b0c57b48d903606aa743329.def(boost::python::init< struct ::statiskit::PoissonDistributionMLEstimation const & >(""));
 
     if(autowig::Held< struct ::statiskit::PoissonDistributionMLEstimation >::is_class)
     {

@@ -1,0 +1,42 @@
+#include "_core.h"
+
+
+
+namespace autowig
+{
+
+}
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> struct ::statiskit::DiscreteUnivariateMixtureDistribution const volatile * get_pointer<struct ::statiskit::DiscreteUnivariateMixtureDistribution const volatile >(struct ::statiskit::DiscreteUnivariateMixtureDistribution const volatile *c) { return c; }
+}
+    #endif
+#endif
+
+
+
+void wrapper_886998686eca518d858abef756189174()
+{
+
+    std::string name_fa414b05d29e5f4ea0b6d6cb5cf81b01 = boost::python::extract< std::string >(boost::python::scope().attr("__name__") + ".statiskit");
+    boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
+    boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    int  (::statiskit::DiscreteUnivariateMixtureDistribution::*method_pointer_f4f91743d7d45e21a90b088dcafd865f)(double const &) const = &::statiskit::DiscreteUnivariateMixtureDistribution::quantile;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::DiscreteUnivariateMixtureDistribution::*method_pointer_b9cc7c88de7b5709b116538689e83872)() const = &::statiskit::DiscreteUnivariateMixtureDistribution::copy;
+    boost::python::class_< struct ::statiskit::DiscreteUnivariateMixtureDistribution, autowig::Held< struct ::statiskit::DiscreteUnivariateMixtureDistribution >::Type, boost::python::bases< struct ::statiskit::QuantitativeUnivariateMixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution > > > class_886998686eca518d858abef756189174("DiscreteUnivariateMixtureDistribution", "", boost::python::no_init);
+    class_886998686eca518d858abef756189174.def(boost::python::init< class ::std::vector< struct ::statiskit::DiscreteUnivariateDistribution *, class ::std::allocator< struct ::statiskit::DiscreteUnivariateDistribution * > > const, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
+    class_886998686eca518d858abef756189174.def(boost::python::init< struct ::statiskit::DiscreteUnivariateMixtureDistribution const & >(""));
+    class_886998686eca518d858abef756189174.def("quantile", method_pointer_f4f91743d7d45e21a90b088dcafd865f, "");
+    class_886998686eca518d858abef756189174.def("copy", method_pointer_b9cc7c88de7b5709b116538689e83872, "");
+
+    if(autowig::Held< struct ::statiskit::DiscreteUnivariateMixtureDistribution >::is_class)
+    {
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteUnivariateMixtureDistribution >::Type, autowig::Held< struct ::statiskit::QuantitativeUnivariateMixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteUnivariateMixtureDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteUnivariateMixtureDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteUnivariateMixtureDistribution >::Type, struct ::statiskit::DiscreteUnivariateMixtureDistribution > > >();
+    }
+
+}

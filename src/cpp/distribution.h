@@ -27,8 +27,6 @@ namespace statiskit
     /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate component \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct STATISKIT_CORE_API UnivariateDistribution
     {	
-    	/// \brief Get the sample space of the distribution.
-        virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const = 0;
 
     	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -69,7 +67,7 @@ namespace statiskit
 			
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-            const std::set< typename T::event_type::value_type >& get_values() const;
+            std::set< typename T::event_type::value_type > get_values() const;
 
             const Eigen::VectorXd& get_pi() const;
             void set_pi(const Eigen::VectorXd& pi);
@@ -117,7 +115,7 @@ namespace statiskit
         virtual double pdf(const int& position) const = 0;
         
         /// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
-        virtual const std::set< std::string >& get_values() const = 0;
+        virtual std::set< std::string > get_values() const = 0;
     };
     
     /** \brief This class NominalDistribution represents the distribution of a random nominal component \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
@@ -129,8 +127,6 @@ namespace statiskit
         NominalDistribution(const std::set< std::string >& values);
         NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi);
         NominalDistribution(const NominalDistribution& nominal);
-
-        virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
 
         virtual double pdf(const int& position) const;
 
@@ -167,9 +163,7 @@ namespace statiskit
             
             /** \brief Copy constructor */
             OrdinalDistribution(const OrdinalDistribution& ordinal); 
-            
-            virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;  
-                  
+                              
             virtual double pdf(const std::string& value) const;
                 
             virtual double pdf(const int& position) const;
@@ -228,8 +222,6 @@ namespace statiskit
     struct STATISKIT_CORE_API DiscreteUnivariateDistribution : UnivariateDistribution
     {
         typedef DiscreteEvent event_type;
-
-        virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
         
 		/** \brief Compute the probability of a set of values.
          *
@@ -599,8 +591,6 @@ namespace statiskit
     struct STATISKIT_CORE_API ContinuousUnivariateDistribution : UnivariateDistribution
     { 
         typedef ContinuousEvent event_type;
-
-        virtual std::unique_ptr< UnivariateSampleSpace > get_sample_space() const;
         
 		/** \brief Compute the probability of a set of values.
          *
@@ -1612,9 +1602,6 @@ namespace statiskit
     struct STATISKIT_CORE_API MultivariateDistribution
     {
         typedef UnivariateDistribution marginal_type;
-
-        /// \brief Get the sample space of the distribution.
-        virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const = 0;
             
         /// \brief Get the number of components of the distribution.
         virtual Index get_nb_components() const = 0;
@@ -1658,8 +1645,6 @@ namespace statiskit
             IndependentMultivariateDistribution(const IndependentMultivariateDistribution< D >& independent);
             virtual ~IndependentMultivariateDistribution();
             
-            virtual std::unique_ptr< MultivariateSampleSpace > get_sample_space() const;
-
             virtual Index get_nb_components() const;
 
             virtual unsigned int get_nb_parameters() const;
@@ -1694,6 +1679,121 @@ namespace statiskit
         protected:
             std::unique_ptr< ScalarPredictor > _predictor;
     };*/
+
+    template<class D> class MixtureDistribution : public D
+    {
+        public:
+            MixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
+            MixtureDistribution(const MixtureDistribution< D >& mixture);
+            virtual ~MixtureDistribution();
+
+            virtual unsigned int get_nb_parameters() const;
+
+            Index get_nb_states() const;
+
+            const D* get_observation(const Index& index) const;
+            virtual void set_observation(const Index& index, const D& observation);
+
+            const Eigen::VectorXd& get_pi() const;
+            void set_pi(const Eigen::VectorXd& pi);
+
+            // double posterior(const typename D::event_type* event, const Index& state) const;
+            // Eigen::VectorXd posterior(const typename D::event_type* event) const;
+
+        protected:
+            std::vector< D* > _observations;
+            Eigen::VectorXd _pi;
+    };
+
+    template<class D> struct UnivariateMixtureDistribution : MixtureDistribution< D >
+    {
+        UnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
+        UnivariateMixtureDistribution(const UnivariateMixtureDistribution< D >& mixture);
+        virtual ~UnivariateMixtureDistribution();
+
+        virtual double ldf(const typename D::event_type::value_type& value) const;
+
+        virtual double pdf(const typename D::event_type::value_type& value) const;
+
+        std::unique_ptr< UnivariateEvent > simulate() const;
+    };
+
+    struct STATISKIT_CORE_API CategoricalUnivariateMixtureDistribution : UnivariateMixtureDistribution< CategoricalUnivariateDistribution >
+    {
+        CategoricalUnivariateMixtureDistribution(const std::vector< CategoricalUnivariateDistribution* > observations, const Eigen::VectorXd& pi);
+        CategoricalUnivariateMixtureDistribution(const CategoricalUnivariateMixtureDistribution& mixture);
+        virtual ~CategoricalUnivariateMixtureDistribution();
+
+        virtual double pdf(const int& position) const;
+
+        virtual std::set< std::string > get_values() const;
+
+        virtual std::unique_ptr< UnivariateDistribution > copy() const;
+    };
+
+    template<class D> struct QuantitativeUnivariateMixtureDistribution : UnivariateMixtureDistribution< D >
+    {
+        QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
+        QuantitativeUnivariateMixtureDistribution(const QuantitativeUnivariateMixtureDistribution< D >& mixture);
+        virtual ~QuantitativeUnivariateMixtureDistribution();
+
+        virtual double cdf(const typename D::event_type::value_type& value) const;
+
+        virtual double get_mean() const;
+
+        virtual double get_variance() const;
+    };
+
+    struct STATISKIT_CORE_API DiscreteUnivariateMixtureDistribution : QuantitativeUnivariateMixtureDistribution< DiscreteUnivariateDistribution >
+    {
+        DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi);
+        DiscreteUnivariateMixtureDistribution(const DiscreteUnivariateMixtureDistribution& mixture);
+        virtual ~DiscreteUnivariateMixtureDistribution();
+
+        virtual int quantile(const double& p) const;
+
+        virtual std::unique_ptr< UnivariateDistribution > copy() const;
+    };
+
+    struct STATISKIT_CORE_API ContinuousUnivariateMixtureDistribution : QuantitativeUnivariateMixtureDistribution< ContinuousUnivariateDistribution >
+    {
+        public:
+            ContinuousUnivariateMixtureDistribution(const std::vector< ContinuousUnivariateDistribution* > observations, const Eigen::VectorXd& pi);
+            ContinuousUnivariateMixtureDistribution(const ContinuousUnivariateMixtureDistribution& mixture);
+            virtual ~ContinuousUnivariateMixtureDistribution();
+
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateDistribution > copy() const;
+
+            double get_epsilon() const;
+            void set_epsilon(const double& epsilon);
+
+        protected:
+            double _epsilon;
+    };
+
+    template<class D> struct MultivariateMixtureDistribution : MixtureDistribution< D >
+    {
+        MultivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
+        MultivariateMixtureDistribution(const MultivariateMixtureDistribution< D >& mixture);
+        virtual ~MultivariateMixtureDistribution();
+
+        virtual void set_observation(const Index& index, const D& observation);
+
+        virtual Index get_nb_components() const;
+
+        virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+        std::unique_ptr< MultivariateEvent > simulate() const;
+
+        virtual std::unique_ptr< MultivariateDistribution > copy() const;
+    };
+
+    typedef MultivariateMixtureDistribution< MultivariateDistribution > MixedMultivariateMixtureDistribution;
+    typedef MultivariateMixtureDistribution< CategoricalMultivariateDistribution > CategoricalMultivariateMixtureDistribution;
+    typedef MultivariateMixtureDistribution< DiscreteMultivariateDistribution > DiscreteMultivariateMixtureDistribution;
+    typedef MultivariateMixtureDistribution< ContinuousMultivariateDistribution > ContinuousMultivariateMixtureDistribution;
 }
 
 #include "distribution.hpp"

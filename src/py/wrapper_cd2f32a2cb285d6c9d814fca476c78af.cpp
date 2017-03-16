@@ -1,0 +1,44 @@
+#include "_core.h"
+
+
+
+namespace autowig
+{
+
+}
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> struct ::statiskit::CategoricalUnivariateMixtureDistribution const volatile * get_pointer<struct ::statiskit::CategoricalUnivariateMixtureDistribution const volatile >(struct ::statiskit::CategoricalUnivariateMixtureDistribution const volatile *c) { return c; }
+}
+    #endif
+#endif
+
+
+
+void wrapper_cd2f32a2cb285d6c9d814fca476c78af()
+{
+
+    std::string name_fa414b05d29e5f4ea0b6d6cb5cf81b01 = boost::python::extract< std::string >(boost::python::scope().attr("__name__") + ".statiskit");
+    boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
+    boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    double  (::statiskit::CategoricalUnivariateMixtureDistribution::*method_pointer_98fd70ce8a1a598598b6b8f283f85578)(int const &) const = &::statiskit::CategoricalUnivariateMixtureDistribution::pdf;
+    class ::std::set< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > >, struct ::std::less< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > >, class ::std::allocator< class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > > >  (::statiskit::CategoricalUnivariateMixtureDistribution::*method_pointer_28583e5e17c25c088c19aaf7e0b25d47)() const = &::statiskit::CategoricalUnivariateMixtureDistribution::get_values;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::CategoricalUnivariateMixtureDistribution::*method_pointer_dfa25bb4c6c95109a83b905af09500b9)() const = &::statiskit::CategoricalUnivariateMixtureDistribution::copy;
+    boost::python::class_< struct ::statiskit::CategoricalUnivariateMixtureDistribution, autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, boost::python::bases< struct ::statiskit::UnivariateMixtureDistribution< struct ::statiskit::CategoricalUnivariateDistribution > > > class_cd2f32a2cb285d6c9d814fca476c78af("CategoricalUnivariateMixtureDistribution", "", boost::python::no_init);
+    class_cd2f32a2cb285d6c9d814fca476c78af.def(boost::python::init< class ::std::vector< struct ::statiskit::CategoricalUnivariateDistribution *, class ::std::allocator< struct ::statiskit::CategoricalUnivariateDistribution * > > const, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
+    class_cd2f32a2cb285d6c9d814fca476c78af.def(boost::python::init< struct ::statiskit::CategoricalUnivariateMixtureDistribution const & >(""));
+    class_cd2f32a2cb285d6c9d814fca476c78af.def("pdf", method_pointer_98fd70ce8a1a598598b6b8f283f85578, "");
+    class_cd2f32a2cb285d6c9d814fca476c78af.def("get_values", method_pointer_28583e5e17c25c088c19aaf7e0b25d47, "");
+    class_cd2f32a2cb285d6c9d814fca476c78af.def("copy", method_pointer_dfa25bb4c6c95109a83b905af09500b9, "");
+
+    if(autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::is_class)
+    {
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, autowig::Held< struct ::statiskit::UnivariateMixtureDistribution< struct ::statiskit::CategoricalUnivariateDistribution > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalUnivariateMixtureDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, struct ::statiskit::CategoricalUnivariateMixtureDistribution > > >();
+    }
+
+}

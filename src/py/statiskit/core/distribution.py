@@ -9,6 +9,7 @@
 from functools import wraps
 
 from optionals import pyplot
+from io import from_list
 import numpy as np
 
 import _core
@@ -36,13 +37,20 @@ from __core.statiskit import (UnivariateDistribution,
                                 ContinuousMultivariateDistribution,
                                     ContinuousIndependentMultivariateDistribution)
 
-from statiskit.core.controls import controls
-from statiskit.core.event import (UnivariateEvent,
-                                    CategoricalEvent,
-                                        CategoricalElementaryEvent,
-                                    DiscreteEvent,
-                                    ContinuousEvent,
-                                  MultivariateEvent)
+from controls import controls
+from event import (UnivariateEvent,
+                       CategoricalEvent,
+                           CategoricalElementaryEvent,
+                       DiscreteEvent,
+                           DiscreteElementaryEvent,
+                       ContinuousEvent,
+                           ContinuousElementaryEvent,
+                   MultivariateEvent)
+from data import (UnivariateDataFrame,
+                  MultivariateDataFrame)
+from sample_space import (NominalSampleSpace,
+                          OrdinalSampleSpace)
+from _tools import float_str, remove_latex
 
 __all__ = ['NominalDistribution',
            'OrdinalDistribution',
@@ -57,6 +65,24 @@ __all__ = ['NominalDistribution',
 
 UnivariateDistribution.nb_parameters = property(UnivariateDistribution.get_nb_parameters)
 del UnivariateDistribution.get_nb_parameters
+
+def simulation(self, size):
+    if isinstance(self, NominalDistribution):
+        data = UnivariateDataFrame(NominalSampleSpace(self.values))
+    if isinstance(self, NominalDistribution):
+        data = UnivariateDataFrame(OrdinalSampleSpace(self.ordered))
+    elif isinstance(self, DiscreteUnivariateDistribution):
+        data = UnivariateDataFrame(controls.ZZ)
+    elif isinstance(self, ContinuousUnivariateDistribution):
+        data = UnivariateDataFrame(controls.RR)
+    else:
+        raise NotImplementedError()
+    for index in range(size):
+        data.add_event(self.simulate())
+    return data
+
+UnivariateDistribution.simulation = simulation
+del simulation
 
 def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
@@ -323,6 +349,12 @@ def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
         axes.plot(x, y, fmt, color=color, alpha=alpha)
     return axes
 
+BinomialDistribution.kappa = property(BinomialDistribution.get_kappa, BinomialDistribution.set_kappa)
+del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
+
+BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
+del BinomialDistribution.get_pi, BinomialDistribution.set_pi
+
 ContinuousUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
 
@@ -387,7 +419,7 @@ def statiskit_univariate_frequency_distribution_decorator(cls):
         etc = False
         for i, j in enumerate(self.values):
             if i < controls.head or i >= max(controls.head, len(pi) - controls.tail):
-                string.append("\\pi_{" + controls.remove_latex(j._repr_latex_()) + "} &= " + controls.float_str(pi[i]))
+                string.append("\\pi_{" + remove_latex(j._repr_latex_()) + "} &= " + float_str(pi[i]))
             elif not etc:
                 etc = True
                 string.append('\\dots &= \\dots')
@@ -464,7 +496,7 @@ def _repr_latex_(self):
     etc = False
     for i, j in enumerate([(i, j) for i, j in zip(bins[:-1], bins[1:])]):
         if i < controls.head or i >= max(controls.head, len(densities) - controls.tail):
-            string.append("\\pi_{[" + controls.float_str(j[0]) + ', ' + controls.float_str(j[-1]) + "[} &= " + controls.float_str(densities[i]*(j[-1]-j[0])))
+            string.append("\\pi_{[" + float_str(j[0]) + ', ' + float_str(j[-1]) + "[} &= " + float_str(densities[i]*(j[-1]-j[0])))
         elif not etc:
             etc = True
             string.append('\\dots &= \\dots')
@@ -526,20 +558,26 @@ UnivariateHistogramDistribution.cdf_plot = wrapper(UnivariateHistogramDistributi
 del wrapper
 
 def __repr__(self):
-    return "N(" + controls.float_str(self.mu) + ', ' + controls.float_str(self.sigma) + ')'
+    return "N(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
 
 NormalDistribution.__str__ = NormalDistribution.__repr__
 NormalDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return "r$\mathcal{N}\left(" + controls.float_str(self.mu) + ', ' + controls.float_str(self.sigma) + r'\right)$'
+    return "r$\mathcal{N}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
 
 NormalDistribution.mu = property(NormalDistribution.get_mu, NormalDistribution.set_mu)
 del NormalDistribution.get_mu, NormalDistribution.set_mu
 
 NormalDistribution.sigma = property(NormalDistribution.get_sigma, NormalDistribution.set_sigma)
 del NormalDistribution.get_sigma, NormalDistribution.set_sigma
+
+def simulation(self, size):
+    return from_list(map(list, zip(*[self.simulate() for index in range(size)])))
+
+MultivariateDistribution.simulation = simulation
+del simulation
 
 #def wrapper(f):
 #    @wraps(f)

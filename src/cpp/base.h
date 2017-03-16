@@ -76,6 +76,9 @@ namespace statiskit
     struct STATISKIT_CORE_API parameter_error : std::runtime_error
     { parameter_error(const std::string& parameter, const std::string& error); };
 
+    struct STATISKIT_CORE_API member_error : std::runtime_error
+    { member_error(const std::string& parameter, const std::string& error); };
+
     struct STATISKIT_CORE_API size_error : parameter_error
     {
         enum size_type {

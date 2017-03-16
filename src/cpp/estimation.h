@@ -116,50 +116,45 @@ namespace statiskit
             void finalize();
     };
 
-    namespace __impl 
+    template<class T, class D, class B> class OptimizationEstimationImpl : public ActiveEstimation< D, B >
     {
-        template<class T, class D, class B> class OptimizationEstimation : public ActiveEstimation< D, B >
-        {
-            public:
-                OptimizationEstimation();
-                OptimizationEstimation(D const * estimated, typename B::data_type const * data);            
-                OptimizationEstimation(const OptimizationEstimation< T, D, B >& estimation);
-                virtual ~OptimizationEstimation();
+        public:
+            OptimizationEstimationImpl();
+            OptimizationEstimationImpl(D const * estimated, typename B::data_type const * data);            
+            OptimizationEstimationImpl(const OptimizationEstimationImpl< T, D, B >& estimation);
+            virtual ~OptimizationEstimationImpl();
 
-                Index size() const;
+            Index size() const;
 
-                const T get_step(const Index& index) const;
+            class Estimator : public B::Estimator
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
 
-                class Estimator : public B::Estimator
-                {
-                    public:
-                        Estimator();
-                        Estimator(const Estimator& estimator);
-                        virtual ~Estimator();
+                    const double& get_mindiff() const;
+                    void set_mindiff(const double& mindiff);
+                    
+                    unsigned int get_minits() const;
+                    void set_minits(const unsigned int& maxits);
 
-                        const double& get_mindiff() const;
-                        void set_mindiff(const double& mindiff);
-                        
-                        unsigned int get_minits() const;
-                        void set_minits(const unsigned int& maxits);
+                    unsigned int get_maxits() const;
+                    void set_maxits(const unsigned int& maxits);
 
-                        unsigned int get_maxits() const;
-                        void set_maxits(const unsigned int& maxits);
+                protected:
+                    double _mindiff;
+                    unsigned int _minits;
+                    unsigned int _maxits;
 
-                    protected:
-                        double _mindiff;
-                        unsigned int _minits;
-                        unsigned int _maxits;
+                    bool run(const unsigned int& its, const T& prev, const T& curr) const;
+            };
 
-                        bool run(const unsigned int& its, const T& prev, const T& curr) const;
-                };
+        protected:
+            std::vector< T > _steps;
+    };
 
-            protected:
-                std::vector< T > _steps;
-        };
-    }
-
-    template<class T, class D, class B> struct OptimizationEstimation : __impl::OptimizationEstimation<T, D, B >
+    template<class T, class D, class B> struct OptimizationEstimation : OptimizationEstimationImpl<T, D, B >
     {
         // using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;
         OptimizationEstimation();
@@ -167,7 +162,9 @@ namespace statiskit
         OptimizationEstimation(const OptimizationEstimation< T, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
-        struct Estimator : __impl::OptimizationEstimation<T, D, B >::Estimator
+        const T get_step(const Index& index) const;
+
+        struct Estimator : OptimizationEstimationImpl<T, D, B >::Estimator
         { 
             Estimator();
             Estimator(const Estimator& estimator);
@@ -175,15 +172,17 @@ namespace statiskit
         };
     };
 
-    template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : __impl::OptimizationEstimation<T*, D, B >
+    template<class T, class D, class B> struct OptimizationEstimation< T*, D, B> : OptimizationEstimationImpl<T*, D, B >
     {
-        // using __impl::OptimizationEstimation<T*, D, B >::OptimizationEstimation;
+        // using OptimizationEstimationImpl<T*, D, B >::OptimizationEstimation;
         OptimizationEstimation();
         OptimizationEstimation(D const * estimated, typename B::data_type const * data);
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
-        struct Estimator : __impl::OptimizationEstimation<T*, D, B >::Estimator
+        const T* get_step(const Index& index) const;
+
+        struct Estimator : OptimizationEstimationImpl<T*, D, B >::Estimator
         { 
             Estimator();
             Estimator(const Estimator& estimator);

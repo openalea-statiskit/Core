@@ -18,6 +18,7 @@ from __core.statiskit import (outcome_type, event_type,
                               MultivariateEvent, VectorEvent)
 
 from controls import controls
+from _tools import float_str, remove_latex
 
 __all__ = ['outcome_type', 'event_type',
            'CategoricalElementaryEvent', 'CategoricalCensoredEvent',
@@ -64,7 +65,7 @@ DiscreteElementaryEvent.__repr__ = __repr__
 del __repr__
 
 def __repr__(self):
-    return controls.float_str(self.value)
+    return float_str(self.value)
 
 ContinuousElementaryEvent.__repr__ = __repr__
 del __repr__
@@ -84,7 +85,7 @@ def statiskit_censored_event_decorator(cls):
     del __repr__
 
     def _repr_latex_(self):
-        return r"$\left\{" + ", ".join(controls.remove_latex(value._repr_latex_()) for value in self.values) + r"}\right\}$"
+        return r"$\left\{" + ", ".join(remove_latex(value._repr_latex_()) for value in self.values) + r"}\right\}$"
 
     cls._repr_latex_ = _repr_latex_
     del _repr_latex_
@@ -170,7 +171,7 @@ def statiskit_right_censorted_event_decorator(cls):
     del __repr__
 
     def _repr_latex_(self):
-        return r"$\left[" + controls.remove_latex(self.lower_bound._repr_latex_()) + r", \infty \right[$"
+        return r"$\left[" + remove_latex(self.lower_bound._repr_latex_()) + r", \infty \right[$"
 
     cls._repr_latex_ = _repr_latex_
     del _repr_latex_
@@ -206,7 +207,7 @@ def statiskit_interval_censorted_event_decorator(cls):
     del __repr__
 
     def _repr_latex_(self):
-        return r"$\left[" + controls.remove_latex(self.lower_bound._repr_latex_()) + ", " + controls.remove_latex(self.upper_bound._repr_latex_()) + r"\right]$"
+        return r"$\left[" + remove_latex(self.lower_bound._repr_latex_()) + ", " + remove_latex(self.upper_bound._repr_latex_()) + r"\right]$"
 
     cls._repr_latex_ = _repr_latex_
     del _repr_latex_

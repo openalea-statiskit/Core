@@ -15,7 +15,6 @@ from nose.plugins.attrib import attr
 import os
 from tempfile import NamedTemporaryFile
 
-
 @attr(linux=True,
       osx=True,
       win=True,

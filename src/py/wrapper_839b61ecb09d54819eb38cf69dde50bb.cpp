@@ -33,6 +33,7 @@ void wrapper_839b61ecb09d54819eb38cf69dde50bb()
     boost::python::class_< struct ::statiskit::QuantitativeUnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, autowig::Held< struct ::statiskit::QuantitativeUnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::Type, boost::python::bases< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > > > class_839b61ecb09d54819eb38cf69dde50bb("_QuantitativeUnivariateFrequencyDistribution_839b61ecb09d54819eb38cf69dde50bb", "", boost::python::no_init);
     class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::std::set< int, struct ::std::less< int >, class ::std::allocator< int > > const & >(""));
     class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::std::set< int, struct ::std::less< int >, class ::std::allocator< int > > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
+    class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const & >(""));
     class_839b61ecb09d54819eb38cf69dde50bb.def("cdf", method_pointer_7adc3267060c507b931a1af0a119cb38, "");
     class_839b61ecb09d54819eb38cf69dde50bb.def("quantile", method_pointer_1093518802d85deabdf4939910bf59ae, "");
     class_839b61ecb09d54819eb38cf69dde50bb.def("get_mean", method_pointer_7e114cb52dbb5514bd53aa272f0e2cfc, "");

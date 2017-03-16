@@ -27,6 +27,7 @@ void wrapper_05ca2ab336025cf2a8fa3266fedb4a1e()
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection, autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::Type, boost::python::bases< class ::statiskit::SlopeHeuristicSelection< struct ::statiskit::ContinuousUnivariateDistributionEstimation > > > class_05ca2ab336025cf2a8fa3266fedb4a1e("RegularUnivariateHistogramDistributionSlopeHeuristicSelection", "", boost::python::no_init);
     class_05ca2ab336025cf2a8fa3266fedb4a1e.def(boost::python::init< struct ::statiskit::UnivariateData const * >(""));
+    class_05ca2ab336025cf2a8fa3266fedb4a1e.def(boost::python::init< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection const & >(""));
 
     if(autowig::Held< struct ::statiskit::RegularUnivariateHistogramDistributionSlopeHeuristicSelection >::is_class)
     {

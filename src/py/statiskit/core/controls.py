@@ -78,18 +78,5 @@ Controls._precision = 2
 Controls.precision = property(get_precision, set_precision)
 del get_precision, set_precision
 
-def float_str(self, value):
-    float_str = str(value)
-    return float_str[:float_str.index('.') + self.precision + 1]
-
-Controls.float_str = float_str
-del float_str
-
-def remove_latex(self, string):
-    return string.replace('$', '')
-
-Controls._remove_latex = remove_latex
-del remove_latex
-
 controls = Controls('controls')
 del Controls

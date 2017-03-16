@@ -28,6 +28,8 @@ void wrapper_2da6d48bdb575a46ad7d2e948eb7ee83()
     class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >  (::statiskit::SlopeHeuristicOLSSolver::*method_pointer_1646b2acf85e5f39b0e3647efbab3662)(class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const &) const = &::statiskit::SlopeHeuristicOLSSolver::operator();
     class ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > >  (::statiskit::SlopeHeuristicOLSSolver::*method_pointer_28a732f92bde5f6e9923a325f1005906)() const = &::statiskit::SlopeHeuristicOLSSolver::copy;
     boost::python::class_< struct ::statiskit::SlopeHeuristicOLSSolver, autowig::Held< struct ::statiskit::SlopeHeuristicOLSSolver >::Type, boost::python::bases< class ::statiskit::SlopeHeuristicSolver > > class_2da6d48bdb575a46ad7d2e948eb7ee83("SlopeHeuristicOLSSolver", "", boost::python::no_init);
+    class_2da6d48bdb575a46ad7d2e948eb7ee83.def(boost::python::init<  >(""));
+    class_2da6d48bdb575a46ad7d2e948eb7ee83.def(boost::python::init< struct ::statiskit::SlopeHeuristicOLSSolver const & >(""));
     class_2da6d48bdb575a46ad7d2e948eb7ee83.def("__call__", method_pointer_1646b2acf85e5f39b0e3647efbab3662, "");
     class_2da6d48bdb575a46ad7d2e948eb7ee83.def("copy", method_pointer_28a732f92bde5f6e9923a325f1005906, "");
 
