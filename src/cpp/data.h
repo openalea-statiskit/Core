@@ -354,7 +354,7 @@ namespace statiskit
             const D* _data;
             std::vector< double > _weights;
 
-            class STATISKIT_CORE_API Generator : public D::Generator
+            class Generator : public D::Generator
             {
                 public:
                     Generator(const WeightedData< D >* data);

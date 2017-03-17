@@ -153,6 +153,7 @@ namespace statiskit
         { 
             ++_index;
             ++(*_generator);
+            return *this;
         }
 
     template<class D>     

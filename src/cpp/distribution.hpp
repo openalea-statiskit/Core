@@ -309,6 +309,7 @@ namespace statiskit
             unsigned int nb_parameters = _pi.size() - 1;
             for(Index index = 0, max_index = _observations.size(); index < max_index; ++index)
             { nb_parameters += _observations[index]->get_nb_parameters(); }
+            return nb_parameters;
         }     
 
     template<class D>
