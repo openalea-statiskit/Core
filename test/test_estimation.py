@@ -22,9 +22,7 @@ class TestEstimation(unittest.TestCase):
     def test_slope_heuristic(self):
         """Test slope heuristic"""
         sh = core.SlopeHeuristic([pen.value for pen in self._data.pen.events], [-contrast.value for contrast in self._data.contrast.events])
-        fig = pyplot.figure()
         sh.plot()
-        pyplot.close(fig)
 
     @classmethod
     def tearDownClass(cls):

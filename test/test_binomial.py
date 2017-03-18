@@ -21,15 +21,15 @@ class TestBinomial(unittest.TestCase):
 
     def test_pdf(self):
         """Test binomial probability distribution function"""
-        self.assertEqual(self._dist.pdf(0), 0.25)
-        self.assertEqual(self._dist.pdf(1), 0.5)
-        self.assertEqual(self._dist.pdf(2), 0.25)
+        self.assertAlmostEqual(self._dist.pdf(0), 0.25)
+        self.assertAlmostEqual(self._dist.pdf(1), 0.5)
+        self.assertAlmostEqual(self._dist.pdf(2), 0.25)
 
     def test_ldf(self):
         """Test binomial log-probability distribution function"""
-        self.assertEqual(self._dist.ldf(0), math.log(0.25))
-        self.assertEqual(self._dist.ldf(1), math.log(0.5))
-        self.assertEqual(self._dist.ldf(2), math.log(0.25))
+        self.assertAlmostEqual(self._dist.ldf(0), math.log(0.25))
+        self.assertAlmostEqual(self._dist.ldf(1), math.log(0.5))
+        self.assertAlmostEqual(self._dist.ldf(2), math.log(0.25))
 
     def test_estimation(self):
         """Test binomial estimation"""

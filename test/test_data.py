@@ -44,22 +44,17 @@ class TestData(unittest.TestCase):
             component._repr_html_()
         self._data._repr_html_()
 
-    @attr(win=False)
     def test_pdf_plot(self):
         """Test univariate and multivariate data pdf plot"""
         for component in self._data.components:
-            fig = pyplot.figure()
             component.pdf_plot()
-            pyplot.close(fig)
 
-    @attr(win=False)
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:
-            fig = pyplot.figure()
             component.cdf_plot()
-            pyplot.close(fig)
 
+    @attr(win=False)
     def test_write_csv(self):
         """Test write data to csv"""
         tmp = NamedTemporaryFile()
