@@ -30,8 +30,8 @@ requirements:
 test:                                               
   requires:
     - python-dev
-    - matplotlib [not win]
-    - numpy      [not win]
+    - matplotlib
+    - numpy
   imports:
     - statiskit.core
   source_files:                                

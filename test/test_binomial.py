@@ -1,10 +1,5 @@
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-    from matplotlib import pyplot
-except:
-    import warnings
-    warnings.warn("No module named matplotlib")
+import matplotlib
+matplotlib.use('Agg')
 
 from statiskit import core
 
