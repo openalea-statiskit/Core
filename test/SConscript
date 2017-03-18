@@ -7,18 +7,17 @@ try:
 
     test_env = env.Clone(tools = ['nose'])
 
-    if not test_env['SYSTEM'] == 'win':
-        sources = test_env.Glob('*.py')
+    sources = test_env.Glob('*.py')
 
-        exclude = """
-        """.split()
+    exclude = """
+    """.split()
 
-        sources = [source for source in sources if not source.name in exclude]
+    sources = [source for source in sources if not source.name in exclude]
 
-        targets = test_env.Nosetests(sources, cover_package='statiskit.core')
-        Alias("test", targets)
-        Alias("install", targets)
-        test_env.Depends(targets, "py")
+    targets = test_env.Nosetests(sources, cover_package='statiskit.core')
+    Alias("test", targets)
+    Alias("install", targets)
+    test_env.Depends(targets, "py")
 except EnvironmentError:
     Alias("test", [])
     Alias("install", [])
