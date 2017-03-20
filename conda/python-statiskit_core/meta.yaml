@@ -32,8 +32,8 @@ test:
     - python-dev
     - matplotlib
     - numpy
-  imports:
-    - statiskit.core
+  # imports:
+  #   - statiskit.core
   source_files:                                
     - test/test_*.py
   commands:                                       
