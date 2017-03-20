@@ -11,8 +11,9 @@ from functools import wraps
 import statiskit.core._core
 from statiskit.core.__core.statiskit import UnivariateSampleSpace, CategoricalSampleSpace, NominalSampleSpace, OrdinalSampleSpace, DiscreteSampleSpace, IntegerSampleSpace, ContinuousSampleSpace, RealSampleSpace, UnivariateEvent, CategoricalEvent, DiscreteEvent, ContinuousEvent
 
-from statiskit.core.controls import *
-from statiskit.core.event import *
+from controls import *
+from event import *
+from _tools import remove_latex
 
 __all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
            'IntegerSampleSpace',
@@ -73,7 +74,7 @@ CategoricalSampleSpace.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return r"$\left\{" + (", ").join(controls.remove_latex(value._repr_latex_()) for value in self.values) + r"\right\}$"
+    return r"$\left\{" + (", ").join(remove_latex(value._repr_latex_()) for value in self.values) + r"\right\}$"
 
 CategoricalSampleSpace._repr_latex_ = _repr_latex_
 del _repr_latex_

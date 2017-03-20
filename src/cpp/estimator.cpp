@@ -154,11 +154,16 @@ namespace statiskit
         double curr, prev = binomial->loglikelihood(data);
         unsigned int its = 1;
         --kappa;
-        if(!lazy)
-        { static_cast< BinomialDistributionMLEstimation* >(estimation.get())->_steps.push_back(kappa); }
-        binomial->set_kappa(kappa);
-        binomial->set_pi(mean/double(kappa));
-        curr = binomial->loglikelihood(data);
+        if(kappa > mean)
+        {
+            if(!lazy)
+            { static_cast< BinomialDistributionMLEstimation* >(estimation.get())->_steps.push_back(kappa); }
+            binomial->set_kappa(kappa);
+            binomial->set_pi(mean/double(kappa));
+            curr = binomial->loglikelihood(data);
+        }
+        else
+        { curr = prev; }
         if(curr > prev)
         {
             do
@@ -184,7 +189,6 @@ namespace statiskit
         else
         {
             ++kappa;
-            curr = prev;
             do
             {
                 prev = curr;

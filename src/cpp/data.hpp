@@ -11,6 +11,159 @@
 
 namespace statiskit
 {
+    template<class D>
+        WeightedData< D >::WeightedData(const D* data)
+        { 
+            _data = data; 
+            _weights = std::vector< double >();
+            std::unique_ptr< typename D::Generator > generator = data->generator();
+            while(generator->is_valid())
+            { _weights.push_back(1.); }
+        }
+
+    template<class D>
+        WeightedData< D >::WeightedData(const WeightedData< D >& data)
+        { 
+            _data = data._data; 
+            _weights = data._weights;
+        }
+
+    template<class D>
+        WeightedData< D >::~WeightedData()
+        {}
+
+    template<class D>
+        const typename D::sample_space_type* WeightedData< D >::get_sample_space() const
+        { return _data->get_sample_space(); }
+
+    template<class D>
+        std::unique_ptr< typename D::Generator > WeightedData< D >::generator() const
+        { return std::make_unique< Generator >(this); }
+
+    template<class D>
+        const D* WeightedData< D >::get_data() const
+        { return _data; }
+
+    template<class D>
+        Index WeightedData< D >::get_nb_weights() const
+        { return _weights.size(); }
+
+    template<class D>
+        double WeightedData< D >::get_weight(const Index& index) const
+        {
+            if(index > get_nb_weights())
+            { throw size_error("index", get_nb_weights(), size_error::inferior); }
+            return _weights[index];
+        }
+
+    template<class D>
+        void WeightedData< D >::set_weight(const Index& index, const double& weight)
+        {
+            if(index > get_nb_weights())
+            { throw size_error("index", get_nb_weights(), size_error::inferior); }
+            if(weight < 0.)
+            { throw lower_bound_error("weight", 0., weight, false); }
+            _weights[index] = weight;
+        }
+
+    template<class D>
+        WeightedData< D >::Generator::Generator(const WeightedData< D >* data)
+        {
+            _data = data;
+            _generator = data->_data->generator().release();
+            _index = 0;
+        }
+
+    template<class D>
+        WeightedData< D >::Generator::~Generator()
+        { delete _generator; }
+
+    template<class D>
+        bool WeightedData< D >::Generator::is_valid() const
+        { return _index < _data->get_nb_weights(); }
+
+    template<class D>
+        typename D::Generator& WeightedData< D >::Generator::operator++()
+        {
+            ++_index;
+            ++(*_generator);
+            return *this;
+        }
+
+    template<class D>
+        const typename D::event_type* WeightedData< D >::Generator::event() const
+        { return _generator->event(); }
+
+    template<class D>
+        double WeightedData< D >::Generator::weight() const
+        { return _data->_weights[_index]; }
+
+    template<class D>
+        void WeightedData< D >::Generator::weight(const double& weight)
+        { _data->_weights[_index] = weight; }
+
+    template<class D>
+        WeightedMultivariateData::DataExtraction< D >::DataExtraction(const WeightedMultivariateData* weights, const D* data)
+        {
+            _weights = weights;
+            _data = data;
+        }
+
+    template<class D>
+        WeightedMultivariateData::DataExtraction< D >::DataExtraction(const DataExtraction< D >& data)
+        {
+            _weights = data._weights;
+            _data = data._data->copy().release();
+        }
+
+    template<class D>
+        WeightedMultivariateData::DataExtraction< D >::~DataExtraction()
+        { delete _data; }
+
+    template<class D>     
+        std::unique_ptr< typename D::Generator > WeightedMultivariateData::DataExtraction< D >::generator() const
+        { return std::make_unique< Generator >(this); }
+
+    template<class D>     
+        const typename D::sample_space_type* WeightedMultivariateData::DataExtraction< D >::get_sample_space() const
+        { return _data->get_sample_space(); }
+
+    // template<class D>     
+    //     std::unique_ptr< D > WeightedMultivariateData::DataExtraction< D >::copy() const
+    //     { return std::make_unique< DataExtraction< D > >(*this); }
+
+    template<class D>     
+        WeightedMultivariateData::DataExtraction< D >::Generator::Generator(const DataExtraction< D >* data)
+        { 
+            _data = data;
+            _generator = data->_data->generator().release();
+            _index = 0;
+        }
+
+    template<class D>     
+        WeightedMultivariateData::DataExtraction< D >::Generator::~Generator()
+        { delete _generator; }
+
+    template<class D>     
+        bool WeightedMultivariateData::DataExtraction< D >::Generator::is_valid() const
+        { return _index < _data->_weights->get_nb_weights(); }
+
+    template<class D>     
+        typename D::Generator& WeightedMultivariateData::DataExtraction< D >::Generator::operator++()
+        { 
+            ++_index;
+            ++(*_generator);
+            return *this;
+        }
+
+    template<class D>     
+        const typename D::event_type* WeightedMultivariateData::DataExtraction< D >::Generator::event() const
+        { return _generator->event(); }
+
+    template<class D>     
+        double WeightedMultivariateData::DataExtraction< D >::Generator::weight() const
+        { return _data->_weights->_weights[_index]; }
+
     /*template<class D>
         DataMask< D >::DataMask(const std::shared_ptr< D >& masked)
         { _masked = masked; }

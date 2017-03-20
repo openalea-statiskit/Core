@@ -75,7 +75,7 @@ namespace statiskit
         }
 
     template<class T>
-        const std::set< typename T::event_type::value_type >& UnivariateFrequencyDistribution< T >::get_values() const
+        std::set< typename T::event_type::value_type > UnivariateFrequencyDistribution< T >::get_values() const
         { return _values; }
 
     template<class T>
@@ -212,29 +212,6 @@ namespace statiskit
         }
 
     template<class D>
-        std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
-        {
-            std::vector< UnivariateSampleSpace* > sample_spaces(get_nb_components(), nullptr);
-            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
-            { sample_spaces[component] = _marginals[component]->get_sample_space().release(); }
-            return std::make_unique< VectorSampleSpace >(sample_spaces);
-            for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
-            { 
-                delete sample_spaces[component];
-                sample_spaces[component] = nullptr;
-            }
-        }
-
-    // template<class D>
-    //     std::unique_ptr< MultivariateSampleSpace > IndependentMultivariateDistribution< D >::get_sample_space() const
-    //     {
-    //         std::vector< std::unique_ptr< UnivariateSampleSpace > > sample_spaces(get_nb_components());
-    //         for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
-    //         { sample_spaces.push_back(_marginals[component]->get_sample_space()); }
-    //         return std::make_unique< VectorSampleSpace >(sample_spaces);
-    //     }
-        
-    template<class D>
         Index IndependentMultivariateDistribution< D >::get_nb_components() const
         { return _marginals.size(); }
 
@@ -284,8 +261,6 @@ namespace statiskit
         {
             if(index > get_nb_components())
             { throw size_error("index", get_nb_components(), size_error::inferior); }
-            if(_marginals[index]->get_sample_space()->get_outcome() != marginal.get_sample_space()->get_outcome())
-            { throw parameter_error("marginal", "incompatible sample space"); }
             delete _marginals[index];
             _marginals[index] = static_cast< typename D::marginal_type* >(marginal.copy().release());
         }
@@ -298,6 +273,235 @@ namespace statiskit
             { event->set(component, *(_marginals[component]->simulate().get())); }
             return std::unique_ptr< MultivariateEvent >(event);
         }
+
+    template<class D>
+        MixtureDistribution< D >::MixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi)
+        {
+            _observations.resize(observations.size());
+            for(Index index = 0, max_index = observations.size(); index < max_index; ++index)
+            { _observations[index] = static_cast< D* >(observations[index]->copy().release()); }
+            _pi = pi;
+        }
+
+    template<class D>
+        MixtureDistribution< D >::MixtureDistribution(const MixtureDistribution< D >& mixture)
+        {
+            _observations.resize(mixture._observations.size());
+            for(Index index = 0, max_index = mixture._observations.size(); index < max_index; ++index)
+            { _observations[index] = static_cast< D* >(mixture._observations[index]->copy().release()); }
+            _pi = mixture._pi;
+        } 
+
+    template<class D>
+        MixtureDistribution< D >::~MixtureDistribution()
+        {
+            for(Index index = 0, max_index = _observations.size(); index < max_index; ++index)
+            { 
+                delete _observations[index];
+                _observations[index] = nullptr;
+            }
+            _observations.clear();
+        } 
+
+    template<class D>
+        unsigned int MixtureDistribution< D >::get_nb_parameters() const
+        {
+            unsigned int nb_parameters = _pi.size() - 1;
+            for(Index index = 0, max_index = _observations.size(); index < max_index; ++index)
+            { nb_parameters += _observations[index]->get_nb_parameters(); }
+            return nb_parameters;
+        }     
+
+    template<class D>
+        Index MixtureDistribution< D >::get_nb_states() const
+        { return _pi.size(); }     
+
+    template<class D>
+        const D* MixtureDistribution< D >::get_observation(const Index& index) const
+        { 
+            if(index >= get_nb_states())
+            { throw size_error("index", get_nb_states(), size_error::inferior); }
+            return _observations[index];
+        }     
+
+    template<class D>
+        void MixtureDistribution< D >::set_observation(const Index& index, const D& observation)
+        { 
+            if(index >= get_nb_states())
+            { throw size_error("index", get_nb_states(), size_error::inferior); }
+            _observations[index] = static_cast< D* >(observation.copy().release());
+        }     
+
+    template<class D>
+        const Eigen::VectorXd& MixtureDistribution< D >::get_pi() const
+        { return _pi; }     
+
+    template<class D>
+        void MixtureDistribution< D >::set_pi(const Eigen::VectorXd& pi)
+        {
+            if(pi.size() != _pi.size())
+            { throw size_error("pi", _pi.size(), size_error::equal); }
+            _pi = pi.normalized();
+        }
+ 
+     // template<class D>
+     //    double MixtureDistribution< D >::posterior(const typename D::event_type* event, const Index& state, const bool& logarithm)
+     //    { 
+     //        if(state >= get_nb_states())
+     //        { throw size_error("state", get_nb_states(), size_error::inferior); }
+     //        double p = _weights[state] + _observations[state]->probability(event) - this->probability(event, true);
+     //        if(logarithm)
+     //        return ;
+     //    }
+
+     // template<class D>
+     //    Eigen::VectorXd MixtureDistribution< D >::posterior(const typename D::event_type* event, const bool& logarithm)
+     //    { 
+     //        Eigen::VectorXd pi = Eigen::VectorXd(get_nb_states());
+     //        for(Index state = 0, max_state = get_nb_states(); state < max_state; ++state)
+     //        { pi[state] = _weights[state] * _observations[state]->probability(event, logarithm); }
+     //        return pi.normalized();
+     //    }
+
+     template<class D>
+        UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : MixtureDistribution < D >(observations, pi)
+        {}
+
+    template<class D>
+        UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution(const UnivariateMixtureDistribution< D >& mixture) : MixtureDistribution< D >(mixture)
+        {} 
+
+    template<class D>
+        UnivariateMixtureDistribution< D >::~UnivariateMixtureDistribution()
+        {} 
+
+    template<class D>
+        double UnivariateMixtureDistribution< D >::ldf(const typename D::event_type::value_type& value) const
+        { return log(pdf(value)); }
+
+    template<class D>
+        double UnivariateMixtureDistribution< D >::pdf(const typename D::event_type::value_type& value) const
+        {
+            double p = 0.;
+            for(Index index = 0, max_index = this->get_nb_states(); index < max_index; ++index)
+            { p += this->_pi[index] * this->_observations[index]->pdf(value); }
+            return p;
+        }
+
+    template<class D>
+        std::unique_ptr< UnivariateEvent > UnivariateMixtureDistribution< D >::simulate() const
+        {
+            double cp = this->_pi[0], sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
+            Index index = 0, max_index = this->get_nb_states();
+            while(cp < sp && index < max_index)
+            {
+                ++index;
+                cp += this->_pi[index];
+            }
+            return this->_observations[index]->simulate();
+        }
+
+     template<class D>
+        QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : UnivariateMixtureDistribution < D >(observations, pi)
+        {}
+
+    template<class D>
+        QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution(const QuantitativeUnivariateMixtureDistribution< D >& mixture) : UnivariateMixtureDistribution< D >(mixture)
+        {} 
+
+    template<class D>
+        QuantitativeUnivariateMixtureDistribution< D >::~QuantitativeUnivariateMixtureDistribution()
+        {} 
+
+    template<class D>
+        double QuantitativeUnivariateMixtureDistribution< D >::cdf(const typename D::event_type::value_type& value) const
+        {
+            double cp = 0;
+            for(Index index = 0, max_index = this->get_nb_states(); index < max_index; ++index)
+            { cp += this->_pi[index] * this->_observations[index]->cdf(value); }
+            return cp;
+        }
+
+    template<class D>
+        double QuantitativeUnivariateMixtureDistribution< D >::get_mean() const
+        {
+            double mean = 0;
+            for(Index index = 0, max_index = this->get_nb_states(); index < max_index; ++index)
+            { mean += this->_pi[index] * this->_observations[index]->get_mean(); }
+            return mean;
+        }
+
+    template<class D>
+        double QuantitativeUnivariateMixtureDistribution< D >::get_variance() const
+        {
+            double mean = get_mean(), variance = 0;
+            for(Index index = 0, max_index = this->get_nb_states(); index < max_index; ++index)
+            { variance += this->_pi[index] * (pow(this->_observations[index]->get_mean() - mean, 2) + this->_observations[index]->get_variance()); }
+            return variance;
+        }
+ 
+     template<class D>
+        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : MixtureDistribution < D >(observations, pi)
+        {
+            typename std::vector< D* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
+            Index nb_components = (*it)->get_nb_components();
+            ++it;
+            while(it != it_end)
+            {
+                if((*it)->get_nb_components() != nb_components)
+                { throw parameter_error("observations", "not same number of components"); }
+                ++it;
+            }
+
+        }
+
+    template<class D>
+        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const MultivariateMixtureDistribution< D >& mixture) : MixtureDistribution< D >(mixture)
+        {} 
+
+    template<class D>
+        MultivariateMixtureDistribution< D >::~MultivariateMixtureDistribution()
+        {} 
+
+    template<class D>
+        void MultivariateMixtureDistribution< D >::set_observation(const Index& index, const D& observation)
+        { 
+            if(observation.get_nb_components() != get_nb_components())
+            { throw parameter_error("observation", "not same number of components"); }
+            MixtureDistribution< D >::set_observation(index, observation);
+        }
+
+    template<class D>
+        Index MultivariateMixtureDistribution< D >::get_nb_components() const
+        { return this->_observations.back()->get_nb_components(); }
+
+    template<class D>
+        double MultivariateMixtureDistribution< D >::probability(const MultivariateEvent* event, const bool& logarithm) const
+        {
+            double p = 0.;
+            for(Index index = 0, max_index = this->get_nb_states(); index < max_index; ++index)
+            { p += this->_pi[index] * this->_observations[index]->probability(event, false); }
+            if(logarithm)
+            { p = log(p); }
+            return p;
+        }
+
+    template<class D>
+        std::unique_ptr< MultivariateEvent > MultivariateMixtureDistribution< D >::simulate() const
+        {
+            double cp = this->_pi[0], sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
+            Index index = 0, max_index = this->get_nb_states();
+            while(cp < sp && index < max_index)
+            {
+                ++index;
+                cp += this->_pi[index];
+            }
+            return this->_observations[index]->simulate();
+        }
+
+    template<class D>
+        std::unique_ptr< MultivariateDistribution > MultivariateMixtureDistribution< D >::copy() const
+        { return std::make_unique< MultivariateMixtureDistribution< D > >(*this); }
 }
 
 #endif

@@ -26,7 +26,9 @@ void wrapper_aabf684ce17950b49b6345c1ab565540()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< struct ::statiskit::NormalDistributionMLEstimation, autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::Type, boost::python::bases< class ::statiskit::ActiveEstimation< class ::statiskit::NormalDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > > > class_aabf684ce17950b49b6345c1ab565540("NormalDistributionMLEstimation", "", boost::python::no_init);
+    class_aabf684ce17950b49b6345c1ab565540.def(boost::python::init<  >(""));
     class_aabf684ce17950b49b6345c1ab565540.def(boost::python::init< class ::statiskit::NormalDistribution const *, struct ::statiskit::UnivariateData const * >(""));
+    class_aabf684ce17950b49b6345c1ab565540.def(boost::python::init< struct ::statiskit::NormalDistributionMLEstimation const & >(""));
 
     if(autowig::Held< struct ::statiskit::NormalDistributionMLEstimation >::is_class)
     {

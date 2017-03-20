@@ -29,12 +29,6 @@ namespace autowig
             virtual ::statiskit::Index  get_nb_components() const
             { return this->get_override("get_nb_components")(); }
                         
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  get_sample_space() const
-            {
-                 ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > ::element_type* result = this->get_override("get_sample_space")();
-                 return ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > > (result);
-            }
-                        
 
         protected:
             

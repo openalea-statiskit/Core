@@ -26,7 +26,9 @@ void wrapper_0159796d2beb51da9446e83d609342aa()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< struct ::statiskit::UnivariateHistogramDistributionEstimation, autowig::Held< struct ::statiskit::UnivariateHistogramDistributionEstimation >::Type, boost::python::bases< class ::statiskit::ActiveEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > > > class_0159796d2beb51da9446e83d609342aa("UnivariateHistogramDistributionEstimation", "", boost::python::no_init);
+    class_0159796d2beb51da9446e83d609342aa.def(boost::python::init<  >(""));
     class_0159796d2beb51da9446e83d609342aa.def(boost::python::init< class ::statiskit::UnivariateHistogramDistribution const *, struct ::statiskit::UnivariateData const * >(""));
+    class_0159796d2beb51da9446e83d609342aa.def(boost::python::init< struct ::statiskit::UnivariateHistogramDistributionEstimation const & >(""));
 
     if(autowig::Held< struct ::statiskit::UnivariateHistogramDistributionEstimation >::is_class)
     {

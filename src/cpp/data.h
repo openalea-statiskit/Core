@@ -17,10 +17,13 @@
 
 namespace statiskit
 {
+    class WeightedUnivariateData;
+
     struct STATISKIT_CORE_API UnivariateData
     {
         typedef UnivariateSampleSpace sample_space_type;
         typedef UnivariateEvent event_type;
+        typedef WeightedUnivariateData weighted_type;
 
         struct STATISKIT_CORE_API Generator
         {
@@ -110,52 +113,13 @@ namespace statiskit
             };            
     };
 
-    class STATISKIT_CORE_API WeightedUnivariateDataFrame : public UnivariateDataFrame
-    {
-        public:
-            WeightedUnivariateDataFrame(const UnivariateSampleSpace& sample_space);
-            WeightedUnivariateDataFrame(const WeightedUnivariateDataFrame& data);
-            virtual ~WeightedUnivariateDataFrame();
-
-            virtual std::unique_ptr< UnivariateData::Generator > generator() const;
-
-            virtual std::unique_ptr< UnivariateData > copy() const;            
-
-            virtual void add_event(const UnivariateEvent* event);
-            virtual std::unique_ptr< UnivariateEvent > pop_event();
-
-            virtual void insert_event(const Index& index, const UnivariateEvent* event);
-            virtual void remove_event(const Index& index);
-
-            virtual double get_weight(const Index& index) const;     
-            void set_weight(const Index& index, const double& weight);       
-
-        protected:
-            std::vector< double > _weights;
-
-            class STATISKIT_CORE_API Generator : public UnivariateData::Generator
-            {
-                public:
-                    Generator(const WeightedUnivariateDataFrame* data);
-                    virtual ~Generator();
-
-                    virtual bool is_valid() const;
-
-                    virtual UnivariateData::Generator& operator++();
-
-                    virtual const UnivariateEvent* event() const;
-                    virtual double weight() const;
-
-                protected:
-                    const WeightedUnivariateDataFrame* _data;
-                    Index _index;
-            };      
-    };
+    class WeightedMultivariateData;
 
     struct STATISKIT_CORE_API MultivariateData
     {
         typedef MultivariateSampleSpace sample_space_type;
         typedef MultivariateEvent event_type;
+        typedef WeightedMultivariateData weighted_type;
 
         struct STATISKIT_CORE_API Generator
         {
@@ -366,6 +330,137 @@ namespace statiskit
                     };
             };
     };
+
+    template<class D>
+    class WeightedData : public D
+    {
+        public:
+            WeightedData(const D* data);
+            WeightedData(const WeightedData< D >& data);
+            virtual ~WeightedData();
+
+            virtual const typename D::sample_space_type* get_sample_space() const;
+
+            virtual std::unique_ptr< typename D::Generator > generator() const;
+
+            const D* get_data() const;
+
+            Index get_nb_weights() const;
+
+            virtual double get_weight(const Index& index) const;     
+            void set_weight(const Index& index, const double& weight);       
+
+        protected:
+            const D* _data;
+            std::vector< double > _weights;
+
+            class Generator : public D::Generator
+            {
+                public:
+                    Generator(const WeightedData< D >* data);
+                    virtual ~Generator();
+
+                    virtual bool is_valid() const;
+
+                    virtual typename D::Generator& operator++();
+
+                    virtual const typename D::event_type* event() const;
+                    virtual double weight() const;
+                    void weight(const double& weigth);
+
+                protected:
+                    const WeightedData< D >* _data;
+                    typename D::Generator* _generator;
+                    Index _index;
+            };      
+    };
+
+    struct STATISKIT_CORE_API WeightedUnivariateData : WeightedData< UnivariateData >
+    {
+        WeightedUnivariateData(const UnivariateData* data);
+        WeightedUnivariateData(const WeightedUnivariateData& data);
+        virtual ~WeightedUnivariateData();
+
+        virtual std::unique_ptr< UnivariateData > copy() const;
+    };
+
+    class STATISKIT_CORE_API WeightedMultivariateData : WeightedData< MultivariateData >
+    {
+        public:
+            WeightedMultivariateData(const MultivariateData* data);
+            WeightedMultivariateData(const WeightedMultivariateData& data);
+            virtual ~WeightedMultivariateData();
+
+            virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
+            virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+
+            virtual std::unique_ptr< MultivariateData > copy() const;
+
+        protected:       
+
+            template<class D>
+            class DataExtraction : public D
+            {
+                public:
+                    DataExtraction(const WeightedMultivariateData* weights, const D* data);
+                    DataExtraction(const DataExtraction< D >& data);
+                    virtual ~DataExtraction();
+
+                    virtual std::unique_ptr< typename D::Generator > generator() const;
+
+                    virtual const typename D::sample_space_type* get_sample_space() const;
+                
+                protected:
+                    const WeightedMultivariateData* _weights;
+                    const D* _data;
+
+                    class Generator : public D::Generator
+                    {
+                        public:
+                            Generator(const DataExtraction< D >* data);
+                            virtual ~Generator();
+
+                            virtual bool is_valid() const;
+
+                            virtual typename D::Generator& operator++();
+
+                            virtual const typename D::event_type* event() const;
+                            virtual double weight() const;
+
+                        protected:
+                            const DataExtraction< D >* _data;
+                            typename D::Generator* _generator;
+                            Index _index;
+                    };      
+            };
+
+            struct STATISKIT_CORE_API UnivariateDataExtraction : DataExtraction< UnivariateData >
+            { 
+                UnivariateDataExtraction(const WeightedMultivariateData* weights, const Index& index);
+                UnivariateDataExtraction(const UnivariateDataExtraction& data);
+                virtual ~UnivariateDataExtraction();
+
+                virtual std::unique_ptr< UnivariateData > copy() const;
+            };
+
+
+            class STATISKIT_CORE_API MultivariateDataExtraction : public DataExtraction< MultivariateData >
+            { 
+                public:
+                    MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices);
+                    MultivariateDataExtraction(const MultivariateDataExtraction& data);
+                    virtual ~MultivariateDataExtraction();
+
+                    virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
+                    virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+
+                    virtual std::unique_ptr< MultivariateData > copy() const;
+
+                protected:
+                    std::vector< Index > _indices;
+            };
+    };
+
 
     /*template<class D>
     class DataMask : public D

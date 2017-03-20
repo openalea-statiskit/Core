@@ -353,90 +353,7 @@ namespace statiskit
         { throw proxy_connection_error(); }
         return 1;
     }
-
-    WeightedUnivariateDataFrame::WeightedUnivariateDataFrame(const UnivariateSampleSpace& sample_space) : UnivariateDataFrame(sample_space)
-    { _weights.clear(); }
-
     
-    WeightedUnivariateDataFrame::WeightedUnivariateDataFrame(const WeightedUnivariateDataFrame& data) : UnivariateDataFrame(data)
-    { _weights = data._weights; }
-    
-    WeightedUnivariateDataFrame::~WeightedUnivariateDataFrame()
-    {}
-
-    std::unique_ptr< UnivariateData::Generator > WeightedUnivariateDataFrame::generator() const
-    { return std::make_unique< WeightedUnivariateDataFrame::Generator >(this); }
-
-    std::unique_ptr< UnivariateData > WeightedUnivariateDataFrame::copy() const
-    { return std::make_unique< WeightedUnivariateDataFrame >(*this); }
-
-    void WeightedUnivariateDataFrame::add_event(const UnivariateEvent* event)
-    {
-        UnivariateDataFrame::add_event(event);
-        _weights.push_back(1.);
-    }
-
-    std::unique_ptr< UnivariateEvent > WeightedUnivariateDataFrame::pop_event()
-    {
-        std::unique_ptr< UnivariateEvent > event = UnivariateDataFrame::pop_event();
-        _weights.pop_back();
-        return event;
-    }
-
-    void WeightedUnivariateDataFrame::insert_event(const Index& index, const UnivariateEvent* event)
-    {
-        UnivariateDataFrame::insert_event(index, event);
-        std::vector< double >::iterator it = _weights.begin();
-        advance(it, index);
-        _weights.insert(it, 1.);
-    }
-
-    void WeightedUnivariateDataFrame::remove_event(const Index& index)
-    {
-        UnivariateDataFrame::remove_event(index);
-        std::vector< double >::iterator it = _weights.begin();
-        advance(it, index);
-        _weights.erase(it);
-    }
-
-    double WeightedUnivariateDataFrame::get_weight(const Index& index) const
-    { return _weights[index]; }
-
-    void WeightedUnivariateDataFrame::set_weight(const Index& index, const double& weight)
-    { _weights[index] = weight; }
-
-    WeightedUnivariateDataFrame::Generator::Generator(const WeightedUnivariateDataFrame* data)
-    {
-        _data = data;
-        _index = 0;
-    }
-
-    WeightedUnivariateDataFrame::Generator::~Generator()
-    {}
-
-    bool WeightedUnivariateDataFrame::Generator::is_valid() const
-    { return _data && _index < _data->get_nb_events(); }
-
-    UnivariateData::Generator& WeightedUnivariateDataFrame::Generator::operator++()
-    {
-       ++_index;
-       return *this;
-    }
-
-    const UnivariateEvent* WeightedUnivariateDataFrame::Generator::event() const
-    {
-        if(!_data)
-        { throw proxy_connection_error(); }
-        return _data->get_event(_index);
-    }
-
-    double WeightedUnivariateDataFrame::Generator::weight() const
-    {
-        if(!_data)
-        { throw proxy_connection_error(); }
-        return _data->get_weight(_index);
-    }
-
     double MultivariateData::compute_total() const
     {
         double total = 0.;
@@ -845,4 +762,69 @@ namespace statiskit
 
     double MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::weight() const
     { return 1.; }
+
+    WeightedUnivariateData::WeightedUnivariateData(const UnivariateData* data) : WeightedData< UnivariateData >(data)
+    {}
+
+    WeightedUnivariateData::WeightedUnivariateData(const WeightedUnivariateData& data) : WeightedData< UnivariateData >(data)
+    {}
+
+    WeightedUnivariateData::~WeightedUnivariateData()
+    {}
+
+    std::unique_ptr< UnivariateData > WeightedUnivariateData::copy() const
+    { return std::make_unique< WeightedUnivariateData >(*this); }
+
+    WeightedMultivariateData::WeightedMultivariateData(const MultivariateData* data) : WeightedData< MultivariateData >(data)
+    {}
+
+    WeightedMultivariateData::WeightedMultivariateData(const WeightedMultivariateData& data) : WeightedData< MultivariateData >(data)
+    {}
+
+    WeightedMultivariateData::~WeightedMultivariateData()
+    {}
+
+    std::unique_ptr< UnivariateData > WeightedMultivariateData::extract(const Index& index) const
+    { return std::make_unique< UnivariateDataExtraction >(this, index); }
+
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::extract(const std::set< Index >& indices) const
+    { return std::make_unique< MultivariateDataExtraction >(this, indices); }
+
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::copy() const
+    { return std::unique_ptr< MultivariateData >(new WeightedMultivariateData(*this)); }
+
+    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const WeightedMultivariateData* weights, const Index& index) : WeightedMultivariateData::DataExtraction< UnivariateData >(weights, weights->_data->extract(index).release())
+    {}
+
+    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const UnivariateDataExtraction& data) : WeightedMultivariateData::DataExtraction< UnivariateData >(data)
+    {}
+
+    WeightedMultivariateData::UnivariateDataExtraction::~UnivariateDataExtraction()
+    {}
+
+    std::unique_ptr< UnivariateData > WeightedMultivariateData::UnivariateDataExtraction::copy() const
+    { return std::make_unique< UnivariateDataExtraction >(*this); }
+
+    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices) : WeightedMultivariateData::DataExtraction< MultivariateData >(weights, weights->_data->extract(indices).release())
+    { _indices = std::vector< Index >(indices.cbegin(), indices.cend()); }
+
+    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataExtraction& data) : WeightedMultivariateData::DataExtraction< MultivariateData >(data)
+    { _indices = data._indices; }
+
+    WeightedMultivariateData::MultivariateDataExtraction::~MultivariateDataExtraction()
+    {}
+
+    std::unique_ptr< UnivariateData > WeightedMultivariateData::MultivariateDataExtraction::extract(const Index& index) const
+    { return std::make_unique< UnivariateDataExtraction >(_weights, _indices[index]); }
+
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::MultivariateDataExtraction::extract(const std::set< Index >& indices) const
+    { 
+        std::set< Index > __indices;
+        for(std::set< Index >::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
+        { __indices.insert(__indices.end(), _indices[*it]); }
+        return std::make_unique< MultivariateDataExtraction >(_weights, __indices);
+     }
+
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::MultivariateDataExtraction::copy() const
+    { return std::make_unique< MultivariateDataExtraction >(*this); }
 }

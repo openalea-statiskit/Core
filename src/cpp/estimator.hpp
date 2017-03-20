@@ -131,7 +131,15 @@ namespace statiskit
 
     template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::Estimator::~Estimator() 
-        {}
+        {
+            delete _default_estimator;
+            for(typename std::map< Index, typename E::Estimator::marginal_type* >::iterator it = _estimators.begin(), it_end = _estimators.end(); it != it_end; ++it)            
+            {
+                delete it->second;
+                it->second = nullptr;
+            }
+            _estimators.clear();
+        }
 
     template<class D, class E>
         std::unique_ptr< MultivariateDistributionEstimation > IndependentMultivariateDistributionEstimation< D, E >::Estimator::operator() (const MultivariateData& data, const bool& lazy) const 
@@ -182,7 +190,10 @@ namespace statiskit
 
     template<class D, class E>
         void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_default_estimator(const typename E::Estimator::marginal_type& estimator)
-        { _default_estimator = estimator; }
+        { 
+            delete _default_estimator;
+            _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator.copy().release());
+        }
 
     template<class D, class E>
         const typename E::Estimator::marginal_type* IndependentMultivariateDistributionEstimation< D, E >::Estimator::get_estimator(const Index& index) const
@@ -197,16 +208,170 @@ namespace statiskit
         }
 
     template<class D, class E>
-        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::unset_estimator(const Index& index)
+        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_estimator(const Index& index, const typename E::Estimator::marginal_type* estimator)
         { 
             typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = _estimators.find(index);
-            if(it != _estimators.cend())
-            { _estimators.erase(it); }
+            if(it == _estimators.end() && estimator)
+            { _estimators[index] = static_cast< typename E::Estimator::marginal_type* >(estimator->copy().release()); }
+            else if(estimator)
+            { 
+                delete it->second;
+                it->second = static_cast< typename E::Estimator::marginal_type* >(estimator->copy().release());
+            }
+            else
+            {
+                delete it->second;
+                _estimators.erase(it);
+            }
         }
 
     template<class D, class E>
-        void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_estimator(const Index& index, const typename E::Estimator::marginal_type& estimator)
-        { _estimators[index] = estimator; }
+        MixtureDistributionEMEstimation< D, E >::MixtureDistributionEMEstimation() : OptimizationEstimation< D*, D, E >()
+        {}
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::MixtureDistributionEMEstimation(D const * estimated, typename E::data_type const * data) : OptimizationEstimation< D*, D, E >(estimated, data)
+        {}   
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::MixtureDistributionEMEstimation(const MixtureDistributionEMEstimation< D, E >& estimation) : OptimizationEstimation< D*, D, E >(estimation)
+        {}    
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::~MixtureDistributionEMEstimation()
+        {}    
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::Estimator::Estimator(): OptimizationEstimation< D*, D, E >::Estimator()
+        {
+            _pi = true;
+            _initializator = nullptr;
+            _default_estimator = nullptr;
+            _estimators.clear();
+        }    
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation< D*, D, E >::Estimator(estimator)
+        {
+            _pi = true;
+            _initializator = static_cast< D* >(estimator._initializator->copy().release());
+            _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator._default_estimator->copy().release());
+            _estimators.clear();
+            for(typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
+            { _estimators[it->first] = it->second->copy().release(); }
+        }
+
+    template<class D, class E>
+        MixtureDistributionEMEstimation< D, E >::Estimator::~Estimator() 
+        {
+            delete _initializator;
+            delete _default_estimator;
+            for(typename std::map< Index, typename E::Estimator::marginal_type* >::iterator it = _estimators.begin(), it_end = _estimators.end(); it != it_end; ++it)            
+            {
+                delete it->second;
+                it->second = nullptr;
+            }
+            _estimators.clear();
+        }
+
+    template<class D, class E>
+        std::unique_ptr< typename E::Estimator::estimation_type > MixtureDistributionEMEstimation< D, E >::Estimator::operator() (const typename E::Estimator::estimation_type::data_type& data, const bool& lazy) const
+        {
+            if(!_initializator)
+            { throw member_error("initializator", "you must given an initial mixture distribution in order to initialize the expectation-maximization algorithm"); }
+            D* mixture = _initializator->copy().release();
+            typename E::Estimator::estimation_type::data_type::weighted_type weighted = E::Estimator::estimation_type::data_type::weighted_type(*data);
+            double prev, curr = mixture->loglikelihood(data);
+            unsigned int its = 0;
+            do
+            {
+                prev = curr;
+                Eigen::VectorXd pi = mixture->get_pi();
+                for(Index state = 0, max_state = mixture->get_nb_states(); state < max_state; ++state)
+                {
+                    typename D::observation_type observation = mixture->get_observation(state);
+                    typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
+                    while(generator->is_valid())
+                    {
+                        generator->weight(pi[state] * observation->probability(generator->event()));
+                        ++(*generator);
+                    }
+                    const typename E::Estimator* estimator = get_estimator(state);
+                    if(estimator)
+                    {
+                        try
+                        { mixture->set_observation(state, *(static_cast< typename D::observation_type* >(*estimator)(weighted, true)->get_estimated())); }
+                        catch(const std::exception& exception)
+                        {}
+                    }
+                    pi[state] = weighted->compute_total();
+                }
+                if(_pi)
+                {
+                    pi.normalize();
+                    mixture->set_pi(pi);
+                }
+                curr = mixture->loglikelihood(data);
+                ++its;
+            } while(this->run(its, prev, curr));
+        }
+
+    template<class D, class E>
+        std::unique_ptr< typename E::Estimator::estimation_type::Estimator > MixtureDistributionEMEstimation< D, E >::Estimator::copy() const
+        { return std::make_unique< Estimator >(*this); }
+
+    template<class D, class E>
+        bool MixtureDistributionEMEstimation< D, E >::Estimator::get_pi() const
+        { return _pi; }
+
+    template<class D, class E>
+        void MixtureDistributionEMEstimation< D, E >::Estimator::set_pi(const bool& pi)
+        { _pi = pi; }
+
+    template<class D, class E>
+        const typename E::Estimator* MixtureDistributionEMEstimation< D, E >::Estimator::get_default_estimator() const
+        { return _default_estimator; }
+
+    template<class D, class E>
+        void MixtureDistributionEMEstimation< D, E >::Estimator::set_default_estimator(const typename E::Estimator* estimator)
+        { 
+            delete _default_estimator;
+            if(estimator)
+            { _default_estimator = static_cast< typename E::Estimator* >(estimator->copy().release()); }
+            else
+            { _default_estimator = nullptr; }
+        }
+
+    template<class D, class E>
+        const typename E::Estimator* MixtureDistributionEMEstimation< D, E >::Estimator::get_estimator(const Index& index) const
+        { 
+            typename std::map< Index, typename E::Estimator* >::const_iterator it = _estimators.find(index);
+            typename E::Estimator* estimator;
+            if(it == _estimators.cend())
+            { estimator = _default_estimator; }
+            else
+            { estimator = it->second; }
+            return estimator;
+        }
+
+    template<class D, class E>
+        void MixtureDistributionEMEstimation< D, E >::Estimator::set_estimator(const Index& index, const typename E::Estimator* estimator)
+        { 
+            typename std::map< Index, typename E::Estimator* >::const_iterator it = _estimators.find(index);
+            if(it == _estimators.end() && estimator)
+            { _estimators[index] = static_cast< typename E::Estimator* >(estimator->copy().release()); }
+            else if(estimator)
+            { 
+                delete it->second;
+                it->second = static_cast< typename E::Estimator* >(estimator->copy().release());
+            }
+            else
+            {
+                delete it->second;
+                _estimators.erase(it);
+            }
+        }
+
 }
 
 #endif

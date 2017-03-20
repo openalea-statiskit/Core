@@ -1,16 +1,19 @@
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib import pyplot
 
 from statiskit import core
 from statiskit.data import core as data
 
 import unittest
+from nose.plugins.attrib import attr
+
 import os
 from tempfile import NamedTemporaryFile
 
-
-
+@attr(linux=True,
+      osx=True,
+      win=True,
+      level=1)
 class TestData(unittest.TestCase):
 
     @classmethod
@@ -44,17 +47,14 @@ class TestData(unittest.TestCase):
     def test_pdf_plot(self):
         """Test univariate and multivariate data pdf plot"""
         for component in self._data.components:
-            fig = pyplot.figure()
             component.pdf_plot()
-            pyplot.close(fig)
 
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:
-            fig = pyplot.figure()
             component.cdf_plot()
-            pyplot.close(fig)
 
+    @attr(win=False)
     def test_write_csv(self):
         """Test write data to csv"""
         tmp = NamedTemporaryFile()

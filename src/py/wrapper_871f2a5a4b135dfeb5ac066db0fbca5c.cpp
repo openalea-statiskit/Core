@@ -32,6 +32,7 @@ void wrapper_871f2a5a4b135dfeb5ac066db0fbca5c()
     class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::NormalDistributionMLEstimation::Estimator::*method_pointer_27b1a30cbd515f36ad62b8dec7775d5e)(struct ::statiskit::UnivariateData const &, bool const &) const = &::statiskit::NormalDistributionMLEstimation::Estimator::operator();
     class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > >  (::statiskit::NormalDistributionMLEstimation::Estimator::*method_pointer_f005ab023e4d5456980e1ff1e17dfc7f)() const = &::statiskit::NormalDistributionMLEstimation::Estimator::copy;
     boost::python::class_< struct ::statiskit::NormalDistributionMLEstimation::Estimator, autowig::Held< struct ::statiskit::NormalDistributionMLEstimation::Estimator >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistributionEstimation::Estimator > > class_871f2a5a4b135dfeb5ac066db0fbca5c("Estimator", "", boost::python::no_init);
+    class_871f2a5a4b135dfeb5ac066db0fbca5c.def(boost::python::init<  >(""));
     class_871f2a5a4b135dfeb5ac066db0fbca5c.def("__call__", method_pointer_27b1a30cbd515f36ad62b8dec7775d5e, "");
     class_871f2a5a4b135dfeb5ac066db0fbca5c.def("copy", method_pointer_f005ab023e4d5456980e1ff1e17dfc7f, "");
 

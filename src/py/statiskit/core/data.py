@@ -13,15 +13,20 @@ import ast
 
 import _core
 from __core.statiskit import (UnivariateData,
-                              NamedData,
-                              UnivariateDataFrame, WeightedUnivariateDataFrame,
+                                WeightedUnivariateData,
+                                NamedData,
+                                    UnivariateDataFrame, 
                               MultivariateData,
-                              MultivariateDataFrame)
+                                WeightedMultivariateData,
+                                MultivariateDataFrame)
 
 from controls import controls
 from event import outcome_type
 
-__all__ = ['UnivariateDataFrame', 'WeightedUnivariateDataFrame', 'MultivariateDataFrame']
+__all__ = ['UnivariateDataFrame',
+           'WeightedUnivariateData',
+           'MultivariateDataFrame',
+           'WeightedMultivariateData']
 
 UnivariateData.sample_space = property(UnivariateData.get_sample_space)
 MultivariateData.sample_space = property(MultivariateData.get_sample_space)
