@@ -8,9 +8,8 @@
 
 from functools import wraps
 
-from optionals import pyplot
+from optionals import pyplot, numpy
 from io import from_list
-import numpy as np
 
 import _core
 from __core.statiskit import (UnivariateDistribution,
@@ -19,23 +18,31 @@ from __core.statiskit import (UnivariateDistribution,
                                 CategoricalUnivariateDistribution,
                                     NominalDistribution,
                                     OrdinalDistribution,
+                                    CategoricalUnivariateMixtureDistribution,
                                 DiscreteUnivariateDistribution,
                                     DiscreteUnivariateFrequencyDistribution,
                                     PoissonDistribution,
                                     BinomialDistribution,
                                     NegativeBinomialDistribution,
+                                    DiscreteUnivariateMixtureDistribution,
                                 ContinuousUnivariateDistribution,
                                     ContinuousUnivariateFrequencyDistribution,
                                     UnivariateHistogramDistribution,
                                     NormalDistribution,
+                                    ContinuousUnivariateMixtureDistribution,
                               MultivariateDistribution,
                                 _IndependentMultivariateDistribution,
+                                MixedMultivariateMixtureDistribution,
                                 CategoricalMultivariateDistribution,
                                     CategoricalIndependentMultivariateDistribution,
+                                    CategoricalMultivariateMixtureDistribution,
                                 DiscreteMultivariateDistribution,
                                     DiscreteIndependentMultivariateDistribution,
+                                    DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
-                                    ContinuousIndependentMultivariateDistribution)
+                                    ContinuousIndependentMultivariateDistribution,
+                                    ContinuousMultivariateMixtureDistribution,
+                              _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution)
 
 from controls import controls
 from event import (UnivariateEvent,
@@ -61,7 +68,8 @@ __all__ = ['NominalDistribution',
            'ContinuousUnivariateFrequencyDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
-           'IndependentMultivariateDistribution']
+           'IndependentMultivariateDistribution',
+           'MixtureDistribution']
 
 UnivariateDistribution.nb_parameters = property(UnivariateDistribution.get_nb_parameters)
 del UnivariateDistribution.get_nb_parameters
@@ -337,7 +345,7 @@ def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
             kwargs['qmin'] = qmin
         if 'qmax' not in kwargs and 'pmax' not in kwargs:
             kwargs['qmax'] = qmax
-    x = kwargs.pop('quantiles', np.linspace(kwargs.pop('qmin', self.quantile(kwargs.pop('pmin', 0.025))), kwargs.pop('qmax', self.quantile(kwargs.pop('pmax', 0.975))), num=num))
+    x = kwargs.pop('quantiles', numpy.linspace(kwargs.pop('qmin', self.quantile(kwargs.pop('pmin', 0.025))), kwargs.pop('qmax', self.quantile(kwargs.pop('pmax', 0.975))), num=num))
     y = [self.pdf(q) for q in x]
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
@@ -367,7 +375,7 @@ def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
             kwargs['qmin'] = qmin
         if 'qmax' not in kwargs and 'pmax' not in kwargs:
             kwargs['qmax'] = qmax
-    x = kwargs.pop('quantiles', np.linspace(kwargs.pop('qmin', self.quantile(kwargs.pop('pmin', 0.025))), kwargs.pop('qmax', self.quantile(kwargs.pop('pmax', 0.975))), num=num))
+    x = kwargs.pop('quantiles', numpy.linspace(kwargs.pop('qmin', self.quantile(kwargs.pop('pmin', 0.025))), kwargs.pop('qmax', self.quantile(kwargs.pop('pmax', 0.975))), num=num))
     y = [self.cdf(q) for q in x]
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
@@ -624,5 +632,74 @@ def IndependentMultivariateDistribution(*args):
         return ContinuousIndependentMultivariateDistribution(args)
     elif all(isinstance(arg, UnivariateDistribution) for arg in args):
         return MixedIndependentMultivariateDistribution(args)
+    else:
+        raise TypeError('\'args\' parameter')
+
+def statiskit_mixture_distribution_decorator(cls):
+    
+    cls.nb_states = property(cls.get_nb_states)
+    del cls.get_nb_states
+
+    cls.pi = property(cls.get_pi, cls.set_pi)
+    del cls.get_pi, cls.set_pi
+
+    class Observations(object):
+
+        def __init__(self, distribution):
+            self._distribution = distribution
+
+        def __len__(self):
+            return self._distribution.nb_states
+
+    def wrapper_observations(f0, f1):
+
+        @wraps(f0)
+        def __getitem__(self, index):
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError(self._distribution.__class__.__name__ + " index out of range")
+            return f0(self._distribution, index)
+
+        @wraps(f1)
+        def __setitem__(self, index, value):
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError(self._distribution.__class__.__name__ + " index out of range")
+            return f1(self._distribution, index, value)
+
+        return __getitem__, __setitem__
+        
+    Observations.__getitem__, Observations.__setitem__ = wrapper_observations(cls.get_observation, cls.set_observation)
+    del cls.get_observation, cls.set_observation
+
+    cls.observations = property(Observations)
+
+for cls in _MixtureDistribution:
+    statiskit_mixture_distribution_decorator(cls)
+
+def MixtureDistribution(*args, **kwargs):
+    if 'pi' in kwargs:
+        pi = kwargs.pop('pi')
+    else:
+        pi = [1. for arg in args]
+    if not isinstance(pi, linalg.Vector):
+        pi = linalg.Vector(pi)
+    if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
+        return CategoricalUnivariateMixtureDistributionDistribution(args, pi)
+    elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
+        return DiscreteUnivariateMixtureDistributionDistribution(args, pi)
+    elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
+        return ContinuousUnivariateMixtureDistributionDistribution(args, pi)
+    elif all(isinstance(arg, MultivariateDistribution) for arg in args):
+        if all(isinstance(arg, CategoricalMultivariateDistribution) for arg in args):
+            return CategoricalMultivariateMixtureDistributionDistribution(args, pi)
+        elif all(isinstance(arg, DiscreteMultivariateDistribution) for arg in args):
+            return DiscreteMultivariateMixtureDistributionDistribution(args, pi)
+        elif all(isinstance(arg, ContinuousMultivariateDistribution) for arg in args):
+            return ContinuousMultivariateMixtureDistributionDistribution(args, pi)
+        else:
+            return MixedMultivariateMixtureDistribution(args, pi)
     else:
         raise TypeError('\'args\' parameter')

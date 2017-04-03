@@ -1510,7 +1510,6 @@ namespace statiskit
     double ContinuousUnivariateMixtureDistribution::get_epsilon() const
     { return _epsilon; }
 
-
     void ContinuousUnivariateMixtureDistribution::set_epsilon(const double& epsilon)
     { 
         if(epsilon <= 0.)

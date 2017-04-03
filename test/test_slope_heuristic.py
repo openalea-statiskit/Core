@@ -11,7 +11,7 @@ from nose.plugins.attrib import attr
       osx=True,
       win=True,
       level=1)
-class TestEstimation(unittest.TestCase):
+class TestSlopeHeuristic(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
