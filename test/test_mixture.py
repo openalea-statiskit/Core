@@ -26,7 +26,7 @@ class TestMixture(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution)
                                      initializator = core.MixtureDistribution(core.PoissonDistribution(3.),
                                                                               core.PoissonDistribution(5.),
                                                                               pi = linalg.Vector([.5, .5])),
-                                     default_estimator = core.poisson_estimation('mle'))
+                                     default_estimator = core.poisson_estimation('ml'))
         curr = -float("inf")
         for dist in em:
             prev = curr

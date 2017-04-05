@@ -224,6 +224,23 @@ def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True,
 OrdinalDistribution.box_plot = box_plot
 del box_plot
 
+def quantitative_univariate_frequency_distribution_decorator(cls):
+
+    cls.mean = property(cls.get_mean)
+    del cls.get_mean
+
+    cls.variance = property(cls.get_variance)
+    del cls.get_variance
+
+for cls in _QuantitativeUnivariateFrequencyDistribution:
+    quantitative_univariate_frequency_distribution_decorator(cls)
+
+DiscreteUnivariateDistribution.mean = property(DiscreteUnivariateDistribution.get_mean)
+del DiscreteUnivariateDistribution.get_mean
+
+DiscreteUnivariateDistribution.variance = property(DiscreteUnivariateDistribution.get_variance)
+del DiscreteUnivariateDistribution.get_variance
+
 def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
@@ -364,6 +381,12 @@ del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
 
 BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
 del BinomialDistribution.get_pi, BinomialDistribution.set_pi
+
+# ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
+# del ContinuousUnivariateDistribution.get_mean
+
+# ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
+# del ContinuousUnivariateDistribution.get_variance
 
 ContinuousUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot

@@ -313,7 +313,7 @@ namespace statiskit
     }
 
     int PoissonDistribution::quantile(const double& p) const
-    { return boost::math::gamma_q_inva(_theta, p) - 1; }
+    { return boost::math::gamma_q_inva(_theta, p); }
 
     double PoissonDistribution::get_mean() const
     { return _theta; }

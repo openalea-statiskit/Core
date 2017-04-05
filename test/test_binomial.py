@@ -19,11 +19,11 @@ class TestBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution
     def test_mle(self):
         """Test binomial ML estimation"""
         data = self._dist.simulation(10)
-        mle = core.binomial_estimation('mle', data)
+        mle = core.binomial_estimation('ml', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
 
     def test_mme(self):
         """Test binomial MM estimation"""
         data = self._dist.simulation(10)
-        mme = core.binomial_estimation('mme', data)
-        self.assertGreaterEqual(mme.estimated.loglikelihood(data), self._dist.loglikelihood(data))
+        mme = core.binomial_estimation('mm', data)
+        self.assertEqual(mme.estimated.mean, float(data.mean))

@@ -39,6 +39,8 @@ namespace statiskit
     {
         virtual ~UnivariateEvent();
 
+        int rep() const;
+        
         virtual outcome_type get_outcome() const = 0;
 
         virtual event_type get_event() const = 0;

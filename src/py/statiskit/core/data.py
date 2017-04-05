@@ -22,6 +22,8 @@ from __core.statiskit import (UnivariateData,
 
 from controls import controls
 from event import outcome_type
+from moment import (mean_estimation,
+                    variance_estimation)
 
 __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',
@@ -40,6 +42,36 @@ del UnivariateData.compute_minimum
 
 UnivariateData.max = property(UnivariateData.compute_maximum)
 del UnivariateData.compute_maximum
+
+def get_mean(self):
+    if not hasattr(self, '_mean'):
+        return mean_estimation('nat', self)
+    else:
+        return self._mean(self)
+
+def set_mean(self, mean):
+    self._mean = mean_estimation(mean)
+
+UnivariateData.mean = property(get_mean, set_mean)
+del get_mean, set_mean
+
+def get_variance(self):
+    if not hasattr(self, '_variance'):
+        return variance_estimation('nat', self)
+    else:
+        return self._variance(self)
+
+def set_variance(self, variance):
+    self._variance = variance_estimation(variance)
+
+UnivariateData.variance = property(get_variance, set_variance)
+del get_variance, set_variance
+
+def standard_deviation(self):
+    return (self.variance)**(1/2.)
+
+UnivariateData.standard_deviation = standard_deviation
+del standard_deviation
 
 def wrapper_set_name(f):
     @wraps(f)
