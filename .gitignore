@@ -9,3 +9,4 @@ build
 ASG.pkl
 .~lock.*
 *.sublime-workspace
+.coverage
