@@ -28,11 +28,17 @@ void wrapper_fe5c14ebd9715db583a8fcea54e1d965()
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::WeightedMultivariateData::*method_pointer_ecd4b9cfc90c5afb9956da624c039e6f)(::statiskit::Index const &) const = &::statiskit::WeightedMultivariateData::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::WeightedMultivariateData::*method_pointer_821db0f89134517cbf08f50969c41dc8)(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const &) const = &::statiskit::WeightedMultivariateData::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::WeightedMultivariateData::*method_pointer_4330e08675f9510d872f35107628afa5)() const = &::statiskit::WeightedMultivariateData::copy;
-    boost::python::class_< class ::statiskit::WeightedMultivariateData, autowig::Held< class ::statiskit::WeightedMultivariateData >::Type > class_fe5c14ebd9715db583a8fcea54e1d965("WeightedMultivariateData", "", boost::python::no_init);
+    boost::python::class_< class ::statiskit::WeightedMultivariateData, autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, boost::python::bases< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > > > class_fe5c14ebd9715db583a8fcea54e1d965("WeightedMultivariateData", "", boost::python::no_init);
     class_fe5c14ebd9715db583a8fcea54e1d965.def(boost::python::init< struct ::statiskit::MultivariateData const * >(""));
     class_fe5c14ebd9715db583a8fcea54e1d965.def(boost::python::init< class ::statiskit::WeightedMultivariateData const & >(""));
     class_fe5c14ebd9715db583a8fcea54e1d965.def("extract", method_pointer_ecd4b9cfc90c5afb9956da624c039e6f, "");
     class_fe5c14ebd9715db583a8fcea54e1d965.def("extract", method_pointer_821db0f89134517cbf08f50969c41dc8, "");
     class_fe5c14ebd9715db583a8fcea54e1d965.def("copy", method_pointer_4330e08675f9510d872f35107628afa5, "");
+
+    if(autowig::Held< class ::statiskit::WeightedMultivariateData >::is_class)
+    {
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > >::Type >();
+        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::WeightedMultivariateData, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, class ::statiskit::WeightedMultivariateData > > >();
+    }
 
 }

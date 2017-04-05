@@ -350,14 +350,10 @@ namespace statiskit
             virtual double get_weight(const Index& index) const;     
             void set_weight(const Index& index, const double& weight);       
 
-        protected:
-            const D* _data;
-            std::vector< double > _weights;
-
             class Generator : public D::Generator
             {
                 public:
-                    Generator(const WeightedData< D >* data);
+                    Generator(WeightedData< D >* data);
                     virtual ~Generator();
 
                     virtual bool is_valid() const;
@@ -369,10 +365,14 @@ namespace statiskit
                     void weight(const double& weigth);
 
                 protected:
-                    const WeightedData< D >* _data;
+                    WeightedData< D >* _data;
                     typename D::Generator* _generator;
                     Index _index;
-            };      
+            };   
+
+        protected:
+            const D* _data;
+            std::vector< double > _weights;   
     };
 
     struct STATISKIT_CORE_API WeightedUnivariateData : WeightedData< UnivariateData >
@@ -384,7 +384,7 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateData > copy() const;
     };
 
-    class STATISKIT_CORE_API WeightedMultivariateData : WeightedData< MultivariateData >
+    class STATISKIT_CORE_API WeightedMultivariateData : public WeightedData< MultivariateData >
     {
         public:
             WeightedMultivariateData(const MultivariateData* data);

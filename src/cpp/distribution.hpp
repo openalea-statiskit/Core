@@ -18,7 +18,7 @@ namespace statiskit
             { throw size_error("values", 0, 0, size_error::superior); }
             _values = values;
             _pi = Eigen::VectorXd::Ones(values.size());
-            _pi.normalize();
+            _pi = _pi / _pi.sum();
         }
     
     template<class T>
@@ -92,11 +92,11 @@ namespace statiskit
 		    	{ ++j; }
 		    	if(j < pi.rows())
 		    	{ throw parameter_error("pi", "contains negative values"); } 
-		    	double norm = pi.norm();
-		    	if(norm < 1)
+		    	double sum = pi.sum();
+		    	if(sum < 1)
 		    	{
-					_pi.block(0, 0, _values.size()-1, 1) = pi;
-					_pi[_values.size()-1] = 1 - norm;
+					_pi.block(0, 0, _values.size()-1, 1) = pi / sum;
+					_pi[_values.size()-1] = 1 - sum;
 		    	}
 		    	else
 		    	{ throw parameter_error("pi", "last category values"); } 		    	
@@ -108,7 +108,7 @@ namespace statiskit
 		    	{ ++j; }
 		    	if(j < pi.rows())
 		    	{ throw parameter_error("pi", "contains negative values"); } 
-		        _pi = pi.normalized();
+		        _pi = pi / pi.sum();
             }
             else
             { throw parameter_error("pi", "number of parameters"); } 	           
@@ -341,7 +341,7 @@ namespace statiskit
         {
             if(pi.size() != _pi.size())
             { throw size_error("pi", _pi.size(), size_error::equal); }
-            _pi = pi.normalized();
+            _pi = pi / pi.sum();
         }
  
      // template<class D>

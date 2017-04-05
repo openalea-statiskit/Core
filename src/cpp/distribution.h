@@ -1683,6 +1683,8 @@ namespace statiskit
     template<class D> class MixtureDistribution : public D
     {
         public:
+            typedef D observation_type;
+
             MixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
             MixtureDistribution(const MixtureDistribution< D >& mixture);
             virtual ~MixtureDistribution();
@@ -1731,6 +1733,8 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
 
+    typedef std::vector< CategoricalUnivariateDistribution* > CategoricalUnivariateDistributionVector;
+
     template<class D> struct QuantitativeUnivariateMixtureDistribution : UnivariateMixtureDistribution< D >
     {
         QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
@@ -1755,6 +1759,8 @@ namespace statiskit
         virtual std::unique_ptr< UnivariateDistribution > copy() const;
     };
 
+    typedef std::vector< DiscreteUnivariateDistribution* > DiscreteUnivariateDistributionVector;
+
     struct STATISKIT_CORE_API ContinuousUnivariateMixtureDistribution : QuantitativeUnivariateMixtureDistribution< ContinuousUnivariateDistribution >
     {
         public:
@@ -1772,6 +1778,8 @@ namespace statiskit
         protected:
             double _epsilon;
     };
+
+    typedef std::vector< ContinuousUnivariateDistribution* > ContinuousUnivariateDistributionVector;
 
     template<class D> struct MultivariateMixtureDistribution : MixtureDistribution< D >
     {
@@ -1791,9 +1799,16 @@ namespace statiskit
     };
 
     typedef MultivariateMixtureDistribution< MultivariateDistribution > MixedMultivariateMixtureDistribution;
+    typedef std::vector< MultivariateDistribution* > MultivariateDistributionVector;
+
     typedef MultivariateMixtureDistribution< CategoricalMultivariateDistribution > CategoricalMultivariateMixtureDistribution;
+    typedef std::vector< CategoricalMultivariateDistribution* > CategoricalMultivariateDistributionVector;
+
     typedef MultivariateMixtureDistribution< DiscreteMultivariateDistribution > DiscreteMultivariateMixtureDistribution;
+    typedef std::vector< DiscreteMultivariateDistribution* > DiscreteMultivariateDistributionVector;
+
     typedef MultivariateMixtureDistribution< ContinuousMultivariateDistribution > ContinuousMultivariateMixtureDistribution;
+    typedef std::vector< ContinuousMultivariateDistribution* > ContinuousMultivariateDistributionVector;
 }
 
 #include "distribution.hpp"

@@ -387,14 +387,27 @@ namespace statiskit
                 std::map< Index, typename E::Estimator* > _estimators;
         };
     };
+    
+    typedef MixtureDistributionEMEstimation< CategoricalUnivariateMixtureDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< CategoricalUnivariateMixtureDistribution, CategoricalUnivariateDistributionEstimation >::Estimator CategoricalUnivariateMixtureDistributionEMEstimator;
 
-    typedef MixtureDistributionEMEstimation< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< ContinuousUnivariateDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< MultivariateDistribution, MultivariateDistributionEstimation > MixedMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< DiscreteMultivariateDistribution, DiscreteMultivariateDistributionEstimation > DiscreteMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< DiscreteUnivariateMixtureDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateMixtureDistributionEMEstimation;    
+    typedef MixtureDistributionEMEstimation< DiscreteUnivariateMixtureDistribution, DiscreteUnivariateDistributionEstimation >::Estimator DiscreteUnivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< ContinuousUnivariateMixtureDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< ContinuousUnivariateMixtureDistribution, ContinuousUnivariateDistributionEstimation >::Estimator ContinuousUnivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< MixedMultivariateMixtureDistribution, MultivariateDistributionEstimation >::Estimator MixedMultivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< MixedMultivariateMixtureDistribution, MultivariateDistributionEstimation >::Estimator MixedMultivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< CategoricalMultivariateMixtureDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< CategoricalMultivariateMixtureDistribution, CategoricalMultivariateDistributionEstimation >::Estimator CategoricalMultivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< DiscreteMultivariateMixtureDistribution, DiscreteMultivariateDistributionEstimation > DiscreteMultivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< DiscreteMultivariateMixtureDistribution, DiscreteMultivariateDistributionEstimation >::Estimator DiscreteMultivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
+    typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation >::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
 }
 
 #include "estimator.hpp"

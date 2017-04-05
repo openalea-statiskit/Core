@@ -303,7 +303,14 @@ namespace statiskit
     }
 
     double PoissonDistribution::cdf(const int& value) const
-    { return boost::math::gamma_q(value + 1, _theta); }
+    { 
+        double p;
+        if(value < 0)
+        { p = 0; }
+        else
+        { p = boost::math::gamma_q(value + 1, _theta); }
+        return p;
+    }
 
     int PoissonDistribution::quantile(const double& p) const
     { return boost::math::gamma_q_inva(_theta, p) - 1; }
@@ -384,7 +391,16 @@ namespace statiskit
     }
 
     double BinomialDistribution::cdf(const int& value) const
-    { return boost::math::ibetac(value + 1, _kappa - value, _pi); }
+    {
+        double p;
+        if(value < 0)
+        { p = 0.; }
+        else if(value > _kappa)
+        { p = 1.; }
+        else
+        { p = boost::math::ibetac(value + 1, _kappa - value, _pi); }
+        return p;
+      }
 
     int BinomialDistribution::quantile(const double& p) const
     { 
@@ -1434,7 +1450,7 @@ namespace statiskit
         int rv = lv;
         for(Index index = 1, max_index = get_nb_states(); index < max_index; ++index)
         {
-            int current = _observations[0]->quantile(p);
+            int current = _observations[index]->quantile(p);
             if(current < lv)
             { lv = current; }
             else if(current > rv)
@@ -1445,7 +1461,7 @@ namespace statiskit
         double lp = cdf(lv), rp = cdf(rv);
         do
         {
-            int mv = (rv - lv)/2;
+            int mv = (rv + lv)/2;
             double mp = cdf(mv);
             if(mp < p)
             {
@@ -1456,7 +1472,7 @@ namespace statiskit
             {
                 rv = mv;
                 rp = mp;
-            } 
+            }
         } while(rv - lv > 1);
         return rv;
     }
@@ -1488,7 +1504,7 @@ namespace statiskit
         double lp = cdf(lv), rp = cdf(rv);
         do
         {
-            int mv = (rv - lv)/2;
+            int mv = (rv + lv)/2;
             double mp = cdf(mv);
             if(mp < p)
             {

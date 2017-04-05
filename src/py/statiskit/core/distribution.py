@@ -59,6 +59,8 @@ from sample_space import (NominalSampleSpace,
                           OrdinalSampleSpace)
 from _tools import float_str, remove_latex
 
+from statiskit import linalg
+
 __all__ = ['NominalDistribution',
            'OrdinalDistribution',
            'DiscreteUnivariateFrequencyDistribution',
@@ -687,18 +689,18 @@ def MixtureDistribution(*args, **kwargs):
     if not isinstance(pi, linalg.Vector):
         pi = linalg.Vector(pi)
     if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
-        return CategoricalUnivariateMixtureDistributionDistribution(args, pi)
+        return CategoricalUnivariateMixtureDistribution(args, pi)
     elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
-        return DiscreteUnivariateMixtureDistributionDistribution(args, pi)
+        return DiscreteUnivariateMixtureDistribution(args, pi)
     elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
-        return ContinuousUnivariateMixtureDistributionDistribution(args, pi)
+        return ContinuousUnivariateMixtureDistribution(args, pi)
     elif all(isinstance(arg, MultivariateDistribution) for arg in args):
         if all(isinstance(arg, CategoricalMultivariateDistribution) for arg in args):
-            return CategoricalMultivariateMixtureDistributionDistribution(args, pi)
+            return CategoricalMultivariateMixtureDistribution(args, pi)
         elif all(isinstance(arg, DiscreteMultivariateDistribution) for arg in args):
-            return DiscreteMultivariateMixtureDistributionDistribution(args, pi)
+            return DiscreteMultivariateMixtureDistribution(args, pi)
         elif all(isinstance(arg, ContinuousMultivariateDistribution) for arg in args):
-            return ContinuousMultivariateMixtureDistributionDistribution(args, pi)
+            return ContinuousMultivariateMixtureDistribution(args, pi)
         else:
             return MixedMultivariateMixtureDistribution(args, pi)
     else:

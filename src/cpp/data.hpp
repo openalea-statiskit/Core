@@ -18,7 +18,10 @@ namespace statiskit
             _weights = std::vector< double >();
             std::unique_ptr< typename D::Generator > generator = data->generator();
             while(generator->is_valid())
-            { _weights.push_back(1.); }
+            {
+                _weights.push_back(1.);
+                ++(*generator);
+            }
         }
 
     template<class D>
@@ -38,7 +41,7 @@ namespace statiskit
 
     template<class D>
         std::unique_ptr< typename D::Generator > WeightedData< D >::generator() const
-        { return std::make_unique< Generator >(this); }
+        { return std::make_unique< Generator >(const_cast< WeightedData< D >* >(this)); }
 
     template<class D>
         const D* WeightedData< D >::get_data() const
@@ -67,7 +70,7 @@ namespace statiskit
         }
 
     template<class D>
-        WeightedData< D >::Generator::Generator(const WeightedData< D >* data)
+        WeightedData< D >::Generator::Generator(WeightedData< D >* data)
         {
             _data = data;
             _generator = data->_data->generator().release();

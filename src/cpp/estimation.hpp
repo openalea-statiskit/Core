@@ -269,7 +269,8 @@ namespace statiskit
         {}
 
     template<class T, class D, class B>
-        bool OptimizationEstimationImpl< T, D, B >::Estimator::run(const unsigned int& its, const T& prev, const T& curr) const
+        template<class S>
+        bool OptimizationEstimationImpl< T, D, B >::Estimator::run(const unsigned int& its, const S& prev, const S& curr) const
         { 
             bool status = true;
             double reldiff = __impl::reldiff(prev, curr);

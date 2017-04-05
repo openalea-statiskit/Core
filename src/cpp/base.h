@@ -47,9 +47,9 @@ namespace statiskit
 {
     namespace __impl
     {
-        double reldiff(const double& prev, const double& curr);
-        double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr);
-        double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
+        STATISKIT_CORE_API double reldiff(const double& prev, const double& curr);
+        STATISKIT_CORE_API double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr);
+        STATISKIT_CORE_API double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
 
         template<class T> std::string to_string(const T& t, const unsigned int& width=0);
 
