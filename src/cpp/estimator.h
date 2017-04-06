@@ -306,6 +306,10 @@ namespace statiskit
         }; 
     };
 
+    class MultinomialSplittingDistributionEstimation : public ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    {
+    };
+
     template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >
     {
         public:

@@ -1435,6 +1435,140 @@ namespace statiskit
     std::unique_ptr< UnivariateDistribution > CategoricalUnivariateMixtureDistribution::copy() const
     { return std::make_unique< CategoricalUnivariateMixtureDistribution >(*this); }
 
+    MultinomialSplittingDistribution::MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi)
+    {
+        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release());
+        _pi = Eigen::VectorXd::Ones(pi.size());
+        set_pi(pi);
+    }
+
+    MultinomialSplittingDistribution::MultinomialSplittingDistribution(const MultinomialSplittingDistribution& multinomial)
+    {
+        _sum = static_cast< DiscreteUnivariateDistribution* >(multinomial._sum->copy().release());
+        _pi = multinomial._pi;
+    }
+
+    MultinomialSplittingDistribution::~MultinomialSplittingDistribution()
+    { delete _sum; }
+
+    Index MultinomialSplittingDistribution::get_nb_components() const
+    { return _pi.size(); }
+
+    unsigned int MultinomialSplittingDistribution::get_nb_parameters() const
+    { return _sum->get_nb_parameters() + _pi.size() - 1; }
+
+    double MultinomialSplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
+    {
+        double p;
+        if(event)
+        {
+            try
+            {
+                int kappa = 0;
+                for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+                {
+                    const UnivariateEvent* uevent = event->get(component);
+                    if(uevent)
+                    {
+                        if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                        { kappa += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+                        else
+                        { throw std::exception(); }
+                    }
+                }                
+                p = 0.;
+                double sum = 0.;
+                BinomialDistribution binomial = BinomialDistribution(kappa, 0);
+                for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+                {
+                    const UnivariateEvent* uevent = event->get(component);
+                    if(uevent)
+                    {
+                        if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                        {
+                            binomial.set_pi(_pi[component] / (1 - sum));
+                            int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
+                            double pi = _pi[component] / (1 - sum);
+                            p += binomial.ldf(value);
+                            kappa -= value;
+                            sum += _pi[component];
+                            binomial.set_kappa(kappa);
+                        }
+                        else
+                        { throw std::exception(); }
+                    }
+                }
+            }
+            catch(const std::exception& error)
+            { p = log(0.); }
+        }
+        else
+        { p = 0.; }
+        if(!logarithm)
+        { p = exp(p); }
+        return p;
+    }
+
+    std::unique_ptr< MultivariateEvent > MultinomialSplittingDistribution::simulate() const
+    {
+        int kappa = static_cast< DiscreteElementaryEvent* >(_sum->simulate().get())->get_value();
+        double sum = 0.;
+        BinomialDistribution binomial = BinomialDistribution(kappa, 0);
+        VectorEvent* event = new VectorEvent(get_nb_components());
+        for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+        { 
+            binomial.set_pi(_pi[component] / (1 - sum));
+            event->set(component, *(binomial.simulate().get()));
+            kappa -= static_cast< const DiscreteElementaryEvent* >(event->get(component))->get_value();
+            sum += _pi[component];
+            binomial.set_kappa(kappa);
+        }
+        return std::unique_ptr< MultivariateEvent >(event);
+    }
+
+    std::unique_ptr< MultivariateDistribution > MultinomialSplittingDistribution::copy() const
+    { return std::make_unique< MultinomialSplittingDistribution >(*this); }
+
+    const DiscreteUnivariateDistribution* MultinomialSplittingDistribution::get_sum() const
+    { return _sum; }
+    
+    void MultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
+    { _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); }
+
+    const Eigen::VectorXd& MultinomialSplittingDistribution::get_pi() const
+    { return _pi; }
+
+    void MultinomialSplittingDistribution::set_pi(const Eigen::VectorXd& pi)
+    {
+        if(pi.rows() == _pi.size() - 1)
+        {
+            Index j = 0; 
+            while(j < pi.rows() && pi[j] >= 0.)
+            { ++j; }
+            if(j < pi.rows())
+            { throw parameter_error("pi", "contains negative values"); } 
+            double sum = pi.sum();
+            if(sum < 1)
+            {
+                _pi.block(0, 0, _pi.size() - 1, 1) = pi / sum;
+                _pi[_pi.size()-1] = 1 - sum;
+            }
+            else
+            { throw parameter_error("pi", "last category values"); }                
+        }
+        else if(pi.rows() == _pi.size())
+        {
+            Index j = 0; 
+            while(j < pi.rows() && pi[j] >= 0.)
+            { ++j; }
+            if(j < pi.rows())
+            { throw parameter_error("pi", "contains negative values"); } 
+            _pi = pi / pi.sum();
+        }
+        else
+        { throw parameter_error("pi", "number of parameters"); }
+    }
+
     DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi) : QuantitativeUnivariateMixtureDistribution< DiscreteUnivariateDistribution >(observations, pi)
     {}
 

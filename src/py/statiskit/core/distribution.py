@@ -37,6 +37,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     CategoricalIndependentMultivariateDistribution,
                                     CategoricalMultivariateMixtureDistribution,
                                 DiscreteMultivariateDistribution,
+                                    MultinomialSplittingDistribution,
                                     DiscreteIndependentMultivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
@@ -70,6 +71,7 @@ __all__ = ['NominalDistribution',
            'ContinuousUnivariateFrequencyDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
+           'MultinomialSplittingDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
@@ -607,7 +609,7 @@ NormalDistribution.sigma = property(NormalDistribution.get_sigma, NormalDistribu
 del NormalDistribution.get_sigma, NormalDistribution.set_sigma
 
 def simulation(self, size):
-    return from_list(map(list, zip(*[self.simulate() for index in range(size)])))
+    return from_list(*map(list, zip(*[self.simulate() for index in range(size)])))
 
 MultivariateDistribution.simulation = simulation
 del simulation

@@ -1633,6 +1633,34 @@ namespace statiskit
         typedef DiscreteUnivariateDistribution marginal_type;
     };
 
+    class STATISKIT_CORE_API MultinomialSplittingDistribution : public DiscreteMultivariateDistribution
+    {
+        public:
+            MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi);
+            MultinomialSplittingDistribution(const MultinomialSplittingDistribution& multinomial);
+            virtual ~MultinomialSplittingDistribution();
+
+            virtual Index get_nb_components() const;
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+            std::unique_ptr< MultivariateEvent > simulate() const;
+
+            virtual std::unique_ptr< MultivariateDistribution > copy() const;
+
+            const DiscreteUnivariateDistribution* get_sum() const;
+            void set_sum(const DiscreteUnivariateDistribution& sum);
+
+            const Eigen::VectorXd& get_pi() const;
+            void set_pi(const Eigen::VectorXd& pi);
+
+        protected:
+            DiscreteUnivariateDistribution* _sum;
+            Eigen::VectorXd _pi;
+    };
+
     struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution
     {
         typedef ContinuousUnivariateDistribution marginal_type;

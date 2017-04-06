@@ -18,7 +18,11 @@ class AbstractTestDistribution(object):
         """Test distribution deletion"""
         del cls._dist
 
-class AbstractTestDiscreteUnivariateDistribution(AbstractTestDistribution):
+class AbstractTestUnivariateDistribution(object):
+
+    pass
+
+class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribution):
 
     _num = 10
     _pmin = 0.025
@@ -40,3 +44,11 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestDistribution):
             q = self._dist.quantile(p)
             self.assertGreaterEqual(self._dist.cdf(q), p)
             self.assertLess(self._dist.cdf(q-1), p)
+
+class AbstractTestMultivariateDistribution(object):
+
+    pass
+
+class AbstractTestDiscreteMultivariateDistribution(AbstractTestMultivariateDistribution):
+
+    pass

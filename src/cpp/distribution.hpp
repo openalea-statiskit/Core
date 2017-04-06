@@ -85,7 +85,7 @@ namespace statiskit
     template<class T>
         void UnivariateFrequencyDistribution< T >::set_pi(const Eigen::VectorXd& pi)
         {
-        	if(pi.rows() == _values.size()-1)
+        	if(pi.rows() == _values.size() - 1)
         	{
 		    	Index j = 0; 
 		    	while(j < pi.rows() && pi[j] >= 0.)
@@ -95,7 +95,7 @@ namespace statiskit
 		    	double sum = pi.sum();
 		    	if(sum < 1)
 		    	{
-					_pi.block(0, 0, _values.size()-1, 1) = pi / sum;
+					_pi.block(0, 0, _values.size() - 1, 1) = pi / sum;
 					_pi[_values.size()-1] = 1 - sum;
 		    	}
 		    	else
