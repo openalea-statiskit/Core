@@ -1707,8 +1707,6 @@ namespace statiskit
     template<class D> struct UnivariateMixtureDistribution : MixtureDistribution< D >
     {
         UnivariateMixtureDistribution();
-        UnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
-        UnivariateMixtureDistribution(const UnivariateMixtureDistribution< D >& mixture);
         virtual ~UnivariateMixtureDistribution();
 
         virtual double ldf(const typename D::event_type::value_type& value) const;
@@ -1734,8 +1732,6 @@ namespace statiskit
     template<class D> struct QuantitativeUnivariateMixtureDistribution : UnivariateMixtureDistribution< D >
     {
         QuantitativeUnivariateMixtureDistribution();
-        QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi);
-        QuantitativeUnivariateMixtureDistribution(const QuantitativeUnivariateMixtureDistribution< D >& mixture);
         virtual ~QuantitativeUnivariateMixtureDistribution();
 
         virtual double cdf(const typename D::event_type::value_type& value) const;
