@@ -37,8 +37,7 @@ void wrapper_2cfec7576f805b8d8fb103d1f86f786e()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::NormalDistribution::*method_pointer_94892243f55453bf992266cde4b4fd4c)() const = &::statiskit::NormalDistribution::simulate;
     double  (::statiskit::NormalDistribution::*method_pointer_fce392a571745a91962c709e0efad22f)() const = &::statiskit::NormalDistribution::get_mean;
     double  (::statiskit::NormalDistribution::*method_pointer_11a58521f76e5986ba024fd049789919)() const = &::statiskit::NormalDistribution::get_variance;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::NormalDistribution::*method_pointer_08b27f9d325d5965aba2e6ff1f5a065c)() const = &::statiskit::NormalDistribution::copy;
-    boost::python::class_< class ::statiskit::NormalDistribution, autowig::Held< class ::statiskit::NormalDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_2cfec7576f805b8d8fb103d1f86f786e("NormalDistribution", "This class NormalDistribution represents a `normal\ndistribution <https://en.wikipedia.org/wiki/Normal_distribution>`__.\n\nThe normal distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::NormalDistribution, autowig::Held< class ::statiskit::NormalDistribution >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::NormalDistribution, struct ::statiskit::ContinuousUnivariateDistribution > > > class_2cfec7576f805b8d8fb103d1f86f786e("NormalDistribution", "This class NormalDistribution represents a `normal\ndistribution <https://en.wikipedia.org/wiki/Normal_distribution>`__.\n\nThe normal distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
     class_2cfec7576f805b8d8fb103d1f86f786e.def(boost::python::init<  >(""));
     class_2cfec7576f805b8d8fb103d1f86f786e.def(boost::python::init< double const &, double const & >(""));
     class_2cfec7576f805b8d8fb103d1f86f786e.def(boost::python::init< class ::statiskit::NormalDistribution const & >(""));
@@ -54,11 +53,10 @@ void wrapper_2cfec7576f805b8d8fb103d1f86f786e()
     class_2cfec7576f805b8d8fb103d1f86f786e.def("simulate", method_pointer_94892243f55453bf992266cde4b4fd4c, "");
     class_2cfec7576f805b8d8fb103d1f86f786e.def("get_mean", method_pointer_fce392a571745a91962c709e0efad22f, "Get mean of normal distribution $ E(X) = :raw-latex:`\\mu `$.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
     class_2cfec7576f805b8d8fb103d1f86f786e.def("get_variance", method_pointer_11a58521f76e5986ba024fd049789919, "Get variance of normal distribution $ V(X) = :raw-latex:`\\sigma`^2 $.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
-    class_2cfec7576f805b8d8fb103d1f86f786e.def("copy", method_pointer_08b27f9d325d5965aba2e6ff1f5a065c, "");
 
     if(autowig::Held< class ::statiskit::NormalDistribution >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NormalDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NormalDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::NormalDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NormalDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NormalDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NormalDistribution >::Type, class ::statiskit::NormalDistribution > > >();
     }
 

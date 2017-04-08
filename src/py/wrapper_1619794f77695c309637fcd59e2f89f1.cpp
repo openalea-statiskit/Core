@@ -25,15 +25,13 @@ void wrapper_1619794f77695c309637fcd59e2f89f1()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::WeightedUnivariateData::*method_pointer_030731f48c065448afd4aaab8ad4ec05)() const = &::statiskit::WeightedUnivariateData::copy;
-    boost::python::class_< struct ::statiskit::WeightedUnivariateData, autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, boost::python::bases< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData > > > class_1619794f77695c309637fcd59e2f89f1("WeightedUnivariateData", "", boost::python::no_init);
+    boost::python::class_< struct ::statiskit::WeightedUnivariateData, autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, struct ::statiskit::WeightedUnivariateData, class ::statiskit::WeightedData< struct ::statiskit::UnivariateData > > > > class_1619794f77695c309637fcd59e2f89f1("WeightedUnivariateData", "", boost::python::no_init);
     class_1619794f77695c309637fcd59e2f89f1.def(boost::python::init< struct ::statiskit::UnivariateData const * >(""));
     class_1619794f77695c309637fcd59e2f89f1.def(boost::python::init< struct ::statiskit::WeightedUnivariateData const & >(""));
-    class_1619794f77695c309637fcd59e2f89f1.def("copy", method_pointer_030731f48c065448afd4aaab8ad4ec05, "");
 
     if(autowig::Held< struct ::statiskit::WeightedUnivariateData >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData > >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, struct ::statiskit::WeightedUnivariateData, class ::statiskit::WeightedData< struct ::statiskit::UnivariateData > > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::WeightedUnivariateData, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::WeightedUnivariateData >::Type, struct ::statiskit::WeightedUnivariateData > > >();
     }
 

@@ -37,8 +37,7 @@ void wrapper_37d2da7ae2985fcc8caca8de36d30ce7()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::CauchyDistribution::*method_pointer_85b0ae64f5165b59a68b7c5d40245bd1)() const = &::statiskit::CauchyDistribution::simulate;
     double  (::statiskit::CauchyDistribution::*method_pointer_124ec7172b3f59f5aefc624ca1147226)() const = &::statiskit::CauchyDistribution::get_mean;
     double  (::statiskit::CauchyDistribution::*method_pointer_d9b987ac70da543f8f41f45fc6762194)() const = &::statiskit::CauchyDistribution::get_variance;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::CauchyDistribution::*method_pointer_a3387f804aed5f97a298fd63104197d6)() const = &::statiskit::CauchyDistribution::copy;
-    boost::python::class_< class ::statiskit::CauchyDistribution, autowig::Held< class ::statiskit::CauchyDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_37d2da7ae2985fcc8caca8de36d30ce7("CauchyDistribution", "This class CauchyDistribution represents a `Cauchy\ndistribution <https://en.wikipedia.org/wiki/Cauchy_distribution>`__.\n\nThe Cauchy distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::CauchyDistribution, autowig::Held< class ::statiskit::CauchyDistribution >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::CauchyDistribution, struct ::statiskit::ContinuousUnivariateDistribution > > > class_37d2da7ae2985fcc8caca8de36d30ce7("CauchyDistribution", "This class CauchyDistribution represents a `Cauchy\ndistribution <https://en.wikipedia.org/wiki/Cauchy_distribution>`__.\n\nThe Cauchy distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
     class_37d2da7ae2985fcc8caca8de36d30ce7.def(boost::python::init<  >(""));
     class_37d2da7ae2985fcc8caca8de36d30ce7.def(boost::python::init< double const &, double const & >(""));
     class_37d2da7ae2985fcc8caca8de36d30ce7.def(boost::python::init< class ::statiskit::CauchyDistribution const & >(""));
@@ -54,11 +53,10 @@ void wrapper_37d2da7ae2985fcc8caca8de36d30ce7()
     class_37d2da7ae2985fcc8caca8de36d30ce7.def("simulate", method_pointer_85b0ae64f5165b59a68b7c5d40245bd1, "");
     class_37d2da7ae2985fcc8caca8de36d30ce7.def("get_mean", method_pointer_124ec7172b3f59f5aefc624ca1147226, "The mean of Cauchy distribution is undefined.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
     class_37d2da7ae2985fcc8caca8de36d30ce7.def("get_variance", method_pointer_d9b987ac70da543f8f41f45fc6762194, "The variance of Cauchy distribution is undefined.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
-    class_37d2da7ae2985fcc8caca8de36d30ce7.def("copy", method_pointer_a3387f804aed5f97a298fd63104197d6, "");
 
     if(autowig::Held< class ::statiskit::CauchyDistribution >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::CauchyDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::CauchyDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::CauchyDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::CauchyDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::CauchyDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::CauchyDistribution >::Type, class ::statiskit::CauchyDistribution > > >();
     }
 

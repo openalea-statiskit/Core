@@ -8,3 +8,5 @@ build
 .sconsign.dblite
 ASG.pkl
 .~lock.*
+*.sublime-workspace
+.coverage

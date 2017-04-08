@@ -147,7 +147,7 @@ namespace statiskit
                     unsigned int _minits;
                     unsigned int _maxits;
 
-                    bool run(const unsigned int& its, const T& prev, const T& curr) const;
+                    template<class S> bool run(const unsigned int& its, const S& prev, const S& curr) const;
             };
 
         protected:

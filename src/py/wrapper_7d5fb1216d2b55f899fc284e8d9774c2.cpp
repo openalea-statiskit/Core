@@ -34,6 +34,7 @@ void wrapper_7d5fb1216d2b55f899fc284e8d9774c2()
     bool const & (::statiskit::NaturalVarianceEstimation::Estimator::*method_pointer_358b4c58950f56bfb8bfc2507f654d05)() const = &::statiskit::NaturalVarianceEstimation::Estimator::get_bias;
     void  (::statiskit::NaturalVarianceEstimation::Estimator::*method_pointer_c65d3ec547be5b3691943eb26d83ae67)(bool const &) = &::statiskit::NaturalVarianceEstimation::Estimator::set_bias;
     boost::python::class_< class ::statiskit::NaturalVarianceEstimation::Estimator, autowig::Held< class ::statiskit::NaturalVarianceEstimation::Estimator >::Type, boost::python::bases< struct ::statiskit::VarianceEstimation::Estimator > > class_7d5fb1216d2b55f899fc284e8d9774c2("Estimator", "", boost::python::no_init);
+    class_7d5fb1216d2b55f899fc284e8d9774c2.def(boost::python::init<  >(""));
     class_7d5fb1216d2b55f899fc284e8d9774c2.def(boost::python::init< bool const & >(""));
     class_7d5fb1216d2b55f899fc284e8d9774c2.def(boost::python::init< class ::statiskit::NaturalVarianceEstimation::Estimator const & >(""));
     class_7d5fb1216d2b55f899fc284e8d9774c2.def("__call__", method_pointer_7458bfe3be0657c48afaebc859bf2c2a, "");

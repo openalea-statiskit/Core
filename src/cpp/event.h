@@ -38,7 +38,7 @@ namespace statiskit
     struct STATISKIT_CORE_API UnivariateEvent
     {
         virtual ~UnivariateEvent();
-
+        
         virtual outcome_type get_outcome() const = 0;
 
         virtual event_type get_event() const = 0;

@@ -37,8 +37,7 @@ void wrapper_0b663e6159f1527ca997ac0244c65093()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::LogisticDistribution::*method_pointer_277a1ab674705585afe267bdfeb00021)() const = &::statiskit::LogisticDistribution::simulate;
     double  (::statiskit::LogisticDistribution::*method_pointer_29abd76d847f56ab95dc1453f5e275e9)() const = &::statiskit::LogisticDistribution::get_mean;
     double  (::statiskit::LogisticDistribution::*method_pointer_585b679b3a7951979b081bad34e01300)() const = &::statiskit::LogisticDistribution::get_variance;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::LogisticDistribution::*method_pointer_d71b87b8eb8356319370961cc9fdc78b)() const = &::statiskit::LogisticDistribution::copy;
-    boost::python::class_< class ::statiskit::LogisticDistribution, autowig::Held< class ::statiskit::LogisticDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_0b663e6159f1527ca997ac0244c65093("LogisticDistribution", "This class LogisticDistribution represents a `logistic\ndistribution <https://en.wikipedia.org/wiki/Logistic_distribution>`__.\n\nThe logistic distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::LogisticDistribution, autowig::Held< class ::statiskit::LogisticDistribution >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::LogisticDistribution, struct ::statiskit::ContinuousUnivariateDistribution > > > class_0b663e6159f1527ca997ac0244c65093("LogisticDistribution", "This class LogisticDistribution represents a `logistic\ndistribution <https://en.wikipedia.org/wiki/Logistic_distribution>`__.\n\nThe logistic distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
     class_0b663e6159f1527ca997ac0244c65093.def(boost::python::init<  >(""));
     class_0b663e6159f1527ca997ac0244c65093.def(boost::python::init< double const &, double const & >(""));
     class_0b663e6159f1527ca997ac0244c65093.def(boost::python::init< class ::statiskit::LogisticDistribution const & >(""));
@@ -54,11 +53,10 @@ void wrapper_0b663e6159f1527ca997ac0244c65093()
     class_0b663e6159f1527ca997ac0244c65093.def("simulate", method_pointer_277a1ab674705585afe267bdfeb00021, "");
     class_0b663e6159f1527ca997ac0244c65093.def("get_mean", method_pointer_29abd76d847f56ab95dc1453f5e275e9, "Get mean of logistic distribution $ E(X) = :raw-latex:`\\mu `$.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
     class_0b663e6159f1527ca997ac0244c65093.def("get_variance", method_pointer_585b679b3a7951979b081bad34e01300, "Get variance of logistic distribution $ V(X) =\n:raw-latex:`\\frac{\\sigma^2 \\pi^2}{3}` $.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
-    class_0b663e6159f1527ca997ac0244c65093.def("copy", method_pointer_d71b87b8eb8356319370961cc9fdc78b, "");
 
     if(autowig::Held< class ::statiskit::LogisticDistribution >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LogisticDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LogisticDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::LogisticDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::LogisticDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::LogisticDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::LogisticDistribution >::Type, class ::statiskit::LogisticDistribution > > >();
     }
 

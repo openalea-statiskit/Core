@@ -79,12 +79,6 @@ namespace statiskit
     const double& VarianceEstimation::get_mean() const
     { return _mean; }
 
-    std::unique_ptr< VarianceEstimation > VarianceEstimation::Estimator::operator() (const UnivariateData& data) const
-    { 
-        NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        return (*this)(data, estimator(data)->get_mean());
-    }
-
     NaturalVarianceEstimation::NaturalVarianceEstimation(const double& mean, const bool& bias, const double& variance) : VarianceEstimation(mean)
     { 
         _bias = bias;
@@ -103,6 +97,9 @@ namespace statiskit
     const double& NaturalVarianceEstimation::get_variance() const
     { return _variance; }
     
+    NaturalVarianceEstimation::Estimator::Estimator()
+    { _bias = false; }
+
     NaturalVarianceEstimation::Estimator::Estimator(const bool& bias)
     { _bias = bias; }
 

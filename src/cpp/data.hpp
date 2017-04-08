@@ -12,21 +12,8 @@
 namespace statiskit
 {
     template<class D>
-        WeightedData< D >::WeightedData(const D* data)
-        { 
-            _data = data; 
-            _weights = std::vector< double >();
-            std::unique_ptr< typename D::Generator > generator = data->generator();
-            while(generator->is_valid())
-            { _weights.push_back(1.); }
-        }
-
-    template<class D>
-        WeightedData< D >::WeightedData(const WeightedData< D >& data)
-        { 
-            _data = data._data; 
-            _weights = data._weights;
-        }
+        WeightedData< D >::WeightedData()
+        {}
 
     template<class D>
         WeightedData< D >::~WeightedData()
@@ -38,7 +25,7 @@ namespace statiskit
 
     template<class D>
         std::unique_ptr< typename D::Generator > WeightedData< D >::generator() const
-        { return std::make_unique< Generator >(this); }
+        { return std::make_unique< Generator >(const_cast< WeightedData< D >* >(this)); }
 
     template<class D>
         const D* WeightedData< D >::get_data() const
@@ -67,7 +54,27 @@ namespace statiskit
         }
 
     template<class D>
-        WeightedData< D >::Generator::Generator(const WeightedData< D >* data)
+        void WeightedData< D >::init(const D* data)
+        { 
+            _data = data; 
+            _weights = std::vector< double >();
+            std::unique_ptr< typename D::Generator > generator = data->generator();
+            while(generator->is_valid())
+            {
+                _weights.push_back(1.);
+                ++(*generator);
+            }
+        }
+
+    template<class D>
+        void WeightedData< D >::init(const WeightedData< D >& data)
+        { 
+            _data = data._data; 
+            _weights = data._weights;
+        }
+
+    template<class D>
+        WeightedData< D >::Generator::Generator(WeightedData< D >* data)
         {
             _data = data;
             _generator = data->_data->generator().release();
@@ -103,20 +110,6 @@ namespace statiskit
         { _data->_weights[_index] = weight; }
 
     template<class D>
-        WeightedMultivariateData::DataExtraction< D >::DataExtraction(const WeightedMultivariateData* weights, const D* data)
-        {
-            _weights = weights;
-            _data = data;
-        }
-
-    template<class D>
-        WeightedMultivariateData::DataExtraction< D >::DataExtraction(const DataExtraction< D >& data)
-        {
-            _weights = data._weights;
-            _data = data._data->copy().release();
-        }
-
-    template<class D>
         WeightedMultivariateData::DataExtraction< D >::~DataExtraction()
         { delete _data; }
 
@@ -128,10 +121,24 @@ namespace statiskit
         const typename D::sample_space_type* WeightedMultivariateData::DataExtraction< D >::get_sample_space() const
         { return _data->get_sample_space(); }
 
-    // template<class D>     
-    //     std::unique_ptr< D > WeightedMultivariateData::DataExtraction< D >::copy() const
-    //     { return std::make_unique< DataExtraction< D > >(*this); }
+    template<class D>
+        WeightedMultivariateData::DataExtraction< D >::DataExtraction()
+        {}
 
+    template<class D>
+        void WeightedMultivariateData::DataExtraction< D >::init(const WeightedMultivariateData* weights, const D* data)
+        {
+            _weights = weights;
+            _data = data;
+        }
+
+    template<class D>
+        void WeightedMultivariateData::DataExtraction< D >::init(const DataExtraction< D >& data)
+        {
+            _weights = data._weights;
+            _data = data._data->copy().release();
+        }
+        
     template<class D>     
         WeightedMultivariateData::DataExtraction< D >::Generator::Generator(const DataExtraction< D >* data)
         { 

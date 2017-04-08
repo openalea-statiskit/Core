@@ -35,8 +35,7 @@ void wrapper_9ca9917e667b52ea9eb2ec4f17e230b5()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::UnivariateHistogramDistribution::*method_pointer_e8f17738bc2159d293d6880591b6e2f8)() const = &::statiskit::UnivariateHistogramDistribution::simulate;
     double  (::statiskit::UnivariateHistogramDistribution::*method_pointer_6a0968deaa9e532db63520cb04aec06f)() const = &::statiskit::UnivariateHistogramDistribution::get_mean;
     double  (::statiskit::UnivariateHistogramDistribution::*method_pointer_b8c07d90af4353d5bc2e685f93f94b1d)() const = &::statiskit::UnivariateHistogramDistribution::get_variance;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::UnivariateHistogramDistribution::*method_pointer_4cf4f287b0a05d699290f971b7edff9a)() const = &::statiskit::UnivariateHistogramDistribution::copy;
-    boost::python::class_< class ::statiskit::UnivariateHistogramDistribution, autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_9ca9917e667b52ea9eb2ec4f17e230b5("UnivariateHistogramDistribution", "", boost::python::no_init);
+    boost::python::class_< class ::statiskit::UnivariateHistogramDistribution, autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistribution > > > class_9ca9917e667b52ea9eb2ec4f17e230b5("UnivariateHistogramDistribution", "", boost::python::no_init);
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def(boost::python::init< class ::std::set< double, struct ::std::less< double >, class ::std::allocator< double > > const &, class ::std::vector< double, class ::std::allocator< double > > const & >(""));
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def(boost::python::init< class ::statiskit::UnivariateHistogramDistribution const & >(""));
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def("get_nb_parameters", method_pointer_98a0b080781959fd8c256381b272d32a, "");
@@ -49,11 +48,10 @@ void wrapper_9ca9917e667b52ea9eb2ec4f17e230b5()
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def("simulate", method_pointer_e8f17738bc2159d293d6880591b6e2f8, "");
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def("get_mean", method_pointer_6a0968deaa9e532db63520cb04aec06f, "");
     class_9ca9917e667b52ea9eb2ec4f17e230b5.def("get_variance", method_pointer_b8c07d90af4353d5bc2e685f93f94b1d, "");
-    class_9ca9917e667b52ea9eb2ec4f17e230b5.def("copy", method_pointer_4cf4f287b0a05d699290f971b7edff9a, "");
 
     if(autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateHistogramDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateHistogramDistribution >::Type, class ::statiskit::UnivariateHistogramDistribution > > >();
     }
 

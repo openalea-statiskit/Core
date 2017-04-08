@@ -63,7 +63,6 @@ namespace statiskit
            
             struct STATISKIT_CORE_API Estimator
             {
-                virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data) const;
                 virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const = 0;
 
                 virtual std::unique_ptr< Estimator > copy() const = 0;
@@ -86,6 +85,7 @@ namespace statiskit
             class STATISKIT_CORE_API Estimator : public VarianceEstimation::Estimator
             {
                 public:
+                    Estimator();
                     Estimator(const bool& bias);
                     Estimator(const Estimator& estimator);
                       

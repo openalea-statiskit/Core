@@ -1,45 +1,34 @@
-import matplotlib
-matplotlib.use('Agg')
+from test_distribution import AbstractTestDiscreteUnivariateDistribution
 
 from statiskit import core
 
 import unittest
 from nose.plugins.attrib import attr
 
-import math
-
 @attr(linux=True,
       osx=True,
       win=True,
       level=1)
-class TestBinomial(unittest.TestCase):
+class TestBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution):
 
     @classmethod
     def setUpClass(cls):
         """Test binomial distribution construction"""
         cls._dist = core.BinomialDistribution(2, .5)
 
-    def test_pdf(self):
-        """Test binomial probability distribution function"""
-        self.assertAlmostEqual(self._dist.pdf(0), 0.25)
-        self.assertAlmostEqual(self._dist.pdf(1), 0.5)
-        self.assertAlmostEqual(self._dist.pdf(2), 0.25)
-
-    def test_ldf(self):
-        """Test binomial log-probability distribution function"""
-        self.assertAlmostEqual(self._dist.ldf(0), math.log(0.25))
-        self.assertAlmostEqual(self._dist.ldf(1), math.log(0.5))
-        self.assertAlmostEqual(self._dist.ldf(2), math.log(0.25))
-
-    def test_estimation(self):
-        """Test binomial estimation"""
+    def test_mle(self):
+        """Test binomial ML estimation"""
         data = self._dist.simulation(10)
-        mle = core.binomial_estimation('mle', data)
-        mme = core.binomial_estimation('mme', data)
-        self.assertEqual(mle[0], mme.estimated.kappa)
-        self.assertTrue(mle.estimated.loglikelihood(data) >= mme.estimated.loglikelihood(data))
+        mle = core.binomial_estimation('ml', data)
+        self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
+
+    def test_mme(self):
+        """Test binomial MM estimation"""
+        data = self._dist.simulation(10)
+        mme = core.binomial_estimation('mm', data)
+        self.assertEqual(mme.estimated.mean, float(data.mean))
 
     @classmethod
     def tearDownClass(cls):
-        """Test binomial distribution deletion"""
+        """Test distribution deletion"""
         del cls._dist
