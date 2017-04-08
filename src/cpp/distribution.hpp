@@ -12,32 +12,8 @@
 namespace statiskit
 {
     template<class T>
-        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values)
-        {
-            if(values.size() == 0)
-            { throw size_error("values", 0, 0, size_error::superior); }
-            _values = values;
-            _pi = Eigen::VectorXd::Ones(values.size());
-            _pi = _pi / _pi.sum();
-        }
-    
-    template<class T>
-        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi)
-        {
-            if(values.size() == 0)
-            { throw size_error("values", 0, 0, size_error::superior); }
-            if(values.size() != pi.size())
-            { throw size_error("values", 0, values.size(), size_error::equal); }
-            _values = values;
-            set_pi(pi);
-        }
-
-    template<class T>
-        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency)
-        {
-            _values = frequency._values;
-            _pi = frequency._pi;
-        }
+        UnivariateFrequencyDistribution< T >::UnivariateFrequencyDistribution()
+        {}
 
     template<class T>
         unsigned int UnivariateFrequencyDistribution< T >::get_nb_parameters() const
@@ -115,16 +91,44 @@ namespace statiskit
         }
 
     template<class T>
-        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values) : UnivariateFrequencyDistribution< T >(values)
-        {}
+        void UnivariateFrequencyDistribution< T >::init(const std::set< typename T::event_type::value_type >& values)
+        {
+            if(values.size() == 0)
+            { throw size_error("values", 0, 0, size_error::superior); }
+            _values = values;
+            _pi = Eigen::VectorXd::Ones(values.size());
+            _pi = _pi / _pi.sum();
+        }
+    
+    template<class T>
+        void UnivariateFrequencyDistribution< T >::init(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi)
+        {
+            if(values.size() == 0)
+            { throw size_error("values", 0, 0, size_error::superior); }
+            if(values.size() != pi.size())
+            { throw size_error("values", 0, values.size(), size_error::equal); }
+            _values = values;
+            set_pi(pi);
+        }
 
     template<class T>
-        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< T >(values, pi)
-        {}
+        void UnivariateFrequencyDistribution< T >::init(const UnivariateFrequencyDistribution< T >& frequency)
+        {
+            _values = frequency._values;
+            _pi = frequency._pi;
+        }
 
     template<class T>
-         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency) : UnivariateFrequencyDistribution< T >(frequency)
-         {}
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values)
+        { this->init(values); }
+
+    template<class T>
+        QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const std::set< typename T::event_type::value_type >& values, const Eigen::VectorXd& pi)
+        { this->init(values, pi); }
+
+    template<class T>
+         QuantitativeUnivariateFrequencyDistribution<T>::QuantitativeUnivariateFrequencyDistribution(const UnivariateFrequencyDistribution< T >& frequency)
+         { this->init(frequency); }
 
     template<class T>
         double QuantitativeUnivariateFrequencyDistribution< T >::cdf(const typename T::event_type::value_type& value) const
@@ -176,10 +180,6 @@ namespace statiskit
             { variance += pow(*it-mean, 2) * this->_pi[distance(this->_values.cbegin(), it)]; }
             return variance;
         }
-
-    template<class T>
-        std::unique_ptr< UnivariateDistribution > QuantitativeUnivariateFrequencyDistribution< T >::copy() const
-        { return std::make_unique< QuantitativeUnivariateFrequencyDistribution< T > >(*this); }
 
     template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals)
@@ -275,22 +275,8 @@ namespace statiskit
         }
 
     template<class D>
-        MixtureDistribution< D >::MixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi)
-        {
-            _observations.resize(observations.size());
-            for(Index index = 0, max_index = observations.size(); index < max_index; ++index)
-            { _observations[index] = static_cast< D* >(observations[index]->copy().release()); }
-            _pi = pi;
-        }
-
-    template<class D>
-        MixtureDistribution< D >::MixtureDistribution(const MixtureDistribution< D >& mixture)
-        {
-            _observations.resize(mixture._observations.size());
-            for(Index index = 0, max_index = mixture._observations.size(); index < max_index; ++index)
-            { _observations[index] = static_cast< D* >(mixture._observations[index]->copy().release()); }
-            _pi = mixture._pi;
-        } 
+        MixtureDistribution< D >::MixtureDistribution()
+        {} 
 
     template<class D>
         MixtureDistribution< D >::~MixtureDistribution()
@@ -342,8 +328,26 @@ namespace statiskit
             if(pi.size() != _pi.size())
             { throw size_error("pi", _pi.size(), size_error::equal); }
             _pi = pi / pi.sum();
+        } 
+
+    template<class D>
+        void MixtureDistribution< D >::init(const std::vector< D* > observations, const Eigen::VectorXd& pi)
+        {
+            _observations.resize(observations.size());
+            for(Index index = 0, max_index = observations.size(); index < max_index; ++index)
+            { _observations[index] = static_cast< D* >(observations[index]->copy().release()); }
+            _pi = pi;
         }
- 
+
+    template<class D>
+        void MixtureDistribution< D >::init(const MixtureDistribution< D >& mixture)
+        {
+            _observations.resize(mixture._observations.size());
+            for(Index index = 0, max_index = mixture._observations.size(); index < max_index; ++index)
+            { _observations[index] = static_cast< D* >(mixture._observations[index]->copy().release()); }
+            _pi = mixture._pi;
+        } 
+
      // template<class D>
      //    double MixtureDistribution< D >::posterior(const typename D::event_type* event, const Index& state, const bool& logarithm)
      //    { 
@@ -364,6 +368,10 @@ namespace statiskit
      //    }
 
      template<class D>
+        UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution() : MixtureDistribution < D >()
+        {}
+
+    template<class D>
         UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : MixtureDistribution < D >(observations, pi)
         {}
 
@@ -401,7 +409,11 @@ namespace statiskit
             return this->_observations[index]->simulate();
         }
 
-     template<class D>
+    template<class D>
+        QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution() : UnivariateMixtureDistribution < D >()
+        {}
+
+    template<class D>
         QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : UnivariateMixtureDistribution < D >(observations, pi)
         {}
 
@@ -441,8 +453,9 @@ namespace statiskit
         }
  
      template<class D>
-        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : MixtureDistribution < D >(observations, pi)
+        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi)
         {
+            this->init(observations, pi);
             typename std::vector< D* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
             Index nb_components = (*it)->get_nb_components();
             ++it;
@@ -456,8 +469,8 @@ namespace statiskit
         }
 
     template<class D>
-        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const MultivariateMixtureDistribution< D >& mixture) : MixtureDistribution< D >(mixture)
-        {} 
+        MultivariateMixtureDistribution< D >::MultivariateMixtureDistribution(const MultivariateMixtureDistribution< D >& mixture)
+        { this->init(mixture); } 
 
     template<class D>
         MultivariateMixtureDistribution< D >::~MultivariateMixtureDistribution()
@@ -498,10 +511,6 @@ namespace statiskit
             }
             return this->_observations[index]->simulate();
         }
-
-    template<class D>
-        std::unique_ptr< MultivariateDistribution > MultivariateMixtureDistribution< D >::copy() const
-        { return std::make_unique< MultivariateMixtureDistribution< D > >(*this); }
 }
 
 #endif

@@ -34,6 +34,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     CategoricalIndependentMultivariateDistributionEstimation,
                                                     CategoricalMultivariateMixtureDistributionEMEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
+                                                    MultinomialSplittingDistributionEstimation,
                                                     DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
                                                 ContinuousMultivariateDistributionEstimation,
@@ -51,6 +52,7 @@ __all__ = ['frequency_estimation',
            'poisson_estimation',
            'normal_estimation',
            'histogram_estimation',
+           'multinomial_splitting_estimation',
            'independent_estimation',
            'mixture_estimation']
 
@@ -176,6 +178,8 @@ def _estimation(algo, data, mapping, **kwargs):
     for attr in kwargs.keys():
         if hasattr(algo, attr):
             setattr(algo, attr, kwargs.pop(attr))
+        else:
+            raise AttributeError("'" + algo.__class__.__name__ + "' object has no attribute '" + attr + "'")
     if data:
         return algo(data, lazy)
     else:
@@ -276,12 +280,13 @@ def histogram_estimation(data, algo='irr', **kwargs):
     """
     """
     if isinstance(data, UnivariateData):
-        kwargs['mult'] = False
+        mult = False
     elif isinstance(data, MultivariateData):
-        kwargs['mult'] = True
+        mult = True
+    elif isinstance(data, bool):
+        mult = data
     else:
         raise TypeError('\'data\' parameter')
-    mult = kwargs.pop('mult', data)
     if mult:
         raise NotImplementedError()
     else:
@@ -292,6 +297,13 @@ def histogram_estimation(data, algo='irr', **kwargs):
 
 MultivariateDistributionEstimation.estimated = property(MultivariateDistributionEstimation.get_estimated)
 del MultivariateDistributionEstimation.get_estimated
+
+MultinomialSplittingDistributionEstimation.Estimator.sum = property(MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSplittingDistributionEstimation.Estimator.set_sum)
+del MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSplittingDistributionEstimation.Estimator.set_sum
+
+def multinomial_splitting_estimation(data=None, **kwargs):
+    mapping = dict(dflt = MultinomialSplittingDistributionEstimation.Estimator)
+    return _estimation('dflt', data, mapping, **kwargs)
 
 def independent_multivariate_distribution_estimation_decorator(cls):
 

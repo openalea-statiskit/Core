@@ -45,6 +45,15 @@
 
 namespace statiskit
 {
+
+    template<class T, class D, class B=T> struct PolymorphicCopy : public B
+    {
+        PolymorphicCopy();
+        virtual ~PolymorphicCopy();
+         
+        virtual std::unique_ptr< T > copy() const;
+    };
+
     namespace __impl
     {
         STATISKIT_CORE_API double reldiff(const double& prev, const double& curr);
@@ -67,8 +76,8 @@ namespace statiskit
     STATISKIT_CORE_API void set_seed();
     STATISKIT_CORE_API void set_seed(const Index& seed);
 
-    struct STATISKIT_CORE_API not_implemented_error : std::exception
-    { not_implemented_error(); };
+    struct STATISKIT_CORE_API not_implemented_error : std::runtime_error
+    { not_implemented_error(const std::string& function); };
 
     struct STATISKIT_CORE_API proxy_connection_error : std::exception
     { proxy_connection_error(); };

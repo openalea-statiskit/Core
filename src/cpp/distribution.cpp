@@ -71,40 +71,42 @@ namespace statiskit
         return p;
     }
 
-    NominalDistribution::NominalDistribution(const std::set< std::string >& values) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values)
-    {}
+    NominalDistribution::NominalDistribution(const std::set< std::string >& values)
+    { init(values); }
 
-    NominalDistribution::NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(values, pi)
-    {}
+    NominalDistribution::NominalDistribution(const std::set< std::string >& values, const Eigen::VectorXd& pi)
+    { init(values, pi); }
 
-    NominalDistribution::NominalDistribution(const NominalDistribution& nominal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(nominal)
-    {}
+    NominalDistribution::NominalDistribution(const NominalDistribution& nominal)
+    { init(nominal); }
 
     double NominalDistribution::pdf(const int& position) const
     { 
         return _pi[position];
         return 0;
     }
-        
-    std::unique_ptr< UnivariateDistribution > NominalDistribution::copy() const
-    { return std::make_unique< NominalDistribution >(*this); }
    
-    OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(std::set< std::string >(values.cbegin(), values.cend()))
+    OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values)
     {
+        init(std::set< std::string >(values.cbegin(), values.cend()));
         _rank = std::vector< Index >(_values.size());
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(std::set< std::string >(values.cbegin(), values.cend()), pi)
+    OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values, const Eigen::VectorXd& pi)
     {
+        init(std::set< std::string >(values.cbegin(), values.cend()), pi);
         _rank = std::vector< Index >(_values.size());
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { _rank[distance(_values.begin(), _values.find(values[size]))] = size; }
     }
 
-    OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal) : UnivariateFrequencyDistribution< CategoricalUnivariateDistribution >(ordinal)
-    { _rank = ordinal._rank; }
+    OrdinalDistribution::OrdinalDistribution(const OrdinalDistribution& ordinal)
+    {
+        init(ordinal);
+        _rank = ordinal._rank;
+    }
 
     double OrdinalDistribution::pdf(const std::string& value) const
     {
@@ -179,9 +181,6 @@ namespace statiskit
         { order[_rank[distance(_values.cbegin(), it)]] = *it; }
         return order;
     }
-
-    std::unique_ptr< UnivariateDistribution > OrdinalDistribution::copy() const
-    { return std::make_unique< OrdinalDistribution >(*this); }
 
     double DiscreteUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const
     {
@@ -321,9 +320,6 @@ namespace statiskit
     double PoissonDistribution::get_variance() const
     { return _theta; }
 
-    std::unique_ptr< UnivariateDistribution > PoissonDistribution::copy() const
-    { return std::make_unique< PoissonDistribution >(*this); }
-
     std::unique_ptr< UnivariateEvent > PoissonDistribution::simulate() const
     {
         boost::poisson_distribution<> dist(_theta);
@@ -423,9 +419,6 @@ namespace statiskit
     double BinomialDistribution::get_variance() const
     { return _kappa * _pi * (1. - _pi); }
 
-    std::unique_ptr< UnivariateDistribution > BinomialDistribution::copy() const
-    { return std::make_unique< BinomialDistribution >(*this); }
-
     NegativeBinomialDistribution::NegativeBinomialDistribution()
     {
         _kappa = 1.;
@@ -505,9 +498,6 @@ namespace statiskit
 
     std::unique_ptr< UnivariateEvent > NegativeBinomialDistribution::simulate() const
     { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
-
-    std::unique_ptr< UnivariateDistribution > NegativeBinomialDistribution::copy() const
-    { return std::make_unique< NegativeBinomialDistribution >(*this); }
 
     double ContinuousUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const
     {
@@ -646,9 +636,6 @@ namespace statiskit
 
     double NormalDistribution::get_variance() const
     { return pow(_sigma, 2); }
-    
-    std::unique_ptr< UnivariateDistribution > NormalDistribution::copy() const
-    { return std::make_unique< NormalDistribution >(*this); }
 
     UnivariateHistogramDistribution::UnivariateHistogramDistribution(const std::set<double>& bins, const std::vector<double>& densities)
     {
@@ -806,9 +793,6 @@ namespace statiskit
         return variance;
     }
 
-    std::unique_ptr< UnivariateDistribution > UnivariateHistogramDistribution::copy() const
-    { return std::make_unique< UnivariateHistogramDistribution >(*this); }
-
     void UnivariateHistogramDistribution::normalize()
     {
         double sum = 0.;
@@ -889,9 +873,6 @@ namespace statiskit
 
     double LogisticDistribution::get_variance() const
     { return pow(_sigma * boost::math::constants::pi<double>() , 2) / 3.; }
-
-    std::unique_ptr< UnivariateDistribution > LogisticDistribution::copy() const
-    { return std::make_unique< LogisticDistribution >(*this); }
     
     
     LaplaceDistribution::LaplaceDistribution() 
@@ -965,10 +946,6 @@ namespace statiskit
 
     double LaplaceDistribution::get_variance() const
     { return 2 * pow(_sigma, 2); }
-
-    std::unique_ptr< UnivariateDistribution > LaplaceDistribution::copy() const
-    { return std::make_unique< LaplaceDistribution >(*this); }    
-
     
     CauchyDistribution::CauchyDistribution() 
     {
@@ -1031,10 +1008,6 @@ namespace statiskit
 
     double CauchyDistribution::get_variance() const
     { return std::numeric_limits< double >::quiet_NaN(); }
-
-    std::unique_ptr< UnivariateDistribution > CauchyDistribution::copy() const
-    { return std::make_unique< CauchyDistribution >(*this); }    
-
 
     NonStandardStudentDistribution::NonStandardStudentDistribution() 
     {
@@ -1139,10 +1112,6 @@ namespace statiskit
     	else
     	{ return std::numeric_limits< double >::quiet_NaN(); }
     }
-
-    std::unique_ptr< UnivariateDistribution > NonStandardStudentDistribution::copy() const
-    { return std::make_unique< NonStandardStudentDistribution >(*this); }    
-
 
     GeneralizedStudentDistribution::GeneralizedStudentDistribution() 
     {
@@ -1257,10 +1226,6 @@ namespace statiskit
     	{ return std::numeric_limits< double >::quiet_NaN(); }
     }
 
-    std::unique_ptr< UnivariateDistribution > GeneralizedStudentDistribution::copy() const
-    { return std::make_unique< GeneralizedStudentDistribution >(*this); }    
-
-
     GumbelMaxDistribution::GumbelMaxDistribution() 
     {
         _mu = 0.;
@@ -1322,10 +1287,6 @@ namespace statiskit
 
     double GumbelMaxDistribution::get_variance() const
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
-
-    std::unique_ptr< UnivariateDistribution > GumbelMaxDistribution::copy() const
-    { return std::make_unique< GumbelMaxDistribution >(*this); }   
- 
     
     GumbelMinDistribution::GumbelMinDistribution() 
     {
@@ -1388,9 +1349,6 @@ namespace statiskit
 
     double GumbelMinDistribution::get_variance() const
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
-
-    std::unique_ptr< UnivariateDistribution > GumbelMinDistribution::copy() const
-    { return std::make_unique< GumbelMinDistribution >(*this); }      
      
     double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {
@@ -1404,11 +1362,11 @@ namespace statiskit
         return llh;
     }
 
-    CategoricalUnivariateMixtureDistribution::CategoricalUnivariateMixtureDistribution(const std::vector< CategoricalUnivariateDistribution* > observations, const Eigen::VectorXd& pi) : UnivariateMixtureDistribution< CategoricalUnivariateDistribution >(observations, pi)
-    {}
+    CategoricalUnivariateMixtureDistribution::CategoricalUnivariateMixtureDistribution(const std::vector< CategoricalUnivariateDistribution* > observations, const Eigen::VectorXd& pi)
+    { init(observations, pi); }
 
-    CategoricalUnivariateMixtureDistribution::CategoricalUnivariateMixtureDistribution(const CategoricalUnivariateMixtureDistribution& mixture) : UnivariateMixtureDistribution< CategoricalUnivariateDistribution >(mixture)
-    {}
+    CategoricalUnivariateMixtureDistribution::CategoricalUnivariateMixtureDistribution(const CategoricalUnivariateMixtureDistribution& mixture)
+    { init(mixture); }
 
     CategoricalUnivariateMixtureDistribution::~CategoricalUnivariateMixtureDistribution()
     {}
@@ -1431,9 +1389,6 @@ namespace statiskit
         }
         return values;
     }
-
-    std::unique_ptr< UnivariateDistribution > CategoricalUnivariateMixtureDistribution::copy() const
-    { return std::make_unique< CategoricalUnivariateMixtureDistribution >(*this); }
 
     MultinomialSplittingDistribution::MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi)
     {
@@ -1460,7 +1415,7 @@ namespace statiskit
     double MultinomialSplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
         double p;
-        if(event)
+        if(event && event->size() == get_nb_components())
         {
             try
             {
@@ -1479,9 +1434,10 @@ namespace statiskit
                 p = 0.;
                 double sum = 0.;
                 BinomialDistribution binomial = BinomialDistribution(kappa, 0);
-                for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+                const UnivariateEvent* uevent;
+                for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
                 {
-                    const UnivariateEvent* uevent = event->get(component);
+                    uevent = event->get(component);
                     if(uevent)
                     {
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
@@ -1498,6 +1454,9 @@ namespace statiskit
                         { throw std::exception(); }
                     }
                 }
+                uevent = event->get(get_nb_components() - 1);
+                if(uevent->get_outcome() != DISCRETE || uevent->get_event() != ELEMENTARY || static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() != kappa)
+                { p = log(0.); }
             }
             catch(const std::exception& error)
             { p = log(0.); }
@@ -1525,9 +1484,6 @@ namespace statiskit
         }
         return std::unique_ptr< MultivariateEvent >(event);
     }
-
-    std::unique_ptr< MultivariateDistribution > MultinomialSplittingDistribution::copy() const
-    { return std::make_unique< MultinomialSplittingDistribution >(*this); }
 
     const DiscreteUnivariateDistribution* MultinomialSplittingDistribution::get_sum() const
     { return _sum; }
@@ -1569,11 +1525,11 @@ namespace statiskit
         { throw parameter_error("pi", "number of parameters"); }
     }
 
-    DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi) : QuantitativeUnivariateMixtureDistribution< DiscreteUnivariateDistribution >(observations, pi)
-    {}
+    DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi)
+    { init(observations, pi); }
 
-    DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const DiscreteUnivariateMixtureDistribution& mixture) : QuantitativeUnivariateMixtureDistribution< DiscreteUnivariateDistribution >(mixture)
-    {}
+    DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const DiscreteUnivariateMixtureDistribution& mixture)
+    { init(mixture); }
 
     DiscreteUnivariateMixtureDistribution::~DiscreteUnivariateMixtureDistribution()
     {}
@@ -1611,14 +1567,17 @@ namespace statiskit
         return rv;
     }
 
-    std::unique_ptr< UnivariateDistribution > DiscreteUnivariateMixtureDistribution::copy() const
-    { return std::make_unique< DiscreteUnivariateMixtureDistribution >(*this); }
+    ContinuousUnivariateMixtureDistribution::ContinuousUnivariateMixtureDistribution(const std::vector< ContinuousUnivariateDistribution* > observations, const Eigen::VectorXd& pi)
+    { 
+        init(observations, pi);
+        _epsilon = 1e-6;
+    }
 
-    ContinuousUnivariateMixtureDistribution::ContinuousUnivariateMixtureDistribution(const std::vector< ContinuousUnivariateDistribution* > observations, const Eigen::VectorXd& pi) : QuantitativeUnivariateMixtureDistribution< ContinuousUnivariateDistribution >(observations, pi)
-    { _epsilon = 1e-6; }
-
-    ContinuousUnivariateMixtureDistribution::ContinuousUnivariateMixtureDistribution(const ContinuousUnivariateMixtureDistribution& mixture) : QuantitativeUnivariateMixtureDistribution< ContinuousUnivariateDistribution >(mixture)
-    { _epsilon = mixture._epsilon; }
+    ContinuousUnivariateMixtureDistribution::ContinuousUnivariateMixtureDistribution(const ContinuousUnivariateMixtureDistribution& mixture)
+    {
+        init(mixture);
+        _epsilon = mixture._epsilon;
+    }
 
     ContinuousUnivariateMixtureDistribution::~ContinuousUnivariateMixtureDistribution()
     {}
@@ -1653,9 +1612,6 @@ namespace statiskit
         } while(rv - lv > _epsilon);
         return rv;
     }
-
-    std::unique_ptr< UnivariateDistribution > ContinuousUnivariateMixtureDistribution::copy() const
-    { return std::make_unique< ContinuousUnivariateMixtureDistribution >(*this); }
 
     double ContinuousUnivariateMixtureDistribution::get_epsilon() const
     { return _epsilon; }

@@ -30,7 +30,6 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     void  (::statiskit::MultivariateDataFrame::*method_pointer_ceb65df6fb445fa2846e8bb4a96abc30)(struct ::statiskit::MultivariateSampleSpace const &) = &::statiskit::MultivariateDataFrame::set_sample_space;
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_86c4eec981d358ffb89d951709ca042f)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_0ab68ca083ea50fb8331aae3f3cc6f20)(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const &) const = &::statiskit::MultivariateDataFrame::extract;
-    class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateDataFrame::*method_pointer_7e101dc71c4750358ade0510b89d977c)() const = &::statiskit::MultivariateDataFrame::copy;
     ::statiskit::Index  (::statiskit::MultivariateDataFrame::*method_pointer_3d40300675955653b701c20d2aa3e360)() const = &::statiskit::MultivariateDataFrame::get_nb_components;
     class ::statiskit::UnivariateDataFrame const * (::statiskit::MultivariateDataFrame::*method_pointer_b9d069c00f5c563587cb7bb977d07267)(::statiskit::Index const &) const = &::statiskit::MultivariateDataFrame::get_component;
     void  (::statiskit::MultivariateDataFrame::*method_pointer_bd6f29af832854fd90b48c846aef5083)(::statiskit::Index const &, class ::statiskit::UnivariateDataFrame const &) = &::statiskit::MultivariateDataFrame::set_component;
@@ -45,7 +44,7 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  (::statiskit::MultivariateDataFrame::*method_pointer_82e95a12a3db599eb1d0d88a3d521a65)() = &::statiskit::MultivariateDataFrame::pop_event;
     void  (::statiskit::MultivariateDataFrame::*method_pointer_014f7c47848152659ad0201bd69f0ab5)(::statiskit::Index const &, struct ::statiskit::MultivariateEvent const *) = &::statiskit::MultivariateDataFrame::insert_event;
     void  (::statiskit::MultivariateDataFrame::*method_pointer_ce2cebc7034858dabbda327fb270350c)(::statiskit::Index const &) = &::statiskit::MultivariateDataFrame::remove_event;
-    boost::python::class_< class ::statiskit::MultivariateDataFrame, autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::bases< struct ::statiskit::MultivariateData > > class_c3848ca82c6150b480894755016faabf("MultivariateDataFrame", "", boost::python::no_init);
+    boost::python::class_< class ::statiskit::MultivariateDataFrame, autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::MultivariateDataFrame, struct ::statiskit::MultivariateData > > > class_c3848ca82c6150b480894755016faabf("MultivariateDataFrame", "", boost::python::no_init);
     class_c3848ca82c6150b480894755016faabf.def(boost::python::init<  >(""));
     class_c3848ca82c6150b480894755016faabf.def(boost::python::init< class ::statiskit::MultivariateDataFrame const & >(""));
     class_c3848ca82c6150b480894755016faabf.def("__iter__", method_pointer_cb42d7d3c1215410ae8eec0a996355f2, "");
@@ -53,7 +52,6 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     class_c3848ca82c6150b480894755016faabf.def("set_sample_space", method_pointer_ceb65df6fb445fa2846e8bb4a96abc30, "");
     class_c3848ca82c6150b480894755016faabf.def("extract", method_pointer_86c4eec981d358ffb89d951709ca042f, "");
     class_c3848ca82c6150b480894755016faabf.def("extract", method_pointer_0ab68ca083ea50fb8331aae3f3cc6f20, "");
-    class_c3848ca82c6150b480894755016faabf.def("copy", method_pointer_7e101dc71c4750358ade0510b89d977c, "");
     class_c3848ca82c6150b480894755016faabf.def("get_nb_components", method_pointer_3d40300675955653b701c20d2aa3e360, "");
     class_c3848ca82c6150b480894755016faabf.def("get_component", method_pointer_b9d069c00f5c563587cb7bb977d07267, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     class_c3848ca82c6150b480894755016faabf.def("set_component", method_pointer_bd6f29af832854fd90b48c846aef5083, "");
@@ -71,7 +69,7 @@ void wrapper_c3848ca82c6150b480894755016faabf()
 
     if(autowig::Held< class ::statiskit::MultivariateDataFrame >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, autowig::Held< struct ::statiskit::MultivariateData >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::MultivariateDataFrame, struct ::statiskit::MultivariateData > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::MultivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, class ::statiskit::MultivariateDataFrame > > >();
     }
 

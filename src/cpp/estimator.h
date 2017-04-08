@@ -206,7 +206,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API NormalDistributionMLEstimation : ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >
     {
-        // using ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >::ActiveEstimation;
         NormalDistributionMLEstimation();
         NormalDistributionMLEstimation(NormalDistribution const * estimated, UnivariateData const * data);            
         NormalDistributionMLEstimation(const NormalDistributionMLEstimation& estimation);
@@ -306,8 +305,38 @@ namespace statiskit
         }; 
     };
 
-    class MultinomialSplittingDistributionEstimation : public ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    class STATISKIT_CORE_API MultinomialSplittingDistributionEstimation : public ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
     {
+        public:
+            MultinomialSplittingDistributionEstimation();
+            MultinomialSplittingDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+            MultinomialSplittingDistributionEstimation(const MultinomialSplittingDistributionEstimation& estimation);
+            virtual ~MultinomialSplittingDistributionEstimation();
+
+            const DiscreteUnivariateDistributionEstimation* get_sum() const;
+
+            class STATISKIT_CORE_API Estimator : public DiscreteMultivariateDistributionEstimation::Estimator
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
+
+                    const DiscreteUnivariateDistributionEstimation::Estimator* get_sum() const;
+                    void set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum);
+
+                protected:
+                    DiscreteUnivariateDistributionEstimation::Estimator* _sum;
+
+                    std::unique_ptr< UnivariateData > compute_sum(const MultivariateData& data) const;
+            };
+
+        protected:
+            DiscreteUnivariateDistributionEstimation* _sum;
     };
 
     template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >

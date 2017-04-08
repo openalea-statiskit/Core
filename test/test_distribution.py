@@ -7,18 +7,11 @@ from nose.plugins.attrib import attr
 import numpy
 import math
 
-@attr(linux=True,
-      osx=True,
-      win=True,
-      level=1)
 class AbstractTestDistribution(object):
 
-    @classmethod
-    def tearDownClass(cls):
-        """Test distribution deletion"""
-        del cls._dist
+    pass
 
-class AbstractTestUnivariateDistribution(object):
+class AbstractTestUnivariateDistribution(AbstractTestDistribution):
 
     pass
 
@@ -45,7 +38,7 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
             self.assertGreaterEqual(self._dist.cdf(q), p)
             self.assertLess(self._dist.cdf(q-1), p)
 
-class AbstractTestMultivariateDistribution(object):
+class AbstractTestMultivariateDistribution(AbstractTestDistribution):
 
     pass
 

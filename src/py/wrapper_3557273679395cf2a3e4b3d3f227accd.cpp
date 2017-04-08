@@ -37,8 +37,7 @@ void wrapper_3557273679395cf2a3e4b3d3f227accd()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::LaplaceDistribution::*method_pointer_1fc5dcf06a2d5b4199bd8e2f9b4abf46)() const = &::statiskit::LaplaceDistribution::simulate;
     double  (::statiskit::LaplaceDistribution::*method_pointer_9a080ee3d6e95a75b1749e9124d4366a)() const = &::statiskit::LaplaceDistribution::get_mean;
     double  (::statiskit::LaplaceDistribution::*method_pointer_c6208a3696ba5778a178700027e95a3e)() const = &::statiskit::LaplaceDistribution::get_variance;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  (::statiskit::LaplaceDistribution::*method_pointer_07f3392a852c5ac09a071bb2460baecf)() const = &::statiskit::LaplaceDistribution::copy;
-    boost::python::class_< class ::statiskit::LaplaceDistribution, autowig::Held< class ::statiskit::LaplaceDistribution >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistribution > > class_3557273679395cf2a3e4b3d3f227accd("LaplaceDistribution", "This class LaplaceDistribution represents a `Laplace\ndistribution <https://en.wikipedia.org/wiki/Laplace_distribution>`__.\n\nThe Laplace distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
+    boost::python::class_< class ::statiskit::LaplaceDistribution, autowig::Held< class ::statiskit::LaplaceDistribution >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::LaplaceDistribution, struct ::statiskit::ContinuousUnivariateDistribution > > > class_3557273679395cf2a3e4b3d3f227accd("LaplaceDistribution", "This class LaplaceDistribution represents a `Laplace\ndistribution <https://en.wikipedia.org/wiki/Laplace_distribution>`__.\n\nThe Laplace distribution is an univariate continuous distribution. The\nsupport is the set of real values :math:`\\mathbb{R}`.\n\n", boost::python::no_init);
     class_3557273679395cf2a3e4b3d3f227accd.def(boost::python::init<  >(""));
     class_3557273679395cf2a3e4b3d3f227accd.def(boost::python::init< double const &, double const & >(""));
     class_3557273679395cf2a3e4b3d3f227accd.def(boost::python::init< class ::statiskit::LaplaceDistribution const & >(""));
@@ -54,11 +53,10 @@ void wrapper_3557273679395cf2a3e4b3d3f227accd()
     class_3557273679395cf2a3e4b3d3f227accd.def("simulate", method_pointer_1fc5dcf06a2d5b4199bd8e2f9b4abf46, "");
     class_3557273679395cf2a3e4b3d3f227accd.def("get_mean", method_pointer_9a080ee3d6e95a75b1749e9124d4366a, "Get mean of Laplace distribution $ E(X) = :raw-latex:`\\mu `$.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
     class_3557273679395cf2a3e4b3d3f227accd.def("get_variance", method_pointer_c6208a3696ba5778a178700027e95a3e, "Get variance of Laplace distribution $ V(X) = 2:raw-latex:`\\sigma`^2 $.\n\n:Return Type:\n    :cpp:any:`double`\n\n");
-    class_3557273679395cf2a3e4b3d3f227accd.def("copy", method_pointer_07f3392a852c5ac09a071bb2460baecf, "");
 
     if(autowig::Held< class ::statiskit::LaplaceDistribution >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::LaplaceDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::LaplaceDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::LaplaceDistribution >::Type, class ::statiskit::LaplaceDistribution > > >();
     }
 

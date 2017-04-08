@@ -28,7 +28,6 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
     class ::std::unique_ptr< struct ::statiskit::UnivariateData::Generator, struct ::std::default_delete< struct ::statiskit::UnivariateData::Generator > >  (::statiskit::UnivariateDataFrame::*method_pointer_11c9562ddc765f7b8924280f0bee5f38)() const = &::statiskit::UnivariateDataFrame::generator;
     struct ::statiskit::UnivariateSampleSpace const * (::statiskit::UnivariateDataFrame::*method_pointer_072b76b0842455d4b80cd594e9f7f683)() const = &::statiskit::UnivariateDataFrame::get_sample_space;
     void  (::statiskit::UnivariateDataFrame::*method_pointer_b2b45040751857d9942654209dd4fdac)(struct ::statiskit::UnivariateSampleSpace const &) = &::statiskit::UnivariateDataFrame::set_sample_space;
-    class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::UnivariateDataFrame::*method_pointer_e3125d321eff52ec8739bb1394a7a392)() const = &::statiskit::UnivariateDataFrame::copy;
     ::statiskit::Index  (::statiskit::UnivariateDataFrame::*method_pointer_ec123cb9662359159705d2b9db63dcaf)() const = &::statiskit::UnivariateDataFrame::get_nb_events;
     struct ::statiskit::UnivariateEvent const * (::statiskit::UnivariateDataFrame::*method_pointer_acfaaecaae6e563198d7e451796407a2)(::statiskit::Index const &) const = &::statiskit::UnivariateDataFrame::get_event;
     void  (::statiskit::UnivariateDataFrame::*method_pointer_ce7b8fa1ade75b408b8f489683745f15)(::statiskit::Index const &, struct ::statiskit::UnivariateEvent const *) = &::statiskit::UnivariateDataFrame::set_event;
@@ -36,13 +35,12 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
     class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  (::statiskit::UnivariateDataFrame::*method_pointer_a77777c59a785c7cb264ac4c74d865ac)() = &::statiskit::UnivariateDataFrame::pop_event;
     void  (::statiskit::UnivariateDataFrame::*method_pointer_fc1013be18f0593e9a96b8a03e5b4823)(::statiskit::Index const &, struct ::statiskit::UnivariateEvent const *) = &::statiskit::UnivariateDataFrame::insert_event;
     void  (::statiskit::UnivariateDataFrame::*method_pointer_0f508f8076e95e299ce71667166fb56e)(::statiskit::Index const &) = &::statiskit::UnivariateDataFrame::remove_event;
-    boost::python::class_< class ::statiskit::UnivariateDataFrame, autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, boost::python::bases< struct ::statiskit::UnivariateData, class ::statiskit::NamedData > > class_5678c4d7ca565a7d9dbc239c27111073("UnivariateDataFrame", "", boost::python::no_init);
+    boost::python::class_< class ::statiskit::UnivariateDataFrame, autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, class ::statiskit::UnivariateDataFrame, struct ::statiskit::UnivariateData >, class ::statiskit::NamedData > > class_5678c4d7ca565a7d9dbc239c27111073("UnivariateDataFrame", "", boost::python::no_init);
     class_5678c4d7ca565a7d9dbc239c27111073.def(boost::python::init< struct ::statiskit::UnivariateSampleSpace const & >(""));
     class_5678c4d7ca565a7d9dbc239c27111073.def(boost::python::init< class ::statiskit::UnivariateDataFrame const & >(""));
     class_5678c4d7ca565a7d9dbc239c27111073.def("__iter__", method_pointer_11c9562ddc765f7b8924280f0bee5f38, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_sample_space", method_pointer_072b76b0842455d4b80cd594e9f7f683, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("set_sample_space", method_pointer_b2b45040751857d9942654209dd4fdac, "");
-    class_5678c4d7ca565a7d9dbc239c27111073.def("copy", method_pointer_e3125d321eff52ec8739bb1394a7a392, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_nb_events", method_pointer_ec123cb9662359159705d2b9db63dcaf, "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("get_event", method_pointer_acfaaecaae6e563198d7e451796407a2, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     class_5678c4d7ca565a7d9dbc239c27111073.def("set_event", method_pointer_ce7b8fa1ade75b408b8f489683745f15, "");
@@ -53,7 +51,7 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
 
     if(autowig::Held< class ::statiskit::UnivariateDataFrame >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, autowig::Held< struct ::statiskit::UnivariateData >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, class ::statiskit::UnivariateDataFrame, struct ::statiskit::UnivariateData > >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, autowig::Held< class ::statiskit::NamedData >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, class ::statiskit::UnivariateDataFrame > > >();
     }

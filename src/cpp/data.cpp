@@ -240,9 +240,6 @@ namespace statiskit
         { throw statiskit::parameter_error("sample_space", "incompatible"); }
     }
 
-    std::unique_ptr< UnivariateData > UnivariateDataFrame::copy() const
-    { return std::make_unique< UnivariateDataFrame >(*this); }
-
     Index UnivariateDataFrame::get_nb_events() const
     { return _events.size(); }
     
@@ -446,9 +443,6 @@ namespace statiskit
         return std::make_unique< MultivariateDataExtraction >(this, indices);
       }
 
-    std::unique_ptr< MultivariateData > MultivariateDataFrame::copy() const
-    { return std::make_unique< MultivariateDataFrame >(*this); }
-
     Index MultivariateDataFrame::get_nb_components() const
     { return _components.size(); }
 
@@ -608,9 +602,6 @@ namespace statiskit
     const UnivariateSampleSpace* MultivariateDataFrame::SampleSpace::get(const Index& index) const
     { return _data->_components[index]->get_sample_space(); }
 
-    std::unique_ptr< MultivariateSampleSpace > MultivariateDataFrame::SampleSpace::copy() const
-    { return std::make_unique< SampleSpace >(*this); }
-
     MultivariateDataFrame::Event::Event(const MultivariateDataFrame* data, const Index& index)
     {
         _data = data;
@@ -635,9 +626,6 @@ namespace statiskit
         { throw lower_bound_error("index", index, size(), true); }
         return _data->_components[index]->get_event(_index);
     }
-
-    std::unique_ptr< MultivariateEvent > MultivariateDataFrame::Event::copy() const
-    { return std::make_unique< MultivariateDataFrame::Event >(*this); }
 
     MultivariateDataFrame::Event::Generator::Generator(const MultivariateDataFrame* data)
     { _event = new MultivariateDataFrame::Event(data, 0); }
@@ -672,9 +660,6 @@ namespace statiskit
     const UnivariateSampleSpace* MultivariateDataFrame::UnivariateDataExtraction::get_sample_space() const
     { return _data->get_sample_space(); }
 
-    std::unique_ptr< UnivariateData > MultivariateDataFrame::UnivariateDataExtraction::copy() const
-    { return _data->copy(); }
-
     MultivariateDataFrame::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< Index >& indices)
     { 
         _data = data;
@@ -702,9 +687,6 @@ namespace statiskit
         return _data->extract(new_indices);
     }
 
-    std::unique_ptr< MultivariateData > MultivariateDataFrame::MultivariateDataExtraction::copy() const
-    { return std::unique_ptr< MultivariateData >(); }
-
     MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::SampleSpace(const MultivariateDataExtraction* data)
     { _data = data; }
 
@@ -716,9 +698,6 @@ namespace statiskit
 
     const UnivariateSampleSpace* MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::get(const Index& index) const
     { return _data->_data->_sample_space->get(_data->_indices[index]); }
-
-    std::unique_ptr< MultivariateSampleSpace > MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::copy() const
-    { return std::unique_ptr< MultivariateSampleSpace >(); }
 
     MultivariateDataFrame::MultivariateDataExtraction::Event::Event(const MultivariateDataExtraction* data, const Index& index)
     {
@@ -738,9 +717,6 @@ namespace statiskit
         { throw lower_bound_error("index", index, size(), true); }
         return _data->_data->_components[_data->_indices[index]]->get_event(_index);
     }
-
-    std::unique_ptr< MultivariateEvent > MultivariateDataFrame::MultivariateDataExtraction::Event::copy() const
-    { return std::unique_ptr< MultivariateEvent >(); }
 
     MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::Generator(const MultivariateDataExtraction* data)
     { _event = new MultivariateDataFrame::MultivariateDataExtraction::Event(data, 0); }
@@ -763,23 +739,20 @@ namespace statiskit
     double MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::weight() const
     { return 1.; }
 
-    WeightedUnivariateData::WeightedUnivariateData(const UnivariateData* data) : WeightedData< UnivariateData >(data)
-    {}
+    WeightedUnivariateData::WeightedUnivariateData(const UnivariateData* data)
+    { init(data); }
 
-    WeightedUnivariateData::WeightedUnivariateData(const WeightedUnivariateData& data) : WeightedData< UnivariateData >(data)
-    {}
+    WeightedUnivariateData::WeightedUnivariateData(const WeightedUnivariateData& data)
+    { init(data); }
 
     WeightedUnivariateData::~WeightedUnivariateData()
     {}
 
-    std::unique_ptr< UnivariateData > WeightedUnivariateData::copy() const
-    { return std::make_unique< WeightedUnivariateData >(*this); }
+    WeightedMultivariateData::WeightedMultivariateData(const MultivariateData* data)
+    { init(data); }
 
-    WeightedMultivariateData::WeightedMultivariateData(const MultivariateData* data) : WeightedData< MultivariateData >(data)
-    {}
-
-    WeightedMultivariateData::WeightedMultivariateData(const WeightedMultivariateData& data) : WeightedData< MultivariateData >(data)
-    {}
+    WeightedMultivariateData::WeightedMultivariateData(const WeightedMultivariateData& data)
+    { init(data); }
 
     WeightedMultivariateData::~WeightedMultivariateData()
     {}
@@ -790,26 +763,26 @@ namespace statiskit
     std::unique_ptr< MultivariateData > WeightedMultivariateData::extract(const std::set< Index >& indices) const
     { return std::make_unique< MultivariateDataExtraction >(this, indices); }
 
-    std::unique_ptr< MultivariateData > WeightedMultivariateData::copy() const
-    { return std::unique_ptr< MultivariateData >(new WeightedMultivariateData(*this)); }
+    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const WeightedMultivariateData* weights, const Index& index)
+    { init(weights,  weights->_data->extract(index).release()); }
 
-    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const WeightedMultivariateData* weights, const Index& index) : WeightedMultivariateData::DataExtraction< UnivariateData >(weights, weights->_data->extract(index).release())
-    {}
-
-    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const UnivariateDataExtraction& data) : WeightedMultivariateData::DataExtraction< UnivariateData >(data)
-    {}
+    WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const UnivariateDataExtraction& data)
+    { init(data); }
 
     WeightedMultivariateData::UnivariateDataExtraction::~UnivariateDataExtraction()
     {}
 
-    std::unique_ptr< UnivariateData > WeightedMultivariateData::UnivariateDataExtraction::copy() const
-    { return std::make_unique< UnivariateDataExtraction >(*this); }
+    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices)
+    {
+        init(weights, weights->_data->extract(indices).release());
+        _indices = std::vector< Index >(indices.cbegin(), indices.cend());
+    }
 
-    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices) : WeightedMultivariateData::DataExtraction< MultivariateData >(weights, weights->_data->extract(indices).release())
-    { _indices = std::vector< Index >(indices.cbegin(), indices.cend()); }
-
-    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataExtraction& data) : WeightedMultivariateData::DataExtraction< MultivariateData >(data)
-    { _indices = data._indices; }
+    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataExtraction& data)
+    {
+        init(data);
+        _indices = data._indices;
+    }
 
     WeightedMultivariateData::MultivariateDataExtraction::~MultivariateDataExtraction()
     {}
@@ -824,7 +797,4 @@ namespace statiskit
         { __indices.insert(__indices.end(), _indices[*it]); }
         return std::make_unique< MultivariateDataExtraction >(_weights, __indices);
      }
-
-    std::unique_ptr< MultivariateData > WeightedMultivariateData::MultivariateDataExtraction::copy() const
-    { return std::make_unique< MultivariateDataExtraction >(*this); }
 }

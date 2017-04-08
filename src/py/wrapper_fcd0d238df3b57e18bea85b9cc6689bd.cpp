@@ -4,24 +4,6 @@
 
 namespace autowig
 {
-    class Wrap_fcd0d238df3b57e18bea85b9cc6689bd : public ::statiskit::IndependentMultivariateDistribution< ::statiskit::CategoricalMultivariateDistribution >, public boost::python::wrapper< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >
-    {
-        public:
-            
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > >  copy() const
-            {
-                 ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > ::element_type* result = this->get_override("copy")();
-                 return ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > > (result);
-            }
-                        
-
-        protected:
-            
-
-        private:
-            
-
-    };
 
 }
 
@@ -29,7 +11,6 @@ namespace autowig
     #if (_MSC_VER == 1900)
 namespace boost
 {
-    template <> autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd const volatile * get_pointer<autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd const volatile >(autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd const volatile *c) { return c; }
     template <> class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > const volatile * get_pointer<class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > const volatile >(class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > const volatile *c) { return c; }
 }
     #endif
@@ -50,7 +31,8 @@ void wrapper_fcd0d238df3b57e18bea85b9cc6689bd()
     struct ::statiskit::CategoricalUnivariateDistribution * (::statiskit::IndependentMultivariateDistribution< ::statiskit::CategoricalMultivariateDistribution >::*method_pointer_818ca7d1d08e500f9fdad5a4ce19bd32)(::statiskit::Index const &) const = &::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >::get_marginal;
     void  (::statiskit::IndependentMultivariateDistribution< ::statiskit::CategoricalMultivariateDistribution >::*method_pointer_d4c0923a09515e3895dd52996a8d0331)(::statiskit::Index const &, struct ::statiskit::CategoricalUnivariateDistribution const &) = &::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >::set_marginal;
     class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  (::statiskit::IndependentMultivariateDistribution< ::statiskit::CategoricalMultivariateDistribution >::*method_pointer_0f52f774d40458bbaf46eea3436f4137)() const = &::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >::simulate;
-    boost::python::class_< autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd, autowig::Held< autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd >::Type, boost::python::bases< struct ::statiskit::CategoricalMultivariateDistribution >, boost::noncopyable > class_fcd0d238df3b57e18bea85b9cc6689bd("_IndependentMultivariateDistribution_fcd0d238df3b57e18bea85b9cc6689bd", "", boost::python::no_init);
+    boost::python::class_< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, struct ::statiskit::CategoricalMultivariateDistribution > > > class_fcd0d238df3b57e18bea85b9cc6689bd("_IndependentMultivariateDistribution_fcd0d238df3b57e18bea85b9cc6689bd", "", boost::python::no_init);
+    class_fcd0d238df3b57e18bea85b9cc6689bd.def(boost::python::init< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > const & >(""));
     class_fcd0d238df3b57e18bea85b9cc6689bd.def("get_nb_components", method_pointer_b2836a34e74652b482eb08632a16a095, "");
     class_fcd0d238df3b57e18bea85b9cc6689bd.def("get_nb_parameters", method_pointer_841524f77088536bb8c745d114026401, "");
     class_fcd0d238df3b57e18bea85b9cc6689bd.def("probability", method_pointer_2d888499a06b5978bd78815239bd67ea, "");
@@ -60,9 +42,7 @@ void wrapper_fcd0d238df3b57e18bea85b9cc6689bd()
 
     if(autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_fcd0d238df3b57e18bea85b9cc6689bd >::Type, autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type >();
-        boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type, autowig::Held< struct ::statiskit::CategoricalMultivariateDistribution >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, struct ::statiskit::CategoricalMultivariateDistribution > >::Type >();
         //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > >::Type, class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution > > > >();
     }
 

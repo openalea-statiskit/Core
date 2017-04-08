@@ -27,3 +27,8 @@ class TestBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution
         data = self._dist.simulation(10)
         mme = core.binomial_estimation('mm', data)
         self.assertEqual(mme.estimated.mean, float(data.mean))
+
+    @classmethod
+    def tearDownClass(cls):
+        """Test distribution deletion"""
+        del cls._dist

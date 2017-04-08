@@ -3,69 +3,12 @@
 	[
 		{
 			"path": ".",
-            "folder_exclude_patterns": ["build"]
+            "folder_exclude_patterns": ["build"],
+            "file_exclude_patterns": [".travis.yml", ".sconsign.dblite", ".coverage"],
 		}
 	],
     "settings":
     {
         "tab_size": 4
     },
-    "build_systems":
-    [
-        {
-            "name": "SCons",
-            "working_dir": "${project_path}",
-            "linux":
-            {
-                "cmd": "bash -c 'source activate statiskit-dev && scons autowig -j7 --diagnostics-color=never && scons -j7 --diagnostics-color=never --test-debug=none'",
-                "shell": true
-            },
-            "osx":
-            {
-                "cmd": "bash -c 'source activate statiskit-dev && scons autowig -j7 && scons -j7 --test-debug=none'",
-                "shell": true
-            },
-            "windows":
-            {
-                "cmd": "activate statiskit-dev & scons autowig -j7 & scons -j7 --test-debug=none",
-                "shell": true
-            },
-            "variants":
-            [
-                {
-                    "name": "Clean",
-                    "linux":
-                    {
-                        "cmd": "bash -c 'source activate statiskit-dev && scons -c'",
-                        "shell": true
-                    },
-                    "osx":
-                    {
-                        "cmd": "bash -c 'source activate statiskit-dev && scons -c'",
-                        "shell": true
-                    },
-                    "windows":
-                    {
-                        "cmd": "activate statiskit-dev & scons autowig -j7 & scons -c",
-                        "shell": true
-                    },   
-                },
-                {
-                    "name": "C++",
-                    "file_regex": "^build/(..[^:]*):([0-9]+):?([0-9]+)?:? error: (.*)$",
-                    "selector": "source.c++"
-                },
-                {
-                    "name": "Python",
-                    "file_regex": "^[ ]*File \".*/site-packages/statiskit/(...*?)\", line ([0-9]*)",
-                    "selector": "source.python",
-                },
-                {
-                    "name": "Test",
-                    "file_regex": "^[ ]*File \".*build/(...*?)\", line ([0-9]*)",
-                    "selector": "source.python"
-                }
-            ]
-        },
-    ]
 }

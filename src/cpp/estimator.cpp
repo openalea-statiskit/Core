@@ -825,4 +825,114 @@ namespace statiskit
         { throw statiskit::lower_bound_error("constant", constant, 0.0, true); }
         _constant = constant;
     }
+
+    MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation() : ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >()
+    { _sum = nullptr; }
+
+    MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data) : ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
+    { _sum = nullptr; }
+
+    MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation(const MultinomialSplittingDistributionEstimation& estimation) : ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
+    { _sum = estimation._sum; }
+
+    MultinomialSplittingDistributionEstimation::~MultinomialSplittingDistributionEstimation()
+    { 
+        if(_sum)
+        { delete _sum; }
+        _sum = nullptr;
+    }
+
+    const DiscreteUnivariateDistributionEstimation* MultinomialSplittingDistributionEstimation::get_sum() const
+    { return _sum; }
+
+    MultinomialSplittingDistributionEstimation::Estimator::Estimator()
+    { _sum = nullptr; }
+
+    MultinomialSplittingDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
+    {
+        if(estimator._sum)
+        { _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(estimator._sum->copy().release()); }
+        else
+        { _sum = nullptr; }
+    }
+
+    MultinomialSplittingDistributionEstimation::Estimator::~Estimator()
+    {
+        if(_sum)
+        {
+            delete _sum;
+            _sum = nullptr;
+        }
+    }
+
+    std::unique_ptr< MultivariateDistributionEstimation > MultinomialSplittingDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    {
+        std::unique_ptr< UnivariateData > sum_data = compute_sum(data);
+        DiscreteUnivariateDistributionEstimation* sum_estimation = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(*(sum_data.get()), lazy)).release());
+        std::unique_ptr< MultivariateDistributionEstimation > estimation;
+        std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        Eigen::VectorXd pi = Eigen::VectorXd::Zero(generator->event()->size());
+        while(generator->is_valid())
+        {
+            const MultivariateEvent* mevent = generator->event();
+            for(Index component = 0, max_component = mevent->size(); component < max_component; ++component)
+            {
+                const UnivariateEvent* uevent = mevent->get(component);
+                if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                { pi[component] += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+            }
+            ++(*generator);
+        }
+        MultinomialSplittingDistribution* estimated = new MultinomialSplittingDistribution(static_cast< const DiscreteUnivariateDistribution& >(*(sum_estimation->get_estimated())), pi);
+        if(lazy)
+        { 
+            estimation = std::make_unique< LazyEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
+            delete sum_estimation;
+        }
+        else
+        {
+            estimation = std::make_unique< MultinomialSplittingDistributionEstimation >(estimated, &data);
+            static_cast< MultinomialSplittingDistributionEstimation* >(estimation.get())->_sum = sum_estimation;
+        }
+        return estimation;
+    }
+
+    std::unique_ptr< MultivariateDistributionEstimation::Estimator > MultinomialSplittingDistributionEstimation::Estimator::copy() const
+    { return std::make_unique< MultinomialSplittingDistributionEstimation::Estimator >(*this); }
+
+    const DiscreteUnivariateDistributionEstimation::Estimator* MultinomialSplittingDistributionEstimation::Estimator::get_sum() const
+    { return _sum; }
+
+    void MultinomialSplittingDistributionEstimation::Estimator::set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum)
+    { _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(sum.copy().release()); }
+
+    std::unique_ptr< UnivariateData > MultinomialSplittingDistributionEstimation::Estimator::compute_sum(const MultivariateData& data) const
+    {
+        std::unique_ptr< UnivariateDataFrame > sum_data = std::make_unique< UnivariateDataFrame >(get_NN());
+        std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        while(generator->is_valid())
+        {
+            int value = 0;
+            const MultivariateEvent* mevent = generator->event();
+            for(Index component = 0, max_component = mevent->size(); component < max_component; ++component)
+            {
+                const UnivariateEvent* uevent = mevent->get(component);
+                if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                { value += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+            }
+            sum_data->add_event(new DiscreteElementaryEvent(value));
+            ++(*generator);
+        }
+        /*std::unique_ptr< WeightedUnivariateData > weighted_sum_data = std::make_unique< WeightedUnivariateData >(sum_data.release());
+        generator = data->generator();
+        while(generator->is_valid())
+        {
+            sum_data->add_event(new DiscreteElementaryEvent(value));
+            ++(*generator);
+        }
+        std::
+        throw not_implemented_error("compute_sum");
+        return weighted_sum_data; // TODO memory leak*/
+        return sum_data;
+    }
 }
