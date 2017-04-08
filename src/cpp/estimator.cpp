@@ -908,7 +908,7 @@ namespace statiskit
 
     std::unique_ptr< UnivariateData > MultinomialSplittingDistributionEstimation::Estimator::compute_sum(const MultivariateData& data) const
     {
-        std::unique_ptr< UnivariateDataFrame > sum_data = std::make_unique< UnivariateDataFrame >(get_NN());
+        UnivariateDataFrame* sum_data = new UnivariateDataFrame(get_NN());
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
         while(generator->is_valid())
         {
@@ -933,6 +933,6 @@ namespace statiskit
         std::
         throw not_implemented_error("compute_sum");
         return weighted_sum_data; // TODO memory leak*/
-        return sum_data;
+        return std::unique_ptr< UnivariateData >(sum_data);
     }
 }
