@@ -561,7 +561,7 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs)
         densities = [norm * d for d in densities]
     if '|' in fmt:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
-            axes.bar(lc, d, rc-lc, 0., facecolor=color, alpha=alpha)
+            axes.bar(lc, d, rc-lc, 0., facecolor=color, alpha=alpha, edgecolor=kwargs.pop('edgecolor', 'k'))
             #axes.add_patch(patches.Rectangle((lc, 0), rc-lc, d, facecolor=color, alpha=alpha))
         fmt = fmt.replace('|', '')
     if 'o' in fmt:

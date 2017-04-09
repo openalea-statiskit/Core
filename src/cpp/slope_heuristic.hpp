@@ -33,14 +33,6 @@ namespace statiskit
             { _data = nullptr; }
         }
 
-    // template<class E>
-    //     SlopeHeuristicSelection< E >::SlopeHeuristicSelection(const std::set< double >& penshapes, const std::vector< double >& scores, const std::shared_ptr< SlopeHeuristicSolver >& solver, const std::shared_ptr< SlopeHeuristicSelector >& selector, const std::vector< std::shared_ptr< E > >& estimated) : SlopeHeuristic(penshapes, scores, solver, selector)
-    //     {
-    //         if(estimated.size() != penshapes.size())
-    //         { throw std::runtime_error("invalid"); }
-    //         _estimated = estimated;
-    //     }
-
     template<class E>
         SlopeHeuristicSelection< E >::~SlopeHeuristicSelection()
         { 

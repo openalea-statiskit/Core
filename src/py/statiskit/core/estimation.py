@@ -65,7 +65,7 @@ def active_estimation_decorator(cls):
     del cls.get_data
 
     def pdf_plot(self, axes=None, fmt=('|', '-'), color=('b', 'r'), alpha=(1., 1.), norm=False, **kwargs):
-        axes = self.data_frame.pdf_plot(axes=axes, fmt=fmt[0], color=color[0], alpha=alpha[0], norm=norm, **kwargs.pop('data_frame', dict()))
+        axes = self.data.pdf_plot(axes=axes, fmt=fmt[0], color=color[0], alpha=alpha[0], norm=norm, **kwargs.pop('data_frame', dict()))
         if isinstance(norm, bool):
             if not norm:
                 norm = self.data.total
@@ -245,7 +245,7 @@ def normal_estimation(algo='ml', data=None, **kwargs):
                        dict(ml = NormalDistributionMLEstimation.Estimator),
                        **kwargs)
 
-class Proxy(Proxy):
+class Proposals(Proxy):
     pass
 
 def wrapper(f):
@@ -261,10 +261,17 @@ def wrapper(f):
             return f(self.obj, index)
     return __getitem__
 
-Proxy.__getitem__ = wrapper(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
-RegularUnivariateHistogramDistributionSlopeHeuristicSelection.estimated = property(Proxy)
-Proxy.__getitem__ = wrapper(IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
-IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.estimated = property(Proxy)
+class RegularProposals(Proposals):
+    pass
+        
+RegularProposals.__getitem__ = wrapper(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
+RegularUnivariateHistogramDistributionSlopeHeuristicSelection.proposals = property(RegularProposals)
+
+class IrregularProposals(Proposals):
+    pass
+
+IrregularProposals.__getitem__ = wrapper(IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
+IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.proposals = property(IrregularProposals)
 
 
 UnivariateHistogramDistributionEstimation.Estimator.nb_bins = property(UnivariateHistogramDistributionEstimation.Estimator.get_nb_bins, UnivariateHistogramDistributionEstimation.Estimator.set_nb_bins)
@@ -276,7 +283,7 @@ del IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.ge
 RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.max_bins = property(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins)
 del RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.get_max_bins, RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator.set_max_bins
 
-def histogram_estimation(data, algo='irr', **kwargs):
+def histogram_estimation(data, algo='reg', **kwargs):
     """
     """
     if isinstance(data, UnivariateData):
@@ -290,8 +297,8 @@ def histogram_estimation(data, algo='irr', **kwargs):
     if mult:
         raise NotImplementedError()
     else:
-        mapping = dict(irr = RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator,
-                       reg = IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator,
+        mapping = dict(reg = RegularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator,
+                       irr = IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.Estimator,
                        cla = UnivariateHistogramDistributionEstimation.Estimator)
     return _estimation(algo, data, mapping, **kwargs)
 
@@ -315,7 +322,7 @@ for cls in _IndependentMultivariateDistributionEstimation:
     independent_multivariate_distribution_estimation_decorator(cls)
 
 def independent_estimation(data, **kwargs):
-    if isinstance(data, MultivariateDataFrame):
+    if isinstance(data, MultivariateData):
         if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
             mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
         elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):

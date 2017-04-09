@@ -667,7 +667,6 @@ namespace statiskit
 
     std::unique_ptr< UnivariateDistributionEstimation > IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
     {
-        std::cout << "BK 00" << std::endl; 
         if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error(CONTINUOUS); }
         IrregularUnivariateHistogramDistributionSlopeHeuristicSelection* cache;
@@ -799,7 +798,6 @@ namespace statiskit
         }
         else
         { estimation.reset(cache); }
-        std::cout << "BK 01" << std::endl; 
         return estimation;
     }
 
