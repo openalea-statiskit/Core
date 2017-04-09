@@ -348,36 +348,9 @@ namespace statiskit
             _pi = mixture._pi;
         } 
 
-     // template<class D>
-     //    double MixtureDistribution< D >::posterior(const typename D::event_type* event, const Index& state, const bool& logarithm)
-     //    { 
-     //        if(state >= get_nb_states())
-     //        { throw size_error("state", get_nb_states(), size_error::inferior); }
-     //        double p = _weights[state] + _observations[state]->probability(event) - this->probability(event, true);
-     //        if(logarithm)
-     //        return ;
-     //    }
-
-     // template<class D>
-     //    Eigen::VectorXd MixtureDistribution< D >::posterior(const typename D::event_type* event, const bool& logarithm)
-     //    { 
-     //        Eigen::VectorXd pi = Eigen::VectorXd(get_nb_states());
-     //        for(Index state = 0, max_state = get_nb_states(); state < max_state; ++state)
-     //        { pi[state] = _weights[state] * _observations[state]->probability(event, logarithm); }
-     //        return pi.normalized();
-     //    }
-
      template<class D>
         UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution() : MixtureDistribution < D >()
         {}
-
-    template<class D>
-        UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : MixtureDistribution < D >(observations, pi)
-        {}
-
-    template<class D>
-        UnivariateMixtureDistribution< D >::UnivariateMixtureDistribution(const UnivariateMixtureDistribution< D >& mixture) : MixtureDistribution< D >(mixture)
-        {} 
 
     template<class D>
         UnivariateMixtureDistribution< D >::~UnivariateMixtureDistribution()
@@ -412,14 +385,6 @@ namespace statiskit
     template<class D>
         QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution() : UnivariateMixtureDistribution < D >()
         {}
-
-    template<class D>
-        QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution(const std::vector< D* > observations, const Eigen::VectorXd& pi) : UnivariateMixtureDistribution < D >(observations, pi)
-        {}
-
-    template<class D>
-        QuantitativeUnivariateMixtureDistribution< D >::QuantitativeUnivariateMixtureDistribution(const QuantitativeUnivariateMixtureDistribution< D >& mixture) : UnivariateMixtureDistribution< D >(mixture)
-        {} 
 
     template<class D>
         QuantitativeUnivariateMixtureDistribution< D >::~QuantitativeUnivariateMixtureDistribution()
