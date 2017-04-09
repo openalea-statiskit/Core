@@ -59,8 +59,8 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
         """Test quantile computation"""
         for p in numpy.linspace(self._pmin, self._pmax, num=self._num):
             q = self._dist.quantile(p)
-            self.assertGreaterEqual(self._dist.cdf(q), p)
-            self.assertLessEqual(self._dist.cdf(q-self._espilon), p)
+            self.assertGreaterEqual(self._dist.cdf(q + self._espilon), p)
+            self.assertLessEqual(self._dist.cdf(q - self._espilon), p)
 
 class AbstractTestMultivariateDistribution(AbstractTestDistribution):
 
