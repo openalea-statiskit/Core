@@ -933,6 +933,6 @@ namespace statiskit
         std::
         throw not_implemented_error("compute_sum");
         return weighted_sum_data; // TODO memory leak*/
-        return std::unique_ptr< UnivariateData >(sum_data);
+        return std::move(std::unique_ptr< UnivariateData >(sum_data));
     }
 }
