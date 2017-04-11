@@ -361,11 +361,15 @@ namespace statiskit
             void init(const WeightedData< D >& data);
     };
 
-    struct STATISKIT_CORE_API WeightedUnivariateData : PolymorphicCopy< UnivariateData, WeightedUnivariateData, WeightedData< UnivariateData > >
+    class STATISKIT_CORE_API WeightedUnivariateData : public PolymorphicCopy< UnivariateData, WeightedUnivariateData, WeightedData< UnivariateData > >
     {
-        WeightedUnivariateData(const UnivariateData* data);
-        WeightedUnivariateData(const WeightedUnivariateData& data);
-        virtual ~WeightedUnivariateData();
+        public:
+            WeightedUnivariateData(const UnivariateData* data);
+            WeightedUnivariateData(const WeightedUnivariateData& data);
+            virtual ~WeightedUnivariateData();
+
+        protected:
+            WeightedUnivariateData();
     };
 
     class STATISKIT_CORE_API WeightedMultivariateData : public PolymorphicCopy< MultivariateData, WeightedMultivariateData, WeightedData< MultivariateData > >

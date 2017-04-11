@@ -53,9 +53,14 @@ from event import (UnivariateEvent,
                            DiscreteElementaryEvent,
                        ContinuousEvent,
                            ContinuousElementaryEvent,
-                   MultivariateEvent)
-from data import (UnivariateDataFrame,
-                  MultivariateDataFrame)
+                   MultivariateEvent,
+                       VectorEvent,
+                   type_to_event,
+                   types_to_event)
+from data import (UnivariateData,
+                      UnivariateDataFrame,
+                  MultivariateData,
+                      MultivariateDataFrame)
 from sample_space import (NominalSampleSpace,
                           OrdinalSampleSpace)
 from _tools import float_str, remove_latex
@@ -77,6 +82,22 @@ __all__ = ['NominalDistribution',
 
 UnivariateDistribution.nb_parameters = property(UnivariateDistribution.get_nb_parameters)
 del UnivariateDistribution.get_nb_parameters
+
+def wrapper_probability(f):
+    @wraps(f)
+    def probability(self, event, **kwargs):
+        if isinstance(event, basestring):
+            event = CategoricalElementaryEvent(event)
+        elif isinstance(event, int):
+            event = DiscreteElementaryEvent(event)
+        elif isinstance(event, float):
+            event = ContinuousElementaryEvent(event)
+        elif not isinstance(event, UnivariateEvent):
+            raise TypeError('\'event\' parameter')
+        return f(self, event, kwargs.pop('log', False))
+    return probability
+
+UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.probability)
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
@@ -608,41 +629,44 @@ del NormalDistribution.get_mu, NormalDistribution.set_mu
 NormalDistribution.sigma = property(NormalDistribution.get_sigma, NormalDistribution.set_sigma)
 del NormalDistribution.get_sigma, NormalDistribution.set_sigma
 
+def wrapper_probability(f):
+    @wraps(f)
+    def probability(self, *events, **kwargs):
+        if len(events) == 1:
+            event = events[-1]
+        if not isinstance(events, MultivariateEvent):
+            event = VectorEvent(len(events))
+            for index, component in enumerate(events):
+                if isinstance(component, basestring):
+                    event[index] = CategoricalElementaryEvent(component)
+                elif isinstance(component, int):
+                    event[index] = DiscreteElementaryEvent(component)
+                elif isinstance(component, float):
+                    event[index] = ContinuousElementaryEvent(component)
+                elif not isinstance(component, UnivariateEvent):
+                    raise TypeError('\'events\' parameters')
+            events = VectorEvent(events)
+        if not isinstance(event, MultivariateEvent):
+            raise TypeError('\'event\' parameter')
+        return f(self, events, kwargs.pop('log', False))
+    return probability
+    
+MultivariateDistribution.probability = wrapper_probability(MultivariateDistribution.probability)
+
 def simulation(self, size):
     return from_list(*map(list, zip(*[self.simulate() for index in range(size)])))
 
 MultivariateDistribution.simulation = simulation
 del simulation
 
-#def wrapper(f):
-#    @wraps(f)
-#    def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., **kwargs):
-#        return f(self, axes=axes, fmt=fmt, color=color, alpha=alpha, pmin=0., pmax=1., **kwargs)
-#    return pdf_plot
-#
-#for cls in _UnivariateFrequencyDistribution:
-#    cls.pdf_plot = wrapper(cls.pdf_plot)
-#del wrapper
-#
-#def wrapper(f):
-#    @wraps(f)
-#    def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., **kwargs):
-#        return f(self, axes=axes, fmt=fmt, color=color, alpha=alpha, pmin=0., pmax=1., **kwargs)
-#    return pdf_plot
-#
-#for cls in _QuantitativeUnivariateFrequencyDistribution:
-#    cls.cdf_plot = wrapper(cls.cdf_plot)
-#del wrapper
-#
-#def wrapper(f):
-#    @wraps(f)
-#    def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
-#        return f(self, axes=axes, fmt=fmt, color=color, alpha=alpha, pmin=0., pmax=1., **kwargs)
-#    return pdf_plot
-#
-#for cls in _QuantitativeUnivariateFrequencyDistribution:
-#    cls.cdf_plot = wrapper(cls.cdf_plot)
-#del wrapper
+MultivariateDistribution.nb_parameters = property(MultivariateDistribution.get_nb_parameters)
+del MultivariateDistribution.get_nb_parameters
+
+MultinomialSplittingDistribution.sum = property(MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.set_sum)
+del MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.set_sum
+
+MultinomialSplittingDistribution.pi = property(MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi)
+del MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi
 
 def statiskit_independent_multivariate_distribution_decorator(cls):
     pass
@@ -705,6 +729,70 @@ def statiskit_mixture_distribution_decorator(cls):
 
 for cls in _MixtureDistribution:
     statiskit_mixture_distribution_decorator(cls)
+
+def statiskit_univariate_mixture_distribution_decorator(cls):
+
+    def wrapper_posterior(f):
+        @wraps(f)
+        def posterior(self, event, **kwargs):
+            return f(self, type_to_event(event), kwargs.pop('log', False))
+        return posterior
+
+    cls.posterior = wrapper_posterior(cls.posterior)
+
+    def wrapper_assignement(f):
+        @wraps(f)
+        def assignement(self, event):
+            return f(self, type_to_event(event))
+        return assignement
+
+    cls.assignement = wrapper_assignement(cls.assignement)
+
+    def wrapper_uncertainty(f):
+        @wraps(f)
+        def uncertainty(self, arg):
+            if isinstance(arg, UnivariateData):
+                return f(self, arg)
+            else:
+                return f(self, types_to_event(arg))
+        return uncertainty
+
+    cls.uncertainty = wrapper_uncertainty(cls.uncertainty)
+
+for cls in _UnivariateMixtureDistribution:
+    statiskit_univariate_mixture_distribution_decorator(cls)
+
+def statiskit_multivariate_mixture_distribution_decorator(cls):
+
+    def wrapper_posterior(f):
+        @wraps(f)
+        def posterior(self, *event, **kwargs):
+            return f(self, types_to_event(*events), kwargs.pop('log', False))
+        return posterior
+
+    cls.posterior = wrapper_posterior(cls.posterior)
+
+    def wrapper_assignement(f):
+        @wraps(f)
+        def assignement(self, *event):
+            return f(self, types_to_event(*event))
+        return assignement
+
+    cls.assignement = wrapper_assignement(cls.assignement)
+    
+    def wrapper_uncertainty(f):
+        @wraps(f)
+        def uncertainty(self, *args):
+            if len(args) == 1 and isinstance(args[0], MultivariateData):
+                return f(self, args[0])
+            else:
+                return f(self, types_to_event(*args))
+        return uncertainty
+
+    cls.uncertainty = wrapper_uncertainty(cls.uncertainty)
+
+for cls in _MultivariateMixtureDistribution:
+    statiskit_multivariate_mixture_distribution_decorator(cls)
 
 def MixtureDistribution(*args, **kwargs):
     if 'pi' in kwargs:

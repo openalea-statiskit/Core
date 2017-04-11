@@ -10,19 +10,19 @@ from functools import wraps
 from optionals import pyplot
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import SlopeHeuristic
+from statiskit.core.__core.statiskit import SlopeHeuristic, _SlopeHeuristicSelection
 
 __all__ = ['SlopeHeuristic']
 
 class Proxy(object):
 
     def __init__(self, obj):
-        self.obj = obj
+        self._obj = obj
 
 def wrapper(f):
     @wraps(f)
     def __len__(self):
-        return f(self.obj)
+        return f(self._obj)
     return __len__
 
 Proxy.__len__ = wrapper(SlopeHeuristic.__len__)
@@ -38,7 +38,7 @@ def wrapper(f):
                 index += len(self)
             if not 0 <= index < len(self):
                 raise IndexError
-            return f(self.obj, index)
+            return f(self._obj, index)
     return __getitem__
 
 class ScoresProxy(Proxy):
@@ -85,7 +85,7 @@ def wrapper(f):
                 index += len(self)
             if not 0 <= index < len(self):
                 raise IndexError
-            item = f(self.obj, index)
+            item = f(self._obj, index)
             if item < len(self):
                 return item
     return __getitem__
@@ -148,3 +148,30 @@ def selected_plot(self, axes=None, fmt='-', *args, **kwargs):
 
 SlopeHeuristic.selected_plot = selected_plot
 del selected_plot
+
+def slope_heuristic_selection_decorator(cls):
+
+    class Proposals(Proxy):
+        
+        def __len__(self):
+            return len(self._obj)
+
+    def wrapper(f):
+        @wraps(f)
+        def __getitem__(self, index):
+            if isinstance(index, slice):
+                return [self[index] for index in xrange(*index.indices(len(self)))]
+            else:
+                if index < 0:
+                    index += len(self)
+                if not 0 <= index < len(self):
+                    raise IndexError
+                return f(self._obj, index)
+        return __getitem__
+        
+    Proposals.__getitem__ = wrapper(cls.get_proposal)
+    del cls.get_proposal
+    cls.proposals = property(Proposals)
+
+for cls in (_SlopeHeuristicSelection,):
+    slope_heuristic_selection_decorator(cls)

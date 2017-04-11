@@ -277,6 +277,15 @@ def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
 UnivariateDataFrame.cdf_plot = cdf_plot
 del cdf_plot
 
+MultivariateData.total = property(MultivariateData.compute_total)
+del MultivariateData.compute_total
+
+# MultivariateData.min = property(MultivariateData.compute_minimum)
+# del MultivariateData.compute_minimum
+
+# MultivariateData.max = property(MultivariateData.compute_maximum)
+# del MultivariateData.compute_maximum
+
 def names(self):
     return [str(component.name) for component in self.components]
 

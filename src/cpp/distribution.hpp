@@ -325,10 +325,72 @@ namespace statiskit
     template<class D>
         void MixtureDistribution< D >::set_pi(const Eigen::VectorXd& pi)
         {
-            if(pi.size() != _pi.size())
+            if(pi.size() != _observations.size())
             { throw size_error("pi", _pi.size(), size_error::equal); }
             _pi = pi / pi.sum();
         } 
+
+
+    template<class D>
+        Eigen::VectorXd MixtureDistribution< D >::posterior(const typename D::data_type::event_type* event, const bool& logarithm) const
+        {
+            Eigen::VectorXd p = Eigen::VectorXd::Zero(this->get_nb_states());
+            for(typename std::vector< D* >::const_iterator it = this->_observations.cbegin(), it_end = this->_observations.cend(); it != it_end; ++it)
+            { p[distance(this->_observations.cbegin(), it)] = log(this->_pi[distance(this->_observations.cbegin(), it)]) + (*it)->probability(event, true); }
+            double max = p.maxCoeff();
+            for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+            {
+                if(boost::math::isfinite(p[index]))
+                { p[index] = p[index] - max; }
+            }
+            if(!logarithm)
+            {
+                for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+                {
+                    if(boost::math::isfinite(p[index]))
+                    { p[index] = exp(p[index]); }
+                    else
+                    { p[index] = 0.; }
+                }
+                p = p / p.sum();
+            }
+            return p;
+        }
+
+    template<class D>
+        Index MixtureDistribution< D >::assignement(const typename D::data_type::event_type* event) const
+        {
+            Eigen::VectorXd p = posterior(event, false);
+            Index index;
+            p.maxCoeff(&index);
+            return index;
+        }
+        
+    template<class D>
+        double MixtureDistribution< D >::uncertainty(const typename D::data_type::event_type* event) const
+        {
+            double entropy = 0.;
+            Eigen::VectorXd p = posterior(event, true);
+            for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+            {
+                if(boost::math::isfinite(p[index]))
+                { entropy -= exp(p[index]) * p[index]; }
+            }
+            return entropy;
+        }
+
+    template<class D>
+        double MixtureDistribution< D >::uncertainty(const typename D::data_type& data) const
+        {
+            double entropy = 0.;
+            std::unique_ptr< typename D::data_type::Generator > generator = data.generator();
+            while(generator->is_valid())
+            {
+                entropy += generator->weight() * uncertainty(generator->event());
+                ++(*generator);
+            }
+            return entropy;
+        }
 
     template<class D>
         void MixtureDistribution< D >::init(const std::vector< D* > observations, const Eigen::VectorXd& pi)
@@ -336,7 +398,7 @@ namespace statiskit
             _observations.resize(observations.size());
             for(Index index = 0, max_index = observations.size(); index < max_index; ++index)
             { _observations[index] = static_cast< D* >(observations[index]->copy().release()); }
-            _pi = pi;
+            set_pi(pi);
         }
 
     template<class D>

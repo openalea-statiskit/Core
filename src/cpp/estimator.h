@@ -321,7 +321,47 @@ namespace statiskit
                 protected:
                     DiscreteUnivariateDistributionEstimation::Estimator* _sum;
 
-                    std::unique_ptr< UnivariateData > compute_sum(const MultivariateData& data) const;
+                    class STATISKIT_CORE_API SumData : public UnivariateData
+                    {
+                        public:
+                            SumData(const MultivariateData* data);
+                            virtual ~SumData();
+
+                            virtual std::unique_ptr< UnivariateData::Generator > generator() const;
+
+                            const UnivariateSampleSpace* get_sample_space() const;
+
+                            virtual std::unique_ptr< UnivariateData > copy() const;
+
+                        protected:
+                            const MultivariateData* _data;
+
+                            class STATISKIT_CORE_API Generator : public UnivariateData::Generator
+                            {
+                                public:
+                                    Generator(const MultivariateData* data);
+                                    virtual ~Generator();
+
+                                    virtual bool is_valid() const;
+
+                                    virtual UnivariateData::Generator& operator++();
+
+                                    virtual const UnivariateEvent* event() const;
+                                    virtual double weight() const;
+
+                                protected:
+                                    mutable DiscreteElementaryEvent* _sum;
+                                    MultivariateData::Generator* _generator;
+                            };
+
+                    };
+
+                    struct STATISKIT_CORE_API WeightedSumData : public PolymorphicCopy< UnivariateData, WeightedSumData, WeightedUnivariateData >
+                    {
+                        WeightedSumData(const UnivariateData* data);
+                        WeightedSumData(const WeightedSumData& data);
+                        virtual ~WeightedSumData();
+                    };
             };
 
         protected:

@@ -27,6 +27,7 @@ namespace statiskit
     /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate component \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct STATISKIT_CORE_API UnivariateDistribution
     {	
+        typedef UnivariateData data_type;
 
     	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -1570,6 +1571,7 @@ namespace statiskit
 
     struct STATISKIT_CORE_API MultivariateDistribution
     {
+        typedef MultivariateData data_type;
         typedef UnivariateDistribution marginal_type;
             
         /// \brief Get the number of components of the distribution.
@@ -1693,8 +1695,12 @@ namespace statiskit
             const Eigen::VectorXd& get_pi() const;
             void set_pi(const Eigen::VectorXd& pi);
 
-            // double posterior(const typename D::event_type* event, const Index& state) const;
-            // Eigen::VectorXd posterior(const typename D::event_type* event) const;
+            Eigen::VectorXd posterior(const typename D::data_type::event_type* event, const bool& logarithm=false) const;
+        
+            Index assignement(const typename D::data_type::event_type* event) const;
+
+            double uncertainty(const typename D::data_type::event_type* event) const;
+            double uncertainty(const typename D::data_type& data) const;
 
         protected:
             std::vector< D* > _observations;

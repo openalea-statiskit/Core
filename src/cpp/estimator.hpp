@@ -278,7 +278,7 @@ namespace statiskit
         std::unique_ptr< typename E::Estimator::estimation_type > MixtureDistributionEMEstimation< D, E >::Estimator::operator() (const typename E::Estimator::estimation_type::data_type& data, const bool& lazy) const
         {
             if(!_initializator)
-            { throw member_error("initializator", "you must given an initial mixture distribution in order to initialize the expectation-maximization algorithm"); }
+            { throw member_error("initializator", "you must give an initial mixture distribution in order to initialize the expectation-maximization algorithm"); }
             D* mixture = static_cast< D* >(_initializator->copy().release());
             typename E::Estimator::estimation_type::data_type::weighted_type weighted = typename E::Estimator::estimation_type::data_type::weighted_type(&data);
             double prev, curr = mixture->loglikelihood(data);
@@ -287,7 +287,7 @@ namespace statiskit
             if(!lazy)
             {
                 estimation = std::make_unique< MixtureDistributionEMEstimation< D, E > >(mixture, &data);
-                static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_steps.push_back(static_cast< D* >(mixture->copy().release()));
+                static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release()));
             }
             else
             { estimation = std::make_unique< LazyEstimation< D, MixtureDistributionEMEstimation< D, E > > >(mixture); }
@@ -302,7 +302,7 @@ namespace statiskit
                     typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
                     while(generator->is_valid())
                     {
-                        generator->weight(pi[state] * observation->probability(generator->event(), false) / mixture->probability(generator->event(), false));
+                        generator->weight(mixture->posterior(generator->event())[state]);
                         ++(*generator);
                     }
                     const typename E::Estimator* estimator = get_estimator(state);
@@ -330,7 +330,7 @@ namespace statiskit
                 { mixture->set_pi(pi); }
                 curr = mixture->loglikelihood(data);
                 if(!lazy)
-                { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_steps.push_back(static_cast< D* >(mixture->copy().release())); }
+                { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
             } while(this->run(its, prev, curr) && prev < curr);
             return estimation;

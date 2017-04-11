@@ -14,7 +14,7 @@ namespace statiskit
     template<class E>
         SlopeHeuristicSelection< E >::SlopeHeuristicSelection(const typename E::data_type* data) : SlopeHeuristic()
         { 
-            _estimated.clear();
+            _proposals.clear();
             if(data)
             { _data = data->copy().release(); }
             else
@@ -24,9 +24,9 @@ namespace statiskit
     template<class E>
         SlopeHeuristicSelection< E >::SlopeHeuristicSelection(const SlopeHeuristicSelection< E >& she) : SlopeHeuristic(she)
         {
-            _estimated = std::vector< typename E::estimated_type* >(she._estimated.size(), nullptr);
-            for(Index index = 0, max_index = _estimated.size(); index < max_index; ++index)
-            { _estimated[index] = static_cast< typename E::estimated_type* >(she._estimated[index]->copy().release()); }
+            _proposals = std::vector< typename E::estimated_type* >(she._proposals.size(), nullptr);
+            for(Index index = 0, max_index = _proposals.size(); index < max_index; ++index)
+            { _proposals[index] = static_cast< typename E::estimated_type* >(she._proposals[index]->copy().release()); }
             if(she._data)
             { _data = static_cast< typename E::data_type* >(she._data->copy().release()); }
             else
@@ -36,12 +36,12 @@ namespace statiskit
     template<class E>
         SlopeHeuristicSelection< E >::~SlopeHeuristicSelection()
         { 
-            for(Index index = 0, max_index = _estimated.size(); index < max_index; ++index)
+            for(Index index = 0, max_index = _proposals.size(); index < max_index; ++index)
             {
-                delete _estimated[index];
-                _estimated[index] = nullptr;
+                delete _proposals[index];
+                _proposals[index] = nullptr;
             }
-            _estimated.clear();
+            _proposals.clear();
             if(_data)
             {
                 delete _data;
@@ -54,13 +54,13 @@ namespace statiskit
         { 
             typename E::estimated_type const * estimated;
             if(this->_selected.size() > 0)
-            { estimated = _estimated[this->_selected[(*this->_selector)(*this)]]; }
+            { estimated = _proposals[this->_selected[(*this->_selector)(*this)]]; }
             return estimated;
         }
 
     template<class E>
-        const typename E::estimated_type* SlopeHeuristicSelection< E >::get_estimated(const Index& index) const
-        { return _estimated[index]; }
+        const typename E::estimated_type* SlopeHeuristicSelection< E >::get_proposal(const Index& index) const
+        { return _proposals[index]; }
 
     template<class E>
         const typename E::data_type* SlopeHeuristicSelection< E >::get_data() const
@@ -76,7 +76,7 @@ namespace statiskit
                 {
                     this->_penshapes.push_back(penshape);
                     this->_scores.push_back(score);
-                    _estimated.push_back(estimated);
+                    _proposals.push_back(estimated);
                 }
                 else if(*it == penshape)
                 {
@@ -84,7 +84,7 @@ namespace statiskit
                     if(this->_scores[index] < score)
                     {
                         this->_scores[index] = score;
-                        _estimated[index] = estimated;
+                        _proposals[index] = estimated;
                     }
                 }
                 else
@@ -92,7 +92,7 @@ namespace statiskit
                     Index index = distance(this->_penshapes.begin(), it);
                     this->_penshapes.insert(it, penshape);
                     this->_scores.insert(this->_scores.begin() + index, score);
-                    _estimated.insert(_estimated.begin() + index, estimated);
+                    _proposals.insert(_proposals.begin() + index, estimated);
                 }
             }
         }

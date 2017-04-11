@@ -1392,7 +1392,8 @@ namespace statiskit
 
     MultinomialSplittingDistribution::MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi)
     {
-        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release());
+        // _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release());
+        set_sum(sum);
         _pi = Eigen::VectorXd::Ones(pi.size());
         set_pi(pi);
     }
@@ -1444,7 +1445,6 @@ namespace statiskit
                         {
                             binomial.set_pi(_pi[component] / (1 - sum));
                             int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                            double pi = _pi[component] / (1 - sum);
                             p += binomial.ldf(value);
                             kappa -= value;
                             sum += _pi[component];
@@ -1462,7 +1462,7 @@ namespace statiskit
             { p = log(0.); }
         }
         else
-        { p = 0.; }
+        { p = log(0.); }
         if(!logarithm)
         { p = exp(p); }
         return p;
@@ -1489,7 +1489,11 @@ namespace statiskit
     { return _sum; }
     
     void MultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
-    { _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); }
+    { 
+        if(sum.cdf(-1) > 0.)
+        { throw parameter_error("sum", "must have a natural numbers subset as support"); }
+        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
+    }
 
     const Eigen::VectorXd& MultinomialSplittingDistribution::get_pi() const
     { return _pi; }

@@ -151,7 +151,7 @@ namespace statiskit
             };
 
         protected:
-            std::vector< T > _steps;
+            std::vector< T > _iterations;
     };
 
     template<class T, class D, class B> struct OptimizationEstimation : OptimizationEstimationImpl<T, D, B >
@@ -162,7 +162,7 @@ namespace statiskit
         OptimizationEstimation(const OptimizationEstimation< T, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
-        const T get_step(const Index& index) const;
+        const T get_iteration(const Index& index) const;
 
         struct Estimator : OptimizationEstimationImpl<T, D, B >::Estimator
         { 
@@ -180,7 +180,7 @@ namespace statiskit
         OptimizationEstimation(const OptimizationEstimation< T*, D, B>& estimation);
         virtual ~OptimizationEstimation();
 
-        const T* get_step(const Index& index) const;
+        const T* get_iteration(const Index& index) const;
 
         struct Estimator : OptimizationEstimationImpl<T*, D, B >::Estimator
         { 

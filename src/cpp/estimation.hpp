@@ -229,29 +229,29 @@ namespace statiskit
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::OptimizationEstimationImpl() : ActiveEstimation< D, B >()
-        { _steps.clear(); }
+        { _iterations.clear(); }
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::OptimizationEstimationImpl(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
-        { _steps.clear(); }
+        { _iterations.clear(); }
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::OptimizationEstimationImpl(const OptimizationEstimationImpl< T, D, B >& estimation) : ActiveEstimation< D, B >(estimation)
-        { _steps = estimation._steps; }
+        { _iterations = estimation._iterations; }
         
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::~OptimizationEstimationImpl()
-        { _steps.clear(); }
+        { _iterations.clear(); }
 
     template<class T, class D, class B>
         Index OptimizationEstimationImpl< T, D, B >::size() const
-        { return _steps.size(); }
+        { return _iterations.size(); }
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::Estimator::Estimator()
         {
             _mindiff = 1e-5;
-            _minits = 10e2;
+            _minits = 0;
             _maxits = 10e6;
         }
 
@@ -273,11 +273,14 @@ namespace statiskit
         bool OptimizationEstimationImpl< T, D, B >::Estimator::run(const unsigned int& its, const S& prev, const S& curr) const
         { 
             bool status = true;
-            double reldiff = __impl::reldiff(prev, curr);
-            if(!boost::math::isfinite(reldiff) || its > _maxits)
-            { status = false; }
-            else if(reldiff < _mindiff)
-            { status = false; }
+            if(its >= _minits)
+            {
+                double reldiff = __impl::reldiff(prev, curr);
+                if(!boost::math::isfinite(reldiff) || its > _maxits)
+                { status = false; }
+                else if(reldiff < _mindiff)
+                { status = false; }
+            }
             return status;
         }
 
@@ -322,11 +325,11 @@ namespace statiskit
         {}
 
     template<class T, class D, class B>
-        const T OptimizationEstimation< T, D, B >::get_step(const Index& index) const
+        const T OptimizationEstimation< T, D, B >::get_iteration(const Index& index) const
         {
             if(index >= this->size())
             { throw size_error("index", this->size(), size_error::inferior); }
-            return this->_steps[index];
+            return this->_iterations[index];
         }
 
     template<class T, class D, class B>
@@ -352,26 +355,26 @@ namespace statiskit
     template<class T, class D, class B>
         OptimizationEstimation< T*, D, B >::OptimizationEstimation(const OptimizationEstimation< T*, D, B >& estimation) : OptimizationEstimationImpl< T*, D, B >(estimation)
         { 
-            for(Index index = 0, max_index = this->_steps.size(); index < max_index; ++index)
-            { this->_steps[index] = static_cast< T* >(this->_steps[index]->copy().release()); }
+            for(Index index = 0, max_index = this->_iterations.size(); index < max_index; ++index)
+            { this->_iterations[index] = static_cast< T* >(this->_iterations[index]->copy().release()); }
         }
 
     template<class T, class D, class B>
         OptimizationEstimation< T*, D, B >::~OptimizationEstimation()
         {
-            for(Index index = 0, max_index = this->_steps.size(); index < max_index; ++index)
+            for(Index index = 0, max_index = this->_iterations.size(); index < max_index; ++index)
             { 
-                delete this->_steps[index];
-                this->_steps[index] = nullptr; 
+                delete this->_iterations[index];
+                this->_iterations[index] = nullptr; 
             }
         }
 
     template<class T, class D, class B>
-        const T* OptimizationEstimation< T*, D, B >::get_step(const Index& index) const
+        const T* OptimizationEstimation< T*, D, B >::get_iteration(const Index& index) const
         {
             if(index >= this->size())
             { throw size_error("index", this->size(), size_error::inferior); }
-            return this->_steps[index];
+            return this->_iterations[index];
         }
 
     template<class T, class D, class B>

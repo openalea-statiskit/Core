@@ -35,8 +35,11 @@ def read_csv(filepath, sep=None, header=False, **kwargs):
             data[index].append(event.strip().strip('"').strip("'"))
     data = from_list(*data, **kwargs)
     if header:
-        for i, j in enumerate(names):
-            data.components[i].name = j
+        if isinstance(data, UnivariateDataFrame):
+            data.name = names.pop()
+        elif isinstance(data, MultivariateDataFrame):
+                for i, j in enumerate(names):
+                    data.components[i].name = j
     return data
 
 def write_csv(data, filepath, sep=' ', header=False, censored=True):
@@ -115,12 +118,18 @@ def from_list(*data, **kwargs):
                 sample_spaces.append(controls.RR)
             else:
                 raise NotImplementedError("cannot determine sample space")
-    dataframe = MultivariateDataFrame()
-    for index, sample_space in enumerate(sample_spaces):
-        _dataframe = UnivariateDataFrame(sample_space)
-        for event in data[index]:
-            _dataframe.add_event(sample_space(event))
-        dataframe.add_component(_dataframe)
+    if len(sample_spaces) == 1:
+        sample_space = sample_spaces.pop()
+        dataframe = UnivariateDataFrame(sample_space)
+        for event in data[-1]:
+            dataframe.add_event(sample_space(event))
+    else:
+        dataframe = MultivariateDataFrame()
+        for index, sample_space in enumerate(sample_spaces):
+            _dataframe = UnivariateDataFrame(sample_space)
+            for event in data[index]:
+                _dataframe.add_event(sample_space(event))
+            dataframe.add_component(_dataframe)
     return dataframe
 
 def from_pandas(data):

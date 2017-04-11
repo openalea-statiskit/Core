@@ -9,7 +9,7 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimation,
+from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _OptimizationEstimation,
                                              UnivariateDistributionEstimation,
                                                 CategoricalUnivariateDistributionEstimation,
                                                     CategoricalUnivariateMixtureDistributionEMEstimation,
@@ -44,7 +44,6 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
 
 from event import outcome_type
 from data import UnivariateData, MultivariateData
-from slope_heuristic import Proxy
 from _tools import unused_warning
 
 __all__ = ['frequency_estimation',
@@ -133,7 +132,7 @@ def list_estimation_decorator(cls):
 # for cls in _ListEstimation:
 #     list_estimation_decorator(cls)
 
-def optimization_estimator_decorator(cls):
+def optimization_estimation_impl_estimator_decorator(cls):
 
     cls.mindiff = property(cls.get_mindiff, cls.set_mindiff)
     del cls.get_mindiff, cls.set_mindiff
@@ -144,27 +143,46 @@ def optimization_estimator_decorator(cls):
     cls.maxits = property(cls.get_maxits, cls.set_maxits)
     del cls.get_maxits, cls.set_maxits
 
+for cls in _OptimizationEstimationImpl:
+    optimization_estimation_impl_estimator_decorator(cls.Estimator)
+
 def optimization_estimation_decorator(cls):
 
-    def wrapper__getitem__(f):
-        @wraps(f)
+    class Iterations(object):
+
+        def __init__(self, estimation):
+            self._estimation = estimation
+
+    def wrapper_iterations(f0, f1):
+
+        @wraps(f0)
+        def __len__(self):
+            return f0(self._estimation)
+
+        @wraps(f1)
         def __getitem__(self, index):
-            if isinstance(index, slice):
-                return [self[index] for index in xrange(*index.indices(len(self)))]
-            else:
-                if index < 0:
-                    index += len(self)
-                if not 0 <= index < len(self):
-                    raise IndexError(self.__class__.__name__ + " index out of range")
-                return f(self, index)
-        return __getitem__          
+            if index < 0:
+                index += len(self)
+            if not 0 <= index < len(self):
+                raise IndexError(self._estimation.__class__.__name__ + " index out of range")
+            return f1(self._estimation, index)
 
+        return __len__, __getitem__
+        
+    Iterations.__len__, Iterations.__getitem__ = wrapper_iterations(cls.__len__, cls.get_iteration)
+    del cls.get_iteration
 
-    cls.__getitem__ = wrapper__getitem__(cls.get_step)
-    del cls.get_step
+    cls.iterations = property(Iterations)
 
 for cls in _OptimizationEstimation:
     optimization_estimation_decorator(cls)
+
+def optimization_estimation_impl_decorator(cls):
+
+    del cls.__len__
+
+for cls in _OptimizationEstimationImpl:
+    optimization_estimation_impl_decorator(cls)
 
 def _estimation(algo, data, mapping, **kwargs):
     try:
@@ -244,35 +262,6 @@ def normal_estimation(algo='ml', data=None, **kwargs):
                        data,
                        dict(ml = NormalDistributionMLEstimation.Estimator),
                        **kwargs)
-
-class Proposals(Proxy):
-    pass
-
-def wrapper(f):
-    @wraps(f)
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            return [self[index] for index in xrange(*index.indices(len(self)))]
-        else:
-            if index < 0:
-                index += len(self)
-            if not 0 <= index < len(self):
-                raise IndexError
-            return f(self.obj, index)
-    return __getitem__
-
-class RegularProposals(Proposals):
-    pass
-        
-RegularProposals.__getitem__ = wrapper(RegularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
-RegularUnivariateHistogramDistributionSlopeHeuristicSelection.proposals = property(RegularProposals)
-
-class IrregularProposals(Proposals):
-    pass
-
-IrregularProposals.__getitem__ = wrapper(IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.get_estimated)
-IrregularUnivariateHistogramDistributionSlopeHeuristicSelection.proposals = property(IrregularProposals)
-
 
 UnivariateHistogramDistributionEstimation.Estimator.nb_bins = property(UnivariateHistogramDistributionEstimation.Estimator.get_nb_bins, UnivariateHistogramDistributionEstimation.Estimator.set_nb_bins)
 del UnivariateHistogramDistributionEstimation.Estimator.get_nb_bins, UnivariateHistogramDistributionEstimation.Estimator.set_nb_bins
