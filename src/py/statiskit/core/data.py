@@ -242,7 +242,7 @@ def pdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
     elif sample_space.outcome is outcome_type.CONTINUOUS:
         fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
-            estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(lazy=True)))
+            estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(algo='irr' if self.total > 700. else 'reg', lazy=True)))
             axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, fmt=fmt, **kwargs)
         elif fmt == '-':
             raise NotImplementedError

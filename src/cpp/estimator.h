@@ -257,11 +257,11 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                const unsigned int& get_max_bins() const;
-                void set_max_bins(const unsigned int& max_bins);
+                const unsigned int& get_maxbins() const;
+                void set_maxbins(const unsigned int& maxbins);
 
             protected:
-                unsigned int _max_bins;
+                unsigned int _maxbins;
         }; 
     };
 
@@ -282,14 +282,14 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                const unsigned int& get_max_bins() const;
-                void set_max_bins(const unsigned int& max_bins);
+                const unsigned int& get_maxbins() const;
+                void set_maxbins(const unsigned int& maxbins);
 
                 const double& get_constant() const;
                 void set_constant(const double& constant);
 
             protected:
-                unsigned int _max_bins;
+                unsigned int _maxbins;
                 double _constant;
         }; 
     };

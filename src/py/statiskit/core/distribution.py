@@ -582,8 +582,7 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs)
         densities = [norm * d for d in densities]
     if '|' in fmt:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
-            axes.bar(lc, d, rc-lc, 0., facecolor=color, alpha=alpha, edgecolor=kwargs.pop('edgecolor', 'k'))
-            #axes.add_patch(patches.Rectangle((lc, 0), rc-lc, d, facecolor=color, alpha=alpha))
+            axes.bar(left=lc, height=d, width=rc-lc, bottom=0., facecolor=color, alpha=alpha, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge')
         fmt = fmt.replace('|', '')
     if 'o' in fmt:
         axes.plot(bins[:-1], densities, 'o', color=color, alpha=alpha)
@@ -592,8 +591,6 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs)
     if len(fmt) > 0:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
             axes.plot([lc, rc], [d, d], fmt, color=color, alpha=alpha)
-    #axes.set_xlim(min(xmin, bins[0]), max(xmax, bins[-1]))
-    #axes.set_ylim(min(ymin, 0), max(ymax, *densities))
     return axes
 
 UnivariateHistogramDistribution.pdf_plot = pdf_plot

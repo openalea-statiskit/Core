@@ -584,10 +584,10 @@ namespace statiskit
     {}
 
     RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator()
-    { _max_bins = 100; }
+    { _maxbins = 100; }
 
     RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator(const Estimator& estimator)
-    { _max_bins = estimator._max_bins; }
+    { _maxbins = estimator._maxbins; }
 
     RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::~Estimator()
     {}
@@ -603,7 +603,7 @@ namespace statiskit
         { cache = new RegularUnivariateHistogramDistributionSlopeHeuristicSelection(&data); }
         std::set< double > bins = std::set< double >();
         UnivariateHistogramDistributionEstimation::Estimator estimator = UnivariateHistogramDistributionEstimation::Estimator();
-        for(Index nb_bins = _max_bins; nb_bins > 0; --nb_bins)
+        for(Index nb_bins = _maxbins; nb_bins > 0; --nb_bins)
         {
             estimator.set_nb_bins(nb_bins);
             try
@@ -630,14 +630,14 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
-    const unsigned int& RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::get_max_bins() const
-    { return _max_bins; }
+    const unsigned int& RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::get_maxbins() const
+    { return _maxbins; }
 
-    void RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::set_max_bins(const unsigned int& max_bins)
+    void RegularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::set_maxbins(const unsigned int& maxbins)
     {
-        if(max_bins == 0)
-        { throw statiskit::lower_bound_error("max_bins", 0, 0, true); }
-        _max_bins = max_bins;
+        if(maxbins == 0)
+        { throw statiskit::lower_bound_error("maxbins", 0, 0, true); }
+        _maxbins = maxbins;
     }
 
 
@@ -652,13 +652,13 @@ namespace statiskit
 
     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator()
     {
-        _max_bins = 100; 
+        _maxbins = 100; 
         _constant = 1.;
     }
 
     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::Estimator(const Estimator& estimator)
     { 
-        _max_bins = estimator._max_bins;
+        _maxbins = estimator._maxbins;
         _constant = estimator._constant;
     }
 
@@ -675,6 +675,7 @@ namespace statiskit
         else
         { cache = new IrregularUnivariateHistogramDistributionSlopeHeuristicSelection(&data); }
         std::set< double > bins = std::set< double >();
+        unsigned int elements = 0;
         double total = 0., min = std::numeric_limits< double >::infinity(), max = -1 * std::numeric_limits< double >::infinity();
         std::unique_ptr< UnivariateData::Generator > generator = data.generator();
         while(generator->is_valid())
@@ -685,14 +686,14 @@ namespace statiskit
                 const ContinuousElementaryEvent* cevent = static_cast< const ContinuousElementaryEvent* >(event);
                 min = std::min(min, cevent->get_value());
                 max = std::max(max, cevent->get_value());
-                total += generator->weight();                            
+                total += generator->weight();    
             }
             ++(*generator);
         }
-        bins.insert(min - .5 / total * (max - min));
-        for(Index index = 1; index < total; ++index)
-        { bins.insert(*(bins.rbegin()) + 1. / total * (max-min)); }
-        bins.insert(max + .5 / total * (max - min));
+        bins.insert(min - .5 / _maxbins * (max - min));
+        for(Index index = 1; index < _maxbins; ++index)
+        { bins.insert(*(bins.rbegin()) + 1. / _maxbins * (max-min)); }
+        bins.insert(max + .5 / _maxbins * (max - min));
         if(bins.size() > 1)
         {
             std::vector< double > lengths = std::vector< double >(bins.size()-1, 0.);
@@ -740,21 +741,21 @@ namespace statiskit
                 else
                 { entropies[index] = std::numeric_limits< double >::infinity(); }
             }
+            std::cout << std::endl;
             double score = 0.;
-            unsigned int max_bins = bins.size();
             while(bins.size() > 2)
             {
                 std::vector< double >::iterator it = std::min_element(entropies.begin(), entropies.end()), itr;
                 if(*it > 0)
                 {
                     score -= *it;
-                    if(bins.size() < _max_bins)
-                    {
+                    // if(bins.size() < _maxbins)
+                    // {
                         UnivariateHistogramDistribution* current = new UnivariateHistogramDistribution(bins, densities);
                         double penshape = bins.size()-1;
-                        penshape = penshape * (1 + _constant * log(max_bins) - _constant * log(penshape));
+                        penshape = penshape * (1 + _constant * log(_maxbins) - _constant * log(penshape));
                         cache->add(penshape, score, current);
-                    }
+                    // }
                 }
                 itr = it;
                 ++itr;
@@ -804,14 +805,14 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
-    const unsigned int& IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::get_max_bins() const
-    { return _max_bins; }
+    const unsigned int& IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::get_maxbins() const
+    { return _maxbins; }
 
-    void IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::set_max_bins(const unsigned int& max_bins)
+    void IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::set_maxbins(const unsigned int& maxbins)
     {
-        if(max_bins == 0)
-        { throw statiskit::lower_bound_error("max_bins", 0, 0, true); }
-        _max_bins = max_bins;
+        if(maxbins == 0)
+        { throw statiskit::lower_bound_error("maxbins", 0, 0, true); }
+        _maxbins = maxbins;
     }
     
     const double& IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::Estimator::get_constant() const
@@ -865,7 +866,6 @@ namespace statiskit
 
     std::unique_ptr< MultivariateDistributionEstimation > MultinomialSplittingDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
-        // std::unique_ptr< UnivariateData > sum_data = ;//compute_sum(data);
         SumData sum_data = SumData(&data);
         DiscreteUnivariateDistributionEstimation* sum_estimation = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(sum_data, lazy)).release());
         std::unique_ptr< MultivariateDistributionEstimation > estimation;

@@ -83,6 +83,7 @@ namespace statiskit
                     Index index = distance(this->_penshapes.begin(), it);
                     if(this->_scores[index] < score)
                     {
+                        delete _proposals[index];
                         this->_scores[index] = score;
                         _proposals[index] = estimated;
                     }

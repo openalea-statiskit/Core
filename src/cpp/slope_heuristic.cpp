@@ -57,7 +57,7 @@ namespace statiskit
             update(bp, W, X, y);
             bc = linalg::solve(X.transpose() * W * X, (X.transpose() * W * y).eval(), _solver);
             ++its;
-        } while(((bc - bp).cwiseQuotient(bp)).squaredNorm() > _epsilon && its < _maxits);
+        } while((bc - bp).array().square().sqrt().sum() > _epsilon * bp.array().abs().sum() && its < _maxits);
         return bc;
     }
     
@@ -91,7 +91,7 @@ namespace statiskit
     void SlopeHeuristicHuberSolver::update(const Eigen::VectorXd& beta, Eigen::MatrixXd& W, const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
     {
         Eigen::VectorXd errors = y - X * beta;
-        double sigma = _k * errors.squaredNorm() / sqrt(y.size() - 1);
+        double sigma = _k * errors.norm() / sqrt(y.size());
         errors = errors.cwiseAbs();
         for(Index index = 0, max_index = y.size(); index < max_index; ++index)
         {
@@ -120,12 +120,12 @@ namespace statiskit
     void SlopeHeuristicBiSquareSolver::update(const Eigen::VectorXd& beta, Eigen::MatrixXd& W, const Eigen::MatrixXd& X, const Eigen::VectorXd& y) const
     {
         Eigen::VectorXd errors = y - X * beta;
-        double sigma = _k * errors.squaredNorm() / sqrt(y.size() - 1);
+        double sigma = _k * errors.norm() / sqrt(y.size());
         errors = errors.cwiseAbs();
         for(Index index = 0, max_index = y.size(); index < max_index; ++index)
         {
             if(errors(index) <= sigma)
-            { W(index, index) = pow(1-pow(errors(index) / sigma, 2), 2); }
+            { W(index, index) = pow(1 - pow(errors(index) / sigma, 2), 2); }
             else
             { W(index, index) = 0.; }
         }
@@ -216,7 +216,7 @@ namespace statiskit
         _intercepts.clear();
         _slopes.clear();
         _selected.clear();
-        _solver = new SlopeHeuristicBiSquareSolver();
+        _solver = new SlopeHeuristicHuberSolver();
         _selector = new SlopeHeuristicSuperiorSelector();
     }
 
