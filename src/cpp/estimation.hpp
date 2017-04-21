@@ -36,6 +36,15 @@ namespace statiskit
         { _data = nullptr; }
 
     template<class D, class B>
+        ActiveEstimation< D, B >::ActiveEstimation(const typename B::data_type* data) : LazyEstimation< D, B >()
+        { 
+            if(data)
+            { _data = data->copy().release(); }
+            else
+            { _data = nullptr; }
+        }
+
+    template<class D, class B>
         ActiveEstimation< D, B >::ActiveEstimation(const D * estimated, const typename B::data_type* data) : LazyEstimation< D, B >(estimated)
         { 
             if(data)
@@ -67,6 +76,13 @@ namespace statiskit
         }
 
     template<class D, class B>
+        ListEstimation< D, B >::ListEstimation(const typename B::data_type* data) : ActiveEstimation< D, B >(data)
+        {
+            _estimations.clear();
+            _scores.clear();
+        }
+
+    template<class D, class B>
         ListEstimation< D, B >::ListEstimation(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
         {
             _estimations.clear();
@@ -77,9 +93,9 @@ namespace statiskit
         ListEstimation< D, B >::ListEstimation(const ListEstimation< D, B >& estimation)
         {
             _estimations.resize(estimation.size(), nullptr);
-            for(Index index = 0, max_index = estimation.size(); index < max_index; ++index)
-            { _estimations[index] = estimation._estimations[index]->copy().release(); }
-            _scores = estimation._estimations;
+            // for(Index index = 0, max_index = estimation.size(); index < max_index; ++index)
+            // { _estimations[index] = static_cast< B* >(estimation._estimations[index]->copy().release()); } TODO
+            _scores = estimation._scores;
             this->_data = estimation._data->copy().release();
             finalize();
         }
@@ -114,7 +130,7 @@ namespace statiskit
         {
             std::vector< double >::const_iterator it = std::max_element(_scores.cbegin(), _scores.cend());
             if(it != _scores.cend() && boost::math::isfinite(*it))
-            { this->_estimated = _estimations[distance(_scores.cbegin(), it)]->get_estimated(); }
+            { this->_estimated = static_cast< const D * >(_estimations[distance(_scores.cbegin(), it)]->get_estimated()); }
             else
             { this->_estimated = nullptr; }
         }
@@ -143,12 +159,12 @@ namespace statiskit
         }
 
     template<class D, class B>
-        std::unique_ptr< typename B::estimation_type > ListEstimation< D, B >::Estimator::operator() (const typename B::estimation_type::data_type& data, const bool& lazy) const
+        std::unique_ptr< typename B::Estimator::estimation_type > ListEstimation< D, B >::Estimator::operator() (const typename B::data_type& data, const bool& lazy) const
         {
-            std::unique_ptr< typename B::estimation_type > estimation = std::make_unique< LazyEstimation< D, B > >();;
+            std::unique_ptr< typename B::Estimator::estimation_type > estimation = std::make_unique< LazyEstimation< D, B > >();
             if(lazy)
             {
-                std::unique_ptr< typename B::estimation_type > _estimation;
+                std::unique_ptr< typename B::Estimator::estimation_type > _estimation;
                 double curr, prev = std::numeric_limits< double >::quiet_NaN();
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 { 
@@ -168,24 +184,24 @@ namespace statiskit
             }
             else
             {
-                ListEstimation< D, B >* _estimation = new ListEstimation< D, B >(nullptr, data);
+                ListEstimation< D, B >* _estimation = new ListEstimation< D, B >(data.copy().release());
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 { 
                     try
                     {
-                        _estimation->_estimations.push_back((*(_estimators[index]))(data, false).release());
-                        _estimation->_scores.push_back(scoring(_estimation->_estimations.back()->get_estimated().get(), data));
+                        _estimation->_estimations.push_back(static_cast< B* >((*(_estimators[index]))(data, false).release()));
+                        _estimation->_scores.push_back(scoring(_estimation->_estimations.back()->get_estimated(), data));
                     }
                     catch(const std::exception& e)
                     {
-                        _estimation->_estimations.puhs_back(nullptr);
+                        _estimation->_estimations.push_back(nullptr);
                         _estimation->_scores.push_back(std::numeric_limits< double >::quiet_NaN());
                     }
                 }
                 _estimation->finalize();
                 estimation.reset(_estimation);
             }
-            if(!estimation.get_estimated())
+            if(!estimation->get_estimated())
             { std::runtime_error("All estimations failed, perform manually the estimation in order to investigate what went wrong"); }
             return estimation;
         }
@@ -199,7 +215,7 @@ namespace statiskit
         { 
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
-            return _estimators; 
+            return _estimators[index]; 
         }
 
     template<class D, class B>
@@ -208,13 +224,12 @@ namespace statiskit
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
             delete _estimators[index];
-            _estimators[index] = estimator.copy().release();
-            return _estimators; 
+            _estimators[index] = static_cast< typename B::Estimator* >(estimator.copy().release());
         }
 
     template<class D, class B>
         void ListEstimation< D, B >::Estimator::add_estimator(const typename B::Estimator& estimator)
-        { _estimators.push_back(estimator.copy().release()); }
+        { _estimators.push_back(static_cast< typename B::Estimator* >(estimator.copy().release())); }
 
     template<class D, class B>
         void ListEstimation< D, B >::Estimator::remove_estimator(const Index& index)
@@ -225,6 +240,50 @@ namespace statiskit
             advance(it, index);
             delete *it;
             _estimators.erase(it);
+        }
+
+    template<class D, class B>
+        ListEstimation< D, B >::ClassicalCriterionEstimator::ClassicalCriterionEstimator() : ListEstimation< D, B >::Estimator()
+        { _criterion = criterion_type::BIC; }
+
+    template<class D, class B>
+        ListEstimation< D, B >::ClassicalCriterionEstimator::ClassicalCriterionEstimator(const ClassicalCriterionEstimator& estimator) : ListEstimation< D, B >::Estimator(estimator)
+        { _criterion = estimator._criterion; }
+
+    template<class D, class B>
+        ListEstimation< D, B >::ClassicalCriterionEstimator::~ClassicalCriterionEstimator()
+        {}
+
+    template<class D, class B>
+        const typename ListEstimation< D, B >::ClassicalCriterionEstimator::criterion_type& ListEstimation< D, B >::ClassicalCriterionEstimator::get_criterion() const
+        { return _criterion; }
+
+    template<class D, class B>
+        void ListEstimation< D, B >::ClassicalCriterionEstimator::set_criterion(const criterion_type& criterion)
+        { _criterion = criterion; }
+
+    template<class D, class B>
+        double ListEstimation< D, B >::ClassicalCriterionEstimator::scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const
+        {
+            double score = estimated->loglikelihood(data);
+            double total = data->compute_total();
+            unsigned int nb_parameters = estimated->get_nb_parameters();
+            switch(_criterion)
+            {
+                case AIC:
+                    score -= nb_parameters;
+                    break;
+                case AICc:
+                    score -= nb_parameters * (1 + (nb_parameters + 1) / (total - nb_parameters - 1)) ;
+                    break;
+                case BIC:
+                    score -= nb_parameters * log(total) / 2.;
+                    break;
+                case HQIC:
+                    score -= nb_parameters * log(log(total)) / 2.;
+                    break;
+            }
+            return score;
         }
 
     template<class T, class D, class B>

@@ -210,8 +210,40 @@ namespace statiskit
         virtual double get_mean() const;
         
         virtual double get_variance() const;
-   };
+    };
     
+    template<class T> class ShiftedDistribution : public PolymorphicCopy< UnivariateDistribution, ShiftedDistribution< T >, T >
+    {
+        public:
+            ShiftedDistribution(const T& distribution, const typename T::event_type::value_type& shift);
+            ShiftedDistribution(const ShiftedDistribution< T >& distribution);
+            virtual ~ShiftedDistribution();
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+            
+            virtual double ldf(const typename T::event_type::value_type& value) const;
+            virtual double pdf(const typename T::event_type::value_type& value) const;
+            virtual double cdf(const typename T::event_type::value_type& value) const;
+            
+            virtual typename T::event_type::value_type quantile(const double& p) const;
+        
+            virtual double get_mean() const;
+            
+            virtual double get_variance() const;
+
+            const typename T::event_type::value_type& get_shift() const;
+            void set_shift(const typename T::event_type::value_type& shift);
+
+            const T* get_distribution() const;
+            void set_distribution(const T& distribution);
+
+        protected:
+            typename T::event_type::value_type _shift;
+            T* _distribution;
+    };
+
     /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete component \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.
      * 
      * */
@@ -264,7 +296,8 @@ namespace statiskit
     };
 
     typedef QuantitativeUnivariateFrequencyDistribution< DiscreteUnivariateDistribution > DiscreteUnivariateFrequencyDistribution;
-    
+    typedef ShiftedDistribution< DiscreteUnivariateDistribution > ShiftedDiscreteUnivariateDistribution;
+
     /** \brief This class PoissonDistribution represents a [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution)
      * 
      * \details The Poisson distribution is an univariate discrete distribution that expresses the probability of a given number of events occurring in a fixed interval of time and/or space if these events occur with a known average rate \f$\theta  \in \mathbb{R}_+^*  \f$ and independently of the time since the last event. The support of the Poisson distribution is the set of non-negative integer \f$ \mathbb{N} \f$.

@@ -62,6 +62,7 @@ namespace statiskit
     {
         public:
             ActiveEstimation();
+            ActiveEstimation(typename B::data_type const * data);
             ActiveEstimation(D const * estimated, typename B::data_type const * data);
             ActiveEstimation(const ActiveEstimation< D, B >& estimation);
             virtual ~ActiveEstimation();
@@ -76,6 +77,7 @@ namespace statiskit
     {
         public:
             ListEstimation();
+            ListEstimation(typename B::data_type const * data);
             ListEstimation(D const * estimated, typename B::data_type const * data);
             ListEstimation(const ListEstimation< D, B >& estimation);
             virtual ~ListEstimation();
@@ -93,7 +95,7 @@ namespace statiskit
                     Estimator(const Estimator& estimator);
                     virtual ~Estimator();
                   
-                    virtual std::unique_ptr< typename B::estimation_type > operator() (typename B::estimation_type::data_type const & data, const bool& lazy=true) const;
+                    virtual std::unique_ptr< typename B::Estimator::estimation_type > operator() (typename B::data_type const & data, const bool& lazy=true) const;
 
                     Index size() const;
 
@@ -106,7 +108,30 @@ namespace statiskit
                 protected:
                     std::vector< typename B::Estimator * > _estimators;
 
-                    virtual double scoring(const typename B::estimation_type::estimated_type * estimated, typename B::estimation_type::data_type const & data) const = 0;
+                    virtual double scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const = 0;
+            };
+
+            class ClassicalCriterionEstimator : public Estimator
+            {
+                public:
+                    enum criterion_type {
+                        AIC,
+                        AICc,
+                        BIC,
+                        HQIC
+                    };
+
+                    ClassicalCriterionEstimator();
+                    ClassicalCriterionEstimator(const ClassicalCriterionEstimator& estimator);
+                    virtual ~ClassicalCriterionEstimator();
+
+                    const criterion_type& get_criterion() const;
+                    void set_criterion(const criterion_type& criterion);
+
+                protected:
+                    criterion_type _criterion;
+
+                    virtual double scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const;
             };
 
         protected:
@@ -198,6 +223,8 @@ namespace statiskit
 
     struct STATISKIT_CORE_API DiscreteUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
+
+    typedef ListEstimation< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation >::ClassicalCriterionEstimator DiscreteClassicalCriterionEstimator;
 
     struct STATISKIT_CORE_API ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };

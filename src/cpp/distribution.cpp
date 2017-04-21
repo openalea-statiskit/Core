@@ -371,6 +371,10 @@ namespace statiskit
         double p;
         if(value < 0 || value > _kappa)
         { p = -1 * std::numeric_limits< double >::infinity(); }
+        else if(value == 0)
+        { p = - _kappa * log(1. - _pi); }
+        else if(value == _kappa)
+        {  p =  value * log(_pi); }
         else
         { p = boost::math::lgamma(_kappa + 1) - boost::math::lgamma(_kappa - value + 1) - boost::math::lgamma(value + 1) + value * log(_pi) + (_kappa - value) * log(1. - _pi); }
         return p;
@@ -381,6 +385,10 @@ namespace statiskit
         double p;
         if(value < 0 || value > _kappa)
         { p = 0; }
+        else if(value == 0)
+        { p = pow(1 - _pi, _kappa); }
+        else if(value == _kappa)
+        { p = pow(_pi, _kappa); }
         else
         { p = boost::math::ibeta_derivative(value + 1, _kappa - value + 1, _pi) / (_kappa + 1); }
         return p;
@@ -1443,16 +1451,16 @@ namespace statiskit
                     {
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
                         {
-                            binomial.set_pi(_pi[component] / (1 - sum));
                             int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
+                            binomial.set_pi(_pi[component] / (1 - sum));
                             p += binomial.ldf(value);
                             kappa -= value;
-                            sum += _pi[component];
-                            binomial.set_kappa(kappa);
                         }
                         else
                         { throw std::exception(); }
                     }
+                    sum += _pi[component];
+                    binomial.set_kappa(kappa);
                 }
                 uevent = event->get(get_nb_components() - 1);
                 if(uevent->get_outcome() != DISCRETE || uevent->get_event() != ELEMENTARY || static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() != kappa)

@@ -117,7 +117,7 @@ def simulation(self, size):
 UnivariateDistribution.simulation = simulation
 del simulation
 
-def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
+def pdf_plot(self, axes=None, fmt='|', alpha=1., **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     labels = self.values
@@ -128,16 +128,23 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
         y = [norm * p for p in y]
     else:
         y = [p for p in y]
-    if '|' in fmt:
-        fmt = fmt.replace('|', '')
-        width = kwargs.pop('width', .8)
-        if not 0 < width <= 1.:
-            raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha)
+    if fmt == 'pie':
+        if not 'autopct' in kwargs:
+            kwargs['autopct'] = '%.2f'
+        axes.pie(y, labels=labels, alpha=alpha, **kwargs)
     else:
-        axes.plot(x, y, fmt, color=color, alpha=alpha)
-    axes.set_xticks(x)
-    axes.set_xticklabels(labels)
+        if not 'color' in kwargs:
+            kwargs['color'] = 'r'
+        if '|' in fmt:
+            fmt = fmt.replace('|', '')
+            width = kwargs.pop('width', .8)
+            if not 0 < width <= 1.:
+                raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
+            axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center', **kwargs)
+        if len(fmt) > 0:
+            axes.plot(x, y, fmt, color=color, alpha=alpha, **kwargs)
+        axes.set_xticks(x)
+        axes.set_xticklabels(labels)
     return axes
 
 CategoricalUnivariateDistribution.pdf_plot = pdf_plot
@@ -195,7 +202,7 @@ def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
         width = kwargs.pop('width', .8)
         if not 0 < width <= 1.:
             raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha)
+        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center')
     else:
         axes.plot(x, y, fmt, color=color, alpha=alpha)
     axes.set_xticks(x)
@@ -283,7 +290,7 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
         width = kwargs.pop('width', .2)
         if not 0 < width <= 1.:
             raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha)
+        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center')
     if len(fmt) > 0:
         axes.plot(x, y, fmt, color=color, alpha=alpha)
     return axes

@@ -3,16 +3,16 @@
 
 #include <boost/python.hpp>
 #include <type_traits>
+#include <statiskit/core/estimator.h>
 #include <statiskit/core/event.h>
-#include <statiskit/core/slope_heuristic.h>
-#include <statiskit/core/moment.h>
 #include <statiskit/core/mixture.h>
+#include <statiskit/core/distribution.h>
+#include <statiskit/core/data.h>
+#include <statiskit/core/moment.h>
 #include <statiskit/core/sample_space.h>
+#include <statiskit/core/slope_heuristic.h>
 #include <statiskit/core/base.h>
 #include <statiskit/core/estimation.h>
-#include <statiskit/core/estimator.h>
-#include <statiskit/core/data.h>
-#include <statiskit/core/distribution.h>
 #include <memory>
 
 namespace autowig
@@ -1568,6 +1568,26 @@ namespace autowig
 
     };
 
+    class Wrap_5f39aa430dbb5d93b6d984f7cef723ea : public ::statiskit::ListEstimation< ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator, public boost::python::wrapper< class ::statiskit::ListEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > > (result);
+            }
+
+        protected:
+            
+            virtual double  scoring(struct ::statiskit::UnivariateDistribution const * param_0, struct ::statiskit::UnivariateData const & param_1) const
+            { return this->get_override("scoring")(param_0, param_1); }
+
+        private:
+            
+
+    };
+
     class Wrap_6923aecde43059bd8a00d1bd199ffa8d : public ::statiskit::MixtureDistribution< ::statiskit::ContinuousUnivariateDistribution >, public boost::python::wrapper< class ::statiskit::MixtureDistribution< struct ::statiskit::ContinuousUnivariateDistribution > >
     {
         public:
@@ -2237,6 +2257,38 @@ namespace autowig
 
     };
 
+    class Wrap_f93af042f688513484b1158c96b9eaef : public ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, ::statiskit::ShiftedDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, struct ::statiskit::DiscreteUnivariateDistribution >, public boost::python::wrapper< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::ShiftedDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, struct ::statiskit::DiscreteUnivariateDistribution > >
+    {
+        public:
+            
+            virtual double  get_variance() const
+            { return this->get_override("get_variance")(); }
+            virtual double  get_mean() const
+            { return this->get_override("get_mean")(); }
+            virtual int  quantile(double const & param_0) const
+            { return this->get_override("quantile")(param_0); }
+            virtual double  cdf(int const & param_0) const
+            { return this->get_override("cdf")(param_0); }
+            virtual double  pdf(int const & param_0) const
+            { return this->get_override("pdf")(param_0); }
+            virtual double  ldf(int const & param_0) const
+            { return this->get_override("ldf")(param_0); }
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  simulate() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > ::element_type* result = this->get_override("simulate")();
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > (result);
+            }
+            virtual unsigned int  get_nb_parameters() const
+            { return this->get_override("get_nb_parameters")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_055ebc8a6eb3586cb94dfd0b3df1eb0f : public ::statiskit::UnivariateMixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >, public boost::python::wrapper< struct ::statiskit::UnivariateMixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >
     {
         public:
@@ -2601,6 +2653,24 @@ namespace autowig
             { return this->get_override("quantile")(param_0); }
             virtual double  cdf(double const & param_0) const
             { return this->get_override("cdf")(param_0); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_fd972a10c86a58beaa770541f6e5204f : public ::statiskit::ListEstimation< ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::ClassicalCriterionEstimator, public boost::python::wrapper< class ::statiskit::ListEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::ClassicalCriterionEstimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation::Estimator > > (result);
+            }
 
         protected:
             

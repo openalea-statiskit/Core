@@ -181,6 +181,75 @@ namespace statiskit
             return variance;
         }
 
+    template<class T>
+        ShiftedDistribution< T >::ShiftedDistribution(const T& distribution, const typename T::event_type::value_type& shift)
+        {
+            _distribution = static_cast< T* >(distribution.copy().release());
+            _shift = shift;
+        }
+
+    template<class T>
+        ShiftedDistribution< T >::ShiftedDistribution(const ShiftedDistribution< T >& distribution)
+        {
+            _distribution = static_cast< T* >(distribution._distribution->copy().release());
+            _shift = distribution._shift;
+        }
+
+    template<class T>
+        ShiftedDistribution< T >::~ShiftedDistribution()
+        { delete _distribution; }
+
+    template<class T>
+        unsigned int ShiftedDistribution< T >::get_nb_parameters() const
+        { return _distribution->get_nb_parameters() + 1 * bool(_shift != 0); }
+
+    template<class T>
+        std::unique_ptr< UnivariateEvent > ShiftedDistribution< T >::simulate() const
+        { std::make_unique< ElementaryEvent< typename T::event_type > >(static_cast< ElementaryEvent< typename T::event_type > * >(_distribution->simulate().get())->get_value() + _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::ldf(const typename T::event_type::value_type& value) const
+        { return _distribution->ldf(value - _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::pdf(const typename T::event_type::value_type& value) const
+        { return _distribution->pdf(value - _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::cdf(const typename T::event_type::value_type& value) const
+        { return _distribution->cdf(value - _shift); }
+
+    template<class T>
+        typename T::event_type::value_type ShiftedDistribution< T >::quantile(const double& p) const
+        { return _distribution->quantile(p) + _shift; }
+
+    template<class T>
+        double ShiftedDistribution< T >::get_mean() const
+        { return _distribution->get_mean() + _shift; }
+
+    template<class T>
+        double ShiftedDistribution< T >::get_variance() const
+        { return _distribution->get_variance(); }
+
+    template<class T>
+        const typename T::event_type::value_type& ShiftedDistribution< T >::get_shift() const
+        { return _shift; }
+
+    template<class T>
+        void ShiftedDistribution< T >::set_shift(const typename T::event_type::value_type& shift)
+        { _shift = shift; }
+
+    template<class T>
+        const T* ShiftedDistribution< T >::get_distribution() const
+        { return _distribution; }
+
+    template<class T>
+        void ShiftedDistribution< T >::set_distribution(const T& distribution)
+        { 
+            delete _distribution;
+            _distribution = static_cast< T* >(distribution.copy().release());
+        }
+
     template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals)
         {
