@@ -69,28 +69,28 @@ namespace statiskit
         { return _data; }
 
     template<class D, class B>
-        ListEstimation< D, B >::ListEstimation() : ActiveEstimation< D, B >()
+        ListSelection< D, B >::ListSelection() : ActiveEstimation< D, B >()
         {
             _estimations.clear();
             _scores.clear();
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::ListEstimation(const typename B::data_type* data) : ActiveEstimation< D, B >(data)
+        ListSelection< D, B >::ListSelection(const typename B::data_type* data) : ActiveEstimation< D, B >(data)
         {
             _estimations.clear();
             _scores.clear();
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::ListEstimation(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
+        ListSelection< D, B >::ListSelection(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
         {
             _estimations.clear();
             _scores.clear();
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::ListEstimation(const ListEstimation< D, B >& estimation)
+        ListSelection< D, B >::ListSelection(const ListSelection< D, B >& estimation)
         {
             _estimations.resize(estimation.size(), nullptr);
             // for(Index index = 0, max_index = estimation.size(); index < max_index; ++index)
@@ -101,7 +101,7 @@ namespace statiskit
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::~ListEstimation()
+        ListSelection< D, B >::~ListSelection()
         {
             this->_estimated = nullptr;
             for(Index index = 0, max_index = size(); index < max_index; ++index)
@@ -114,19 +114,19 @@ namespace statiskit
         }
     
     template<class D, class B>
-        Index ListEstimation< D, B >::size() const
+        Index ListSelection< D, B >::size() const
         { return _scores.size(); }
 
     template<class D, class B>
-        B const * ListEstimation< D, B >::get_estimation(const Index& index) const
+        B const * ListSelection< D, B >::get_estimation(const Index& index) const
         { return _estimations[index]; }
 
     template<class D, class B>
-        const double& ListEstimation< D, B >::get_score(const Index& index) const
+        const double& ListSelection< D, B >::get_score(const Index& index) const
         { return _scores[index]; }
 
     template<class D, class B>
-        void ListEstimation< D, B >::finalize()
+        void ListSelection< D, B >::finalize()
         {
             std::vector< double >::const_iterator it = std::max_element(_scores.cbegin(), _scores.cend());
             if(it != _scores.cend() && boost::math::isfinite(*it))
@@ -136,20 +136,20 @@ namespace statiskit
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::Estimator::Estimator()
+        ListSelection< D, B >::Estimator::Estimator()
         { _estimators.clear(); }
 
     template<class D, class B>
-        ListEstimation< D, B >::Estimator::Estimator(const Estimator& estimator)
+        ListSelection< D, B >::Estimator::Estimator(const Estimator& estimator)
         { 
             _estimators.resize(estimator.size());
             for(Index index = 0, max_index = estimator.size(); index < max_index; ++index)
-            { _estimators[index] = estimator._estimators[index]->copy().release(); }
+            { _estimators[index] = static_cast< typename B::Estimator* >(estimator._estimators[index]->copy().release()); }
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::Estimator::~Estimator()
-        { 
+        ListSelection< D, B >::Estimator::~Estimator()
+        {
             for(Index index = 0, max_index = _estimators.size(); index < max_index; ++index)
             { 
                 delete _estimators[index];
@@ -159,7 +159,7 @@ namespace statiskit
         }
 
     template<class D, class B>
-        std::unique_ptr< typename B::Estimator::estimation_type > ListEstimation< D, B >::Estimator::operator() (const typename B::data_type& data, const bool& lazy) const
+        std::unique_ptr< typename B::Estimator::estimation_type > ListSelection< D, B >::Estimator::operator() (const typename B::data_type& data, const bool& lazy) const
         {
             std::unique_ptr< typename B::Estimator::estimation_type > estimation = std::make_unique< LazyEstimation< D, B > >();
             if(lazy)
@@ -184,7 +184,7 @@ namespace statiskit
             }
             else
             {
-                ListEstimation< D, B >* _estimation = new ListEstimation< D, B >(data.copy().release());
+                ListSelection< D, B >* _estimation = new ListSelection< D, B >(data.copy().release());
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 { 
                     try
@@ -207,11 +207,11 @@ namespace statiskit
         }
 
     template<class D, class B>
-        Index ListEstimation< D, B >::Estimator::size() const
+        Index ListSelection< D, B >::Estimator::size() const
         { return _estimators.size(); }
 
     template<class D, class B>
-        typename B::Estimator* ListEstimation< D, B >::Estimator::get_estimator(const Index& index)
+        typename B::Estimator* ListSelection< D, B >::Estimator::get_estimator(const Index& index)
         { 
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
@@ -219,7 +219,7 @@ namespace statiskit
         }
 
     template<class D, class B>
-        void ListEstimation< D, B >::Estimator::set_estimator(const Index& index, const typename B::Estimator& estimator)
+        void ListSelection< D, B >::Estimator::set_estimator(const Index& index, const typename B::Estimator& estimator)
         { 
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
@@ -228,11 +228,11 @@ namespace statiskit
         }
 
     template<class D, class B>
-        void ListEstimation< D, B >::Estimator::add_estimator(const typename B::Estimator& estimator)
+        void ListSelection< D, B >::Estimator::add_estimator(const typename B::Estimator& estimator)
         { _estimators.push_back(static_cast< typename B::Estimator* >(estimator.copy().release())); }
 
     template<class D, class B>
-        void ListEstimation< D, B >::Estimator::remove_estimator(const Index& index)
+        void ListSelection< D, B >::Estimator::remove_estimator(const Index& index)
         {
             if(index >= size())
             { throw size_error("index", size(), size_error::inferior); }
@@ -243,30 +243,30 @@ namespace statiskit
         }
 
     template<class D, class B>
-        ListEstimation< D, B >::ClassicalCriterionEstimator::ClassicalCriterionEstimator() : ListEstimation< D, B >::Estimator()
+        ListSelection< D, B >::CriterionEstimator::CriterionEstimator() : ListSelection< D, B >::Estimator()
         { _criterion = criterion_type::BIC; }
 
     template<class D, class B>
-        ListEstimation< D, B >::ClassicalCriterionEstimator::ClassicalCriterionEstimator(const ClassicalCriterionEstimator& estimator) : ListEstimation< D, B >::Estimator(estimator)
+        ListSelection< D, B >::CriterionEstimator::CriterionEstimator(const CriterionEstimator& estimator) : ListSelection< D, B >::Estimator(estimator)
         { _criterion = estimator._criterion; }
 
     template<class D, class B>
-        ListEstimation< D, B >::ClassicalCriterionEstimator::~ClassicalCriterionEstimator()
+        ListSelection< D, B >::CriterionEstimator::~CriterionEstimator()
         {}
 
     template<class D, class B>
-        const typename ListEstimation< D, B >::ClassicalCriterionEstimator::criterion_type& ListEstimation< D, B >::ClassicalCriterionEstimator::get_criterion() const
+        const typename ListSelection< D, B >::CriterionEstimator::criterion_type& ListSelection< D, B >::CriterionEstimator::get_criterion() const
         { return _criterion; }
 
     template<class D, class B>
-        void ListEstimation< D, B >::ClassicalCriterionEstimator::set_criterion(const criterion_type& criterion)
+        void ListSelection< D, B >::CriterionEstimator::set_criterion(const criterion_type& criterion)
         { _criterion = criterion; }
 
     template<class D, class B>
-        double ListEstimation< D, B >::ClassicalCriterionEstimator::scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const
+        double ListSelection< D, B >::CriterionEstimator::scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const
         {
             double score = estimated->loglikelihood(data);
-            double total = data->compute_total();
+            double total = data.compute_total();
             unsigned int nb_parameters = estimated->get_nb_parameters();
             switch(_criterion)
             {

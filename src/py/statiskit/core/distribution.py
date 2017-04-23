@@ -140,9 +140,9 @@ def pdf_plot(self, axes=None, fmt='|', alpha=1., **kwargs):
             width = kwargs.pop('width', .8)
             if not 0 < width <= 1.:
                 raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-            axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center', **kwargs)
+            axes.bar([q-width/2. for q in x], y, width, alpha=alpha, align='center', **kwargs)
         if len(fmt) > 0:
-            axes.plot(x, y, fmt, color=color, alpha=alpha, **kwargs)
+            axes.plot(x, y, fmt, alpha=alpha, **kwargs)
         axes.set_xticks(x)
         axes.set_xticklabels(labels)
     return axes

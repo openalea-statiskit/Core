@@ -372,7 +372,7 @@ namespace statiskit
         if(value < 0 || value > _kappa)
         { p = -1 * std::numeric_limits< double >::infinity(); }
         else if(value == 0)
-        { p = - _kappa * log(1. - _pi); }
+        { p = _kappa * log(1. - _pi); }
         else if(value == _kappa)
         {  p =  value * log(_pi); }
         else
