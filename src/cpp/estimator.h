@@ -17,18 +17,6 @@
 
 namespace statiskit
 {
-
-    struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation::Estimator : UnivariateDistributionEstimation::Estimator
-    {
-        Estimator();
-        Estimator(const Estimator& estimator);
-        virtual ~Estimator();
-
-        virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const; 
-
-        virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
-    };
-
     template<class D, class B> struct UnivariateFrequencyDistributionEstimation : ActiveEstimation< D, B >
     {
         UnivariateFrequencyDistributionEstimation();

@@ -9,20 +9,20 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _ListSelection, _OptimizationEstimation,
+from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation,
                                              UnivariateDistributionEstimation,
                                                 CategoricalUnivariateDistributionEstimation,
-                                                    CategoricalUnivariateDistributionListSelection,
+                                                    CategoricalUnivariateDistributionSelection,
                                                     CategoricalUnivariateMixtureDistributionEMEstimation,
                                                 DiscreteUnivariateDistributionEstimation, 
                                                     DiscreteUnivariateFrequencyDistributionEstimation,
-                                                    DiscreteUnivariateDistributionListSelection,
+                                                    DiscreteUnivariateDistributionSelection,
                                                     PoissonDistributionMLEstimation,# PoissonDistributionMMEstimation,
                                                     BinomialDistributionMLEstimation, BinomialDistributionMMEstimation,
                                                     NegativeBinomialDistributionMLEstimation, NegativeBinomialDistributionMMEstimation,
                                                     DiscreteUnivariateMixtureDistributionEMEstimation,
                                                 ContinuousUnivariateDistributionEstimation,
-                                                    ContinuousUnivariateDistributionListSelection,
+                                                    ContinuousUnivariateDistributionSelection,
                                                     ContinuousUnivariateFrequencyDistributionEstimation,
                                                     NormalDistributionMLEstimation,
                                                     UnivariateHistogramDistributionEstimation,
@@ -30,21 +30,21 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection,
                                                     ContinuousUnivariateMixtureDistributionEMEstimation,
                                              MultivariateDistributionEstimation,
-                                                 MixedMultivariateDistributionListSelection,
+                                                 MixedMultivariateDistributionSelection,
                                                 _IndependentMultivariateDistributionEstimation,
                                                 MixedIndependentMultivariateDistributionEstimation,
                                                 MixedMultivariateMixtureDistributionEMEstimation,
                                                 CategoricalMultivariateDistributionEstimation,
-                                                    CategoricalMultivariateDistributionListSelection,
+                                                    CategoricalMultivariateDistributionSelection,
                                                     CategoricalIndependentMultivariateDistributionEstimation,
                                                     CategoricalMultivariateMixtureDistributionEMEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
-                                                    DiscreteMultivariateDistributionListSelection,
+                                                    DiscreteMultivariateDistributionSelection,
                                                     MultinomialSplittingDistributionEstimation,
                                                     DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
                                                 ContinuousMultivariateDistributionEstimation,
-                                                    ContinuousMultivariateDistributionListSelection,
+                                                    ContinuousMultivariateDistributionSelection,
                                                     ContinuousIndependentMultivariateDistributionEstimation,
                                                     ContinuousMultivariateMixtureDistributionEMEstimation,
                                              _MixtureDistributionEMEstimation)
@@ -96,11 +96,11 @@ def list_estimator_decorator(cls):
 
     def wrapper__len__(f):
         @wraps(f)
-        def __len__(self, estimator):
+        def __len__(self):
             return f(self._estimator)
         return __len__
 
-    Estimators.__len__ = wrapper_add(cls.__len__)
+    Estimators.__len__ = wrapper__len__(cls.__len__)
     del cls.__len__
 
     def wrapper_add(f):
@@ -138,7 +138,7 @@ def list_estimator_decorator(cls):
                 return f(self._estimator, index)
         return __getitem__
 
-    Estimator.__getitem__ = wrapper__getitem__(cls.get_estimator)
+    Estimators.__getitem__ = wrapper__getitem__(cls.get_estimator)
     del cls.get_estimator
 
     def wrapper__setitem__(f):
@@ -154,7 +154,7 @@ def list_estimator_decorator(cls):
                 return f(self._estimator, index, estimator)
         return __setitem__
 
-    Estimator.__setitem__ = wrapper__setitem__(cls.set_estimator)
+    Estimators.__setitem__ = wrapper__setitem__(cls.set_estimator)
     del cls.set_estimator
 
     def set_estimators(self, estimators):
@@ -165,9 +165,10 @@ def list_estimator_decorator(cls):
             for estimator in estimators:
                 self.estimators.add(estimator)
         except:
+            raise
             self.estimators = _estimators
             
-    cls.estimators = property(Estimator, set_estimators)
+    cls.estimators = property(Estimators, set_estimators)
 
 def list_selection_decorator(cls):
 
@@ -196,7 +197,7 @@ def list_selection_decorator(cls):
 
     list_estimator_decorator(cls.Estimator)
 
-for cls in _ListSelection:
+for cls in _Selection:
     list_selection_decorator(cls)
 
 def optimization_estimation_impl_estimator_decorator(cls):
@@ -485,20 +486,20 @@ def selection(data, algo="criterion", *args, **kwargs):
     mult = kwargs.pop('mult', outcome is outcome_type.MIXED)
     if mult:
         if outcome is outcome_type.MIXED:
-            mapping = dict(criterion = MultivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = MultivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.CATEGORICAL:
-            mapping = dict(criterion = CategoricalMultivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = CategoricalMultivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.DISCRETE:
-            mapping = dict(criterion = DiscreteMultivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = DiscreteMultivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.CONTINUOUS:
-            mapping = dict(criterion = ContinuousMultivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = ContinuousMultivariateDistributionSelection.CriterionEstimator)
     else:
         if outcome is outcome_type.MIXED:
             raise ValueError('\'mult\' parameter')
         elif outcome is outcome_type.CATEGORICAL:
-            mapping = dict(criterion = CategoricalUnivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = CategoricalUnivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.DISCRETE:
-            mapping = dict(criterion = CategoricalUnivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = DiscreteUnivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.CONTINUOUS:
-            mapping = dict(criterion = CategoricalUnivariateDistributionListSelection.CriterionEstimator)
+            mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
     return _estimation("criterion", data, mapping, **kwargs)

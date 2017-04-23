@@ -73,14 +73,14 @@ namespace statiskit
             typename B::data_type const * _data;
     };
 
-    template<class D, class B> class ListSelection : public ActiveEstimation< D, B >
+    template<class D, class B> class Selection : public ActiveEstimation< D, B >
     {
         public:
-            ListSelection();
-            ListSelection(typename B::data_type const * data);
-            ListSelection(D const * estimated, typename B::data_type const * data);
-            ListSelection(const ListSelection< D, B >& estimation);
-            virtual ~ListSelection();
+            Selection();
+            Selection(typename B::data_type const * data);
+            Selection(D const * estimated, typename B::data_type const * data);
+            Selection(const Selection< D, B >& estimation);
+            virtual ~Selection();
 
             Index size() const;
 
@@ -91,8 +91,6 @@ namespace statiskit
             class Estimator : public B::Estimator
             {
                 public:
-                    Estimator();
-                    Estimator(const Estimator& estimator);
                     virtual ~Estimator();
                   
                     virtual std::unique_ptr< typename B::Estimator::estimation_type > operator() (typename B::data_type const & data, const bool& lazy=true) const;
@@ -109,9 +107,12 @@ namespace statiskit
                     std::vector< typename B::Estimator * > _estimators;
 
                     virtual double scoring(const typename B::estimated_type * estimated, typename B::data_type const & data) const = 0;
+
+                    void init();
+                    void init(const Estimator& estimator);
             };
 
-            class CriterionEstimator : public Estimator
+            class CriterionEstimator : public PolymorphicCopy< typename B::Estimator::estimation_type::Estimator, CriterionEstimator, Estimator >
             {
                 public:
                     enum criterion_type {
@@ -216,26 +217,37 @@ namespace statiskit
     };
 
     struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation : UnivariateDistributionEstimation
-    { struct STATISKIT_CORE_API Estimator; };
+    {
+        struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const; 
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+        };
+    };
 
     typedef LazyEstimation< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionLazyEstimation;
     typedef ActiveEstimation< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionActiveEstimation;
 
-    typedef ListSelection< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionListSelection;
-    typedef CategoricalUnivariateDistributionListSelection::CriterionEstimator CategoricalUnivariateDistributionCriterionEstimator;
+    typedef Selection< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionSelection;
+    typedef CategoricalUnivariateDistributionSelection::CriterionEstimator CategoricalUnivariateDistributionCriterionEstimator;
 
 
     struct STATISKIT_CORE_API DiscreteUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
 
-    typedef ListSelection< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateDistributionListSelection;
-    typedef DiscreteUnivariateDistributionListSelection::CriterionEstimator DiscreteUnivariateDistributionCriterionEstimator;
+    typedef Selection< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateDistributionSelection;
+    typedef DiscreteUnivariateDistributionSelection::CriterionEstimator DiscreteUnivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
 
-    typedef ListSelection< ContinuousUnivariateDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateDistributionListSelection;
-    typedef ContinuousUnivariateDistributionListSelection::CriterionEstimator ContinuousUnivariateDistributionCriterionEstimator;
+    typedef Selection< ContinuousUnivariateDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateDistributionSelection;
+    typedef ContinuousUnivariateDistributionSelection::CriterionEstimator ContinuousUnivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API MultivariateDistributionEstimation
     {
@@ -260,8 +272,8 @@ namespace statiskit
         };
     };
 
-    typedef ListSelection< MultivariateDistribution, MultivariateDistributionEstimation > MixedMultivariateDistributionListSelection;
-    typedef MixedMultivariateDistributionListSelection::CriterionEstimator MixedMultivariateDistributionCriterionEstimator;
+    typedef Selection< MultivariateDistribution, MultivariateDistributionEstimation > MixedMultivariateDistributionSelection;
+    typedef MixedMultivariateDistributionSelection::CriterionEstimator MixedMultivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API CategoricalMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
@@ -270,8 +282,8 @@ namespace statiskit
         struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    typedef ListSelection< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateDistributionListSelection;
-    typedef CategoricalMultivariateDistributionListSelection::CriterionEstimator CategoricalMultivariateDistributionCriterionEstimator;
+    typedef Selection< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateDistributionSelection;
+    typedef CategoricalMultivariateDistributionSelection::CriterionEstimator CategoricalMultivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API DiscreteMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
@@ -280,8 +292,8 @@ namespace statiskit
         struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    typedef ListSelection< DiscreteMultivariateDistribution, DiscreteMultivariateDistributionEstimation > DiscreteMultivariateDistributionListSelection;
-    typedef DiscreteMultivariateDistributionListSelection::CriterionEstimator DiscreteMultivariateDistributionCriterionEstimator;
+    typedef Selection< DiscreteMultivariateDistribution, DiscreteMultivariateDistributionEstimation > DiscreteMultivariateDistributionSelection;
+    typedef DiscreteMultivariateDistributionSelection::CriterionEstimator DiscreteMultivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API ContinuousMultivariateDistributionEstimation : MultivariateDistributionEstimation
     {
@@ -290,8 +302,8 @@ namespace statiskit
         struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
     };
 
-    typedef ListSelection< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateDistributionListSelection;
-    typedef ContinuousMultivariateDistributionListSelection::CriterionEstimator ContinuousMultivariateDistributionCriterionEstimator;
+    typedef Selection< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateDistributionSelection;
+    typedef ContinuousMultivariateDistributionSelection::CriterionEstimator ContinuousMultivariateDistributionCriterionEstimator;
 }
 
 #include "estimation.hpp"
