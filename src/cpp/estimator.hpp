@@ -11,6 +11,18 @@
 
 namespace statiskit
 {    
+    /* template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation() : LazyEstimation< ShiftedDistribution< D >, B >()
+        { _estimation = nullptr; }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation(LazyEstimation< D, B >* estimation, const typename D::event_type::value_type& shift) : LazyEstimation< ShiftedDistribution< D >, B >(new ShiftedDistribution< D >(*static_cast< const D* >(estimation.get_estimated()), shift))
+        { _estimation = estimation; }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation(const ShiftedDistributionEstimation< D, B >& estimation) : LazyEstimation< ShiftedDistribution< D >, B >(estimation)
+        { _estimation = estimation._estimation; } */
+
     template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()
         {}

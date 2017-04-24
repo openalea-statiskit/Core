@@ -17,6 +17,38 @@
 
 namespace statiskit
 {
+    /* template<class D, class B> class ShiftedDistributionEstimation : public LazyEstimation< ShiftedDistribution< D >, B >
+    {
+        public:
+            ShiftedDistributionEstimation();
+            ShiftedDistributionEstimation(ActiveEstimation< D, B >* estimation, const typename D::event_type::value_type& shift);
+            ShiftedDistributionEstimation(const ShiftedDistributionEstimation< D, B >& estimation);
+            virtual ~ShiftedDistributionEstimation();
+
+            const ActiveEstimation< D, B >* get_estimation();
+
+            class Estimator : public PolymorphicCopy< UnivariateDistributionEstimation, Estimator, typename B::Estimator >
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
+
+                    virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+                    typename D::event_type::value_type get_shift() const;
+                    void set_shift(const typename D::event_type::value_type& shift);
+
+                protected:
+                    typename D::event_type::value_type _shift;
+
+                    UnivariateData* compute_shifted(const UnivariateData& data);
+            };
+
+        protected:
+            ActiveEstimation< D, B >* _estimation;
+    };*/
+
     template<class D, class B> struct UnivariateFrequencyDistributionEstimation : ActiveEstimation< D, B >
     {
         UnivariateFrequencyDistributionEstimation();

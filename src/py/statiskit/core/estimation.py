@@ -502,4 +502,4 @@ def selection(data, algo="criterion", *args, **kwargs):
             mapping = dict(criterion = DiscreteUnivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
-    return _estimation("criterion", data, mapping, **kwargs)
+    return _estimation(algo, data, mapping, **kwargs)

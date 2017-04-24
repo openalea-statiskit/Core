@@ -9,25 +9,25 @@ from nose.plugins.attrib import attr
       osx=True,
       win=True,
       level=1)
-class TestBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution):
+class TestNegativeBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution):
 
     @classmethod
     def setUpClass(cls):
-        """Test binomial distribution construction"""
-        cls._dist = core.BinomialDistribution(2, .5)
+        """Test negative binomial distribution construction"""
+        cls._dist = core.NegativeBinomialDistribution(2., .5)
 
     def test_mle(self):
-        """Test binomial ML estimation"""
+        """Test negative binomial ML estimation"""
         data = self._dist.simulation(10)
-        mle = core.binomial_estimation('ml', data)
+        mle = core.negative_binomial_estimation('ml', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
 
     def test_mme(self):
-        """Test binomial MM estimation"""
-        data = self._dist.simulation(10)
-        mme = core.binomial_estimation('mm', data)
+        """Test negative binomial MM estimation"""
+        data = self._dist.simulation(100)
+        mme = core.negative_binomial_estimation('mm', data)
         self.assertAlmostEqual(mme.estimated.mean, float(data.mean))
-        # self.assertAlmostEqual(mme.estimated.variance, float(data.variance))
+        self.assertAlmostEqual(mme.estimated.variance, float(data.variance))
 
     @classmethod
     def tearDownClass(cls):

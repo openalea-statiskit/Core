@@ -312,7 +312,7 @@ namespace statiskit
     }
 
     int PoissonDistribution::quantile(const double& p) const
-    { return boost::math::gamma_q_inva(_theta, p); }
+    { return std::ceil(boost::math::gamma_q_inva(_theta, p) - 1); }
 
     double PoissonDistribution::get_mean() const
     { return _theta; }
@@ -475,7 +475,7 @@ namespace statiskit
     double NegativeBinomialDistribution::ldf(const int& value) const
     {
         double p;
-        if(value < 0 || value > _kappa)
+        if(value < 0)
         { p = -1 * std::numeric_limits< double >::infinity(); }
         else
         { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1. - _pi); }
@@ -485,18 +485,18 @@ namespace statiskit
     double NegativeBinomialDistribution::pdf(const int& value) const
     {
         double p;
-        if(value < 0 || value > _kappa)
+        if(value < 0)
         { p = 0; }
         else
-        { p = exp(ldf(value)); /*boost::math::ibeta_derivative(value + 1, _kappa - value + 1, _pi) / (_kappa + 1);*/ }
+        { p = boost::math::ibeta_derivative(_kappa, value + 1., 1 - _pi) * (1. - _pi) / (_kappa + value); }
         return p;
     }
 
     double NegativeBinomialDistribution::cdf(const int& value) const
-    { return boost::math::ibeta(_kappa, value + 1, 1. - _pi); }
+    { return boost::math::ibeta(_kappa, value + 1., 1. - _pi); }
 
     int NegativeBinomialDistribution::quantile(const double& p) const
-    { return boost::math::ibeta_invb(_kappa, 1. - _pi, p) - 1; }
+    { return std::ceil(boost::math::ibeta_invb(_kappa, 1. - _pi, p) - 1); }
 
     double NegativeBinomialDistribution::get_mean() const
     { return _kappa * _pi / (1 - _pi); }
@@ -1559,7 +1559,11 @@ namespace statiskit
             { rv = current; }
         }
         --lv;
+        while(cdf(lv) >= p)
+        { --lv; }
         ++rv;
+        while(cdf(rv) <= p)
+        { ++rv; }
         double lp = cdf(lv), rp = cdf(rv);
         do
         {
