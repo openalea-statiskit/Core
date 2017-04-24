@@ -8,6 +8,8 @@
 
 from functools import wraps
 
+from optionals import pyplot
+
 import statiskit.core._core
 from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation,
                                              UnivariateDistributionEstimation,
@@ -87,43 +89,33 @@ def active_estimation_decorator(cls):
 for cls in _ActiveEstimation:
     active_estimation_decorator(cls)
 
-def list_estimator_decorator(cls):
+def selection_decorator(cls):
 
-    class Estimators(object):
+    class Estimations(object):
 
-        def __init__(self, estimator):
-            self._estimator = estimator
+        def __init__(self, estimation):
+            self._estimation = estimation
+
+    class Scores(object):
+
+        def __init__(self, estimation):
+            self._estimation = estimation
+
+        def plot(self, axes=None):
+            if axes is None:
+                axes = pyplot.subplot(1,1,1)
+            axes.plot(self[:])
+            return axes
 
     def wrapper__len__(f):
         @wraps(f)
         def __len__(self):
-            return f(self._estimator)
+            return f(self._estimation)
         return __len__
 
-    Estimators.__len__ = wrapper__len__(cls.__len__)
+    Estimations.__len__ = wrapper__len__(cls.__len__)
+    Scores.__len__ = wrapper__len__(cls.__len__)
     del cls.__len__
-
-    def wrapper_add(f):
-        @wraps(f)
-        def add(self, estimator):
-            f(self._estimator, estimator)
-        return add
-
-    Estimators.add = wrapper_add(cls.add_estimator)
-    del cls.add_estimator
-
-    def wrapper_remove(f):
-        @wraps(f)
-        def remove(self, index):
-            if index < 0:
-                index += len(self)
-            if not 0 <= index < len(index):
-                raise IndexError("'index' parameter")
-            f(self._estimator, index)
-        return remove
-
-    Estimators.remove = wrapper_add(cls.remove_estimator)
-    del cls.remove_estimator
 
     def wrapper__getitem__(f):
         @wraps(f)
@@ -135,70 +127,104 @@ def list_estimator_decorator(cls):
                     index += len(self)
                 if not 0 <= index < len(self):
                     raise IndexError(self.__class__.__name__ + " index out of range")
-                return f(self._estimator, index)
+                return f(self._estimation, index)
         return __getitem__
 
-    Estimators.__getitem__ = wrapper__getitem__(cls.get_estimator)
-    del cls.get_estimator
+    Estimations.__getitem__ = wrapper__getitem__(cls.get_estimation)
+    del cls.get_estimation
+    Scores.__getitem__ = wrapper__getitem__(cls.get_score)
+    del cls.get_score
 
-    def wrapper__setitem__(f):
-        @wraps(f)
-        def __setitem__(self, index, estimator):
-            if isinstance(index, slice):
-                return [self[index] for index in xrange(*index.indices(len(self)))]
-            else:
+    cls.estimations = property(Estimations)
+    cls.scores = property(Scores)
+
+    def estimator_decorator(cls):
+
+        class Estimators(object):
+
+            def __init__(self, estimator):
+                self._estimator = estimator
+
+        def wrapper__len__(f):
+            @wraps(f)
+            def __len__(self):
+                return f(self._estimator)
+            return __len__
+
+        Estimators.__len__ = wrapper__len__(cls.__len__)
+        del cls.__len__
+
+        def wrapper_add(f):
+            @wraps(f)
+            def add(self, estimator):
+                f(self._estimator, estimator)
+            return add
+
+        Estimators.add = wrapper_add(cls.add_estimator)
+        del cls.add_estimator
+
+        def wrapper_remove(f):
+            @wraps(f)
+            def remove(self, index):
                 if index < 0:
                     index += len(self)
-                if not 0 <= index < len(self):
-                    raise IndexError(self.__class__.__name__ + " index out of range")
-                return f(self._estimator, index, estimator)
-        return __setitem__
+                if not 0 <= index < len(index):
+                    raise IndexError("'index' parameter")
+                f(self._estimator, index)
+            return remove
 
-    Estimators.__setitem__ = wrapper__setitem__(cls.set_estimator)
-    del cls.set_estimator
+        Estimators.remove = wrapper_add(cls.remove_estimator)
+        del cls.remove_estimator
 
-    def set_estimators(self, estimators):
-        # _estimators = self.estimators[:]
-        try:
-            while len(self.estimators) > 0:
-                self.estimators.remove(0)
-            for estimator in estimators:
-                self.estimators.add(estimator)
-        except:
-            raise
-            self.estimators = _estimators
-            
-    cls.estimators = property(Estimators, set_estimators)
+        def wrapper__getitem__(f):
+            @wraps(f)
+            def __getitem__(self, index):
+                if isinstance(index, slice):
+                    return [self[index] for index in xrange(*index.indices(len(self)))]
+                else:
+                    if index < 0:
+                        index += len(self)
+                    if not 0 <= index < len(self):
+                        raise IndexError(self.__class__.__name__ + " index out of range")
+                    return f(self._estimator, index)
+            return __getitem__
 
-def list_selection_decorator(cls):
+        Estimators.__getitem__ = wrapper__getitem__(cls.get_estimator)
+        del cls.get_estimator
 
-    class Proxy(object):
+        def wrapper__setitem__(f):
+            @wraps(f)
+            def __setitem__(self, index, estimator):
+                if isinstance(index, slice):
+                    return [self[index] for index in xrange(*index.indices(len(self)))]
+                else:
+                    if index < 0:
+                        index += len(self)
+                    if not 0 <= index < len(self):
+                        raise IndexError(self.__class__.__name__ + " index out of range")
+                    return f(self._estimator, index, estimator)
+            return __setitem__
 
-        def __init__(self, proxy, index):
-            self._proxy = proxy
-            self._index = index
+        Estimators.__setitem__ = wrapper__setitem__(cls.set_estimator)
+        del cls.set_estimator
 
-    def wrapper_estimation_proxy(f, g):
-        @wraps(f)
-        def estimation(self):
-            return f(self._proxy, self._index)
-        @wraps(f)
-        def score(self):
-            return f(self._proxy, self._index)
-        return estimation, score
+        def set_estimators(self, estimators):
+            # _estimators = self.estimators[:]
+            try:
+                while len(self.estimators) > 0:
+                    self.estimators.remove(0)
+                for estimator in estimators:
+                    self.estimators.add(estimator)
+            except:
+                raise
+                self.estimators = _estimators
+                
+        cls.estimators = property(Estimators, set_estimators)
 
-    Proxy.estimation, Proxy.score = wrapper_estimation_proxy(cls.get_estimation, cls.get_score)
-    del cls.get_estimation, cls.get_score
-
-    def __getitem__(self, index):
-        return Proxy(self, index)
-
-    cls.__getitem__ = __getitem__
-
-    list_estimator_decorator(cls.Estimator)
+    estimator_decorator(cls.Estimator)
 
 for cls in _Selection:
-    list_selection_decorator(cls)
+    selection_decorator(cls)
 
 def optimization_estimation_impl_estimator_decorator(cls):
 

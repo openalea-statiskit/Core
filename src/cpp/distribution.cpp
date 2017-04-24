@@ -478,7 +478,7 @@ namespace statiskit
         if(value < 0)
         { p = -1 * std::numeric_limits< double >::infinity(); }
         else
-        { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1. - _pi); }
+        { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1 - _pi); }
         return p;
     }
     

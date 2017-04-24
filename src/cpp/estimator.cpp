@@ -809,11 +809,17 @@ namespace statiskit
 
     std::unique_ptr< MultivariateDistributionEstimation > MultinomialSplittingDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
+        std::cout << "BK0" << std::endl;
         SumData sum_data = SumData(&data);
+        std::cout << "BK1" << std::endl;
         DiscreteUnivariateDistributionEstimation* sum_estimation = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(sum_data, lazy)).release());
+        std::cout << "BK2" << std::endl;
         std::unique_ptr< MultivariateDistributionEstimation > estimation;
+        std::cout << "BK3" << std::endl;
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        std::cout << "BK4" << std::endl;
         Eigen::VectorXd pi = Eigen::VectorXd::Zero(generator->event()->size());
+        std::cout << "BK5" << std::endl;
         while(generator->is_valid())
         {
             const MultivariateEvent* mevent = generator->event();
@@ -825,17 +831,26 @@ namespace statiskit
             }
             ++(*generator);
         }
+        std::cout << "BK6" << std::endl;
         MultinomialSplittingDistribution* estimated = new MultinomialSplittingDistribution(static_cast< const DiscreteUnivariateDistribution& >(*(sum_estimation->get_estimated())), pi);
+        std::cout << "BK7" << std::endl;
         if(lazy)
         { 
+        std::cout << "BK811" << std::endl;
             estimation = std::make_unique< LazyEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
+        std::cout << "BK812" << std::endl;
             delete sum_estimation;
+        std::cout << "BK823" << std::endl;
         }
         else
         {
+        std::cout << "BK821" << std::endl;
             estimation = std::make_unique< MultinomialSplittingDistributionEstimation >(estimated, &data);
+        std::cout << "BK822" << std::endl;
             static_cast< MultinomialSplittingDistributionEstimation* >(estimation.get())->_sum = sum_estimation;
+        std::cout << "BK823" << std::endl;
         }
+        std::cout << "BK9" << std::endl;
         return estimation;
     }
 

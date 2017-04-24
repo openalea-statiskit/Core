@@ -106,8 +106,11 @@ namespace statiskit
             this->_estimated = nullptr;
             for(Index index = 0, max_index = size(); index < max_index; ++index)
             { 
-                delete _estimations[index];
-                _estimations[index] = nullptr;
+                if(_estimations[index])
+                {
+                    delete _estimations[index];
+                    _estimations[index] = nullptr;
+                }
             }
             _estimations.clear();
             _scores.clear();
@@ -237,9 +240,11 @@ namespace statiskit
     template<class D, class B>
         void Selection< D, B >::Estimator::init(const Estimator& estimator)
         { 
+            std::cout << "copy" << std::endl;
             _estimators.resize(estimator.size());
             for(Index index = 0, max_index = estimator.size(); index < max_index; ++index)
             { _estimators[index] = static_cast< typename B::Estimator* >(estimator._estimators[index]->copy().release()); }
+            std::cout << "end" << std::endl;
         }
 
     template<class D, class B>
