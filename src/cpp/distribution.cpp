@@ -312,7 +312,7 @@ namespace statiskit
     }
 
     int PoissonDistribution::quantile(const double& p) const
-    { return boost::math::gamma_q_inva(_theta, p); }
+    { return std::ceil(boost::math::gamma_q_inva(_theta, p) - 1); }
 
     double PoissonDistribution::get_mean() const
     { return _theta; }
@@ -371,6 +371,10 @@ namespace statiskit
         double p;
         if(value < 0 || value > _kappa)
         { p = -1 * std::numeric_limits< double >::infinity(); }
+        else if(value == 0)
+        { p = _kappa * log(1. - _pi); }
+        else if(value == _kappa)
+        {  p =  value * log(_pi); }
         else
         { p = boost::math::lgamma(_kappa + 1) - boost::math::lgamma(_kappa - value + 1) - boost::math::lgamma(value + 1) + value * log(_pi) + (_kappa - value) * log(1. - _pi); }
         return p;
@@ -381,6 +385,10 @@ namespace statiskit
         double p;
         if(value < 0 || value > _kappa)
         { p = 0; }
+        else if(value == 0)
+        { p = pow(1 - _pi, _kappa); }
+        else if(value == _kappa)
+        { p = pow(_pi, _kappa); }
         else
         { p = boost::math::ibeta_derivative(value + 1, _kappa - value + 1, _pi) / (_kappa + 1); }
         return p;
@@ -467,7 +475,7 @@ namespace statiskit
     double NegativeBinomialDistribution::ldf(const int& value) const
     {
         double p;
-        if(value < 0 || value > _kappa)
+        if(value < 0)
         { p = -1 * std::numeric_limits< double >::infinity(); }
         else
         { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1. - _pi); }
@@ -477,18 +485,18 @@ namespace statiskit
     double NegativeBinomialDistribution::pdf(const int& value) const
     {
         double p;
-        if(value < 0 || value > _kappa)
+        if(value < 0)
         { p = 0; }
         else
-        { p = exp(ldf(value)); /*boost::math::ibeta_derivative(value + 1, _kappa - value + 1, _pi) / (_kappa + 1);*/ }
+        { p = boost::math::ibeta_derivative(_kappa, value + 1., 1 - _pi) * (1. - _pi) / (_kappa + value); }
         return p;
     }
 
     double NegativeBinomialDistribution::cdf(const int& value) const
-    { return boost::math::ibeta(_kappa, value + 1, 1. - _pi); }
+    { return boost::math::ibeta(_kappa, value + 1., 1. - _pi); }
 
     int NegativeBinomialDistribution::quantile(const double& p) const
-    { return boost::math::ibeta_invb(_kappa, 1. - _pi, p) - 1; }
+    { return std::ceil(boost::math::ibeta_invb(_kappa, 1. - _pi, p) - 1); }
 
     double NegativeBinomialDistribution::get_mean() const
     { return _kappa * _pi / (1 - _pi); }
@@ -1392,7 +1400,8 @@ namespace statiskit
 
     MultinomialSplittingDistribution::MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi)
     {
-        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release());
+        // _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release());
+        set_sum(sum);
         _pi = Eigen::VectorXd::Ones(pi.size());
         set_pi(pi);
     }
@@ -1442,17 +1451,16 @@ namespace statiskit
                     {
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
                         {
-                            binomial.set_pi(_pi[component] / (1 - sum));
                             int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                            double pi = _pi[component] / (1 - sum);
+                            binomial.set_pi(_pi[component] / (1 - sum));
                             p += binomial.ldf(value);
                             kappa -= value;
-                            sum += _pi[component];
-                            binomial.set_kappa(kappa);
                         }
                         else
                         { throw std::exception(); }
                     }
+                    sum += _pi[component];
+                    binomial.set_kappa(kappa);
                 }
                 uevent = event->get(get_nb_components() - 1);
                 if(uevent->get_outcome() != DISCRETE || uevent->get_event() != ELEMENTARY || static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() != kappa)
@@ -1462,7 +1470,7 @@ namespace statiskit
             { p = log(0.); }
         }
         else
-        { p = 0.; }
+        { p = log(0.); }
         if(!logarithm)
         { p = exp(p); }
         return p;
@@ -1489,7 +1497,11 @@ namespace statiskit
     { return _sum; }
     
     void MultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
-    { _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); }
+    { 
+        if(sum.cdf(-1) > 0.)
+        { throw parameter_error("sum", "must have a natural numbers subset as support"); }
+        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
+    }
 
     const Eigen::VectorXd& MultinomialSplittingDistribution::get_pi() const
     { return _pi; }
@@ -1547,7 +1559,11 @@ namespace statiskit
             { rv = current; }
         }
         --lv;
+        while(cdf(lv) >= p)
+        { --lv; }
         ++rv;
+        while(cdf(rv) <= p)
+        { ++rv; }
         double lp = cdf(lv), rp = cdf(rv);
         do
         {

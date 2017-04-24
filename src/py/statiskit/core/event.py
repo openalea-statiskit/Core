@@ -32,6 +32,29 @@ del UnivariateEvent.get_outcome
 UnivariateEvent.event = property(UnivariateEvent.get_event)
 del UnivariateEvent.get_event
 
+def type_to_event(event):
+    if isinstance(event, basestring):
+        event = CategoricalElementaryEvent(event)
+    elif isinstance(event, int):
+        event = DiscreteElementaryEvent(event)
+    elif isinstance(event, float):
+        event = ContinuousElementaryEvent(event)
+    elif not isinstance(event, UnivariateEvent):
+        raise TypeError('\'event\' parameter')
+    return event
+
+def types_to_event(*event):
+    if len(event) == 1:
+        event = event[-1]
+    else:
+        _event = VectorEvent(len(event))
+        for index, component in enumerate(event):
+            _event[index] = type_to_event(component)
+        event = _event
+    if not isinstance(event, MultivariateEvent):
+        raise TypeError('\'event\' parameter')
+    return event
+
 def statiskit_elementary_event_decorator(cls):
 
     def __str__(self):

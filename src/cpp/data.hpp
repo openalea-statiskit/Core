@@ -13,7 +13,7 @@ namespace statiskit
 {
     template<class D>
         WeightedData< D >::WeightedData()
-        {}
+        { _data = nullptr; }
 
     template<class D>
         WeightedData< D >::~WeightedData()

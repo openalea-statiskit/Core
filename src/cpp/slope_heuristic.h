@@ -187,14 +187,14 @@ namespace statiskit
 
             virtual typename E::estimated_type const * get_estimated() const;
 
-            const typename E::estimated_type* get_estimated(const Index& index) const;
+            const typename E::estimated_type* get_proposal(const Index& index) const;
 
             const typename E::data_type* get_data() const;
 
             
         protected:
             typename E::data_type* _data;
-            std::vector< typename E::estimated_type* > _estimated;
+            std::vector< typename E::estimated_type* > _proposals;
 
             void add(const double& penshape, const double& score, typename E::estimated_type* model);
     };

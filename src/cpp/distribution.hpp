@@ -181,6 +181,75 @@ namespace statiskit
             return variance;
         }
 
+    template<class T>
+        ShiftedDistribution< T >::ShiftedDistribution(const T& distribution, const typename T::event_type::value_type& shift)
+        {
+            _distribution = static_cast< T* >(distribution.copy().release());
+            _shift = shift;
+        }
+
+    template<class T>
+        ShiftedDistribution< T >::ShiftedDistribution(const ShiftedDistribution< T >& distribution)
+        {
+            _distribution = static_cast< T* >(distribution._distribution->copy().release());
+            _shift = distribution._shift;
+        }
+
+    template<class T>
+        ShiftedDistribution< T >::~ShiftedDistribution()
+        { delete _distribution; }
+
+    template<class T>
+        unsigned int ShiftedDistribution< T >::get_nb_parameters() const
+        { return _distribution->get_nb_parameters() + 1 * bool(_shift != 0); }
+
+    template<class T>
+        std::unique_ptr< UnivariateEvent > ShiftedDistribution< T >::simulate() const
+        { std::make_unique< ElementaryEvent< typename T::event_type > >(static_cast< ElementaryEvent< typename T::event_type > * >(_distribution->simulate().get())->get_value() + _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::ldf(const typename T::event_type::value_type& value) const
+        { return _distribution->ldf(value - _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::pdf(const typename T::event_type::value_type& value) const
+        { return _distribution->pdf(value - _shift); }
+
+    template<class T>
+        double ShiftedDistribution< T >::cdf(const typename T::event_type::value_type& value) const
+        { return _distribution->cdf(value - _shift); }
+
+    template<class T>
+        typename T::event_type::value_type ShiftedDistribution< T >::quantile(const double& p) const
+        { return _distribution->quantile(p) + _shift; }
+
+    template<class T>
+        double ShiftedDistribution< T >::get_mean() const
+        { return _distribution->get_mean() + _shift; }
+
+    template<class T>
+        double ShiftedDistribution< T >::get_variance() const
+        { return _distribution->get_variance(); }
+
+    template<class T>
+        const typename T::event_type::value_type& ShiftedDistribution< T >::get_shift() const
+        { return _shift; }
+
+    template<class T>
+        void ShiftedDistribution< T >::set_shift(const typename T::event_type::value_type& shift)
+        { _shift = shift; }
+
+    template<class T>
+        const T* ShiftedDistribution< T >::get_distribution() const
+        { return _distribution; }
+
+    template<class T>
+        void ShiftedDistribution< T >::set_distribution(const T& distribution)
+        { 
+            delete _distribution;
+            _distribution = static_cast< T* >(distribution.copy().release());
+        }
+
     template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals)
         {
@@ -325,10 +394,72 @@ namespace statiskit
     template<class D>
         void MixtureDistribution< D >::set_pi(const Eigen::VectorXd& pi)
         {
-            if(pi.size() != _pi.size())
+            if(pi.size() != _observations.size())
             { throw size_error("pi", _pi.size(), size_error::equal); }
             _pi = pi / pi.sum();
         } 
+
+
+    template<class D>
+        Eigen::VectorXd MixtureDistribution< D >::posterior(const typename D::data_type::event_type* event, const bool& logarithm) const
+        {
+            Eigen::VectorXd p = Eigen::VectorXd::Zero(this->get_nb_states());
+            for(typename std::vector< D* >::const_iterator it = this->_observations.cbegin(), it_end = this->_observations.cend(); it != it_end; ++it)
+            { p[distance(this->_observations.cbegin(), it)] = log(this->_pi[distance(this->_observations.cbegin(), it)]) + (*it)->probability(event, true); }
+            double max = p.maxCoeff();
+            for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+            {
+                if(boost::math::isfinite(p[index]))
+                { p[index] = p[index] - max; }
+            }
+            if(!logarithm)
+            {
+                for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+                {
+                    if(boost::math::isfinite(p[index]))
+                    { p[index] = exp(p[index]); }
+                    else
+                    { p[index] = 0.; }
+                }
+                p = p / p.sum();
+            }
+            return p;
+        }
+
+    template<class D>
+        Index MixtureDistribution< D >::assignement(const typename D::data_type::event_type* event) const
+        {
+            Eigen::VectorXd p = posterior(event, false);
+            Index index;
+            p.maxCoeff(&index);
+            return index;
+        }
+        
+    template<class D>
+        double MixtureDistribution< D >::uncertainty(const typename D::data_type::event_type* event) const
+        {
+            double entropy = 0.;
+            Eigen::VectorXd p = posterior(event, true);
+            for(Index index = 0, max_index = p.size(); index < max_index; ++index)
+            {
+                if(boost::math::isfinite(p[index]))
+                { entropy -= exp(p[index]) * p[index]; }
+            }
+            return entropy;
+        }
+
+    template<class D>
+        double MixtureDistribution< D >::uncertainty(const typename D::data_type& data) const
+        {
+            double entropy = 0.;
+            std::unique_ptr< typename D::data_type::Generator > generator = data.generator();
+            while(generator->is_valid())
+            {
+                entropy += generator->weight() * uncertainty(generator->event());
+                ++(*generator);
+            }
+            return entropy;
+        }
 
     template<class D>
         void MixtureDistribution< D >::init(const std::vector< D* > observations, const Eigen::VectorXd& pi)
@@ -336,7 +467,7 @@ namespace statiskit
             _observations.resize(observations.size());
             for(Index index = 0, max_index = observations.size(); index < max_index; ++index)
             { _observations[index] = static_cast< D* >(observations[index]->copy().release()); }
-            _pi = pi;
+            set_pi(pi);
         }
 
     template<class D>

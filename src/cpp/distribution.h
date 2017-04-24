@@ -27,6 +27,7 @@ namespace statiskit
     /// \brief This virtual class UnivariateDistribution represents the distribution of a random univariate component \f$ X \f$. The support of this distribution is a set \f$ \mathcal{X} \f$ with one dimension.
     struct STATISKIT_CORE_API UnivariateDistribution
     {	
+        typedef UnivariateData data_type;
 
     	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -209,8 +210,40 @@ namespace statiskit
         virtual double get_mean() const;
         
         virtual double get_variance() const;
-   };
+    };
     
+    template<class T> class ShiftedDistribution : public PolymorphicCopy< UnivariateDistribution, ShiftedDistribution< T >, T >
+    {
+        public:
+            ShiftedDistribution(const T& distribution, const typename T::event_type::value_type& shift);
+            ShiftedDistribution(const ShiftedDistribution< T >& distribution);
+            virtual ~ShiftedDistribution();
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+            
+            virtual double ldf(const typename T::event_type::value_type& value) const;
+            virtual double pdf(const typename T::event_type::value_type& value) const;
+            virtual double cdf(const typename T::event_type::value_type& value) const;
+            
+            virtual typename T::event_type::value_type quantile(const double& p) const;
+        
+            virtual double get_mean() const;
+            
+            virtual double get_variance() const;
+
+            const typename T::event_type::value_type& get_shift() const;
+            void set_shift(const typename T::event_type::value_type& shift);
+
+            const T* get_distribution() const;
+            void set_distribution(const T& distribution);
+
+        protected:
+            typename T::event_type::value_type _shift;
+            T* _distribution;
+    };
+
     /** \brief This virtual class DiscreteUnivariateDistribution represents the distribution of a random discrete component \f$ N\f$. The support is \f$ \mathbb{Z} \f$ and we have \f$ \sum_{n\in \mathbb{Z}} P(N=n) = 1\f$.
      * 
      * */
@@ -263,7 +296,8 @@ namespace statiskit
     };
 
     typedef QuantitativeUnivariateFrequencyDistribution< DiscreteUnivariateDistribution > DiscreteUnivariateFrequencyDistribution;
-    
+    typedef ShiftedDistribution< DiscreteUnivariateDistribution > ShiftedDiscreteUnivariateDistribution;
+
     /** \brief This class PoissonDistribution represents a [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution)
      * 
      * \details The Poisson distribution is an univariate discrete distribution that expresses the probability of a given number of events occurring in a fixed interval of time and/or space if these events occur with a known average rate \f$\theta  \in \mathbb{R}_+^*  \f$ and independently of the time since the last event. The support of the Poisson distribution is the set of non-negative integer \f$ \mathbb{N} \f$.
@@ -1570,6 +1604,7 @@ namespace statiskit
 
     struct STATISKIT_CORE_API MultivariateDistribution
     {
+        typedef MultivariateData data_type;
         typedef UnivariateDistribution marginal_type;
             
         /// \brief Get the number of components of the distribution.
@@ -1693,8 +1728,12 @@ namespace statiskit
             const Eigen::VectorXd& get_pi() const;
             void set_pi(const Eigen::VectorXd& pi);
 
-            // double posterior(const typename D::event_type* event, const Index& state) const;
-            // Eigen::VectorXd posterior(const typename D::event_type* event) const;
+            Eigen::VectorXd posterior(const typename D::data_type::event_type* event, const bool& logarithm=false) const;
+        
+            Index assignement(const typename D::data_type::event_type* event) const;
+
+            double uncertainty(const typename D::data_type::event_type* event) const;
+            double uncertainty(const typename D::data_type& data) const;
 
         protected:
             std::vector< D* > _observations;

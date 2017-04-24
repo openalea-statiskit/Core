@@ -748,6 +748,9 @@ namespace statiskit
     WeightedUnivariateData::~WeightedUnivariateData()
     {}
 
+    WeightedUnivariateData::WeightedUnivariateData()
+    {}
+
     WeightedMultivariateData::WeightedMultivariateData(const MultivariateData* data)
     { init(data); }
 

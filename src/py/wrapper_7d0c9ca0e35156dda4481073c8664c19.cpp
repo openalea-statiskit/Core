@@ -74,6 +74,10 @@ void wrapper_7d0c9ca0e35156dda4481073c8664c19()
     void  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_246a8d3423cf5748b68f545f10de89b7)(::statiskit::Index const &, struct ::statiskit::DiscreteUnivariateDistribution const &) = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::set_observation;
     class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_4a30aea4a63c5f25b68ece79845270e4)() const = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::get_pi;
     void  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_7d8c2a10d3c05b92ac6405acab6c0f44)(class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const &) = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::set_pi;
+    class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_2fb11bb0a2485540a23ef1fb88f9ee3a)(struct ::statiskit::UnivariateEvent const *, bool const &) const = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::posterior;
+    ::statiskit::Index  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_7fb8b7101740583a8131d8561b8e9926)(struct ::statiskit::UnivariateEvent const *) const = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::assignement;
+    double  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_a3ff30a188f45403b73a68db67aa2b5e)(struct ::statiskit::UnivariateEvent const *) const = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::uncertainty;
+    double  (::statiskit::MixtureDistribution< ::statiskit::DiscreteUnivariateDistribution >::*method_pointer_da2a6ab77d635d259b7452eed4ed7fd1)(struct ::statiskit::UnivariateData const &) const = &::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution >::uncertainty;
     boost::python::class_< autowig::Wrap_7d0c9ca0e35156dda4481073c8664c19, autowig::Held< autowig::Wrap_7d0c9ca0e35156dda4481073c8664c19 >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistribution >, boost::noncopyable > class_7d0c9ca0e35156dda4481073c8664c19("_MixtureDistribution_7d0c9ca0e35156dda4481073c8664c19", "", boost::python::no_init);
     class_7d0c9ca0e35156dda4481073c8664c19.def("get_nb_parameters", method_pointer_f927fce3d16b5492bcef59bbf039772b, "");
     class_7d0c9ca0e35156dda4481073c8664c19.def("get_nb_states", method_pointer_53a1ee3f2d3855c880f2c08bcae5c0ae, "");
@@ -81,6 +85,10 @@ void wrapper_7d0c9ca0e35156dda4481073c8664c19()
     class_7d0c9ca0e35156dda4481073c8664c19.def("set_observation", method_pointer_246a8d3423cf5748b68f545f10de89b7, "");
     class_7d0c9ca0e35156dda4481073c8664c19.def("get_pi", method_pointer_4a30aea4a63c5f25b68ece79845270e4, boost::python::return_value_policy< boost::python::return_by_value >(), "");
     class_7d0c9ca0e35156dda4481073c8664c19.def("set_pi", method_pointer_7d8c2a10d3c05b92ac6405acab6c0f44, "");
+    class_7d0c9ca0e35156dda4481073c8664c19.def("posterior", method_pointer_2fb11bb0a2485540a23ef1fb88f9ee3a, "");
+    class_7d0c9ca0e35156dda4481073c8664c19.def("assignement", method_pointer_7fb8b7101740583a8131d8561b8e9926, "");
+    class_7d0c9ca0e35156dda4481073c8664c19.def("uncertainty", method_pointer_a3ff30a188f45403b73a68db67aa2b5e, "");
+    class_7d0c9ca0e35156dda4481073c8664c19.def("uncertainty", method_pointer_da2a6ab77d635d259b7452eed4ed7fd1, "");
 
     if(autowig::Held< class ::statiskit::MixtureDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::is_class)
     {

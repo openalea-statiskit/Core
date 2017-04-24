@@ -17,21 +17,40 @@
 
 namespace statiskit
 {
-
-    struct STATISKIT_CORE_API CategoricalUnivariateDistributionEstimation::Estimator : UnivariateDistributionEstimation::Estimator
+    /* template<class D, class B> class ShiftedDistributionEstimation : public LazyEstimation< ShiftedDistribution< D >, B >
     {
-        Estimator();
-        Estimator(const Estimator& estimator);
-        virtual ~Estimator();
+        public:
+            ShiftedDistributionEstimation();
+            ShiftedDistributionEstimation(ActiveEstimation< D, B >* estimation, const typename D::event_type::value_type& shift);
+            ShiftedDistributionEstimation(const ShiftedDistributionEstimation< D, B >& estimation);
+            virtual ~ShiftedDistributionEstimation();
 
-        virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const; 
+            const ActiveEstimation< D, B >* get_estimation();
 
-        virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
-    };
+            class Estimator : public PolymorphicCopy< UnivariateDistributionEstimation, Estimator, typename B::Estimator >
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
+
+                    virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+                    typename D::event_type::value_type get_shift() const;
+                    void set_shift(const typename D::event_type::value_type& shift);
+
+                protected:
+                    typename D::event_type::value_type _shift;
+
+                    UnivariateData* compute_shifted(const UnivariateData& data);
+            };
+
+        protected:
+            ActiveEstimation< D, B >* _estimation;
+    };*/
 
     template<class D, class B> struct UnivariateFrequencyDistributionEstimation : ActiveEstimation< D, B >
     {
-        // using ActiveEstimation< D, B >::ActiveEstimation;
         UnivariateFrequencyDistributionEstimation();
         UnivariateFrequencyDistributionEstimation(D const * estimated, typename B::data_type const * data);
         UnivariateFrequencyDistributionEstimation(const UnivariateFrequencyDistributionEstimation< D, B >& estimation);
@@ -54,7 +73,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API PoissonDistributionMLEstimation : ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        // using ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
         PoissonDistributionMLEstimation();
         PoissonDistributionMLEstimation(PoissonDistribution const * estimated, UnivariateData const * data);
         PoissonDistributionMLEstimation(const PoissonDistributionMLEstimation& estimation);
@@ -74,7 +92,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API BinomialDistributionMLEstimation : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        // using OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
         BinomialDistributionMLEstimation();
         BinomialDistributionMLEstimation(BinomialDistribution const * estimated, UnivariateData const * data);            
         BinomialDistributionMLEstimation(const BinomialDistributionMLEstimation& estimation);
@@ -82,7 +99,6 @@ namespace statiskit
 
         struct STATISKIT_CORE_API Estimator : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
-            // using OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
             Estimator();
             Estimator(const Estimator& estimator);
             virtual ~Estimator();
@@ -95,7 +111,6 @@ namespace statiskit
     
     struct STATISKIT_CORE_API BinomialDistributionMMEstimation : ActiveEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        // using ActiveEstimation< BinomialDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
         BinomialDistributionMMEstimation();
         BinomialDistributionMMEstimation(BinomialDistribution const * estimated, UnivariateData const * data);            
         BinomialDistributionMMEstimation(const BinomialDistributionMMEstimation& estimation);
@@ -126,7 +141,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API NegativeBinomialDistributionMLEstimation : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        // using OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::OptimizationEstimation;
         NegativeBinomialDistributionMLEstimation();
         NegativeBinomialDistributionMLEstimation(NegativeBinomialDistribution const * estimated, UnivariateData const * data);            
         NegativeBinomialDistributionMLEstimation(const NegativeBinomialDistributionMLEstimation& estimation);
@@ -134,7 +148,6 @@ namespace statiskit
 
         struct STATISKIT_CORE_API Estimator : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
-            // using OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
             Estimator();
             Estimator(const Estimator& estimator);
             virtual ~Estimator();
@@ -147,7 +160,6 @@ namespace statiskit
     
     struct STATISKIT_CORE_API NegativeBinomialDistributionMMEstimation : ActiveEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
-        // using ActiveEstimation< NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::ActiveEstimation;
         NegativeBinomialDistributionMMEstimation();
         NegativeBinomialDistributionMMEstimation(NegativeBinomialDistribution const * estimated, UnivariateData const * data);            
         NegativeBinomialDistributionMMEstimation(const NegativeBinomialDistributionMMEstimation& estimation);
@@ -224,7 +236,6 @@ namespace statiskit
    
     struct STATISKIT_CORE_API UnivariateHistogramDistributionEstimation : ActiveEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation >
     {
-        // using ActiveEstimation< UnivariateHistogramDistribution, ContinuousUnivariateDistributionEstimation >::ActiveEstimation;
         UnivariateHistogramDistributionEstimation();
         UnivariateHistogramDistributionEstimation(UnivariateHistogramDistribution const * estimated, UnivariateData const * data);            
         UnivariateHistogramDistributionEstimation(const UnivariateHistogramDistributionEstimation& estimation);
@@ -251,7 +262,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API RegularUnivariateHistogramDistributionSlopeHeuristicSelection : SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >
     {
-        // using SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >::SlopeHeuristicSelection;
         RegularUnivariateHistogramDistributionSlopeHeuristicSelection(const UnivariateData* data);
         RegularUnivariateHistogramDistributionSlopeHeuristicSelection(const RegularUnivariateHistogramDistributionSlopeHeuristicSelection& selection);
         virtual ~RegularUnivariateHistogramDistributionSlopeHeuristicSelection();
@@ -267,17 +277,16 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                const unsigned int& get_max_bins() const;
-                void set_max_bins(const unsigned int& max_bins);
+                const unsigned int& get_maxbins() const;
+                void set_maxbins(const unsigned int& maxbins);
 
             protected:
-                unsigned int _max_bins;
+                unsigned int _maxbins;
         }; 
     };
 
     struct STATISKIT_CORE_API IrregularUnivariateHistogramDistributionSlopeHeuristicSelection : SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >
     {
-        // using SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >::SlopeHeuristicSelection;
         IrregularUnivariateHistogramDistributionSlopeHeuristicSelection(const UnivariateData* data);
         IrregularUnivariateHistogramDistributionSlopeHeuristicSelection(const IrregularUnivariateHistogramDistributionSlopeHeuristicSelection& selection);
         virtual ~IrregularUnivariateHistogramDistributionSlopeHeuristicSelection();
@@ -293,14 +302,14 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                const unsigned int& get_max_bins() const;
-                void set_max_bins(const unsigned int& max_bins);
+                const unsigned int& get_maxbins() const;
+                void set_maxbins(const unsigned int& maxbins);
 
                 const double& get_constant() const;
                 void set_constant(const double& constant);
 
             protected:
-                unsigned int _max_bins;
+                unsigned int _maxbins;
                 double _constant;
         }; 
     };
@@ -332,7 +341,47 @@ namespace statiskit
                 protected:
                     DiscreteUnivariateDistributionEstimation::Estimator* _sum;
 
-                    std::unique_ptr< UnivariateData > compute_sum(const MultivariateData& data) const;
+                    class STATISKIT_CORE_API SumData : public UnivariateData
+                    {
+                        public:
+                            SumData(const MultivariateData* data);
+                            virtual ~SumData();
+
+                            virtual std::unique_ptr< UnivariateData::Generator > generator() const;
+
+                            const UnivariateSampleSpace* get_sample_space() const;
+
+                            virtual std::unique_ptr< UnivariateData > copy() const;
+
+                        protected:
+                            const MultivariateData* _data;
+
+                            class STATISKIT_CORE_API Generator : public UnivariateData::Generator
+                            {
+                                public:
+                                    Generator(const MultivariateData* data);
+                                    virtual ~Generator();
+
+                                    virtual bool is_valid() const;
+
+                                    virtual UnivariateData::Generator& operator++();
+
+                                    virtual const UnivariateEvent* event() const;
+                                    virtual double weight() const;
+
+                                protected:
+                                    mutable DiscreteElementaryEvent* _sum;
+                                    MultivariateData::Generator* _generator;
+                            };
+
+                    };
+
+                    struct STATISKIT_CORE_API WeightedSumData : public PolymorphicCopy< UnivariateData, WeightedSumData, WeightedUnivariateData >
+                    {
+                        WeightedSumData(const UnivariateData* data);
+                        WeightedSumData(const WeightedSumData& data);
+                        virtual ~WeightedSumData();
+                    };
             };
 
         protected:
@@ -342,7 +391,6 @@ namespace statiskit
     template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >
     {
         public:
-            // using ActiveEstimation< IndependentMultivariateDistribution< D >, E >::ActiveEstimation;
             IndependentMultivariateDistributionEstimation();
             IndependentMultivariateDistributionEstimation(IndependentMultivariateDistribution< D > const * estimated, typename E::data_type const * data);
             IndependentMultivariateDistributionEstimation(const IndependentMultivariateDistributionEstimation< D, E >& estimation);
@@ -422,25 +470,25 @@ namespace statiskit
     };
     
     typedef MixtureDistributionEMEstimation< CategoricalUnivariateMixtureDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< CategoricalUnivariateMixtureDistribution, CategoricalUnivariateDistributionEstimation >::Estimator CategoricalUnivariateMixtureDistributionEMEstimator;
+    typedef CategoricalUnivariateMixtureDistributionEMEstimation::Estimator CategoricalUnivariateMixtureDistributionEMEstimator;
 
     typedef MixtureDistributionEMEstimation< DiscreteUnivariateMixtureDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateMixtureDistributionEMEstimation;    
-    typedef MixtureDistributionEMEstimation< DiscreteUnivariateMixtureDistribution, DiscreteUnivariateDistributionEstimation >::Estimator DiscreteUnivariateMixtureDistributionEMEstimator;
+    typedef DiscreteUnivariateMixtureDistributionEMEstimation::Estimator DiscreteUnivariateMixtureDistributionEMEstimator;
 
     typedef MixtureDistributionEMEstimation< ContinuousUnivariateMixtureDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< ContinuousUnivariateMixtureDistribution, ContinuousUnivariateDistributionEstimation >::Estimator ContinuousUnivariateMixtureDistributionEMEstimator;
+    typedef ContinuousUnivariateMixtureDistributionEMEstimation::Estimator ContinuousUnivariateMixtureDistributionEMEstimator;
 
-    typedef MixtureDistributionEMEstimation< MixedMultivariateMixtureDistribution, MultivariateDistributionEstimation >::Estimator MixedMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< MixedMultivariateMixtureDistribution, MultivariateDistributionEstimation >::Estimator MixedMultivariateMixtureDistributionEMEstimator;
+    typedef MixtureDistributionEMEstimation< MixedMultivariateMixtureDistribution, MultivariateDistributionEstimation > MixedMultivariateMixtureDistributionEMEstimation;
+    typedef MixedMultivariateMixtureDistributionEMEstimation::Estimator MixedMultivariateMixtureDistributionEMEstimator;
 
     typedef MixtureDistributionEMEstimation< CategoricalMultivariateMixtureDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< CategoricalMultivariateMixtureDistribution, CategoricalMultivariateDistributionEstimation >::Estimator CategoricalMultivariateMixtureDistributionEMEstimator;
+    typedef CategoricalMultivariateMixtureDistributionEMEstimation::Estimator CategoricalMultivariateMixtureDistributionEMEstimator;
 
     typedef MixtureDistributionEMEstimation< DiscreteMultivariateMixtureDistribution, DiscreteMultivariateDistributionEstimation > DiscreteMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< DiscreteMultivariateMixtureDistribution, DiscreteMultivariateDistributionEstimation >::Estimator DiscreteMultivariateMixtureDistributionEMEstimator;
+    typedef DiscreteMultivariateMixtureDistributionEMEstimation::Estimator DiscreteMultivariateMixtureDistributionEMEstimator;
 
     typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
-    typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation >::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
+    typedef ContinuousMultivariateMixtureDistributionEMEstimation::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
 }
 
 #include "estimator.hpp"
