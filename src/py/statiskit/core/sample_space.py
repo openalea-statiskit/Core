@@ -9,7 +9,20 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import UnivariateSampleSpace, CategoricalSampleSpace, NominalSampleSpace, OrdinalSampleSpace, DiscreteSampleSpace, IntegerSampleSpace, ContinuousSampleSpace, RealSampleSpace, UnivariateEvent, CategoricalEvent, DiscreteEvent, ContinuousEvent
+from statiskit.core.__core.statiskit import (UnivariateSampleSpace,
+                                                 CategoricalSampleSpace,
+                                                    NominalSampleSpace,
+                                                    OrdinalSampleSpace,
+                                                 DiscreteSampleSpace,
+                                                    IntegerSampleSpace,
+                                                 ContinuousSampleSpace,
+                                                    RealSampleSpace,
+                                              UnivariateEvent,
+                                                 CategoricalEvent,
+                                                 DiscreteEvent,
+                                                 ContinuousEvent,
+                                              MultivariateSampleSpace,
+                                                 VectorSampleSpace)
 
 from controls import *
 from event import *
@@ -17,7 +30,8 @@ from _tools import remove_latex
 
 __all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
            'IntegerSampleSpace',
-           'RealSampleSpace']
+           'RealSampleSpace',
+           'VectorSampleSpace']
 
 UnivariateSampleSpace.outcome = property(UnivariateSampleSpace.get_outcome)
 del UnivariateSampleSpace.get_outcome
