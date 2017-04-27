@@ -380,7 +380,7 @@ namespace statiskit
              * */             
             virtual int quantile(const double& p) const;
             
- 			/// \brief Simulate an outcome of a binomial distribution.        
+ 			/// \brief Simulate an outcome of a Poisson distribution.        
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
             
 			/// \brief Get mean of a Poisson distribution \f$ E(N) = \theta \f$.

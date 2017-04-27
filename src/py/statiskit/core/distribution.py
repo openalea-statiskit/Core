@@ -638,7 +638,9 @@ def wrapper_probability(f):
     def probability(self, *events, **kwargs):
         if len(events) == 1:
             event = events[-1]
-        if not isinstance(events, MultivariateEvent):
+        else:
+            event = None
+        if not isinstance(event, MultivariateEvent):
             event = VectorEvent(len(events))
             for index, component in enumerate(events):
                 if isinstance(component, basestring):
@@ -649,10 +651,10 @@ def wrapper_probability(f):
                     event[index] = ContinuousElementaryEvent(component)
                 elif not isinstance(component, UnivariateEvent):
                     raise TypeError('\'events\' parameters')
-            events = VectorEvent(events)
+            # event = VectorEvent(event)
         if not isinstance(event, MultivariateEvent):
             raise TypeError('\'event\' parameter')
-        return f(self, events, kwargs.pop('log', False))
+        return f(self, event, kwargs.pop('log', False))
     return probability
     
 MultivariateDistribution.probability = wrapper_probability(MultivariateDistribution.probability)
