@@ -53,9 +53,7 @@ void wrapper_6f316315a89f5f39a58af1cf735ecb0e()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    class ::std::unique_ptr< struct ::statiskit::MultivariateDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateDistribution > >  (::statiskit::PolymorphicCopy< ::statiskit::MultivariateDistribution, ::statiskit::IndependentMultivariateDistribution< ::statiskit::CategoricalMultivariateDistribution >, ::statiskit::CategoricalMultivariateDistribution >::*method_pointer_43a14372d9ad5676bee571ce697c34b1)() const = &::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, struct ::statiskit::CategoricalMultivariateDistribution >::copy;
     boost::python::class_< autowig::Wrap_6f316315a89f5f39a58af1cf735ecb0e, autowig::Held< autowig::Wrap_6f316315a89f5f39a58af1cf735ecb0e >::Type, boost::python::bases< struct ::statiskit::CategoricalMultivariateDistribution >, boost::noncopyable > class_6f316315a89f5f39a58af1cf735ecb0e("_PolymorphicCopy_6f316315a89f5f39a58af1cf735ecb0e", "", boost::python::no_init);
-    class_6f316315a89f5f39a58af1cf735ecb0e.def("copy", method_pointer_43a14372d9ad5676bee571ce697c34b1, "");
 
     if(autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::IndependentMultivariateDistribution< struct ::statiskit::CategoricalMultivariateDistribution >, struct ::statiskit::CategoricalMultivariateDistribution > >::is_class)
     {

@@ -14,7 +14,7 @@ namespace autowig
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
             }
                         
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(::statiskit::Indices const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
@@ -68,7 +68,7 @@ void wrapper_88cb53c05b215504b1f0ee0564765af0()
     class ::std::unique_ptr< struct ::statiskit::MultivariateData::Generator, struct ::std::default_delete< struct ::statiskit::MultivariateData::Generator > >  (::statiskit::MultivariateData::*method_pointer_facf1de3504b5543b1eed987285d8673)() const = &::statiskit::MultivariateData::generator;
     struct ::statiskit::MultivariateSampleSpace const * (::statiskit::MultivariateData::*method_pointer_2da46638257d59e48fa1636c64d254bf)() const = &::statiskit::MultivariateData::get_sample_space;
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::MultivariateData::*method_pointer_03ae26ff6e5c56ac9c1e8dc84d177549)(::statiskit::Index const &) const = &::statiskit::MultivariateData::extract;
-    class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateData::*method_pointer_6458b57af188571eb3d4621eb252540b)(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const &) const = &::statiskit::MultivariateData::extract;
+    class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateData::*method_pointer_6458b57af188571eb3d4621eb252540b)(::statiskit::Indices const &) const = &::statiskit::MultivariateData::extract;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateData::*method_pointer_772fe48a3d9157a8866c84dd1f9b5675)() const = &::statiskit::MultivariateData::copy;
     double  (::statiskit::MultivariateData::*method_pointer_21b09584f6625e14abe2acdb420c6b08)() const = &::statiskit::MultivariateData::compute_total;
     boost::python::class_< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0, autowig::Held< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 >::Type, boost::noncopyable > class_88cb53c05b215504b1f0ee0564765af0("MultivariateData", "", boost::python::no_init);

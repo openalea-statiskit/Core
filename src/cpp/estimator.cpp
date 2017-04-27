@@ -66,10 +66,10 @@ namespace statiskit
     {}
 
     BinomialDistributionMLEstimation::Estimator::Estimator() : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
-    {}
+    { _force = false; }
     
     BinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
-    {}
+    { _force = estimator._force; }
 
     BinomialDistributionMLEstimation::Estimator::~Estimator()
     {}
@@ -85,6 +85,8 @@ namespace statiskit
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
         std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double variance = variance_estimation->get_variance(); 
+        if(variance > mean && !_force)
+        { throw overdispersion_error(); }
         unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
         BinomialDistribution* binomial = new BinomialDistribution(kappa, mean/double(kappa));
         if(!lazy)
@@ -152,9 +154,14 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
             }
         }
-
         return estimation;
     }
+
+    bool BinomialDistributionMLEstimation::Estimator::get_force() const
+    { return _force; }
+
+    void BinomialDistributionMLEstimation::Estimator::set_force(const bool& force)
+    { _force = force; }
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
@@ -240,10 +247,10 @@ namespace statiskit
     {}
 
     NegativeBinomialDistributionMLEstimation::Estimator::Estimator() : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
-    {}
+    { _force = false; }
     
     NegativeBinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
-    {}
+    { _force = estimator._force; }
 
     NegativeBinomialDistributionMLEstimation::Estimator::~Estimator()
     {}
@@ -259,6 +266,8 @@ namespace statiskit
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
         std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double variance = variance_estimation->get_variance();
+        if(variance < mean && !_force)
+        { throw underdispersion_error(); }
         double total = data.compute_total(), kappa;
         if(variance > mean)
         { kappa = pow(mean, 2)/(variance - mean); }
@@ -301,6 +310,12 @@ namespace statiskit
         } while(run(its, prev, curr));
         return estimation;
     }
+
+    bool NegativeBinomialDistributionMLEstimation::Estimator::get_force() const
+    { return _force; }
+
+    void NegativeBinomialDistributionMLEstimation::Estimator::set_force(const bool& force)
+    { _force = force; }
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
@@ -684,7 +699,6 @@ namespace statiskit
                 else
                 { entropies[index] = std::numeric_limits< double >::infinity(); }
             }
-            std::cout << std::endl;
             double score = 0.;
             while(bins.size() > 2)
             {
@@ -809,17 +823,11 @@ namespace statiskit
 
     std::unique_ptr< MultivariateDistributionEstimation > MultinomialSplittingDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
-        std::cout << "BK0" << std::endl;
         SumData sum_data = SumData(&data);
-        std::cout << "BK1" << std::endl;
         DiscreteUnivariateDistributionEstimation* sum_estimation = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(sum_data, lazy)).release());
-        std::cout << "BK2" << std::endl;
         std::unique_ptr< MultivariateDistributionEstimation > estimation;
-        std::cout << "BK3" << std::endl;
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
-        std::cout << "BK4" << std::endl;
         Eigen::VectorXd pi = Eigen::VectorXd::Zero(generator->event()->size());
-        std::cout << "BK5" << std::endl;
         while(generator->is_valid())
         {
             const MultivariateEvent* mevent = generator->event();
@@ -831,26 +839,17 @@ namespace statiskit
             }
             ++(*generator);
         }
-        std::cout << "BK6" << std::endl;
         MultinomialSplittingDistribution* estimated = new MultinomialSplittingDistribution(static_cast< const DiscreteUnivariateDistribution& >(*(sum_estimation->get_estimated())), pi);
-        std::cout << "BK7" << std::endl;
         if(lazy)
         { 
-        std::cout << "BK811" << std::endl;
             estimation = std::make_unique< LazyEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
-        std::cout << "BK812" << std::endl;
             delete sum_estimation;
-        std::cout << "BK823" << std::endl;
         }
         else
         {
-        std::cout << "BK821" << std::endl;
             estimation = std::make_unique< MultinomialSplittingDistributionEstimation >(estimated, &data);
-        std::cout << "BK822" << std::endl;
             static_cast< MultinomialSplittingDistributionEstimation* >(estimation.get())->_sum = sum_estimation;
-        std::cout << "BK823" << std::endl;
         }
-        std::cout << "BK9" << std::endl;
         return estimation;
     }
 

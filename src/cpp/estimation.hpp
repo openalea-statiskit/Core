@@ -93,8 +93,8 @@ namespace statiskit
         Selection< D, B >::Selection(const Selection< D, B >& estimation)
         {
             _estimations.resize(estimation.size(), nullptr);
-            // for(Index index = 0, max_index = estimation.size(); index < max_index; ++index)
-            // { _estimations[index] = static_cast< B* >(estimation._estimations[index]->copy().release()); } TODO
+            for(Index index = 0, max_index = estimation.size(); index < max_index; ++index)
+            { _estimations[index] = static_cast< B* >(estimation._estimations[index]); }/*->copy().release()); TODO */
             _scores = estimation._scores;
             this->_data = estimation._data->copy().release();
             finalize();
@@ -156,13 +156,13 @@ namespace statiskit
             if(lazy)
             {
                 std::unique_ptr< typename B::Estimator::estimation_type > _estimation;
-                double curr, prev = std::numeric_limits< double >::quiet_NaN();
+                double curr, prev = -1 * std::numeric_limits< double >::infinity();
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 { 
                     try
                     {
                         _estimation = (*(_estimators[index]))(data, true);
-                         curr = scoring(_estimation->get_estimated(), data);
+                        curr = scoring(_estimation->get_estimated(), data);
                         if(curr > prev && boost::math::isfinite(curr))
                         {
                             prev = curr;
@@ -240,11 +240,9 @@ namespace statiskit
     template<class D, class B>
         void Selection< D, B >::Estimator::init(const Estimator& estimator)
         { 
-            std::cout << "copy" << std::endl;
             _estimators.resize(estimator.size());
             for(Index index = 0, max_index = estimator.size(); index < max_index; ++index)
             { _estimators[index] = static_cast< typename B::Estimator* >(estimator._estimators[index]->copy().release()); }
-            std::cout << "end" << std::endl;
         }
 
     template<class D, class B>

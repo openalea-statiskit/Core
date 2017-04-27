@@ -220,7 +220,7 @@ def _repr_html_(self):
 UnivariateDataFrame._repr_html_ = _repr_html_
 del _repr_html_
 
-def pdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
+def pdf_plot(self, axes=None, color='b', **kwargs):
     from estimation import frequency_estimation, histogram_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
@@ -235,15 +235,15 @@ def pdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
         raise TypeError('\'norm\' parameter')
     if sample_space.outcome is outcome_type.CATEGORICAL:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, color=color, **kwargs)
     elif sample_space.outcome is outcome_type.DISCRETE:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, pmin=0., pmax=1., **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, color=color, pmin=0., pmax=1., **kwargs)
     elif sample_space.outcome is outcome_type.CONTINUOUS:
         fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
             estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(algo='irr' if self.total > 700. else 'reg', lazy=True)))
-            axes = estimation.estimated.pdf_plot(axes=axes, color=color, alpha=alpha, fmt=fmt, **kwargs)
+            axes = estimation.estimated.pdf_plot(axes=axes, color=color, fmt=fmt, **kwargs)
         elif fmt == '-':
             raise NotImplementedError
     else:
