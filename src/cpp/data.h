@@ -77,16 +77,16 @@ namespace statiskit
             virtual const UnivariateSampleSpace* get_sample_space() const;
             void set_sample_space(const UnivariateSampleSpace& sample_space);
 
-            virtual Index get_nb_events() const;
+            Index get_nb_events() const;
 
-            virtual const UnivariateEvent* get_event(const Index& index) const;
-            virtual void set_event(const Index& index, const UnivariateEvent* event);
+            const UnivariateEvent* get_event(const Index& index) const;
+            void set_event(const Index& index, const UnivariateEvent* event);
 
-            virtual void add_event(const UnivariateEvent* event);
-            virtual std::unique_ptr< UnivariateEvent > pop_event();
+            void add_event(const UnivariateEvent* event);
+            std::unique_ptr< UnivariateEvent > pop_event();
 
-            virtual void insert_event(const Index& index, const UnivariateEvent* event);
-            virtual void remove_event(const Index& index);
+            void insert_event(const Index& index, const UnivariateEvent* event);
+            void remove_event(const Index& index);
 
         protected:
             UnivariateSampleSpace* _sample_space;
@@ -134,7 +134,7 @@ namespace statiskit
         virtual const MultivariateSampleSpace* get_sample_space() const = 0;
 
         virtual std::unique_ptr< UnivariateData > extract(const Index& index) const = 0;
-        virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const = 0;
+        virtual std::unique_ptr< MultivariateData > extract(const Indices& indices) const = 0;
 
         virtual std::unique_ptr< MultivariateData > copy() const = 0;
 
@@ -156,29 +156,29 @@ namespace statiskit
             void set_sample_space(const MultivariateSampleSpace& sample_space);
             
             virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
-            virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+            virtual std::unique_ptr< MultivariateData > extract(const Indices& indices) const;
 
-            virtual Index get_nb_components() const;
+            Index get_nb_components() const;
 
-            virtual const UnivariateDataFrame* get_component(const Index& index) const;
-            virtual void set_component(const Index& index, const UnivariateDataFrame& component);
+            const UnivariateDataFrame* get_component(const Index& index) const;
+            void set_component(const Index& index, const UnivariateDataFrame& component);
 
-            virtual void add_component(const UnivariateDataFrame& component);
-            virtual std::unique_ptr< UnivariateDataFrame > pop_component();
+            void add_component(const UnivariateDataFrame& component);
+            std::unique_ptr< UnivariateDataFrame > pop_component();
 
-            virtual void insert_component(const Index& index, const UnivariateDataFrame& component);
-            virtual void remove_component(const Index& index);
+            void insert_component(const Index& index, const UnivariateDataFrame& component);
+            void remove_component(const Index& index);
 
-            virtual Index get_nb_events() const;
+            Index get_nb_events() const;
 
-            virtual std::unique_ptr< MultivariateEvent > get_event(const Index& index) const;
-            virtual void set_event(const Index& index, const MultivariateEvent* event);
+            std::unique_ptr< MultivariateEvent > get_event(const Index& index) const;
+            void set_event(const Index& index, const MultivariateEvent* event);
 
-            virtual void add_event(const MultivariateEvent* event);
-            virtual std::unique_ptr< MultivariateEvent > pop_event();
+            void add_event(const MultivariateEvent* event);
+            std::unique_ptr< MultivariateEvent > pop_event();
 
-            virtual void insert_event(const Index& index, const MultivariateEvent* event);
-            virtual void remove_event(const Index& index);
+            void insert_event(const Index& index, const MultivariateEvent* event);
+            void remove_event(const Index& index);
 
         protected:
             class SampleSpace;
@@ -251,7 +251,7 @@ namespace statiskit
             class STATISKIT_CORE_API MultivariateDataExtraction : public PolymorphicCopy< MultivariateData, MultivariateDataExtraction >
             {
                 public:
-                    MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< Index >& index);
+                    MultivariateDataExtraction(const MultivariateDataFrame* data, const Indices& index);
                     virtual ~MultivariateDataExtraction();
 
                     virtual std::unique_ptr< MultivariateData::Generator > generator() const;
@@ -260,7 +260,7 @@ namespace statiskit
 
                     virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
 
-                    virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+                    virtual std::unique_ptr< MultivariateData > extract(const Indices& indices) const;
 
                 protected:
                     const MultivariateDataFrame* _data;
@@ -380,7 +380,7 @@ namespace statiskit
             virtual ~WeightedMultivariateData();
 
             virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
-            virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+            virtual std::unique_ptr< MultivariateData > extract(const Indices& indices) const;
 
         protected:       
 
@@ -433,12 +433,12 @@ namespace statiskit
             class STATISKIT_CORE_API MultivariateDataExtraction : public PolymorphicCopy< MultivariateData, MultivariateDataExtraction, DataExtraction< MultivariateData > >
             { 
                 public:
-                    MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices);
+                    MultivariateDataExtraction(const WeightedMultivariateData* weights, const Indices& indices);
                     MultivariateDataExtraction(const MultivariateDataExtraction& data);
                     virtual ~MultivariateDataExtraction();
 
                     virtual std::unique_ptr< UnivariateData > extract(const Index& index) const;
-                    virtual std::unique_ptr< MultivariateData > extract(const std::set< Index >& indices) const;
+                    virtual std::unique_ptr< MultivariateData > extract(const Indices& indices) const;
 
                 protected:
                     std::vector< Index > _indices;

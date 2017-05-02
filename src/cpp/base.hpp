@@ -94,6 +94,21 @@ namespace statiskit
     template<typename T>
         duplicated_value_error::duplicated_value_error(const std::string& parameter, const T& value) : parameter_error(parameter, "contains multiples " + __impl::to_string(value))
         {}
+
+    template<class S>
+        bool Optimization::run(const unsigned int& its, const S& prev, const S& curr) const
+        { 
+            bool status = true;
+            if(its >= _minits)
+            {
+                double reldiff = __impl::reldiff(prev, curr);
+                if(!boost::math::isfinite(reldiff) || its > _maxits)
+                { status = false; }
+                else if(reldiff < _mindiff)
+                { status = false; }
+            }
+            return status;
+        }
 }
 
 #if !defined(_WIN32) && !defined(WIN32)

@@ -433,9 +433,9 @@ namespace statiskit
         return std::make_unique< UnivariateDataExtraction >(this, index);
     }
 
-    std::unique_ptr< MultivariateData > MultivariateDataFrame::extract(const std::set< Index >& indices) const
+    std::unique_ptr< MultivariateData > MultivariateDataFrame::extract(const Indices& indices) const
     {
-        for(std::set< Index >::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
+        for(Indices::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
         {
             if(*it >= get_nb_components())
             { throw size_error("indices", get_nb_components(), size_error::inferior); }
@@ -660,7 +660,7 @@ namespace statiskit
     const UnivariateSampleSpace* MultivariateDataFrame::UnivariateDataExtraction::get_sample_space() const
     { return _data->get_sample_space(); }
 
-    MultivariateDataFrame::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataFrame* data, const std::set< Index >& indices)
+    MultivariateDataFrame::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataFrame* data, const Indices& indices)
     { 
         _data = data;
         _indices = std::vector< Index >(indices.cbegin(), indices.cend());
@@ -679,10 +679,10 @@ namespace statiskit
     std::unique_ptr< UnivariateData > MultivariateDataFrame::MultivariateDataExtraction::extract(const Index& index) const
     { return _data->extract(_indices[index]); }
 
-    std::unique_ptr< MultivariateData > MultivariateDataFrame::MultivariateDataExtraction::extract(const std::set< Index >& indices) const
+    std::unique_ptr< MultivariateData > MultivariateDataFrame::MultivariateDataExtraction::extract(const Indices& indices) const
     {
-        std::set< Index > new_indices = std::set< Index >();
-        for(std::set< Index >::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
+        Indices new_indices = Indices();
+        for(Indices::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
         { new_indices.insert(new_indices.cend(), _indices[*it]); }
         return _data->extract(new_indices);
     }
@@ -763,7 +763,7 @@ namespace statiskit
     std::unique_ptr< UnivariateData > WeightedMultivariateData::extract(const Index& index) const
     { return std::make_unique< UnivariateDataExtraction >(this, index); }
 
-    std::unique_ptr< MultivariateData > WeightedMultivariateData::extract(const std::set< Index >& indices) const
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::extract(const Indices& indices) const
     { return std::make_unique< MultivariateDataExtraction >(this, indices); }
 
     WeightedMultivariateData::UnivariateDataExtraction::UnivariateDataExtraction(const WeightedMultivariateData* weights, const Index& index)
@@ -775,7 +775,7 @@ namespace statiskit
     WeightedMultivariateData::UnivariateDataExtraction::~UnivariateDataExtraction()
     {}
 
-    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const WeightedMultivariateData* weights, const std::set< Index >& indices)
+    WeightedMultivariateData::MultivariateDataExtraction::MultivariateDataExtraction(const WeightedMultivariateData* weights, const Indices& indices)
     {
         init(weights, weights->_data->extract(indices).release());
         _indices = std::vector< Index >(indices.cbegin(), indices.cend());
@@ -793,10 +793,10 @@ namespace statiskit
     std::unique_ptr< UnivariateData > WeightedMultivariateData::MultivariateDataExtraction::extract(const Index& index) const
     { return std::make_unique< UnivariateDataExtraction >(_weights, _indices[index]); }
 
-    std::unique_ptr< MultivariateData > WeightedMultivariateData::MultivariateDataExtraction::extract(const std::set< Index >& indices) const
+    std::unique_ptr< MultivariateData > WeightedMultivariateData::MultivariateDataExtraction::extract(const Indices& indices) const
     { 
-        std::set< Index > __indices;
-        for(std::set< Index >::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
+        Indices __indices;
+        for(Indices::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
         { __indices.insert(__indices.end(), _indices[*it]); }
         return std::make_unique< MultivariateDataExtraction >(_weights, __indices);
      }

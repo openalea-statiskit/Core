@@ -205,7 +205,7 @@ namespace statiskit
 
     template<class T>
         std::unique_ptr< UnivariateEvent > ShiftedDistribution< T >::simulate() const
-        { std::make_unique< ElementaryEvent< typename T::event_type > >(static_cast< ElementaryEvent< typename T::event_type > * >(_distribution->simulate().get())->get_value() + _shift); }
+        { return std::make_unique< ElementaryEvent< typename T::event_type > >(static_cast< ElementaryEvent< typename T::event_type > * >(_distribution->simulate().get())->get_value() + _shift); }
 
     template<class T>
         double ShiftedDistribution< T >::ldf(const typename T::event_type::value_type& value) const

@@ -195,7 +195,7 @@ namespace statiskit
             virtual Index size() const;
                     
             virtual const UnivariateEvent* get(const Index& index) const;
-            virtual void set(const Index& index, const UnivariateEvent& event);
+            void set(const Index& index, const UnivariateEvent& event);
 
             virtual std::unique_ptr< MultivariateEvent > copy() const;
 

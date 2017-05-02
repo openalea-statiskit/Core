@@ -312,10 +312,12 @@ namespace statiskit
                 {
                     const typename D::observation_type* observation = mixture->get_observation(state);
                     typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
+                    Index index = 0;
                     while(generator->is_valid())
                     {
                         generator->weight(mixture->posterior(generator->event())[state]);
                         ++(*generator);
+
                     }
                     const typename E::Estimator* estimator = get_estimator(state);
                     if(estimator)
