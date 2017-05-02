@@ -68,6 +68,32 @@ namespace statiskit
         const typename B::data_type * ActiveEstimation< D, B >::get_data() const
         { return _data; }
 
+    template<class D, class B, class R>
+        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation() : ActiveEstimation< D, B >()
+        {}
+        
+    template<class D, class B, class R>        
+        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const D* estimated, const typename B::data_type* data, const R& response, const Indices& explanatories) : ActiveEstimation< D, B >(estimated, data) 
+        {
+            _response = response;
+            _explanatories = explanatories;
+        }
+
+    template<class D, class B, class R>                 
+        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation) : ActiveEstimation< D, B >(estimation) 
+        {
+            _response = estimation._response;
+            _explanatories = estimation._explanatories;
+        }
+        
+    template<class D, class B, class R>                 
+        const R ConditionalActiveEstimation< D, B, R >::get_response() const
+        { return _response; }
+        
+    template<class D, class B, class R>                 
+        const Indices& ConditionalActiveEstimation< D, B, R >::get_explanatories() const  
+        { return _explanatories; }        
+
     template<class D, class B>
         Selection< D, B >::Selection() : ActiveEstimation< D, B >()
         {
@@ -316,65 +342,16 @@ namespace statiskit
         { return _iterations.size(); }
 
     template<class T, class D, class B>
-        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator()
-        {
-            _mindiff = 1e-5;
-            _minits = 0;
-            _maxits = 10e6;
-        }
+        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator() : Optimization()
+        {}
 
     template<class T, class D, class B>
-        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator(const Estimator& estimator)
-        {
-            _mindiff = estimator._mindiff;
-            _minits = estimator._minits;
-            _maxits = estimator._maxits;
-        }
-
+        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator(const Estimator& estimator) : Optimization(estimator)
+        {}
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::Estimator::~Estimator()
         {}
-
-    template<class T, class D, class B>
-        template<class S>
-        bool OptimizationEstimationImpl< T, D, B >::Estimator::run(const unsigned int& its, const S& prev, const S& curr) const
-        { 
-            bool status = true;
-            if(its >= _minits)
-            {
-                double reldiff = __impl::reldiff(prev, curr);
-                if(!boost::math::isfinite(reldiff) || its > _maxits)
-                { status = false; }
-                else if(reldiff < _mindiff)
-                { status = false; }
-            }
-            return status;
-        }
-
-    template<class T, class D, class B>
-        const double& OptimizationEstimationImpl< T, D, B >::Estimator::get_mindiff() const
-        { return _mindiff; }
-    
-    template<class T, class D, class B>
-        void OptimizationEstimationImpl< T, D, B >::Estimator::set_mindiff(const double& mindiff)
-        { _mindiff = mindiff; }
-
-    template<class T, class D, class B>
-        unsigned int OptimizationEstimationImpl< T, D, B >::Estimator::get_minits() const
-        { return _minits; }
-    
-    template<class T, class D, class B>
-        void OptimizationEstimationImpl< T, D, B >::Estimator::set_minits(const unsigned int& minits)
-        { _minits = minits; }
-
-    template<class T, class D, class B>
-        unsigned int OptimizationEstimationImpl< T, D, B >::Estimator::get_maxits() const
-        { return _maxits; }
-
-    template<class T, class D, class B>
-        void OptimizationEstimationImpl< T, D, B >::Estimator::set_maxits(const unsigned int& maxits)
-        { _maxits = maxits; }
 
     template<class T, class D, class B>
         OptimizationEstimation< T, D, B >::OptimizationEstimation() : OptimizationEstimationImpl< T, D, B >()

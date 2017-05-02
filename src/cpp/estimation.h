@@ -73,6 +73,21 @@ namespace statiskit
             typename B::data_type const * _data;
     };
 
+    template<class D, class B, class R> class ConditionalActiveEstimation : public ActiveEstimation< D, B >
+    {
+        public:
+            ConditionalActiveEstimation();
+            ConditionalActiveEstimation(D const * estimated, typename B::data_type const * data, const R& response, const Indices& explanatories);
+            ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation);
+
+            const R get_response() const;
+            const Indices& get_explanatories() const;
+
+        protected:
+            R _response;
+            Indices _explanatories;
+    };
+
     template<class D, class B> class Selection : public ActiveEstimation< D, B >
     {
         public:
@@ -152,28 +167,12 @@ namespace statiskit
 
             Index size() const;
 
-            class Estimator : public B::Estimator
+            class Estimator : public B::Estimator, public Optimization
             {
                 public:
                     Estimator();
                     Estimator(const Estimator& estimator);
                     virtual ~Estimator();
-
-                    const double& get_mindiff() const;
-                    void set_mindiff(const double& mindiff);
-                    
-                    unsigned int get_minits() const;
-                    void set_minits(const unsigned int& maxits);
-
-                    unsigned int get_maxits() const;
-                    void set_maxits(const unsigned int& maxits);
-
-                protected:
-                    double _mindiff;
-                    unsigned int _minits;
-                    unsigned int _maxits;
-
-                    template<class S> bool run(const unsigned int& its, const S& prev, const S& curr) const;
             };
 
         protected:
@@ -304,6 +303,41 @@ namespace statiskit
 
     typedef Selection< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateDistributionSelection;
     typedef ContinuousMultivariateDistributionSelection::CriterionEstimator ContinuousMultivariateDistributionCriterionEstimator;
+
+    struct STATISKIT_CORE_API UnivariateConditionalDistributionEstimation
+    {
+        typedef MultivariateData data_type;
+        typedef ::statiskit::UnivariateConditionalDistribution estimated_type;
+        
+        virtual ~UnivariateConditionalDistributionEstimation() = 0;
+
+        virtual estimated_type const * get_estimated() const = 0;
+
+        struct STATISKIT_CORE_API Estimator
+        { 
+            typedef UnivariateConditionalDistributionEstimation estimation_type;
+            
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const Indices& explanatories, const bool& lazy=true) const;
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const bool& lazy=true) const = 0;
+        };
+    };
+
+    struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+    struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+    struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+
 }
 
 #include "estimation.hpp"

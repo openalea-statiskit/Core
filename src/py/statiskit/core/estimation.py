@@ -228,18 +228,8 @@ for cls in _Selection:
 
 def optimization_estimation_impl_estimator_decorator(cls):
 
-    cls.mindiff = property(cls.get_mindiff, cls.set_mindiff)
-    del cls.get_mindiff, cls.set_mindiff
-
-    cls.minits = property(cls.get_minits, cls.set_minits)
-    del cls.get_minits, cls.set_minits
-
-    cls.maxits = property(cls.get_maxits, cls.set_maxits)
-    del cls.get_maxits, cls.set_maxits
-
-for cls in _OptimizationEstimationImpl:
-    optimization_estimation_impl_estimator_decorator(cls.Estimator)
-
+    pass
+    
 def optimization_estimation_decorator(cls):
 
     class Iterations(object):
