@@ -969,4 +969,7 @@ namespace statiskit
 
     double MultinomialSplittingDistributionEstimation::Estimator::SumData::Generator::weight() const
     { return _generator->weight(); }
+    
+    UnivariateConditionalDistributionEstimation::~UnivariateConditionalDistributionEstimation()
+    {}
 }
