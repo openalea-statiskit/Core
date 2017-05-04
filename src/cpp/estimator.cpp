@@ -121,7 +121,7 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
                 curr = binomial->loglikelihood(data);
                 ++its;
-            } while(run(its, prev, curr) && curr > prev);
+            } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
             if(curr < prev)
             {
                 ++kappa;
@@ -144,7 +144,7 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
                 curr = binomial->loglikelihood(data);
                 ++its;
-            } while(run(its, prev, curr) && curr > prev);
+            } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
             if(curr < prev)
             {
                 --kappa;
@@ -307,7 +307,7 @@ namespace statiskit
             negative_binomial->set_pi(mean/(mean + kappa));
             curr = negative_binomial->loglikelihood(data);
             ++its;
-        } while(run(its, prev, curr));
+        } while(run(its, __impl::reldiff(prev, curr)));
         return estimation;
     }
 
