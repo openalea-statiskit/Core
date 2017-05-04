@@ -312,10 +312,12 @@ namespace statiskit
                 {
                     const typename D::observation_type* observation = mixture->get_observation(state);
                     typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
+                    Index index = 0;
                     while(generator->is_valid())
                     {
                         generator->weight(mixture->posterior(generator->event())[state]);
                         ++(*generator);
+
                     }
                     const typename E::Estimator* estimator = get_estimator(state);
                     if(estimator)
@@ -344,7 +346,7 @@ namespace statiskit
                 if(!lazy)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
-            } while(this->run(its, prev, curr) && prev < curr);
+            } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
             return estimation;
         }
 

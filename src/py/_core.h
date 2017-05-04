@@ -296,7 +296,7 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
             }
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(::statiskit::Indices const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
@@ -380,6 +380,21 @@ namespace autowig
 
     };
 
+    class Wrap_bf2c6deebd8e55f3824ecd5cf9312434 : public ::statiskit::UnivariateConditionalDistributionEstimation, public boost::python::wrapper< struct ::statiskit::UnivariateConditionalDistributionEstimation >
+    {
+        public:
+            
+            virtual ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * get_estimated() const
+            { return this->get_override("get_estimated")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_c9a2f82a42795e79b282609850c28571 : public ::statiskit::MeanEstimation, public boost::python::wrapper< struct ::statiskit::MeanEstimation >
     {
         public:
@@ -436,6 +451,24 @@ namespace autowig
             { return this->get_override("probability")(param_0, param_1); }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_e19df620173959fc805b30a13ab6379a : public ::statiskit::UnivariateConditionalDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::UnivariateConditionalDistributionEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  operator()(::statiskit::UnivariateConditionalDistributionEstimation::data_type const & param_0, ::statiskit::Index const & param_1, bool const & param_2) const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1, param_2);
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > (result);
+            }
 
         protected:
             
@@ -517,6 +550,21 @@ namespace autowig
             }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_10d5b7d349c75b6b89998f9a341fb629 : public ::statiskit::ContinuousUnivariateConditionalDistributionEstimation, public boost::python::wrapper< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >
+    {
+        public:
+            
+            virtual ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * get_estimated() const
+            { return this->get_override("get_estimated")(); }
 
         protected:
             
@@ -751,6 +799,24 @@ namespace autowig
 
     };
 
+    class Wrap_5856b02a98b7543baa5144338b21e69d : public ::statiskit::CategoricalUnivariateConditionalDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  operator()(::statiskit::UnivariateConditionalDistributionEstimation::data_type const & param_0, ::statiskit::Index const & param_1, bool const & param_2) const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1, param_2);
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > (result);
+            }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_5b5f1c1f4aa852eab398cea6df20fee2 : public ::statiskit::WeightedData< ::statiskit::MultivariateData >, public boost::python::wrapper< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > >
     {
         public:
@@ -760,7 +826,7 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("copy")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
             }
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(::statiskit::Indices const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
@@ -933,6 +999,24 @@ namespace autowig
 
     };
 
+    class Wrap_9547a153430f5693a08b4dbbf3204f78 : public ::statiskit::ContinuousUnivariateConditionalDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  operator()(::statiskit::UnivariateConditionalDistributionEstimation::data_type const & param_0, ::statiskit::Index const & param_1, bool const & param_2) const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1, param_2);
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > (result);
+            }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_9b457c1fefee52aeba68eb2ee374d6c8 : public ::statiskit::ContinuousMultivariateDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::ContinuousMultivariateDistributionEstimation::Estimator >
     {
         public:
@@ -947,6 +1031,21 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > (result);
             }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_9b52bf3c9c595cdb890173a39b0d02c4 : public ::statiskit::CategoricalUnivariateConditionalDistributionEstimation, public boost::python::wrapper< struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation >
+    {
+        public:
+            
+            virtual ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * get_estimated() const
+            { return this->get_override("get_estimated")(); }
 
         protected:
             
@@ -1123,6 +1222,24 @@ namespace autowig
 
     };
 
+    class Wrap_ccbe80a40ba653d3bf2bdc8fd0b0ad46 : public ::statiskit::DiscreteUnivariateConditionalDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::DiscreteUnivariateConditionalDistributionEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  operator()(::statiskit::UnivariateConditionalDistributionEstimation::data_type const & param_0, ::statiskit::Index const & param_1, bool const & param_2) const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1, param_2);
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > (result);
+            }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_cf0179fb6c94524589e450e5bcacc532 : public ::statiskit::CategoricalEvent, public boost::python::wrapper< struct ::statiskit::CategoricalEvent >
     {
         public:
@@ -1180,7 +1297,7 @@ namespace autowig
     {
         public:
             
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(::statiskit::Indices const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);
@@ -1197,6 +1314,21 @@ namespace autowig
                  ::std::unique_ptr< struct ::statiskit::MultivariateData::Generator, struct ::std::default_delete< struct ::statiskit::MultivariateData::Generator > > ::element_type* result = this->get_override("generator")();
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData::Generator, struct ::std::default_delete< struct ::statiskit::MultivariateData::Generator > > (result);
             }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_da164767fc675bd29ae86f87eff482aa : public ::statiskit::DiscreteUnivariateConditionalDistributionEstimation, public boost::python::wrapper< struct ::statiskit::DiscreteUnivariateConditionalDistributionEstimation >
+    {
+        public:
+            
+            virtual ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * get_estimated() const
+            { return this->get_override("get_estimated")(); }
 
         protected:
             
@@ -1510,7 +1642,7 @@ namespace autowig
     {
         public:
             
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(class ::std::set< unsigned long int, struct ::std::less< unsigned long int >, class ::std::allocator< unsigned long int > > const & param_0) const
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  extract(::statiskit::Indices const & param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > ::element_type* result = this->get_override("extract")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > > (result);

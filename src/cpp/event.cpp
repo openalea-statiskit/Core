@@ -46,6 +46,13 @@ namespace statiskit
         { _events[index] = event.get(index)->copy().release(); }
     }
 
+    VectorEvent::VectorEvent(const Eigen::VectorXd& event)
+    {
+        _events.resize(event.size(), nullptr);
+        for(Index index = 0, max_index = event.size(); index < max_index; ++index)
+        { _events[index] = new ContinuousElementaryEvent(event(index)); }
+    }
+
     VectorEvent::~VectorEvent()
     {
         for(Index index = 0, max_index = size(); index < max_index; ++index)

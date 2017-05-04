@@ -18,7 +18,7 @@ class TestNormal(unittest.TestCase, AbstractTestContinuousUnivariateDistribution
 
     def test_mle(self):
         """Test normal ML estimation"""
-        data = self._dist.simulation(10)
+        data = self._dist.simulation(20)
         mle = core.normal_estimation('ml', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
 
