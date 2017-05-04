@@ -90,4 +90,18 @@ namespace statiskit
 
     void Optimization::set_maxits(const unsigned int& maxits)
     { _maxits = maxits; }
+
+
+    bool Optimization::run(const unsigned int& its, const double& delta) const
+    { 
+        bool status = true;
+        if(its >= _minits)
+        {
+            if(!boost::math::isfinite(delta) || its > _maxits)
+            { status = false; }
+            else if(delta < _mindiff)
+            { status = false; }
+        }
+        return status;
+    }
 }

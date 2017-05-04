@@ -346,7 +346,7 @@ namespace statiskit
                 if(!lazy)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
-            } while(this->run(its, prev, curr) && prev < curr);
+            } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
             return estimation;
         }
 
