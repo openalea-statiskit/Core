@@ -190,6 +190,7 @@ namespace statiskit
         public:
             VectorEvent(const Index& size);
             VectorEvent(const VectorEvent& event);
+            VectorEvent(const Eigen::VectorXd& event);
             virtual ~VectorEvent();
 
             virtual Index size() const;
