@@ -22,12 +22,6 @@ class TestNormal(unittest.TestCase, AbstractTestContinuousUnivariateDistribution
         mle = core.normal_estimation('ml', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
 
-    # def test_mme(self):
-    #     """Test binomial MM estimation"""
-    #     data = self._dist.simulation(10)
-    #     mme = core.binomial_estimation('mm', data)
-    #     self.assertEqual(mme.estimated.mean, float(data.mean))
-
     @classmethod
     def tearDownClass(cls):
         """Test distribution deletion"""
