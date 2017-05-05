@@ -3,16 +3,16 @@
 
 #include <boost/python.hpp>
 #include <type_traits>
-#include <statiskit/core/slope_heuristic.h>
-#include <statiskit/core/sample_space.h>
+#include <statiskit/core/distribution.h>
 #include <statiskit/core/estimation.h>
 #include <statiskit/core/estimator.h>
-#include <statiskit/core/event.h>
-#include <statiskit/core/mixture.h>
-#include <statiskit/core/distribution.h>
-#include <statiskit/core/data.h>
-#include <statiskit/core/moment.h>
+#include <statiskit/core/sample_space.h>
 #include <statiskit/core/base.h>
+#include <statiskit/core/mixture.h>
+#include <statiskit/core/event.h>
+#include <statiskit/core/slope_heuristic.h>
+#include <statiskit/core/moment.h>
+#include <statiskit/core/data.h>
 #include <memory>
 
 namespace autowig
@@ -2542,6 +2542,30 @@ namespace autowig
             }
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_fcc6162c378c5756b392afed99931125 : public ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, ::statiskit::MultinormalDistribution, struct ::statiskit::ContinuousMultivariateDistribution >, public boost::python::wrapper< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::MultinormalDistribution, struct ::statiskit::ContinuousMultivariateDistribution > >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  simulate() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("simulate")();
+                 return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
+            }
+            virtual double  probability(struct ::statiskit::MultivariateEvent const * param_0, bool const & param_1) const
+            { return this->get_override("probability")(param_0, param_1); }
+            virtual unsigned int  get_nb_parameters() const
+            { return this->get_override("get_nb_parameters")(); }
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
 
         protected:
             

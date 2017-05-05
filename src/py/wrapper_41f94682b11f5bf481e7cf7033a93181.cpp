@@ -96,7 +96,7 @@ void wrapper_41f94682b11f5bf481e7cf7033a93181()
                 if(!py_elem_hdl.get())
                 { break; }
                 boost::python::object py_elem_obj(py_elem_hdl);
-                result.push_back(boost::python::extract< struct ::statiskit::CategoricalUnivariateDistribution * >(py_elem_obj));
+                result.push_back((struct ::statiskit::CategoricalUnivariateDistribution *)(boost::python::extract< struct ::statiskit::CategoricalUnivariateDistribution * >(py_elem_obj)));
             }
         }
     };

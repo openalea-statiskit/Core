@@ -41,6 +41,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     DiscreteIndependentMultivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
+                                    MultinormalDistribution,
                                     ContinuousIndependentMultivariateDistribution,
                                     ContinuousMultivariateMixtureDistribution,
                               _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution)
@@ -77,6 +78,7 @@ __all__ = ['NominalDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
            'MultinomialSplittingDistribution',
+           'MultinormalDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
