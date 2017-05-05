@@ -96,7 +96,7 @@ void wrapper_ce6d678c114158f596627eb4f0c6e9b1()
                 if(!py_elem_hdl.get())
                 { break; }
                 boost::python::object py_elem_obj(py_elem_hdl);
-                result.push_back(boost::python::extract< struct ::statiskit::DiscreteUnivariateDistribution * >(py_elem_obj));
+                result.push_back((struct ::statiskit::DiscreteUnivariateDistribution *)(boost::python::extract< struct ::statiskit::DiscreteUnivariateDistribution * >(py_elem_obj)));
             }
         }
     };

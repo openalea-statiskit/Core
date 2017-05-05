@@ -1530,6 +1530,56 @@ namespace statiskit
         else
         { throw parameter_error("pi", "number of parameters"); }
     }
+    
+    MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)
+    {
+        _mu = mu;
+        _sigma = sigma;
+    }
+     MultinormalDistribution::MultinormalDistribution(const MultinormalDistribution& normal)
+     {
+        _mu = normal._mu;
+        _sigma = normal._mu;
+     }
+
+     MultinormalDistribution::~MultinormalDistribution()
+     {}
+
+    Index MultinormalDistribution:: get_nb_components() const
+    { return _mu.size(); }
+
+    unsigned int MultinormalDistribution::get_nb_parameters() const
+    { return _sigma.size() + _mu.size(); }
+    
+    std::unique_ptr< MultivariateEvent > MultinormalDistribution::simulate() const
+    {
+        Eigen::VectorXd x(get_nb_components());
+        boost::normal_distribution<> dist(0.,1.);
+        boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > simulator(__impl::get_random_generator(), dist);
+        for (Index index = 0, max_index = x.size(); index < max_index; ++index)
+        { x(index) = simulator(); }
+        Eigen::LLT<Eigen:: MatrixXd> llt(_sigma);
+        Eigen::MatrixXd B = llt.matrixL();
+        x = _mu + B*x;
+        return std::make_unique< VectorEvent >(x);
+    }
+
+    const Eigen::VectorXd& MultinormalDistribution::get_mu() const
+    {return _mu;}
+    void MultinormalDistribution::set_mu(const Eigen::VectorXd& mu)
+    {_mu = mu ;}
+
+    const Eigen::MatrixXd& MultinormalDistribution::get_sigma() const
+    {return _sigma ;}
+    void MultinormalDistribution::set_sigma(const Eigen::MatrixXd& sigma)
+            {_sigma = sigma ;}
+
+
+    double MultinormalDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
+    {
+        throw not_implemented_error("probability");
+        return 0.;
+    }
 
     DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi)
     { init(observations, pi); }
