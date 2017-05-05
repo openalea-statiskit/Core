@@ -419,11 +419,11 @@ del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
 BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
 del BinomialDistribution.get_pi, BinomialDistribution.set_pi
 
-# ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
-# del ContinuousUnivariateDistribution.get_mean
+ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
+del ContinuousUnivariateDistribution.get_mean
 
-# ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
-# del ContinuousUnivariateDistribution.get_variance
+ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
+del ContinuousUnivariateDistribution.get_variance
 
 ContinuousUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
@@ -447,12 +447,6 @@ def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
 
 ContinuousUnivariateDistribution.cdf_plot = cdf_plot
 del cdf_plot
-
-ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
-del ContinuousUnivariateDistribution.get_mean
-
-ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
-del ContinuousUnivariateDistribution.get_variance
 
 def statiskit_univariate_frequency_distribution_decorator(cls):
 
