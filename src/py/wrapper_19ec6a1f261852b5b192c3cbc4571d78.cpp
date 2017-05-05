@@ -96,7 +96,7 @@ void wrapper_19ec6a1f261852b5b192c3cbc4571d78()
                 if(!py_elem_hdl.get())
                 { break; }
                 boost::python::object py_elem_obj(py_elem_hdl);
-                result.push_back((struct ::statiskit::ContinuousMultivariateDistribution *)(boost::python::extract< struct ::statiskit::ContinuousMultivariateDistribution * >(py_elem_obj)));
+                result.push_back(boost::python::extract< struct ::statiskit::ContinuousMultivariateDistribution * >(py_elem_obj));
             }
         }
     };
