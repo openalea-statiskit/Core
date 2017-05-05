@@ -23,7 +23,19 @@ namespace statiskit
 
         struct STATISKIT_CORE_API Estimator
         { 
-            virtual std::unique_ptr< MeanEstimation > operator() (const UnivariateData& data) const = 0; 
+            virtual std::unique_ptr< MeanEstimation > operator() (const UnivariateData& data) const = 0;
+
+            virtual std::unique_ptr< Estimator > copy() const = 0;
+        };
+    };
+
+    struct STATISKIT_CORE_API MeanVectorEstimation
+    {
+        virtual const Eigen::VectorXd& get_mean() const = 0;
+
+        struct STATISKIT_CORE_API Estimator
+        { 
+            virtual std::unique_ptr< MeanVectorEstimation > operator() (const MultivariateData& data) const = 0;
 
             virtual std::unique_ptr< Estimator > copy() const = 0;
         };
@@ -51,6 +63,28 @@ namespace statiskit
             double _mean;
     };
 
+    class STATISKIT_CORE_API NaturalMeanVectorEstimation : public MeanVectorEstimation
+    {
+        public:
+            NaturalMeanEstimation(const double& mean);
+            NaturalMeanEstimation(const NaturalMeanEstimation& estimation);
+
+            virtual const Eigen::VectorXd& get_mean() const;
+
+            struct STATISKIT_CORE_API Estimator : MeanVectorEstimation::Estimator
+            { 
+                Estimator();
+                Estimator(const Estimator& estimator);
+
+                virtual std::unique_ptr< MeanVectorEstimation > operator() (const MultivariateData& data) const = 0;
+
+                virtual std::unique_ptr< Estimator > copy() const = 0;
+            };
+
+        protected:
+            Eigen::VectorXd _mean;
+    };
+
     class STATISKIT_CORE_API VarianceEstimation
     {
         public:
@@ -72,10 +106,62 @@ namespace statiskit
             double _mean;
     };
 
+    class STATISKIT_CORE_API CovarianceMatrixEstimation
+    {
+        public:
+
+            const Eigen::VectorXd& get_mean() const;
+
+            virtual const Eigen::MatrixXd& get_covariance() const = 0;
+
+            struct STATISKIT_CORE_API Estimator
+            { 
+                virtual std::unique_ptr< CovarianceMatrixEstimation > operator() (const MultivariateData& data) const = 0;
+
+                virtual std::unique_ptr< Estimator > copy() const = 0;
+            };
+
+        protected:
+            Eigen::VectorXd _mean;
+    };
+
     class STATISKIT_CORE_API NaturalVarianceEstimation : public VarianceEstimation
     { 
         public:
             NaturalVarianceEstimation(const double& mean, const bool& bias, const double& variance);
+            NaturalVarianceEstimation(const NaturalVarianceEstimation& estimation);
+
+            const bool& get_bias() const;
+
+            virtual const double& get_variance() const;
+
+            class STATISKIT_CORE_API Estimator : public VarianceEstimation::Estimator
+            {
+                public:
+                    Estimator();
+                    Estimator(const bool& bias);
+                    Estimator(const Estimator& estimator);
+                      
+                    virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const;
+
+                    virtual std::unique_ptr< VarianceEstimation::Estimator > copy() const;
+
+                    const bool& get_bias() const;
+                    void set_bias(const bool& bias);
+
+                protected:
+                    bool _bias;
+            };
+
+        protected:
+            bool _bias;
+            double _variance;
+    };
+
+    class STATISKIT_CORE_API NaturalVarianceEstimation : public VarianceEstimation
+    { 
+        public:
+            NaturalVarianceEstimation(const Eigen::VectorXd& mean, const bool& bias, const double& variance);
             NaturalVarianceEstimation(const NaturalVarianceEstimation& estimation);
 
             const bool& get_bias() const;
