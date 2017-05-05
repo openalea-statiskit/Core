@@ -1557,16 +1557,23 @@ namespace statiskit
         boost::normal_distribution<> dist(0.,1.);
         boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > simulator(__impl::get_random_generator(), dist);
         for (Index index = 0, max_index = x.size(); index < max_index; ++index)
-        {
-            x(index) = simulator();
-
-        }
-
+        { x(index) = simulator(); }
         Eigen::LLT<Eigen:: MatrixXd> llt(_sigma);
         Eigen::MatrixXd B = llt.matrixL();
         x = _mu + B*x;
         return std::make_unique< VectorEvent >(x);
     }
+
+    const Eigen::VectorXd& MultinormalDistribution::get_mu() const
+    {return _mu;}
+    void MultinormalDistribution::set_mu(const Eigen::VectorXd& mu)
+    {_mu = mu ;}
+
+    const Eigen::MatrixXd& MultinormalDistribution::get_sigma() const
+    {return _sigma ;}
+    void MultinormalDistribution::set_sigma(const Eigen::MatrixXd& sigma)
+            {_sigma = sigma ;}
+
 
     double MultinormalDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {

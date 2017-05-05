@@ -29,6 +29,7 @@ void wrapper_334941caf3de5e3ab25e41d07fa1d9ca()
     boost::python::class_< class ::statiskit::VectorEvent, autowig::Held< class ::statiskit::VectorEvent >::Type, boost::python::bases< struct ::statiskit::MultivariateEvent > > class_334941caf3de5e3ab25e41d07fa1d9ca("VectorEvent", "", boost::python::no_init);
     class_334941caf3de5e3ab25e41d07fa1d9ca.def(boost::python::init< ::statiskit::Index const & >(""));
     class_334941caf3de5e3ab25e41d07fa1d9ca.def(boost::python::init< class ::statiskit::VectorEvent const & >(""));
+    class_334941caf3de5e3ab25e41d07fa1d9ca.def(boost::python::init< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
     class_334941caf3de5e3ab25e41d07fa1d9ca.def("set", method_pointer_546c2692954654889471d670fa584d26, "");
 
     if(autowig::Held< class ::statiskit::VectorEvent >::is_class)
