@@ -74,6 +74,29 @@ namespace autowig
 
     };
 
+    class Wrap_2ceeaed1cf735ad581f7399910bf5819 : public ::statiskit::CovarianceMatrixEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::CovarianceMatrixEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::CovarianceMatrixEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::CovarianceMatrixEstimation::Estimator > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::CovarianceMatrixEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::CovarianceMatrixEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::CovarianceMatrixEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::CovarianceMatrixEstimation::Estimator > > (result);
+            }
+            virtual class ::std::unique_ptr< class ::statiskit::CovarianceMatrixEstimation, struct ::std::default_delete< class ::statiskit::CovarianceMatrixEstimation > >  operator()(struct ::statiskit::MultivariateData const & param_0, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & param_1) const
+            {
+                 ::std::unique_ptr< class ::statiskit::CovarianceMatrixEstimation, struct ::std::default_delete< class ::statiskit::CovarianceMatrixEstimation > > ::element_type* result = this->get_override("operator()")(param_0, param_1);
+                 return ::std::unique_ptr< class ::statiskit::CovarianceMatrixEstimation, struct ::std::default_delete< class ::statiskit::CovarianceMatrixEstimation > > (result);
+            }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_340c5465095052af9d63bdb8d9799d79 : public ::statiskit::UnivariateDistributionEstimation, public boost::python::wrapper< struct ::statiskit::UnivariateDistributionEstimation >
     {
         public:
@@ -240,6 +263,29 @@ namespace autowig
 
     };
 
+    class Wrap_5eab1e1ff40e54ffa634680dff2f958b : public ::statiskit::MeanVectorEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::MeanVectorEstimation::Estimator >
+    {
+        public:
+            
+            virtual class ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation::Estimator > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation::Estimator > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation::Estimator > > (result);
+            }
+            virtual class ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation > >  operator()(struct ::statiskit::MultivariateData const & param_0) const
+            {
+                 ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation > > ::element_type* result = this->get_override("operator()")(param_0);
+                 return ::std::unique_ptr< struct ::statiskit::MeanVectorEstimation, struct ::std::default_delete< struct ::statiskit::MeanVectorEstimation > > (result);
+            }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
     class Wrap_6eb1ba92b1d158b09999c16267a2ec28 : public ::statiskit::MultivariateDistributionEstimation::Estimator, public boost::python::wrapper< struct ::statiskit::MultivariateDistributionEstimation::Estimator >
     {
         public:
@@ -278,6 +324,21 @@ namespace autowig
             }
             virtual struct ::statiskit::UnivariateDistribution const * operator()(struct ::statiskit::MultivariateEvent const & param_0) 
             { return this->get_override("operator()")(param_0); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_853f9a4da37d570fb720964c982ff0c7 : public ::statiskit::MeanVectorEstimation, public boost::python::wrapper< struct ::statiskit::MeanVectorEstimation >
+    {
+        public:
+            
+            virtual class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & get_mean() const
+            { return this->get_override("get_mean")(); }
 
         protected:
             
@@ -371,6 +432,21 @@ namespace autowig
             { return this->get_override("get")(param_0); }
             virtual ::statiskit::Index  size() const
             { return this->get_override("size")(); }
+
+        protected:
+            
+
+        private:
+            
+
+    };
+
+    class Wrap_b1dc4aedfdc854738e1f4aeecbcbce9b : public ::statiskit::CovarianceMatrixEstimation, public boost::python::wrapper< class ::statiskit::CovarianceMatrixEstimation >
+    {
+        public:
+            
+            virtual class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > const & get_covariance() const
+            { return this->get_override("get_covariance")(); }
 
         protected:
             

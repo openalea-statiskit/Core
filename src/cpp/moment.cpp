@@ -70,6 +70,37 @@ namespace statiskit
     std::unique_ptr< MeanEstimation::Estimator > NaturalMeanEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
+    NaturalMeanVectorEstimation::NaturalMeanVectorEstimation(const Eigen::VectorXd& mean)
+    { _mean = mean; }
+
+    NaturalMeanVectorEstimation::NaturalMeanVectorEstimation(const NaturalMeanVectorEstimation& estimation)
+    { _mean = estimation._mean; }
+
+    NaturalMeanVectorEstimation::Estimator::Estimator()
+    {}
+
+    NaturalMeanVectorEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    std::unique_ptr< MeanVectorEstimation > NaturalMeanVectorEstimation::Estimator::operator() (const MultivariateData& data) const
+    {
+        Eigen::VectorXd mu = Eigen::VectorXd(data.get_sample_space()->size());
+        NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateData > marginal;
+        for(Index index = 0, max_index = mu.size(); index < max_index; ++index)
+        {
+            marginal = data.extract(index);
+            mu(index) = estimator(*marginal)->get_mean();
+        }
+        return std::make_unique< NaturalMeanVectorEstimation >(mu);
+    }
+
+    std::unique_ptr< MeanVectorEstimation::Estimator > NaturalMeanVectorEstimation::Estimator::copy() const
+    { return std::make_unique< NaturalMeanVectorEstimation::Estimator >(*this); }
+
+    const Eigen::VectorXd& NaturalMeanVectorEstimation::get_mean() const
+    { return _mean; }
+
     VarianceEstimation::VarianceEstimation(const double& mean)
     { _mean = mean; }
 
@@ -165,6 +196,187 @@ namespace statiskit
     void NaturalVarianceEstimation::Estimator::set_bias(const bool& bias)
     { _bias = bias; }
 
+    CovarianceMatrixEstimation::CovarianceMatrixEstimation(const Eigen::VectorXd& mean)
+    { _mean = mean; }
+
+    CovarianceMatrixEstimation::CovarianceMatrixEstimation(const CovarianceMatrixEstimation& estimation)
+    { _mean = estimation._mean; }
+
+    const Eigen::VectorXd& CovarianceMatrixEstimation::get_mean() const
+    { return _mean; }
+
+    NaturalCovarianceMatrixEstimation::NaturalCovarianceMatrixEstimation(const Eigen::VectorXd& mean, const Eigen::MatrixXd& covariance, const bool& bias) : CovarianceMatrixEstimation(mean)
+    { 
+        _covariance = covariance;
+        _bias = bias;
+    }
+
+    NaturalCovarianceMatrixEstimation::NaturalCovarianceMatrixEstimation(const NaturalCovarianceMatrixEstimation& estimation) : CovarianceMatrixEstimation(estimation)
+    {
+        _covariance = estimation._covariance;
+        _bias = estimation._bias;
+    }
+
+    const bool& NaturalCovarianceMatrixEstimation::get_bias() const
+    { return _bias; }
+
+    const Eigen::MatrixXd& NaturalCovarianceMatrixEstimation::get_covariance() const
+    { return _covariance; }
+
+    NaturalCovarianceMatrixEstimation::Estimator::Estimator()
+    { _bias = true; }
+
+    NaturalCovarianceMatrixEstimation::Estimator::Estimator(const bool& bias)
+    { _bias = bias; }
+
+    NaturalCovarianceMatrixEstimation::Estimator::Estimator(const Estimator& estimator)
+    { _bias = estimator._bias; }
+
+    std::unique_ptr< CovarianceMatrixEstimation > NaturalCovarianceMatrixEstimation::Estimator::operator() (const MultivariateData& data, const Eigen::VectorXd& mean) const
+    {
+        Eigen::MatrixXd covariance = Eigen::MatrixXd(mean.size(), mean.size());
+        for(Index i = 0, max_i = mean.size(); i < max_i; ++i)
+        {
+            covariance(i, i) = compute(data, mean, i, i);
+            for(Index j = 0; j < i; ++j)
+            {
+                covariance(i, j) = compute(data, mean, i, j);
+                covariance(j, i) = covariance(i, j);
+            }
+        }
+        if(!_bias)
+        {}
+        return std::make_unique< NaturalCovarianceMatrixEstimation >(mean, covariance, _bias);
+    }
+
+    std::unique_ptr< CovarianceMatrixEstimation::Estimator > NaturalCovarianceMatrixEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    const bool& NaturalCovarianceMatrixEstimation::Estimator::get_bias() const
+    { return _bias; }
+
+    void NaturalCovarianceMatrixEstimation::Estimator::set_bias(const bool& bias)
+    { _bias = bias; }
+
+    double NaturalCovarianceMatrixEstimation::Estimator::compute(const MultivariateData& data, const Eigen::VectorXd& mean, const Index& i, const Index& j) const
+    {
+        double covariance = 0., total = 0., total_square = 0.;
+        switch(data.get_sample_space()->get(i)->get_outcome())
+        {
+            case CATEGORICAL:
+                covariance = std::numeric_limits< double >::quiet_NaN();
+                break;
+            case DISCRETE:
+                switch(data.get_sample_space()->get(j)->get_outcome())
+                {
+                    case CATEGORICAL:
+                        covariance = std::numeric_limits< double >::quiet_NaN();
+                        break;
+                    case DISCRETE:
+                        {
+                            std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+                            while(generator->is_valid())
+                            {
+                                double _covariance = 0;
+                                const UnivariateEvent* event = generator->event()->get(i);
+                                if(event && event->get_event() == ELEMENTARY)
+                                { 
+                                    _covariance = static_cast< const DiscreteElementaryEvent* >(event)->get_value() - mean(i);
+                                    event = generator->event()->get(j);
+                                    if(event && event->get_event() == ELEMENTARY)
+                                    {
+                                        _covariance *= static_cast< const DiscreteElementaryEvent* >(event)->get_value() - mean(j);
+                                        covariance += _covariance * generator->weight();
+                                        total += generator->weight();
+                                        total_square += pow(generator->weight(), 2);
+                                    }
+                                }
+                                ++(*generator);
+                            }
+                        }
+                        break;
+                    case CONTINUOUS:
+                        {
+                            std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+                            while(generator->is_valid())
+                            {
+                                double _covariance = 0;
+                                const UnivariateEvent* event = generator->event()->get(i);
+                                if(event && event->get_event() == ELEMENTARY)
+                                { 
+                                    _covariance = static_cast< const DiscreteElementaryEvent* >(event)->get_value() - mean(i);
+                                    event = generator->event()->get(j);
+                                    if(event && event->get_event() == ELEMENTARY)
+                                    {
+                                        _covariance *= static_cast< const ContinuousElementaryEvent* >(event)->get_value() - mean(j);
+                                        covariance += _covariance * generator->weight();
+                                        total += generator->weight();
+                                        total_square += pow(generator->weight(), 2);
+                                    }
+                                }
+                                ++(*generator);
+                            }
+                        }
+                        break;
+                }
+                break;
+            case CONTINUOUS:
+                switch(data.get_sample_space()->get(j)->get_outcome())
+                {
+                    case CATEGORICAL:
+                        covariance = std::numeric_limits< double >::quiet_NaN();
+                        break;
+                    case DISCRETE:
+                        {
+                            std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+                            while(generator->is_valid())
+                            {
+                                double _covariance = 0;
+                                const UnivariateEvent* event = generator->event()->get(i);
+                                if(event && event->get_event() == ELEMENTARY)
+                                { 
+                                    _covariance = static_cast< const ContinuousElementaryEvent* >(event)->get_value() - mean(i);
+                                    event = generator->event()->get(j);
+                                    if(event && event->get_event() == ELEMENTARY)
+                                    {
+                                        _covariance *= static_cast< const DiscreteElementaryEvent* >(event)->get_value() - mean(j);
+                                        covariance += _covariance * generator->weight();
+                                        total += generator->weight();
+                                        total_square += pow(generator->weight(), 2);
+                                    }
+                                }
+                                ++(*generator);
+                            }
+                        }
+                        break;
+                    case CONTINUOUS:
+                        {
+                            std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+                            while(generator->is_valid())
+                            {
+                                double _covariance = 0;
+                                const UnivariateEvent* event = generator->event()->get(i);
+                                if(event && event->get_event() == ELEMENTARY)
+                                { 
+                                    _covariance = static_cast< const ContinuousElementaryEvent* >(event)->get_value() - mean(i);
+                                    event = generator->event()->get(j);
+                                    if(event && event->get_event() == ELEMENTARY)
+                                    {
+                                        _covariance *= static_cast< const ContinuousElementaryEvent* >(event)->get_value() - mean(j);
+                                        covariance += _covariance * generator->weight();
+                                        total += generator->weight();
+                                        total_square += pow(generator->weight(), 2);
+                                    }
+                                }
+                                ++(*generator);
+                            }
+                        }
+                        break;
+                }
+                break;
+        }
+        return covariance * total / (total - total_square);
+    }
     /*CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
     { _means = means; }
 

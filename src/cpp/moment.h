@@ -66,8 +66,8 @@ namespace statiskit
     class STATISKIT_CORE_API NaturalMeanVectorEstimation : public MeanVectorEstimation
     {
         public:
-            NaturalMeanEstimation(const double& mean);
-            NaturalMeanEstimation(const NaturalMeanEstimation& estimation);
+            NaturalMeanVectorEstimation(const Eigen::VectorXd& mean);
+            NaturalMeanVectorEstimation(const NaturalMeanVectorEstimation& estimation);
 
             virtual const Eigen::VectorXd& get_mean() const;
 
@@ -76,9 +76,9 @@ namespace statiskit
                 Estimator();
                 Estimator(const Estimator& estimator);
 
-                virtual std::unique_ptr< MeanVectorEstimation > operator() (const MultivariateData& data) const = 0;
+                virtual std::unique_ptr< MeanVectorEstimation > operator() (const MultivariateData& data) const;
 
-                virtual std::unique_ptr< Estimator > copy() const = 0;
+                virtual std::unique_ptr< MeanVectorEstimation::Estimator > copy() const;
             };
 
         protected:
@@ -109,6 +109,8 @@ namespace statiskit
     class STATISKIT_CORE_API CovarianceMatrixEstimation
     {
         public:
+            CovarianceMatrixEstimation(const Eigen::VectorXd& mean);
+            CovarianceMatrixEstimation(const CovarianceMatrixEstimation& estimation);
 
             const Eigen::VectorXd& get_mean() const;
 
@@ -116,7 +118,7 @@ namespace statiskit
 
             struct STATISKIT_CORE_API Estimator
             { 
-                virtual std::unique_ptr< CovarianceMatrixEstimation > operator() (const MultivariateData& data) const = 0;
+                virtual std::unique_ptr< CovarianceMatrixEstimation > operator() (const MultivariateData& data, const Eigen::VectorXd& mean) const = 0;
 
                 virtual std::unique_ptr< Estimator > copy() const = 0;
             };
@@ -158,37 +160,39 @@ namespace statiskit
             double _variance;
     };
 
-    class STATISKIT_CORE_API NaturalVarianceEstimation : public VarianceEstimation
+    class STATISKIT_CORE_API NaturalCovarianceMatrixEstimation : public CovarianceMatrixEstimation
     { 
         public:
-            NaturalVarianceEstimation(const Eigen::VectorXd& mean, const bool& bias, const double& variance);
-            NaturalVarianceEstimation(const NaturalVarianceEstimation& estimation);
+            NaturalCovarianceMatrixEstimation(const Eigen::VectorXd& mean, const Eigen::MatrixXd& covariance, const bool& bias);
+            NaturalCovarianceMatrixEstimation(const NaturalCovarianceMatrixEstimation& estimation);
 
             const bool& get_bias() const;
 
-            virtual const double& get_variance() const;
+            virtual const Eigen::MatrixXd& get_covariance() const;
 
-            class STATISKIT_CORE_API Estimator : public VarianceEstimation::Estimator
+            class STATISKIT_CORE_API Estimator : public CovarianceMatrixEstimation::Estimator
             {
                 public:
                     Estimator();
                     Estimator(const bool& bias);
                     Estimator(const Estimator& estimator);
                       
-                    virtual std::unique_ptr< VarianceEstimation > operator() (const UnivariateData& data, const double& mean) const;
+                    virtual std::unique_ptr< CovarianceMatrixEstimation > operator() (const MultivariateData& data, const Eigen::VectorXd& mean) const;
 
-                    virtual std::unique_ptr< VarianceEstimation::Estimator > copy() const;
+                    virtual std::unique_ptr< CovarianceMatrixEstimation::Estimator > copy() const;
 
                     const bool& get_bias() const;
                     void set_bias(const bool& bias);
 
                 protected:
                     bool _bias;
+
+                    double compute(const MultivariateData& data, const Eigen::VectorXd& mean, const Index& i, const Index& j) const;
             };
 
         protected:
             bool _bias;
-            double _variance;
+            Eigen::MatrixXd _covariance;
     };
 
     /*class CoVarianceEstimation
