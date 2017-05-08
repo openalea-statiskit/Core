@@ -31,7 +31,7 @@ namespace statiskit
         boost::mt19937& get_random_generator()
         { return _random_generator; }
     }
-
+    
     void set_seed()
     { __impl::_random_generator.seed(); }
 

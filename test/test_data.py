@@ -49,6 +49,20 @@ class TestData(unittest.TestCase):
         for component in self._data.components:
             component.pdf_plot()
 
+    def test_mean(self):
+        """Test univariate and multivariate data mean"""
+        data = self._data.extract(range(1, len(self._data.components)))
+        mean = data.mean
+        # for index, component in enumerate(len(self._data.components) - 1):
+        #     self.assertEqual(mean[index], data.extract(index).mean)
+
+    def test_variance(self):
+        """Test univariate and multivariate data variance"""
+        data = self._data.extract(range(1, len(self._data.components)))
+        covariance = data.covariance
+        # for index, component in enumerate(data.components):
+        #     self.assertEqual(covariance[index, index], component.variance)
+
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:

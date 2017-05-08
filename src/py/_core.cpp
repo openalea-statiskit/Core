@@ -57,6 +57,7 @@ void wrapper_b69665ff8e35506d9f4bdc083f09c052();
 void wrapper_bc958e5aa6905fcda520d2cc19bbc8dd();
 void wrapper_bf2c6deebd8e55f3824ecd5cf9312434();
 void wrapper_bf466ef5cbd6539bbde8028bd459b6cb();
+void wrapper_bf742a807d5054c483c71bc86d3edf4f();
 void wrapper_c9a2f82a42795e79b282609850c28571();
 void wrapper_cc00dae7ca6d56c79922ef32ecf17f07();
 void wrapper_cd2f170876c354e483515add3780006d();
@@ -475,6 +476,7 @@ BOOST_PYTHON_MODULE(__core)
     wrapper_bc958e5aa6905fcda520d2cc19bbc8dd();
     wrapper_bf2c6deebd8e55f3824ecd5cf9312434();
     wrapper_bf466ef5cbd6539bbde8028bd459b6cb();
+    wrapper_bf742a807d5054c483c71bc86d3edf4f();
     wrapper_c9a2f82a42795e79b282609850c28571();
     wrapper_cc00dae7ca6d56c79922ef32ecf17f07();
     wrapper_cd2f170876c354e483515add3780006d();

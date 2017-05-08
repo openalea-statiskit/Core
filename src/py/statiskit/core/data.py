@@ -23,7 +23,9 @@ from __core.statiskit import (UnivariateData,
 from controls import controls
 from event import outcome_type
 from moment import (mean_estimation,
-                    variance_estimation)
+                    mean_vector_estimation,
+                    variance_estimation,
+                    covariance_matrix_estimation)
 
 __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',
@@ -45,9 +47,9 @@ del UnivariateData.compute_maximum
 
 def get_mean(self):
     if not hasattr(self, '_mean'):
-        return mean_estimation('nat', self)
+        return mean_estimation('nat', self).mean
     else:
-        return self._mean(self)
+        return self._mean(self).mean
 
 def set_mean(self, mean):
     self._mean = mean_estimation(mean)
@@ -57,9 +59,9 @@ del get_mean, set_mean
 
 def get_variance(self):
     if not hasattr(self, '_variance'):
-        return variance_estimation('nat', self)
+        return variance_estimation('nat', self).variance
     else:
-        return self._variance(self)
+        return self._variance(self).variance
 
 def set_variance(self, variance):
     self._variance = variance_estimation(variance)
@@ -279,6 +281,30 @@ del cdf_plot
 
 MultivariateData.total = property(MultivariateData.compute_total)
 del MultivariateData.compute_total
+
+def get_mean(self):
+    if not hasattr(self, '_mean'):
+        return mean_vector_estimation('nat', self).mean
+    else:
+        return self._mean(self).mean
+
+def set_mean(self, mean):
+    self._mean = mean_vector_estimation(mean)
+
+MultivariateData.mean = property(get_mean, set_mean)
+del get_mean, set_mean
+
+def get_covariance(self):
+    if not hasattr(self, '_covariance'):
+        return covariance_matrix_estimation('nat', self).covariance
+    else:
+        return self._covariance(self).covariance
+
+def set_covariance(self, covariance):
+    self._covariance = variance_matrix_estimation(covariance)
+
+MultivariateData.covariance = property(get_covariance, set_covariance)
+del get_covariance, set_covariance
 
 # MultivariateData.min = property(MultivariateData.compute_minimum)
 # del MultivariateData.compute_minimum
