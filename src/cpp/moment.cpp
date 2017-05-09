@@ -57,7 +57,7 @@ namespace statiskit
                     }
                     break;
                 default:
-                    throw qualitative_sample_space_error();
+                    mean = std::numeric_limits< double >::quiet_NaN();
                     break;
             }
             estimation = std::make_unique< NaturalMeanEstimation >(mean);
@@ -172,7 +172,7 @@ namespace statiskit
                     }
                     break;
                 default:
-                    throw qualitative_sample_space_error();
+                    variance = std::numeric_limits< double >::quiet_NaN();
                     break;
             }
             if(!_bias)
@@ -224,7 +224,7 @@ namespace statiskit
     { return _covariance; }
 
     NaturalCovarianceMatrixEstimation::Estimator::Estimator()
-    { _bias = true; }
+    { _bias = false; }
 
     NaturalCovarianceMatrixEstimation::Estimator::Estimator(const bool& bias)
     { _bias = bias; }
@@ -375,7 +375,13 @@ namespace statiskit
                 }
                 break;
         }
-        return covariance * total / (total - total_square);
+        covariance /= total;
+        if(!_bias)
+        { 
+            total = pow(total, 2.);
+            covariance *= total / (total - total_square);
+        }
+        return covariance;
     }
     /*CoVarianceEstimation::CoVarianceEstimation(const std::array< double, 2 >& means)
     { _means = means; }

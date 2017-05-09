@@ -306,6 +306,46 @@ def set_covariance(self, covariance):
 MultivariateData.covariance = property(get_covariance, set_covariance)
 del get_covariance, set_covariance
 
+class Components(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    def __len__(self, data):
+        return len(self._data.sample_space)
+
+    def __iter__(self):
+
+        class Iterator(object):
+
+            def __init__(self, components):
+                self._components = components
+                self._index = 0
+
+            def next(self):
+                if self._index < len(self._components):
+                    component = self._components.extract(self._index)
+                    self._index += 1
+                    return component
+                else:
+                    raise StopIteration()
+
+        return Iterator(self)
+        
+def wrapper_components(f):
+
+    @wraps(f)
+    def __getitem__(self, index):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+        return f(self._data, index)
+
+Components.__getitem__ = wrapper_components(MultivariateData.extract)
+del wrapper_components,
+MultivariateData.components = property(Components)
+
 # MultivariateData.min = property(MultivariateData.compute_minimum)
 # del MultivariateData.compute_minimum
 
@@ -319,7 +359,7 @@ MultivariateDataFrame.names = property(names)
 del names
 
 def __dir__(self):
-    return sorted(self.names)
+    return sorted(self.names) 
 
 MultivariateDataFrame.__dir__ = __dir__
 del __dir__
