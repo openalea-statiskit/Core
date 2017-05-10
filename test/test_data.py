@@ -75,6 +75,7 @@ class TestData(unittest.TestCase):
         for component in self._data.components:
             component.cdf_plot()
 
+    @attr(win = False)
     def test_write_csv(self):
         """Test write data to csv"""
         tmp = NamedTemporaryFile()
