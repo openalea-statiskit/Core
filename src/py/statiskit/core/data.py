@@ -23,7 +23,9 @@ from __core.statiskit import (UnivariateData,
 from controls import controls
 from event import outcome_type
 from moment import (mean_estimation,
-                    variance_estimation)
+                    mean_vector_estimation,
+                    variance_estimation,
+                    covariance_matrix_estimation)
 
 __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',
@@ -45,9 +47,9 @@ del UnivariateData.compute_maximum
 
 def get_mean(self):
     if not hasattr(self, '_mean'):
-        return mean_estimation('nat', self)
+        return mean_estimation('nat', self).mean
     else:
-        return self._mean(self)
+        return self._mean(self).mean
 
 def set_mean(self, mean):
     self._mean = mean_estimation(mean)
@@ -57,9 +59,9 @@ del get_mean, set_mean
 
 def get_variance(self):
     if not hasattr(self, '_variance'):
-        return variance_estimation('nat', self)
+        return variance_estimation('nat', self).variance
     else:
-        return self._variance(self)
+        return self._variance(self).variance
 
 def set_variance(self, variance):
     self._variance = variance_estimation(variance)
@@ -280,6 +282,70 @@ del cdf_plot
 MultivariateData.total = property(MultivariateData.compute_total)
 del MultivariateData.compute_total
 
+def get_mean(self):
+    if not hasattr(self, '_mean'):
+        return mean_vector_estimation('nat', self).mean
+    else:
+        return self._mean(self).mean
+
+def set_mean(self, mean):
+    self._mean = mean_vector_estimation(mean)
+
+MultivariateData.mean = property(get_mean, set_mean)
+del get_mean, set_mean
+
+def get_covariance(self):
+    if not hasattr(self, '_covariance'):
+        return covariance_matrix_estimation('nat', self).covariance
+    else:
+        return self._covariance(self).covariance
+
+def set_covariance(self, covariance):
+    self._covariance = variance_matrix_estimation(covariance)
+
+MultivariateData.covariance = property(get_covariance, set_covariance)
+del get_covariance, set_covariance
+
+class Components(object):
+
+    def __init__(self, data):
+        self._data = data
+
+    def __len__(self, data):
+        return len(self._data.sample_space)
+
+    def __iter__(self):
+
+        class Iterator(object):
+
+            def __init__(self, components):
+                self._components = components
+                self._index = 0
+
+            def next(self):
+                if self._index < len(self._components):
+                    component = self._components.extract(self._index)
+                    self._index += 1
+                    return component
+                else:
+                    raise StopIteration()
+
+        return Iterator(self)
+        
+def wrapper_components(f):
+
+    @wraps(f)
+    def __getitem__(self, index):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+        return f(self._data, index)
+
+Components.__getitem__ = wrapper_components(MultivariateData.extract)
+del wrapper_components,
+MultivariateData.components = property(Components)
+
 # MultivariateData.min = property(MultivariateData.compute_minimum)
 # del MultivariateData.compute_minimum
 
@@ -293,7 +359,7 @@ MultivariateDataFrame.names = property(names)
 del names
 
 def __dir__(self):
-    return sorted(self.names)
+    return sorted(self.names) 
 
 MultivariateDataFrame.__dir__ = __dir__
 del __dir__

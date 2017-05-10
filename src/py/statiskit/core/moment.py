@@ -10,55 +10,81 @@ from functools import wraps
 
 import statiskit.core._core
 from statiskit.core.__core.statiskit import (MeanEstimation,
-                                                NaturalMeanEstimation,
-                                            VarianceEstimation,
-                                                NaturalVarianceEstimation)
+                                                 NaturalMeanEstimation,
+                                             MeanVectorEstimation,
+                                                 NaturalMeanVectorEstimation,
+                                             VarianceEstimation,
+                                                 NaturalVarianceEstimation,
+                                             CovarianceMatrixEstimation,
+                                                 NaturalCovarianceMatrixEstimation)
+__all__ = []
 
-def _mean_estimation(algo, data, mapping, **kwargs):
-    try:
-        algo = mapping[algo]()
-    except KeyError:
-        raise ValueError('\'algo\' parameter, possible values are ' + ', '.join('"' + algo + '"' for algo in mapping.iterkeys()))
-    except:
-        raise
-    if data:
-        lazy = kwargs.pop('lazy', False)
-    for attr in kwargs.keys():
-        if hasattr(algo, attr):
-            setattr(algo, attr, kwargs.pop(attr))
-    if data:
-        return algo(data)
-    else:
-        return algo
-
-def wrapper__float__(f):
-
-    @wraps(f)
-    def __float__(self):
-        return f(self)
-
-    return __float__
-
-MeanEstimation.__float__ = wrapper__float__(MeanEstimation.get_mean)
+MeanEstimation.mean = property(MeanEstimation.get_mean)
 del MeanEstimation.get_mean
+
+MeanVectorEstimation.mean = property(MeanVectorEstimation.get_mean)
+del MeanVectorEstimation.get_mean
 
 VarianceEstimation.mean = property(VarianceEstimation.get_mean)
 del VarianceEstimation.get_mean
 
-VarianceEstimation.__float__ = wrapper__float__(VarianceEstimation.get_variance)
+CovarianceMatrixEstimation.mean = property(CovarianceMatrixEstimation.get_mean)
+del CovarianceMatrixEstimation.get_mean
+
+VarianceEstimation.variance = property(VarianceEstimation.get_variance)
 del VarianceEstimation.get_variance
 
+CovarianceMatrixEstimation.covariance = property(CovarianceMatrixEstimation.get_covariance)
+del CovarianceMatrixEstimation.get_covariance
+
 def __str__(self):
-    return str(float(self))
+    return str(self.mean)
 
 MeanEstimation.__str__ = __str__
-VarianceEstimation.__str__ = __str__
+del __str__
 
 def __repr__(self):
-    return repr(float(self))
+    return repr(self.mean)
 
 MeanEstimation.__repr__ = __repr__
+del __repr__
+
+def __str__(self):
+    return str(self.mean)
+
+MeanVectorEstimation.__str__ = __str__
+del __str__
+
+def __repr__(self):
+    return repr(self.mean)
+
+MeanVectorEstimation.__repr__ = __repr__
+del __repr__
+
+def __str__(self):
+    return str(self.variance)
+
+VarianceEstimation.__str__ = __str__
+del __str__
+
+def __repr__(self):
+    return repr(self.variance)
+
 VarianceEstimation.__repr__ = __repr__
+del __repr__
+
+def __str__(self):
+    return str(self.covariance)
+
+CovarianceMatrixEstimation.__str__ = __str__
+del __str__
+
+def __repr__(self):
+    return repr(self.covariance)
+
+CovarianceMatrixEstimation.__repr__ = __repr__
+del __repr__
+
 
 def mean_estimation(algo='nat', data=None, **kwargs):
     """
@@ -78,8 +104,29 @@ def mean_estimation(algo='nat', data=None, **kwargs):
     else:
         return algo
 
+def mean_vector_estimation(algo='nat', data=None, **kwargs):
+    """
+    """
+    mapping = dict(nat = NaturalMeanVectorEstimation.Estimator)
+    try:
+        algo = mapping[algo]()
+    except KeyError:
+        raise ValueError('\'algo\' parameter, possible values are ' + ', '.join('"' + algo + '"' for algo in mapping.iterkeys()))
+    except:
+        raise
+    for attr in kwargs.keys():
+        if hasattr(algo, attr):
+            setattr(algo, attr, kwargs.pop(attr))
+    if data:
+        return algo(data)
+    else:
+        return algo
+
 NaturalVarianceEstimation.Estimator.bias = property(NaturalVarianceEstimation.Estimator.get_bias, NaturalVarianceEstimation.Estimator.set_bias)
 del NaturalVarianceEstimation.Estimator.get_bias, NaturalVarianceEstimation.Estimator.set_bias
+
+NaturalCovarianceMatrixEstimation.Estimator.bias = property(NaturalCovarianceMatrixEstimation.Estimator.get_bias, NaturalCovarianceMatrixEstimation.Estimator.set_bias)
+del NaturalCovarianceMatrixEstimation.Estimator.get_bias, NaturalCovarianceMatrixEstimation.Estimator.set_bias
 
 def variance_estimation(algo='nat', data=None, **kwargs):
     """
@@ -95,28 +142,24 @@ def variance_estimation(algo='nat', data=None, **kwargs):
         if hasattr(algo, attr):
             setattr(algo, attr, kwargs.pop(attr))
     if data:
-        return algo(data, float(data.mean))
+        return algo(data, data.mean)
     else:
         return algo
 
-#__all__ = ['NaturalMomentEstimator']
-#
-#def wrapper(f):
-#    @wraps(f)
-#    def __call__(self, *args, **kwargs):
-#        if any(not isinstance(arg, UnivariateDataFrame) for arg in args):
-#            raise TypeError('\'args\' parameter')
-#        if len(args) > 4:
-#            raise NotImplementedError('Moment estimators do not implement the estimation of moments with order strictly superior to \'4\'')
-#        args += (kwargs.pop('na_action', na_action_type.PASS),)
-#        return f(self, *args)
-#    return __call__
-#
-#MomentEstimator.__call__ = wrapper(MomentEstimator.__call__)
-#del wrapper
-#
-#def __str__(self):
-#    return "Natural moment estimator"
-#
-#NaturalMomentEstimator.__str__ = __str__
-#del __str__
+def covariance_matrix_estimation(algo='nat', data=None, **kwargs):
+    """
+    """
+    mapping = dict(nat = NaturalCovarianceMatrixEstimation.Estimator)
+    try:
+        algo = mapping[algo]()
+    except KeyError:
+        raise ValueError('\'algo\' parameter, possible values are ' + ', '.join('"' + algo + '"' for algo in mapping.iterkeys()))
+    except:
+        raise
+    for attr in kwargs.keys():
+        if hasattr(algo, attr):
+            setattr(algo, attr, kwargs.pop(attr))
+    if data:
+        return algo(data, data.mean)
+    else:
+        return algo

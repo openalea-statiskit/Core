@@ -26,7 +26,7 @@ class TestBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution
         """Test binomial MM estimation"""
         data = self._dist.simulation(20)
         mme = core.binomial_estimation('mm', data)
-        self.assertAlmostEqual(mme.estimated.mean, float(data.mean))
+        self.assertAlmostEqual(mme.estimated.mean, data.mean)
         # self.assertAlmostEqual(mme.estimated.variance, float(data.variance))
 
     @classmethod
