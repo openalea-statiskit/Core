@@ -42,6 +42,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     DiscreteIndependentMultivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
+                                    MultinormalDistribution,
                                     ContinuousIndependentMultivariateDistribution,
                                     ContinuousMultivariateMixtureDistribution,
                               _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
@@ -80,6 +81,7 @@ __all__ = ['NominalDistribution',
            'NormalDistribution',
            'LogisticDistribution',
            'MultinomialSplittingDistribution',
+           'MultinormalDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
@@ -104,9 +106,9 @@ UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
-        data = UnivariateDataFrame(NominalSampleSpace(self.values))
-    if isinstance(self, NominalDistribution):
-        data = UnivariateDataFrame(OrdinalSampleSpace(self.ordered))
+        data = UnivariateDataFrame(NominalSampleSpace([value.value for value in self.values]))
+    elif isinstance(self, OrdinalDistribution):
+        data = UnivariateDataFrame(OrdinalSampleSpace([value.value for value in self.ordered]))
     elif isinstance(self, DiscreteUnivariateDistribution):
         data = UnivariateDataFrame(controls.ZZ)
     elif isinstance(self, ContinuousUnivariateDistribution):
@@ -120,30 +122,34 @@ def simulation(self, size):
 UnivariateDistribution.simulation = simulation
 del simulation
 
-def pdf_plot(self, axes=None, fmt='|', alpha=1., **kwargs):
+def pdf_plot(self, axes=None, fmt='|', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
-    labels = self.values
+    labels = getattr(self, 'ordered', 'values')
     x, labels = zip(*[(index, label) for index, label in enumerate(labels)])
-    y = self.pi
+    y = [self.probability(label, log=False) for label in labels]
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
         y = [norm * p for p in y]
     else:
         y = [p for p in y]
     if fmt == 'pie':
+        if 'color' in kwargs:
+            kwargs.pop('color')
         if not 'autopct' in kwargs:
             kwargs['autopct'] = '%.2f'
-        axes.pie(y, labels=labels, alpha=alpha, **kwargs)
+        axes.pie(y, labels=labels, **kwargs)
     else:
         if not 'color' in kwargs:
             kwargs['color'] = 'r'
+        if not 'alpha' in kwargs:
+            kwargs['alpha'] = 1.
         if '|' in fmt:
             fmt = fmt.replace('|', '')
             width = kwargs.pop('width', .8)
             if not 0 < width <= 1.:
                 raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-            axes.bar([q-width/2. for q in x], y, width, alpha=alpha, align='center', **kwargs)
+            axes.bar([q-width/2. for q in x], y, width, align='center', **kwargs)
         if len(fmt) > 0:
             axes.plot(x, y, fmt, alpha=alpha, **kwargs)
         axes.set_xticks(x)
@@ -167,7 +173,8 @@ def wrapper(f):
     @wraps(f)
     def __init__(self, *args, **kwargs):
         f(self, args)
-        self.pi = [kwargs.pop(value.value, 1.) for value in self.values]
+        if 'pi' in kwargs:
+            self.pi = kwargs.pop('pi')
     return __init__
 
 NominalDistribution.__init__ = wrapper(NominalDistribution.__init__)
@@ -259,11 +266,13 @@ del box_plot
 
 def quantitative_univariate_frequency_distribution_decorator(cls):
 
-    cls.mean = property(cls.get_mean)
-    del cls.get_mean
+    # cls.mean = property(cls.get_mean)
+    # del cls.get_mean
 
-    cls.variance = property(cls.get_variance)
-    del cls.get_variance
+    # cls.variance = property(cls.get_variance)
+    # del cls.get_variance
+
+    pass
 
 for cls in _QuantitativeUnivariateFrequencyDistribution:
     quantitative_univariate_frequency_distribution_decorator(cls)
@@ -415,11 +424,11 @@ del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
 BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
 del BinomialDistribution.get_pi, BinomialDistribution.set_pi
 
-# ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
-# del ContinuousUnivariateDistribution.get_mean
+ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
+del ContinuousUnivariateDistribution.get_mean
 
-# ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
-# del ContinuousUnivariateDistribution.get_variance
+ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
+del ContinuousUnivariateDistribution.get_variance
 
 ContinuousUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
@@ -443,12 +452,6 @@ def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
 
 ContinuousUnivariateDistribution.cdf_plot = cdf_plot
 del cdf_plot
-
-ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
-del ContinuousUnivariateDistribution.get_mean
-
-ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
-del ContinuousUnivariateDistribution.get_variance
 
 def statiskit_univariate_frequency_distribution_decorator(cls):
 

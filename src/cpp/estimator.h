@@ -97,15 +97,22 @@ namespace statiskit
         BinomialDistributionMLEstimation(const BinomialDistributionMLEstimation& estimation);
         virtual ~BinomialDistributionMLEstimation();
 
-        struct STATISKIT_CORE_API Estimator : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        class STATISKIT_CORE_API Estimator : public OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
-            Estimator();
-            Estimator(const Estimator& estimator);
-            virtual ~Estimator();
+            public:
+                Estimator();
+                Estimator(const Estimator& estimator);
+                virtual ~Estimator();
 
-            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+                virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
 
-            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+                virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+
+                bool get_force() const;
+                void set_force(const bool& force);
+
+            protected:
+                bool _force;
         };
     };
     
@@ -146,15 +153,22 @@ namespace statiskit
         NegativeBinomialDistributionMLEstimation(const NegativeBinomialDistributionMLEstimation& estimation);
         virtual ~NegativeBinomialDistributionMLEstimation();
 
-        struct STATISKIT_CORE_API Estimator : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        class STATISKIT_CORE_API Estimator : public OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
         {
-            Estimator();
-            Estimator(const Estimator& estimator);
-            virtual ~Estimator();
+            public:
+                Estimator();
+                Estimator(const Estimator& estimator);
+                virtual ~Estimator();
 
-            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+                virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
 
-            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+                virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+
+                bool get_force() const;
+                void set_force(const bool& force);
+                
+            protected:
+                bool _force;
         };
     };
     

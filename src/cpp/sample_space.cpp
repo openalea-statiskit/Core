@@ -258,12 +258,12 @@ namespace statiskit
     {
         if(rank.size() != _values.size())
         { throw std::runtime_error("rank"); }
-        std::set< Index > order = std::set< Index >();
+        Indices order = Indices();
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { order.insert(order.end(), size); }
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         {
-            std::set< Index >::iterator it = order.find(rank[size]);
+            Indices::iterator it = order.find(rank[size]);
             if(it == order.end())
             { throw std::runtime_error("rank"); }
             order.erase(it);

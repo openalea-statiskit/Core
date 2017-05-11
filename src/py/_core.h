@@ -6,11 +6,11 @@
 #include <statiskit/core/data.h>
 #include <statiskit/core/estimation.h>
 #include <statiskit/core/estimator.h>
+#include <statiskit/core/base.h>
 #include <statiskit/core/moment.h>
 #include <statiskit/core/distribution.h>
 #include <statiskit/core/mixture.h>
 #include <statiskit/core/sample_space.h>
-#include <statiskit/core/base.h>
 #include <statiskit/core/event.h>
 #include <statiskit/core/slope_heuristic.h>
 #include <memory>

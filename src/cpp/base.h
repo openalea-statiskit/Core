@@ -113,6 +113,30 @@ namespace statiskit
 
     struct STATISKIT_CORE_API duplicated_value_error : parameter_error
     { template<typename T> duplicated_value_error(const std::string& parameter, const T& value); };
+
+    class STATISKIT_CORE_API Optimization
+    {
+        public:
+            Optimization();
+            Optimization(const Optimization& Optimization);
+            virtual ~Optimization();
+
+            const double& get_mindiff() const;
+            void set_mindiff(const double& mindiff);
+            
+            unsigned int get_minits() const;
+            void set_minits(const unsigned int& maxits);
+
+            unsigned int get_maxits() const;
+            void set_maxits(const unsigned int& maxits);
+
+        protected:
+            double _mindiff;
+            unsigned int _minits;
+            unsigned int _maxits;
+
+            bool run(const unsigned int& its, const double& delta) const;
+    };
 }
 
 #if !defined(_WIN32) && !defined(WIN32)

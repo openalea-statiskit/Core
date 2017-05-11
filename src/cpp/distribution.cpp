@@ -81,10 +81,7 @@ namespace statiskit
     { init(nominal); }
 
     double NominalDistribution::pdf(const int& position) const
-    { 
-        return _pi[position];
-        return 0;
-    }
+    {  return _pi[position]; }
    
     OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values)
     {
@@ -115,15 +112,12 @@ namespace statiskit
         if(it == _values.end())
         { p = 0.; }
         else
-        { p = _pi[_rank[distance(_values.cbegin(), it)]]; }
+        { p = _pi[distance(_values.cbegin(), it)]; }
         return p;
      }
 
     double OrdinalDistribution::pdf(const int& position) const
-    { 
-        return _pi[position];
-        return 0;
-    }
+    { return _pi[_rank[position]]; }
     
     double OrdinalDistribution::cdf(const std::string& value) const
     {
@@ -159,14 +153,14 @@ namespace statiskit
     {
         if(rank.size() != _values.size())
         { throw size_error("rank", rank.size(), _values.size()); }
-        std::set< Index > order = std::set< Index >();
+        Indices order = Indices();
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         { order.insert(order.end(), size); }
         for(Index size = 0, max_size = _values.size(); size < max_size; ++size)
         {
             if(rank[size] >= _values.size())
             { throw interval_error("rank", rank[size], 0, _values.size(), std::make_pair(false, true)); }
-            std::set< Index >::iterator it = order.find(rank[size]);
+            Indices::iterator it = order.find(rank[size]);
             if(it == order.end())
             { throw duplicated_value_error("rank", rank[size]); }
             order.erase(it);
@@ -478,7 +472,7 @@ namespace statiskit
         if(value < 0)
         { p = -1 * std::numeric_limits< double >::infinity(); }
         else
-        { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1. - _pi); }
+        { p = boost::math::lgamma(value + _kappa) - boost::math::lgamma(_kappa) - boost::math::lgamma(value + 1) + value * log(_pi) + _kappa * log(1 - _pi); }
         return p;
     }
     
@@ -1535,6 +1529,56 @@ namespace statiskit
         }
         else
         { throw parameter_error("pi", "number of parameters"); }
+    }
+    
+    MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)
+    {
+        _mu = mu;
+        _sigma = sigma;
+    }
+     MultinormalDistribution::MultinormalDistribution(const MultinormalDistribution& normal)
+     {
+        _mu = normal._mu;
+        _sigma = normal._mu;
+     }
+
+     MultinormalDistribution::~MultinormalDistribution()
+     {}
+
+    Index MultinormalDistribution:: get_nb_components() const
+    { return _mu.size(); }
+
+    unsigned int MultinormalDistribution::get_nb_parameters() const
+    { return _sigma.size() + _mu.size(); }
+    
+    std::unique_ptr< MultivariateEvent > MultinormalDistribution::simulate() const
+    {
+        Eigen::VectorXd x(get_nb_components());
+        boost::normal_distribution<> dist(0.,1.);
+        boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > simulator(__impl::get_random_generator(), dist);
+        for (Index index = 0, max_index = x.size(); index < max_index; ++index)
+        { x(index) = simulator(); }
+        Eigen::LLT<Eigen:: MatrixXd> llt(_sigma);
+        Eigen::MatrixXd B = llt.matrixL();
+        x = _mu + B*x;
+        return std::make_unique< VectorEvent >(x);
+    }
+
+    const Eigen::VectorXd& MultinormalDistribution::get_mu() const
+    {return _mu;}
+    void MultinormalDistribution::set_mu(const Eigen::VectorXd& mu)
+    {_mu = mu ;}
+
+    const Eigen::MatrixXd& MultinormalDistribution::get_sigma() const
+    {return _sigma ;}
+    void MultinormalDistribution::set_sigma(const Eigen::MatrixXd& sigma)
+            {_sigma = sigma ;}
+
+
+    double MultinormalDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
+    {
+        throw not_implemented_error("probability");
+        return 0.;
     }
 
     DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi)

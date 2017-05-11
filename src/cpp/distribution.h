@@ -1668,6 +1668,32 @@ namespace statiskit
         typedef ContinuousUnivariateDistribution marginal_type;
     };
 
+    class STATISKIT_CORE_API MultinormalDistribution : public PolymorphicCopy< MultivariateDistribution, MultinormalDistribution, ContinuousMultivariateDistribution >
+    {
+        public:
+            MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma);
+            MultinormalDistribution(const MultinormalDistribution& multinomialUnivaria);
+            virtual ~MultinormalDistribution();
+
+            virtual Index get_nb_components() const;
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+            std::unique_ptr< MultivariateEvent > simulate() const;
+
+            const Eigen::VectorXd& get_mu() const;
+            void set_mu(const Eigen::VectorXd& mu);
+
+            const Eigen::MatrixXd& get_sigma() const;
+            void set_sigma(const Eigen::MatrixXd& sigma);
+
+        protected:
+            Eigen::VectorXd _mu;
+            Eigen::MatrixXd _sigma;
+    };
+
     template<class D> class IndependentMultivariateDistribution : public PolymorphicCopy< MultivariateDistribution, IndependentMultivariateDistribution< D >, D >
     {
         public:

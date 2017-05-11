@@ -66,10 +66,10 @@ namespace statiskit
     {}
 
     BinomialDistributionMLEstimation::Estimator::Estimator() : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
-    {}
+    { _force = false; }
     
     BinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation<unsigned int, BinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
-    {}
+    { _force = estimator._force; }
 
     BinomialDistributionMLEstimation::Estimator::~Estimator()
     {}
@@ -85,6 +85,8 @@ namespace statiskit
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
         std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double variance = variance_estimation->get_variance(); 
+        if(variance > mean && !_force)
+        { throw overdispersion_error(); }
         unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
         BinomialDistribution* binomial = new BinomialDistribution(kappa, mean/double(kappa));
         if(!lazy)
@@ -119,7 +121,7 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
                 curr = binomial->loglikelihood(data);
                 ++its;
-            } while(run(its, prev, curr) && curr > prev);
+            } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
             if(curr < prev)
             {
                 ++kappa;
@@ -142,7 +144,7 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
                 curr = binomial->loglikelihood(data);
                 ++its;
-            } while(run(its, prev, curr) && curr > prev);
+            } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
             if(curr < prev)
             {
                 --kappa;
@@ -152,9 +154,14 @@ namespace statiskit
                 binomial->set_pi(mean/double(kappa));
             }
         }
-
         return estimation;
     }
+
+    bool BinomialDistributionMLEstimation::Estimator::get_force() const
+    { return _force; }
+
+    void BinomialDistributionMLEstimation::Estimator::set_force(const bool& force)
+    { _force = force; }
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
@@ -240,10 +247,10 @@ namespace statiskit
     {}
 
     NegativeBinomialDistributionMLEstimation::Estimator::Estimator() : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator()
-    {}
+    { _force = false; }
     
     NegativeBinomialDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >::Estimator(estimator)
-    {}
+    { _force = estimator._force; }
 
     NegativeBinomialDistributionMLEstimation::Estimator::~Estimator()
     {}
@@ -259,6 +266,8 @@ namespace statiskit
         NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
         std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
         double variance = variance_estimation->get_variance();
+        if(variance < mean && !_force)
+        { throw underdispersion_error(); }
         double total = data.compute_total(), kappa;
         if(variance > mean)
         { kappa = pow(mean, 2)/(variance - mean); }
@@ -298,9 +307,15 @@ namespace statiskit
             negative_binomial->set_pi(mean/(mean + kappa));
             curr = negative_binomial->loglikelihood(data);
             ++its;
-        } while(run(its, prev, curr));
+        } while(run(its, __impl::reldiff(prev, curr)));
         return estimation;
     }
+
+    bool NegativeBinomialDistributionMLEstimation::Estimator::get_force() const
+    { return _force; }
+
+    void NegativeBinomialDistributionMLEstimation::Estimator::set_force(const bool& force)
+    { _force = force; }
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMLEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
@@ -684,7 +699,6 @@ namespace statiskit
                 else
                 { entropies[index] = std::numeric_limits< double >::infinity(); }
             }
-            std::cout << std::endl;
             double score = 0.;
             while(bins.size() > 2)
             {
@@ -955,4 +969,7 @@ namespace statiskit
 
     double MultinomialSplittingDistributionEstimation::Estimator::SumData::Generator::weight() const
     { return _generator->weight(); }
+    
+    UnivariateConditionalDistributionEstimation::~UnivariateConditionalDistributionEstimation()
+    {}
 }

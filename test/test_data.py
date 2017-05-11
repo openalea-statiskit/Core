@@ -9,6 +9,7 @@ from nose.plugins.attrib import attr
 
 import os
 from tempfile import NamedTemporaryFile
+import math
 
 @attr(linux=True,
       osx=True,
@@ -49,12 +50,32 @@ class TestData(unittest.TestCase):
         for component in self._data.components:
             component.pdf_plot()
 
+    def test_mean(self):
+        """Test univariate and multivariate data mean"""
+        mean = self._data.mean
+        for index, component in enumerate(self._data.components):
+            if index == 0:
+                self.assertTrue(math.isnan(mean[index]))
+                self.assertTrue(math.isnan(component.mean))
+            else:
+                self.assertAlmostEqual(mean[index], component.mean)
+
+    def test_variance(self):
+        """Test univariate and multivariate data variance"""
+        covariance = self._data.covariance
+        for index, component in enumerate(self._data.components):
+            if index == 0:
+                self.assertTrue(math.isnan(covariance[index, index]))
+                self.assertTrue(math.isnan(component.variance))
+            else:
+                self.assertAlmostEqual(covariance[index, index], component.variance)
+
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:
             component.cdf_plot()
 
-    @attr(win=False)
+    @attr(win = False)
     def test_write_csv(self):
         """Test write data to csv"""
         tmp = NamedTemporaryFile()
