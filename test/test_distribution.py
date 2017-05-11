@@ -44,6 +44,7 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
 class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistribution):
 
     _espilon = 1e-7
+    _places = 7
 
     def test_pdf_ldf_cdf(self):
         """Test probability distribution function and related functions"""
@@ -51,7 +52,7 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
                                 self._dist.quantile(self._pmax),
                                 num=self._num,
                                 dtype=numpy.int):
-            self.assertAlmostEqual(self._dist.cdf(v + self._espilon), self._dist.cdf(v) + self._espilon * self._dist.pdf(v))
+            self.assertAlmostEqual(self._dist.cdf(v + self._espilon), self._dist.cdf(v) + self._espilon * self._dist.pdf(v), places=self._places)
             if not self._dist.pdf(v) == 0:
                 self.assertAlmostEqual(math.log(self._dist.pdf(v)), self._dist.ldf(v))
 

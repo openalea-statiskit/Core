@@ -331,3 +331,31 @@ del RealSampleSpace.get_upper_bound
 #
 #MultivariateSampleSpace.__contains__ = __contains__
 #del __contains__
+
+def wrapper_get(f):
+    @wraps(f)
+    def __getitem__(self, index):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self.__class__.__name__ + " index out of range")
+        return f(self, index)
+
+    return __getitem__
+    
+MultivariateSampleSpace.__getitem__ = wrapper_get(MultivariateSampleSpace.get)
+del MultivariateSampleSpace.get
+
+def wrapper_set(f):
+    @wraps(f)
+    def __setitem__(self, index, value):
+        if index < 0:
+            index += len(self)
+        if not 0 <= index < len(self):
+            raise IndexError(self.__class__.__name__ + " index out of range")
+        return f(self, index, value)
+
+    return __setitem__
+
+VectorSampleSpace.__setitem__ = wrapper_set(VectorSampleSpace.set)
+del VectorSampleSpace.set

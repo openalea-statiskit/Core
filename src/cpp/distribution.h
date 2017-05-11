@@ -190,7 +190,16 @@ namespace statiskit
             void set_rank(const std::vector< Index >& rank);
 
 			/// \brief Get the vector of ordered categories.
-            std::vector< std::string > get_ordered() const;
+            std::vector< std::string > get_ordered_values() const;
+
+            /// \brief set the vector of ordered categories.
+            void set_ordered_values(const std::vector< std::string >& ordered_values); 
+
+            /// \brief Get the probabilities vector of ordered categories.
+            Eigen::VectorXd get_ordered_pi() const;
+
+            /// \brief Set the probabilities vector of ordered categories.
+            void set_ordered_pi(const Eigen::VectorXd& ordered_pi);                        
             
         protected:
             std::vector< Index > _rank;
@@ -846,7 +855,7 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
 		     *			\f[
-		     * 				 f(x) =  \frac{4\sigma}{\cosh^2 \left( 0.5 \; \frac{x-\mu}{\sigma} \right)}.
+		     * 				 f(x) =  \frac{1}{4\sigma \cosh^2 \left( 0.5 \; \frac{x-\mu}{\sigma} \right)}.
 		     *			\f]
 		     * \param value The considered value \f$x\f$.
 		     * */             
@@ -1576,7 +1585,7 @@ namespace statiskit
         virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
     	/// \Brief Get the sample space of the response component \f$ Y \f$.
-        virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
+        //virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
     	/// \Brief Get the sample space of the explanatory components \f$ \boldsymbol{X} \f$.
         virtual const MultivariateSampleSpace* get_explanatory_space() const = 0;

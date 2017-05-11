@@ -71,7 +71,7 @@ namespace statiskit
 		    	double sum = pi.sum();
 		    	if(sum < 1)
 		    	{
-					_pi.block(0, 0, _values.size() - 1, 1) = pi / sum;
+					_pi.segment(0, _values.size() - 1) = pi;
 					_pi[_values.size()-1] = 1 - sum;
 		    	}
 		    	else
