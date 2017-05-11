@@ -106,9 +106,9 @@ UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
-        data = UnivariateDataFrame(NominalSampleSpace([value.value for value in self.values]))
+        data = UnivariateDataFrame(NominalSampleSpace(self.values))
     elif isinstance(self, OrdinalDistribution):
-        data = UnivariateDataFrame(OrdinalSampleSpace([value.value for value in self.ordered]))
+        data = UnivariateDataFrame(OrdinalSampleSpace(self.ordered_values))
     elif isinstance(self, DiscreteUnivariateDistribution):
         data = UnivariateDataFrame(controls.ZZ)
     elif isinstance(self, ContinuousUnivariateDistribution):
@@ -159,22 +159,18 @@ def pdf_plot(self, axes=None, fmt='|', **kwargs):
 CategoricalUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
 
-def wrapper(f):
-    @wraps(f)
-    def get_values(self):
-        values = f(self)
-        return [CategoricalElementaryEvent(value) for value in values]
-    return get_values
-
-CategoricalUnivariateDistribution.values = property(wrapper(CategoricalUnivariateDistribution.get_values))
-del wrapper, CategoricalUnivariateDistribution.get_values
+CategoricalUnivariateDistribution.values = property(CategoricalUnivariateDistribution.get_values)
+del CategoricalUnivariateDistribution.get_values
 
 def wrapper(f):
     @wraps(f)
     def __init__(self, *args, **kwargs):
         f(self, args)
-        if 'pi' in kwargs:
-            self.pi = kwargs.pop('pi')
+        for attr in kwargs.keys():
+            if hasattr(self, attr):
+                setattr(self, attr, kwargs.pop(attr))
+            else:
+                raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
     return __init__
 
 NominalDistribution.__init__ = wrapper(NominalDistribution.__init__)
@@ -184,20 +180,23 @@ del wrapper
 OrdinalDistribution.rank = property(OrdinalDistribution.get_rank, OrdinalDistribution.set_rank)
 del OrdinalDistribution.get_rank, OrdinalDistribution.set_rank
 
-def wrapper(f):
-    @wraps(f)
-    def get_ordered(self):
-        values = f(self)
-        return [CategoricalElementaryEvent(value) for value in values]
-    return get_ordered
+# def wrapper(f):
+#     @wraps(f)
+#     def get_ordered(self):
+#         values = f(self)
+#         return [CategoricalElementaryEvent(value) for value in values]
+#     return get_ordered
 
-OrdinalDistribution.ordered = property(wrapper(OrdinalDistribution.get_ordered))
-del wrapper, OrdinalDistribution.get_ordered
+OrdinalDistribution.ordered_values = property(OrdinalDistribution.get_ordered_values, OrdinalDistribution.set_ordered_values)
+del OrdinalDistribution.get_ordered_values, OrdinalDistribution.set_ordered_values
+
+OrdinalDistribution.ordered_pi = property(OrdinalDistribution.get_ordered_pi, OrdinalDistribution.set_ordered_pi)
+del OrdinalDistribution.get_ordered_pi, OrdinalDistribution.set_ordered_pi
 
 def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
-    labels = self.ordered
+    labels = self.ordered_values
     x, labels = zip(*[(index, label) for index, label in enumerate(labels)])
     y = self.pi
     if 'norm' in kwargs:

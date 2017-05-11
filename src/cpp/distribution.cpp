@@ -133,7 +133,7 @@ namespace statiskit
 
     std::string OrdinalDistribution::quantile(const double& p) const
     {
-        std::vector< std::string > ordered = get_ordered();
+        std::vector< std::string > ordered = get_ordered_values();
         Index size = 0, max_size = ordered.size() - 1;
         double _p = _pi[size];
         while(_p < p && size < max_size)
@@ -168,12 +168,64 @@ namespace statiskit
         _rank = rank;
     }
 
-    std::vector< std::string > OrdinalDistribution::get_ordered() const
+    std::vector< std::string > OrdinalDistribution::get_ordered_values() const
     {
         std::vector< std::string > order(_values.size());
         for(std::set< std::string >::const_iterator it = _values.cbegin(), it_end = _values.cend(); it != it_end; ++it)
         { order[_rank[distance(_values.cbegin(), it)]] = *it; }
         return order;
+    }
+
+    void OrdinalDistribution::set_ordered_values(const std::vector< std::string >& ordered_values)
+    {
+        std::set< std::string > values(ordered_values.cbegin(), ordered_values.cend());
+        if(values != _values)
+        { throw parameter_error("ordered_values","must contain the same string as in values parameter"); }
+        for(Index j=0; j<ordered_values.size(); ++j)
+        { _rank[distance(_values.cbegin(), _values.find(ordered_values[j]) ) ] = j; }
+    }
+
+    Eigen::VectorXd OrdinalDistribution::get_ordered_pi() const
+    {
+        Eigen::VectorXd ordered_pi(_pi.rows());
+        for(std::set< std::string >::const_iterator it = _values.cbegin(), it_end = _values.cend(); it != it_end; ++it)
+        { ordered_pi[_rank[distance(_values.cbegin(), it)]] = pdf(*it); }
+        return ordered_pi;  
+    }
+
+    void OrdinalDistribution::set_ordered_pi(const Eigen::VectorXd& ordered_pi)
+    {
+        Eigen::VectorXd _ordered_pi(_pi.rows());
+        if(ordered_pi.rows() == _values.size() - 1)
+        {
+            Index j = 0; 
+            while(j < ordered_pi.rows() && ordered_pi[j] >= 0.)
+            { ++j; }
+            if(j < ordered_pi.rows())
+            { throw parameter_error("ordered_pi", "contains negative values"); } 
+            double sum = ordered_pi.sum();
+            if(sum < 1)
+            {
+                _ordered_pi.segment(0, _values.size() - 1) = ordered_pi;
+                _ordered_pi[_values.size()-1] = 1 - sum;
+            }
+            else
+            { throw parameter_error("ordered_pi", "last category values"); }                
+        }
+        else if(ordered_pi.rows() == _values.size())
+        {
+            Index j = 0; 
+            while(j < ordered_pi.rows() && ordered_pi[j] >= 0.)
+            { ++j; }
+            if(j < ordered_pi.rows())
+            { throw parameter_error("ordered_pi", "contains negative values"); } 
+            _ordered_pi = ordered_pi / ordered_pi.sum();
+        }
+        else
+        { throw parameter_error("ordered_pi", "number of parameters"); }  
+
+        for(Index j=0; j<_pi.size(); ++j)
+        { _pi[j] = _ordered_pi[_rank[j]]; }
     }
 
     double DiscreteUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const

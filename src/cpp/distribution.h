@@ -190,7 +190,16 @@ namespace statiskit
             void set_rank(const std::vector< Index >& rank);
 
 			/// \brief Get the vector of ordered categories.
-            std::vector< std::string > get_ordered() const;
+            std::vector< std::string > get_ordered_values() const;
+
+            /// \brief set the vector of ordered categories.
+            void set_ordered_values(const std::vector< std::string >& ordered_values); 
+
+            /// \brief Get the probabilities vector of ordered categories.
+            Eigen::VectorXd get_ordered_pi() const;
+
+            /// \brief Set the probabilities vector of ordered categories.
+            void set_ordered_pi(const Eigen::VectorXd& ordered_pi);                        
             
         protected:
             std::vector< Index > _rank;
