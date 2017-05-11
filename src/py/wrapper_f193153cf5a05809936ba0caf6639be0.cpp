@@ -25,11 +25,9 @@ void wrapper_f193153cf5a05809936ba0caf6639be0()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    double const & (::statiskit::NaturalMeanEstimation::*method_pointer_c36d4a1207a3578096a367bf90451a38)() const = &::statiskit::NaturalMeanEstimation::get_mean;
     boost::python::class_< class ::statiskit::NaturalMeanEstimation, autowig::Held< class ::statiskit::NaturalMeanEstimation >::Type, boost::python::bases< struct ::statiskit::MeanEstimation > > class_f193153cf5a05809936ba0caf6639be0("NaturalMeanEstimation", "", boost::python::no_init);
     class_f193153cf5a05809936ba0caf6639be0.def(boost::python::init< double const & >(""));
     class_f193153cf5a05809936ba0caf6639be0.def(boost::python::init< class ::statiskit::NaturalMeanEstimation const & >(""));
-    class_f193153cf5a05809936ba0caf6639be0.def("get_mean", method_pointer_c36d4a1207a3578096a367bf90451a38, boost::python::return_value_policy< boost::python::return_by_value >(), "");
 
     if(autowig::Held< class ::statiskit::NaturalMeanEstimation >::is_class)
     {

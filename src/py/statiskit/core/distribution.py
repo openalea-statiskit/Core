@@ -29,6 +29,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     ContinuousUnivariateFrequencyDistribution,
                                     UnivariateHistogramDistribution,
                                     NormalDistribution,
+                                    LogisticDistribution,
                                     ContinuousUnivariateMixtureDistribution,
                               MultivariateDistribution,
                                 _IndependentMultivariateDistribution,
@@ -43,7 +44,8 @@ from __core.statiskit import (UnivariateDistribution,
                                 ContinuousMultivariateDistribution,
                                     ContinuousIndependentMultivariateDistribution,
                                     ContinuousMultivariateMixtureDistribution,
-                              _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution)
+                              _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
+                              UnivariateConditionalDistribution)
 
 from controls import controls
 from event import (UnivariateEvent,
@@ -76,6 +78,7 @@ __all__ = ['NominalDistribution',
            'ContinuousUnivariateFrequencyDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
+           'LogisticDistribution',
            'MultinomialSplittingDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
@@ -620,7 +623,7 @@ del wrapper
 def __repr__(self):
     return "N(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
 
-NormalDistribution.__str__ = NormalDistribution.__repr__
+NormalDistribution.__str__ = __repr__
 NormalDistribution.__repr__ = __repr__
 del __repr__
 
@@ -824,3 +827,27 @@ def MixtureDistribution(*args, **kwargs):
             return MixedMultivariateMixtureDistribution(args, pi)
     else:
         raise TypeError('\'args\' parameter')
+
+UnivariateConditionalDistribution.nb_parameters = property(UnivariateConditionalDistribution.get_nb_parameters)
+del UnivariateConditionalDistribution.get_nb_parameters
+
+UnivariateConditionalDistribution.explanatory_space = property(UnivariateConditionalDistribution.get_explanatory_space)
+del UnivariateConditionalDistribution.get_explanatory_space
+
+def wrapper_call(f):
+    @wraps(f)
+    def __call__(self, *events):
+        if len(events) == 1:
+            event = events[-1]
+        else:
+            event = None
+        if not isinstance(event, MultivariateEvent):
+            event = VectorEvent(len(events))
+            for index, component in enumerate(events):
+                event[index] = self.explanatory_space[index](component)
+        if not isinstance(event, MultivariateEvent):
+            raise TypeError('\'event\' parameter')            
+        return f(self, event)
+    return __call__
+
+UnivariateConditionalDistribution.__call__ = wrapper_call(UnivariateConditionalDistribution.__call__)

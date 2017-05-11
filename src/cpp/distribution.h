@@ -846,7 +846,7 @@ namespace statiskit
 		     *
 		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
 		     *			\f[
-		     * 				 f(x) =  \frac{4\sigma}{\cosh^2 \left( 0.5 \; \frac{x-\mu}{\sigma} \right)}.
+		     * 				 f(x) =  \frac{1}{4\sigma \cosh^2 \left( 0.5 \; \frac{x-\mu}{\sigma} \right)}.
 		     *			\f]
 		     * \param value The considered value \f$x\f$.
 		     * */             
@@ -1576,7 +1576,7 @@ namespace statiskit
         virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
 
     	/// \Brief Get the sample space of the response component \f$ Y \f$.
-        virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
+        //virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;
 
     	/// \Brief Get the sample space of the explanatory components \f$ \boldsymbol{X} \f$.
         virtual const MultivariateSampleSpace* get_explanatory_space() const = 0;

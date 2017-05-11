@@ -861,7 +861,7 @@ namespace statiskit
     { return -2*log(cosh(0.5 * (value - _mu) / _sigma)) - log(4 * _sigma); }//(_mu-value)/_sigma - log(sigma) - 2*log(1+exp((_mu-value)/_sigma )); }
 
     double LogisticDistribution::pdf(const double& value) const
-    { return  4. * _sigma/ pow(cosh(0.5 * (value - _mu) / _sigma), 2); }
+    { return  1/ (4. * _sigma * pow(cosh(0.5 * (value - _mu) / _sigma), 2) ); }
 
     double LogisticDistribution::cdf(const double& value) const
     { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _sigma)); }
