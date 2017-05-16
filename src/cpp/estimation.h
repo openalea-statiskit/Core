@@ -317,8 +317,8 @@ namespace statiskit
         { 
             typedef UnivariateConditionalDistributionEstimation estimation_type;
             
-            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const Indices& explanatories, const bool& lazy=true) const;
-            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const bool& lazy=true) const = 0;
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const Indices& explanatories, const bool& lazy=true) const = 0;
+            // virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const bool& lazy=true) const;
         };
     };
 

@@ -18,7 +18,7 @@ class TestNegativeBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDist
 
     def test_mle(self):
         """Test negative binomial ML estimation"""
-        data = self._dist.simulation(100)
+        data = self._dist.simulation(90)
         mle = core.negative_binomial_estimation('ml', data)
         # mme = core.negative_binomial_estimation('mm', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data)) #mme.estimated.loglikelihood(data))
