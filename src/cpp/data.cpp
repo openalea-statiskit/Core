@@ -10,6 +10,18 @@
 
 namespace statiskit
 { 
+    Index UnivariateData::size() const
+    {
+        Index index = 0;
+        std::unique_ptr< UnivariateData::Generator > _generator = generator();
+        while(_generator->is_valid())
+        {
+            ++index;
+            ++(*_generator);
+        }
+        return index;
+    }
+    
     double UnivariateData::compute_total() const
     {
         double total = 0.;
@@ -349,6 +361,18 @@ namespace statiskit
         if(!_data)
         { throw proxy_connection_error(); }
         return 1;
+    }
+    
+    Index MultivariateData::size() const
+    {
+        Index index = 0;
+        std::unique_ptr< MultivariateData::Generator > _generator = generator();
+        while(_generator->is_valid())
+        {
+            ++index;
+            ++(*_generator);
+        }
+        return index;
     }
     
     double MultivariateData::compute_total() const

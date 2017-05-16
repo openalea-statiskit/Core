@@ -35,6 +35,8 @@ namespace statiskit
             virtual double weight() const = 0;
         };
 
+		virtual Index size() const;
+		
         virtual std::unique_ptr< UnivariateData::Generator > generator() const = 0;
 
         virtual const UnivariateSampleSpace* get_sample_space() const = 0;
@@ -129,6 +131,8 @@ namespace statiskit
             virtual double weight() const = 0;
         };
 
+		virtual Index size() const;
+		
         virtual std::unique_ptr< MultivariateData::Generator > generator() const = 0;
 
         virtual const MultivariateSampleSpace* get_sample_space() const = 0;
