@@ -65,6 +65,7 @@ void wrapper_88cb53c05b215504b1f0ee0564765af0()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    ::statiskit::Index  (::statiskit::MultivariateData::*method_pointer_e5fc456b4a2d5131b0cd3ab814baba49)() const = &::statiskit::MultivariateData::size;
     class ::std::unique_ptr< struct ::statiskit::MultivariateData::Generator, struct ::std::default_delete< struct ::statiskit::MultivariateData::Generator > >  (::statiskit::MultivariateData::*method_pointer_facf1de3504b5543b1eed987285d8673)() const = &::statiskit::MultivariateData::generator;
     struct ::statiskit::MultivariateSampleSpace const * (::statiskit::MultivariateData::*method_pointer_2da46638257d59e48fa1636c64d254bf)() const = &::statiskit::MultivariateData::get_sample_space;
     class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  (::statiskit::MultivariateData::*method_pointer_03ae26ff6e5c56ac9c1e8dc84d177549)(::statiskit::Index const &) const = &::statiskit::MultivariateData::extract;
@@ -72,6 +73,7 @@ void wrapper_88cb53c05b215504b1f0ee0564765af0()
     class ::std::unique_ptr< struct ::statiskit::MultivariateData, struct ::std::default_delete< struct ::statiskit::MultivariateData > >  (::statiskit::MultivariateData::*method_pointer_772fe48a3d9157a8866c84dd1f9b5675)() const = &::statiskit::MultivariateData::copy;
     double  (::statiskit::MultivariateData::*method_pointer_21b09584f6625e14abe2acdb420c6b08)() const = &::statiskit::MultivariateData::compute_total;
     boost::python::class_< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0, autowig::Held< autowig::Wrap_88cb53c05b215504b1f0ee0564765af0 >::Type, boost::noncopyable > class_88cb53c05b215504b1f0ee0564765af0("MultivariateData", "", boost::python::no_init);
+    class_88cb53c05b215504b1f0ee0564765af0.def("__len__", method_pointer_e5fc456b4a2d5131b0cd3ab814baba49, "");
     class_88cb53c05b215504b1f0ee0564765af0.def("__iter__", boost::python::pure_virtual(method_pointer_facf1de3504b5543b1eed987285d8673), "");
     class_88cb53c05b215504b1f0ee0564765af0.def("get_sample_space", boost::python::pure_virtual(method_pointer_2da46638257d59e48fa1636c64d254bf), boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
     class_88cb53c05b215504b1f0ee0564765af0.def("extract", boost::python::pure_virtual(method_pointer_03ae26ff6e5c56ac9c1e8dc84d177549), "");
