@@ -294,20 +294,20 @@ namespace statiskit
                 if(event && event->get_event() == ELEMENTARY)
                 {
                     for(int nu = 0, max_nu = static_cast< const DiscreteElementaryEvent* >(event)->get_value(); nu < max_nu; ++nu)
-                    { alpha += nu/(nu + kappa); }
+                    { alpha += nu / (nu + kappa); }
                 }
                 ++(*generator);
             }
             alpha /= -total;
             alpha += mean;
-            kappa = log(1 + mean/kappa)/alpha;
+            kappa = alpha / log(1 + mean/kappa);
             if(!lazy)
             { static_cast< NegativeBinomialDistributionMLEstimation* >(estimation.get())->_iterations.push_back(kappa); }
             negative_binomial->set_kappa(kappa);
             negative_binomial->set_pi(mean/(mean + kappa));
             curr = negative_binomial->loglikelihood(data);
             ++its;
-        } while(run(its, __impl::reldiff(prev, curr)));
+        } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
         return estimation;
     }
 
