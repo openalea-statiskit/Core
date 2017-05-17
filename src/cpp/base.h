@@ -43,7 +43,6 @@
   #endif
 #endif
 
-// Test
 namespace statiskit
 {
 

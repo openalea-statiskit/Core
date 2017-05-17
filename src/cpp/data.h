@@ -310,6 +310,7 @@ namespace statiskit
 
                                 protected:
                                     Event* _event;
+                                    Index _max_index;
                             };
 
                         protected:

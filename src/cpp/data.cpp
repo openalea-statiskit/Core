@@ -743,13 +743,16 @@ namespace statiskit
     }
 
     MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::Generator(const MultivariateDataExtraction* data)
-    { _event = new MultivariateDataFrame::MultivariateDataExtraction::Event(data, 0); }
+    { 
+        _max_index = data->size();
+        _event = new MultivariateDataFrame::MultivariateDataExtraction::Event(data, 0);
+    }
 
     MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::~Generator()
     { delete _event; }
 
     bool MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::is_valid() const
-    { return _event->_index < _event->size(); }
+    { return _event->_index < _max_index; }
 
     MultivariateData::Generator& MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::operator++()
     { 
