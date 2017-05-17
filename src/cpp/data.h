@@ -74,6 +74,8 @@ namespace statiskit
             UnivariateDataFrame(const UnivariateDataFrame& data);
             virtual ~UnivariateDataFrame();
 
+            virtual Index size() const;
+
             virtual std::unique_ptr< UnivariateData::Generator > generator() const;
 
             virtual const UnivariateSampleSpace* get_sample_space() const;
