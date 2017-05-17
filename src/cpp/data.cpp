@@ -228,6 +228,9 @@ namespace statiskit
         _events.clear();
     }
 
+    Index UnivariateDataFrame::size() const
+    { return _events.size(); }
+
     std::unique_ptr< UnivariateData::Generator > UnivariateDataFrame::generator() const
     { return std::make_unique< UnivariateDataFrame::Generator >(this); }
 
@@ -744,7 +747,7 @@ namespace statiskit
 
     MultivariateDataFrame::MultivariateDataExtraction::Event::Generator::Generator(const MultivariateDataExtraction* data)
     { 
-        _max_index = data->size();
+        _max_index = data->_data->size();
         _event = new MultivariateDataFrame::MultivariateDataExtraction::Event(data, 0);
     }
 

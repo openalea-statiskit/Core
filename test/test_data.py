@@ -70,6 +70,11 @@ class TestData(unittest.TestCase):
             else:
                 self.assertAlmostEqual(covariance[index, index], component.variance)
 
+    def test_extract(self):
+        """Test multivariate data extraction"""
+        data = self._data.extract([0, 1])
+        self.assertEqual(len(data), len(self._data))
+
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:
