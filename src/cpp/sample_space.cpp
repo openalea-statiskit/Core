@@ -692,13 +692,10 @@ namespace statiskit
                     {
                         case CATEGORICAL:
                             {
-                                temp = (static_cast< const CategoricalSampleSpace* >(sample_space)->encode(static_cast< const CategoricalElementaryEvent* >(uevent)->get_value())).reverse().eval();
-                                Index max_size = index + shift + temp.cols();
-                                while(index + shift < max_size)
-                                {
-                                    dummy(index + shift) = temp(max_size - index - shift - 1);
-                                    ++shift;
-                                }
+                                temp = (static_cast< const CategoricalSampleSpace* >(sample_space)->encode(static_cast< const CategoricalElementaryEvent* >(uevent)->get_value()));
+                                dummy.segment(index + shift, temp.size()) = temp;
+                                shift += temp.size();
+                                --shift;
                             }
                             break;
                         case DISCRETE:
