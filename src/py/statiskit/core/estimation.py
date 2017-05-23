@@ -49,7 +49,11 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     ContinuousMultivariateDistributionSelection,
                                                     ContinuousIndependentMultivariateDistributionEstimation,
                                                     ContinuousMultivariateMixtureDistributionEMEstimation,
-                                             _MixtureDistributionEMEstimation)
+                                             _MixtureDistributionEMEstimation,
+                                             UnivariateConditionalDistributionEstimation,
+                                                CategoricalUnivariateConditionalDistributionEstimation,
+                                                DiscreteUnivariateConditionalDistributionEstimation,
+                                                ContinuousUnivariateConditionalDistributionEstimation)
 
 from event import outcome_type
 from data import UnivariateData, MultivariateData
@@ -519,3 +523,6 @@ def selection(data, algo="criterion", *args, **kwargs):
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
     return _estimation(algo, data, mapping, **kwargs)
+
+UnivariateConditionalDistributionEstimation.estimated = property(UnivariateConditionalDistributionEstimation.get_estimated)
+del UnivariateConditionalDistributionEstimation.get_estimated
