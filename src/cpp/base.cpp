@@ -21,10 +21,33 @@ namespace statiskit
         { return fabs(curr-prev) / fabs(prev); }
 
         double reldiff(const Eigen::VectorXd& prev, const Eigen::VectorXd& curr)
-        { return (curr-prev).norm() / prev.norm(); }
+        {
+            double norm = 0; 
+            for(Index i = 0, max_index = prev.size(); i < max_index; ++i)
+            {
+                if(prev[i] == 0)
+                { norm +=  pow(curr[i], 2); }
+                else
+                { norm +=  pow((prev[i]-curr[i])/prev[i], 2); } 
+            }
+            return sqrt(norm); 
+        }
 
         double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr)
-        { return (curr-prev).norm() / prev.norm(); }
+        {
+            double norm = 0; 
+            for(Index i = 0, max_index = prev.rows(); i < max_index; ++i)
+            {
+                for(Index j = 0, max_index = prev.cols(); j < max_index; ++j)
+                {
+                    if(prev(i,j) == 0)
+                    { norm +=  pow(curr(i,j), 2); }
+                    else
+                    { norm +=  pow((prev(i,j)-curr(i,j))/prev(i,j), 2); }                     
+                }
+            }
+            return sqrt(norm); 
+        }
 
         boost::mt19937 _random_generator = boost::mt19937(0);
 
