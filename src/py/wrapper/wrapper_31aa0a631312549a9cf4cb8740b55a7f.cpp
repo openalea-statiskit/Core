@@ -66,7 +66,6 @@ void wrapper_31aa0a631312549a9cf4cb8740b55a7f()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_31aa0a631312549a9cf4cb8740b55a7f >::Type, autowig::Held< struct ::statiskit::DiscreteMultivariateDistribution >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::DiscreteMultivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteMultivariateDistribution >::Type, autowig::Held< struct ::statiskit::MultivariateDistribution >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteMultivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteMultivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteMultivariateDistribution >::Type, struct ::statiskit::DiscreteMultivariateDistribution > > >();
     }
 
 }

@@ -80,7 +80,6 @@ void wrapper_cf0415be3d965595a8486e9a8659c1a9()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_cf0415be3d965595a8486e9a8659c1a9 >::Type, autowig::Held< struct ::statiskit::CategoricalUnivariateDistribution >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalUnivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalUnivariateDistribution >::Type, autowig::Held< struct ::statiskit::UnivariateDistribution >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalUnivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalUnivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalUnivariateDistribution >::Type, struct ::statiskit::CategoricalUnivariateDistribution > > >();
     }
 
 }

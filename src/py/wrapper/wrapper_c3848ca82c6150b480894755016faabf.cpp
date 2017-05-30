@@ -62,7 +62,6 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     if(autowig::Held< class ::statiskit::MultivariateDataFrame >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::MultivariateDataFrame, struct ::statiskit::MultivariateData > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::MultivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, class ::statiskit::MultivariateDataFrame > > >();
     }
 
 }

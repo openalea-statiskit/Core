@@ -48,7 +48,6 @@ void wrapper_10d5b7d349c75b6b89998f9a341fb629()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_10d5b7d349c75b6b89998f9a341fb629 >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Type, autowig::Held< struct ::statiskit::UnivariateConditionalDistributionEstimation >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Type, struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation > > >();
     }
 
 }

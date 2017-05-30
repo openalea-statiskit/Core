@@ -36,7 +36,6 @@ void wrapper_5fefecf0971c53a682b5075141e39dc0()
     if(autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicBiSquareSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicBiSquareSolver >::Type, class ::statiskit::SlopeHeuristicBiSquareSolver > > >();
     }
 
 }

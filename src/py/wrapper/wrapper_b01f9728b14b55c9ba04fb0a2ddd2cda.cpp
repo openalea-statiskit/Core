@@ -61,7 +61,6 @@ void wrapper_b01f9728b14b55c9ba04fb0a2ddd2cda()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_b01f9728b14b55c9ba04fb0a2ddd2cda >::Type, autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type, struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator > > >();
     }
 
 }

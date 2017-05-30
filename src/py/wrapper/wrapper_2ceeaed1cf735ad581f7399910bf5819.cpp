@@ -63,8 +63,6 @@ void wrapper_2ceeaed1cf735ad581f7399910bf5819()
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_2ceeaed1cf735ad581f7399910bf5819 >::Type, autowig::Held< struct ::statiskit::CovarianceMatrixEstimation::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CovarianceMatrixEstimation::Estimator >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CovarianceMatrixEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CovarianceMatrixEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CovarianceMatrixEstimation::Estimator >::Type, struct ::statiskit::CovarianceMatrixEstimation::Estimator > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_2ceeaed1cf735ad581f7399910bf5819 >::Type, autowig::Held< struct ::statiskit::CovarianceMatrixEstimation::Estimator >::Type >();
     }    
 
 }

@@ -49,7 +49,6 @@ void wrapper_8efea02ccdc156c4aa5aae37b04b810a()
     if(autowig::Held< class ::statiskit::OrdinalDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::OrdinalDistribution, class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::CategoricalUnivariateDistribution > > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::OrdinalDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::OrdinalDistribution >::Type, class ::statiskit::OrdinalDistribution > > >();
     }
 
 }

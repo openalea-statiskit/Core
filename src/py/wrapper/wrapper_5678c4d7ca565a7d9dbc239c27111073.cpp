@@ -49,7 +49,6 @@ void wrapper_5678c4d7ca565a7d9dbc239c27111073()
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, class ::statiskit::UnivariateDataFrame, struct ::statiskit::UnivariateData > >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, autowig::Held< class ::statiskit::NamedData >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateDataFrame, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateDataFrame >::Type, class ::statiskit::UnivariateDataFrame > > >();
     }
 
 }

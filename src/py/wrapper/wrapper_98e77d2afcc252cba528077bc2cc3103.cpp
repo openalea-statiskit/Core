@@ -72,8 +72,6 @@ void wrapper_98e77d2afcc252cba528077bc2cc3103()
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MultivariateData::Generator, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type, struct ::statiskit::MultivariateData::Generator > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_98e77d2afcc252cba528077bc2cc3103 >::Type, autowig::Held< struct ::statiskit::MultivariateData::Generator >::Type >();
     }    
 
 }

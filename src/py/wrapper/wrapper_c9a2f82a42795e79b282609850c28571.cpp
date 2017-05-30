@@ -51,8 +51,6 @@ void wrapper_c9a2f82a42795e79b282609850c28571()
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::MeanEstimation >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::MeanEstimation, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::MeanEstimation >::Type, struct ::statiskit::MeanEstimation > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_c9a2f82a42795e79b282609850c28571 >::Type, autowig::Held< struct ::statiskit::MeanEstimation >::Type >();
     }    
 
 }

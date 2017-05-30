@@ -56,8 +56,6 @@ void wrapper_3e3d38965c5e5a02ae621877dba470cf()
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::SlopeHeuristicSelector, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type, struct ::statiskit::SlopeHeuristicSelector > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_3e3d38965c5e5a02ae621877dba470cf >::Type, autowig::Held< struct ::statiskit::SlopeHeuristicSelector >::Type >();
     }    
 
 }

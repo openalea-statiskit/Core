@@ -41,7 +41,6 @@ void wrapper_2cfec7576f805b8d8fb103d1f86f786e()
     if(autowig::Held< class ::statiskit::NormalDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NormalDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::NormalDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NormalDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NormalDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NormalDistribution >::Type, class ::statiskit::NormalDistribution > > >();
     }
 
 }
