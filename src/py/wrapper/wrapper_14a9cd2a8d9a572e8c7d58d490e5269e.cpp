@@ -70,7 +70,6 @@ void wrapper_14a9cd2a8d9a572e8c7d58d490e5269e()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_14a9cd2a8d9a572e8c7d58d490e5269e >::Type, autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type, autowig::Held< struct ::statiskit::UnivariateSampleSpace >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalSampleSpace, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type, struct ::statiskit::CategoricalSampleSpace > > >();
     }
 
 }

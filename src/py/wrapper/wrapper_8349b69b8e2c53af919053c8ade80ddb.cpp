@@ -34,7 +34,6 @@ void wrapper_8349b69b8e2c53af919053c8ade80ddb()
     if(autowig::Held< class ::statiskit::NaturalCovarianceMatrixEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NaturalCovarianceMatrixEstimation >::Type, autowig::Held< class ::statiskit::CovarianceMatrixEstimation >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NaturalCovarianceMatrixEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NaturalCovarianceMatrixEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NaturalCovarianceMatrixEstimation >::Type, class ::statiskit::NaturalCovarianceMatrixEstimation > > >();
     }
 
 }

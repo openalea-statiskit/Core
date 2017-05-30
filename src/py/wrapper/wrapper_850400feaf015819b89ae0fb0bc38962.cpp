@@ -44,7 +44,6 @@ void wrapper_850400feaf015819b89ae0fb0bc38962()
     if(autowig::Held< class ::statiskit::OrdinalSampleSpace >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OrdinalSampleSpace >::Type, autowig::Held< struct ::statiskit::CategoricalSampleSpace >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::OrdinalSampleSpace >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::OrdinalSampleSpace, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::OrdinalSampleSpace >::Type, class ::statiskit::OrdinalSampleSpace > > >();
     }
 
 }

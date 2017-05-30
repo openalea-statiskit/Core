@@ -41,7 +41,6 @@ void wrapper_836f90f02ebd5eee9cf678e466bfba83()
     if(autowig::Held< class ::statiskit::GumbelMinDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::GumbelMinDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::GumbelMinDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::GumbelMinDistribution >::Type, class ::statiskit::GumbelMinDistribution > > >();
     }
 
 }

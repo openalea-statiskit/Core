@@ -41,7 +41,6 @@ void wrapper_0b663e6159f1527ca997ac0244c65093()
     if(autowig::Held< class ::statiskit::LogisticDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LogisticDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::LogisticDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::LogisticDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::LogisticDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::LogisticDistribution >::Type, class ::statiskit::LogisticDistribution > > >();
     }
 
 }

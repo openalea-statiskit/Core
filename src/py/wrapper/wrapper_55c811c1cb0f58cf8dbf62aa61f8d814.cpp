@@ -40,7 +40,6 @@ void wrapper_55c811c1cb0f58cf8dbf62aa61f8d814()
     if(autowig::Held< class ::statiskit::MultinormalDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultinormalDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::MultinormalDistribution, struct ::statiskit::ContinuousMultivariateDistribution > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::MultinormalDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::MultinormalDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::MultinormalDistribution >::Type, class ::statiskit::MultinormalDistribution > > >();
     }
 
 }

@@ -49,7 +49,6 @@ void wrapper_04fe81a388ca5c32b4f73fd41ae57c3f()
     if(autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::GeneralizedStudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::GeneralizedStudentDistribution, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::GeneralizedStudentDistribution >::Type, class ::statiskit::GeneralizedStudentDistribution > > >();
     }
 
 }

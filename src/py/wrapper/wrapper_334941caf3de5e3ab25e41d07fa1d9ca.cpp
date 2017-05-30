@@ -35,7 +35,6 @@ void wrapper_334941caf3de5e3ab25e41d07fa1d9ca()
     if(autowig::Held< class ::statiskit::VectorEvent >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::VectorEvent >::Type, autowig::Held< struct ::statiskit::MultivariateEvent >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::VectorEvent >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::VectorEvent, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::VectorEvent >::Type, class ::statiskit::VectorEvent > > >();
     }
 
 }

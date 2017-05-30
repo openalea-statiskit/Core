@@ -53,8 +53,6 @@ void wrapper_99c254a34dca5e70bdf05b701c5b7360()
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 >::Type, autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::VarianceEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::VarianceEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::VarianceEstimation >::Type, class ::statiskit::VarianceEstimation > > >();
-        //boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_99c254a34dca5e70bdf05b701c5b7360 >::Type, autowig::Held< class ::statiskit::VarianceEstimation >::Type >();
     }    
 
 }

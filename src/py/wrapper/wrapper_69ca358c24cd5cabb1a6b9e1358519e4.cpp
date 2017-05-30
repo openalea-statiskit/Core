@@ -54,7 +54,6 @@ void wrapper_69ca358c24cd5cabb1a6b9e1358519e4()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_69ca358c24cd5cabb1a6b9e1358519e4 >::Type, autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, autowig::Held< struct ::statiskit::UnivariateEvent >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousEvent, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousEvent >::Type, struct ::statiskit::ContinuousEvent > > >();
     }
 
 }
