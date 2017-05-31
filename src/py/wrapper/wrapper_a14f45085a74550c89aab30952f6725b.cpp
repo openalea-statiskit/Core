@@ -40,7 +40,6 @@ void wrapper_a14f45085a74550c89aab30952f6725b()
     if(autowig::Held< class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistributionEstimation::Estimator >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator >::Type, class ::statiskit::UnivariateHistogramDistributionEstimation::Estimator > > >();
     }
 
 }

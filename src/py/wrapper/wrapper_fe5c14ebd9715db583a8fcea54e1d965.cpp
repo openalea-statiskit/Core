@@ -32,7 +32,6 @@ void wrapper_fe5c14ebd9715db583a8fcea54e1d965()
     if(autowig::Held< class ::statiskit::WeightedMultivariateData >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::WeightedMultivariateData, class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::WeightedMultivariateData, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, class ::statiskit::WeightedMultivariateData > > >();
     }
 
 }

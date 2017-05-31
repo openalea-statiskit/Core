@@ -90,7 +90,6 @@ void wrapper_54cf6a9a8b6f55e88b9761ceaf79ba3f()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_54cf6a9a8b6f55e88b9761ceaf79ba3f >::Type, autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type, autowig::Held< struct ::statiskit::UnivariateDistribution >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::ContinuousUnivariateDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::ContinuousUnivariateDistribution >::Type, struct ::statiskit::ContinuousUnivariateDistribution > > >();
     }
 
 }

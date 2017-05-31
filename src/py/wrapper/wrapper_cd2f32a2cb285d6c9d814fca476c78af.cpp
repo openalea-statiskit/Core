@@ -32,7 +32,6 @@ void wrapper_cd2f32a2cb285d6c9d814fca476c78af()
     if(autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, autowig::Held< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::UnivariateMixtureDistribution< struct ::statiskit::CategoricalUnivariateDistribution > > >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::CategoricalUnivariateMixtureDistribution, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::CategoricalUnivariateMixtureDistribution >::Type, struct ::statiskit::CategoricalUnivariateMixtureDistribution > > >();
     }
 
 }

@@ -40,7 +40,6 @@ void wrapper_93b929e666be5119a510f9965c98da10()
     if(autowig::Held< class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator >::Type, autowig::Held< struct ::statiskit::DiscreteMultivariateDistributionEstimation::Estimator >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator >::Type, class ::statiskit::MultinomialSplittingDistributionEstimation::Estimator > > >();
     }
 
 }

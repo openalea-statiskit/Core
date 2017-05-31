@@ -62,7 +62,6 @@ void wrapper_643847dccc2b560082343f2bbda15cba()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_643847dccc2b560082343f2bbda15cba >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, autowig::Held< class ::statiskit::SlopeHeuristicSolver >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicIWLSSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type, class ::statiskit::SlopeHeuristicIWLSSolver > > >();
     }
 
 }

@@ -32,7 +32,6 @@ void wrapper_8728c0bdc0675dd3b46407255215388c()
     if(autowig::Held< class ::statiskit::NaturalMeanVectorEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::NaturalMeanVectorEstimation >::Type, autowig::Held< struct ::statiskit::MeanVectorEstimation >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::NaturalMeanVectorEstimation >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::NaturalMeanVectorEstimation, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::NaturalMeanVectorEstimation >::Type, class ::statiskit::NaturalMeanVectorEstimation > > >();
     }
 
 }

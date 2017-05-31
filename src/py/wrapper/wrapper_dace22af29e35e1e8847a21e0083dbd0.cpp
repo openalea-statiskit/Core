@@ -36,7 +36,6 @@ void wrapper_dace22af29e35e1e8847a21e0083dbd0()
     if(autowig::Held< class ::statiskit::SlopeHeuristicHuberSolver >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::SlopeHeuristicHuberSolver >::Type, autowig::Held< class ::statiskit::SlopeHeuristicIWLSSolver >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::SlopeHeuristicHuberSolver >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::SlopeHeuristicHuberSolver, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::SlopeHeuristicHuberSolver >::Type, class ::statiskit::SlopeHeuristicHuberSolver > > >();
     }
 
 }

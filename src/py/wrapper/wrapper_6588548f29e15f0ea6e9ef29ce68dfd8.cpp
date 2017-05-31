@@ -54,7 +54,6 @@ void wrapper_6588548f29e15f0ea6e9ef29ce68dfd8()
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_6588548f29e15f0ea6e9ef29ce68dfd8 >::Type, autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type >();
         boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type, autowig::Held< struct ::statiskit::UnivariateSampleSpace >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type, boost::python::objects::make_ptr_instance< struct ::statiskit::DiscreteSampleSpace, boost::python::objects::pointer_holder< autowig::Held< struct ::statiskit::DiscreteSampleSpace >::Type, struct ::statiskit::DiscreteSampleSpace > > >();
     }
 
 }

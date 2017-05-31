@@ -34,7 +34,6 @@ void wrapper_aa6e0b250759574eb903a6b783b18053()
     if(autowig::Held< class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent > >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, autowig::Held< struct ::statiskit::ContinuousEvent >::Type >();
-        //boost::python::objects::class_value_wrapper< autowig::Held< class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, boost::python::objects::make_ptr_instance< class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent >, boost::python::objects::pointer_holder< autowig::Held< class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent > >::Type, class ::statiskit::LeftCensoredEvent< struct ::statiskit::ContinuousEvent > > > >();
     }
 
 }
