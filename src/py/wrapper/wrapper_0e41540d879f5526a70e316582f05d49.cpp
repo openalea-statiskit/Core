@@ -5,7 +5,7 @@
 namespace autowig
 {
 
-    void method_decorator_cb48823d3bd55083b26b4347b10b3e4c(class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > const & instance, const struct ::statiskit::UnivariateEvent & param_out) { instance.operator*() = param_out; }
+    void method_decorator_cb48823d3bd55083b26b4347b10b3e4c(class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > const & instance, struct ::statiskit::UnivariateEvent & param_out)     { instance.operator*() = param_out; }
 }
 
 #if defined(_MSC_VER)
