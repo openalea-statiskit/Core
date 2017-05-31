@@ -9,7 +9,8 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (UnivariateSampleSpace,
+from statiskit.core.__core.statiskit import (encoding_type,
+                                             UnivariateSampleSpace,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,
                                                     OrdinalSampleSpace,
@@ -102,6 +103,23 @@ def wrapper(f):
 CategoricalSampleSpace.values = property(wrapper(CategoricalSampleSpace.get_values))
 
 CategoricalSampleSpace.ordering = property(CategoricalSampleSpace.get_ordering)
+
+def wrapper_encoding(f, g):
+
+    @wraps(f)
+    def getter(self):
+        return str(f(self))
+
+    @wraps(g)
+    def setter(self, encoding):
+        if isinstance(encoding, basestring):
+            encoding = encoding_type.names[encoding.upper()]
+        g(self, encoding)
+
+    return getter, setter
+
+CategoricalSampleSpace.encoding = property(*wrapper_encoding(CategoricalSampleSpace.get_encoding, CategoricalSampleSpace.set_encoding))
+del CategoricalSampleSpace.get_encoding, CategoricalSampleSpace.set_encoding, wrapper_encoding
 
 NominalSampleSpace.reference = property(NominalSampleSpace.get_reference, NominalSampleSpace.set_reference)
 del NominalSampleSpace.get_reference, NominalSampleSpace.set_reference
