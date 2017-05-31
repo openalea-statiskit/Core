@@ -129,7 +129,7 @@ namespace statiskit
             { dummy = std::numeric_limits< double >::quiet_NaN() * Eigen::RowVectorXd::Ones(cardinality); }
             else
             {
-                 Index index = distance(_values.cbegin(), it), ref_index = distance(_values.cbegin(), _reference);
+                Index index = distance(_values.cbegin(), it), ref_index = distance(_values.cbegin(), _reference);
                 switch(_encoding)
                 {
                     case TREATMENT:
@@ -204,15 +204,32 @@ namespace statiskit
         {
             --cardinality;
             std::set< std::string >::const_iterator it = _values.find(value);
+            Index index, max_index;
             if(it == _values.cend())
             { dummy = std::numeric_limits< double >::quiet_NaN() * Eigen::RowVectorXd::Ones(cardinality); }
             else
             {
                 switch(_encoding)
                 {
+                    case TREATMENT:
+                        index = _rank[distance(_values.cbegin(), it)];
+                        dummy = Eigen::RowVectorXd::Zero(cardinality);
+                        if(index < cardinality)
+                        { dummy(index) = 1; }
+                        break;
+                    case DEVIATION:
+                        if(index == cardinality)
+                        { dummy = -1 * Eigen::RowVectorXd::Ones(cardinality); }
+                        else
+                        {
+                            dummy = Eigen::RowVectorXd::Zero(cardinality);
+                            if(index < cardinality)
+                            { dummy(index) = 1; }
+                        }
+                        break;
                     case CUMULATIVE:
                         dummy = Eigen::RowVectorXd::Zero(cardinality);
-                        for(Index index = 0, max_index = _rank[distance(_values.cbegin(), it)]; index < max_index; ++index)
+                        for(index = 0, max_index = std::min(cardinality, _rank[distance(_values.cbegin(), it)]); index < max_index; ++index)
                         { dummy(index) = 1; } 
                         break;
                 }
