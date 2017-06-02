@@ -665,8 +665,7 @@ namespace statiskit
         virtual double get_variance() const = 0;    
     };
 
-    typedef QuantitativeUnivariateFrequencyDistribution< ContinuousUnivariateDistribution >
- ContinuousUnivariateFrequencyDistribution;
+    typedef QuantitativeUnivariateFrequencyDistribution< ContinuousUnivariateDistribution > ContinuousUnivariateFrequencyDistribution;
 
     /** \brief This class NormalDistribution represents a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution).
      * 
@@ -1681,7 +1680,7 @@ namespace statiskit
     {
         public:
             MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma);
-            MultinormalDistribution(const MultinormalDistribution& multinomialUnivaria);
+            MultinormalDistribution(const MultinormalDistribution& multinormal);
             virtual ~MultinormalDistribution();
 
             virtual Index get_nb_components() const;

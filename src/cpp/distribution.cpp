@@ -1588,16 +1588,17 @@ namespace statiskit
         _mu = mu;
         _sigma = sigma;
     }
-     MultinormalDistribution::MultinormalDistribution(const MultinormalDistribution& normal)
-     {
+    
+    MultinormalDistribution::MultinormalDistribution(const MultinormalDistribution& normal)
+    {
         _mu = normal._mu;
         _sigma = normal._mu;
-     }
+    }
 
-     MultinormalDistribution::~MultinormalDistribution()
-     {}
+    MultinormalDistribution::~MultinormalDistribution()
+    {}
 
-    Index MultinormalDistribution:: get_nb_components() const
+    Index MultinormalDistribution::get_nb_components() const
     { return _mu.size(); }
 
     unsigned int MultinormalDistribution::get_nb_parameters() const
@@ -1617,15 +1618,16 @@ namespace statiskit
     }
 
     const Eigen::VectorXd& MultinormalDistribution::get_mu() const
-    {return _mu;}
+    { return _mu; }
+
     void MultinormalDistribution::set_mu(const Eigen::VectorXd& mu)
-    {_mu = mu ;}
+    {_mu = mu; }
 
     const Eigen::MatrixXd& MultinormalDistribution::get_sigma() const
-    {return _sigma ;}
-    void MultinormalDistribution::set_sigma(const Eigen::MatrixXd& sigma)
-            {_sigma = sigma ;}
+    {return _sigma; }
 
+    void MultinormalDistribution::set_sigma(const Eigen::MatrixXd& sigma)
+    {_sigma = sigma; }
 
     double MultinormalDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
