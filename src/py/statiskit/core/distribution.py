@@ -654,8 +654,10 @@ def wrapper_probability(f):
                     event[index] = DiscreteElementaryEvent(component)
                 elif isinstance(component, float):
                     event[index] = ContinuousElementaryEvent(component)
-                elif not isinstance(component, UnivariateEvent):
-                    raise TypeError('\'events\' parameters')
+                elif isinstance(component, UnivariateEvent):
+                    event[index] = component
+                else:
+                    raise TypeError('\'events\' parameters')                
             # event = VectorEvent(event)
         if not isinstance(event, MultivariateEvent):
             raise TypeError('\'event\' parameter')
