@@ -1,0 +1,39 @@
+#include "_core.h"
+
+
+
+namespace autowig
+{
+
+}
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > const volatile * get_pointer<class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > const volatile >(class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > const volatile *c) { return c; }
+}
+    #endif
+#endif
+
+
+
+void wrapper_1ec5dee4e7cb5437b83047021c0ca63f()
+{
+
+    std::string name_fa414b05d29e5f4ea0b6d6cb5cf81b01 = boost::python::extract< std::string >(boost::python::scope().attr("__name__") + ".statiskit");
+    boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
+    boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    int const & (::statiskit::RightCensoredEvent< ::statiskit::DiscreteEvent >::*method_pointer_5bcc777112bb51c6833c3818579eae45)() const = &::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent >::get_lower_bound;
+    boost::python::class_< class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent >, autowig::Held< class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > >::Type, boost::python::bases< struct ::statiskit::DiscreteEvent > > class_1ec5dee4e7cb5437b83047021c0ca63f("_RightCensoredEvent_1ec5dee4e7cb5437b83047021c0ca63f", "", boost::python::no_init);
+    class_1ec5dee4e7cb5437b83047021c0ca63f.def(boost::python::init< int const & >(""));
+    class_1ec5dee4e7cb5437b83047021c0ca63f.def(boost::python::init< class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > const & >(""));
+    class_1ec5dee4e7cb5437b83047021c0ca63f.def("get_lower_bound", method_pointer_5bcc777112bb51c6833c3818579eae45, boost::python::return_value_policy< boost::python::return_by_value >(), "");
+
+    if(autowig::Held< class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > >::is_class)
+    {
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::RightCensoredEvent< struct ::statiskit::DiscreteEvent > >::Type, autowig::Held< struct ::statiskit::DiscreteEvent >::Type >();
+    }
+
+}

@@ -201,21 +201,15 @@ del __str__
 def _repr_html_(self):
     sample_space = self.sample_space
     string = '<table style="max-width: 100%;">\n\t\t<tr>\n\t\t\t<th></th>\n\t\t\t<th>$'+ r'\mathbf{' + self.name + '}$</th>\n\t\t</tr>'
-    etc = False
     events = self.events
     for index, event in enumerate(events):
-        if index < controls.head or index >= max(controls.head, len(events) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(index) + '</th>\n'
-            string += '\n\t\t\t<td>'
-            if event is not None:
-                string += event._repr_latex_()
-            else:
-                string += sample_space._repr_latex_()
-            string += '</td>'
-        elif not etc:
-            etc = True
-            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>\n\t\t</tr>'
+        string += '\n\t\t<tr>\n\t\t\t<th>' + repr(index) + '</th>\n'
+        string += '\n\t\t\t<td>'
+        if event is not None:
+            string += event._repr_latex_()
+        else:
+            string += sample_space._repr_latex_()
+        string += '</td>'
     string += '\n\t</table>'
     return string
 
@@ -456,17 +450,11 @@ def _repr_html_(self):
     for component in self.components:
         string += '\n\t\t\t<th>'+ component.name + '</th>'
     string += '\n\t\t</tr>'
-    etc = False
     events = self.events
     for i, event in enumerate(events):
-        if i < controls.head or i >= max(controls.head, len(events) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
-            string += '</td>\n\t\t\t<td>'.join(event[k]._repr_latex_() if event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(event)))
-            string += '</td>'
-        elif not etc:
-            etc = True
-            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>' * len(event)
+        string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
+        string += '</td>\n\t\t\t<td>'.join(event[k]._repr_latex_() if event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(event)))
+        string += '</td>'
     string += '\n\t</table>'
     return string
 
