@@ -82,7 +82,7 @@ namespace statiskit
     Optimization::Optimization()
     {
         _mindiff = 1e-5;
-        _minits = 0;
+        _minits = 1;
         _maxits = 10e6;
     }
 
@@ -127,4 +127,7 @@ namespace statiskit
         }
         return status;
     }
+
+    bool Optimization::run(const unsigned int& its, const double& delta, const unsigned int& scale) const
+    { return run(its / scale, delta); }
 }
