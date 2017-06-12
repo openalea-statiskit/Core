@@ -19,7 +19,14 @@ class Controls(types.ModuleType):
     head = 10
     tail = 10
 
-    set_seed = classmethod(set_seed)
+def wrapper_set_seed(f):
+    @wraps(f)
+    def set_seed(self, seed):
+        return f(seed)
+    return set_seed
+
+Controls.set_seed = wrapper_set_seed(set_seed)
+del wrapper_set_seed, set_seed
 
 def wrapper_get_NN(f):
     @wraps(f)
