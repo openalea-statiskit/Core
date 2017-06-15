@@ -11,17 +11,118 @@
 
 namespace statiskit
 {    
-    /* template<class D, class B>
+    template<class D, class B>
         ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation() : LazyEstimation< ShiftedDistribution< D >, B >()
-        { _estimation = nullptr; }
+        { 
+            _estimation = nullptr;
+            _data = nullptr;
+        }
 
     template<class D, class B>
-        ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation(LazyEstimation< D, B >* estimation, const typename D::event_type::value_type& shift) : LazyEstimation< ShiftedDistribution< D >, B >(new ShiftedDistribution< D >(*static_cast< const D* >(estimation.get_estimated()), shift))
-        { _estimation = estimation; }
+        ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation(LazyEstimation< D, B >* estimation, const UnivariateDataFrame* data, const typename D::event_type::value_type& shift) : LazyEstimation< ShiftedDistribution< D >, B >(new ShiftedDistribution< D >(*static_cast< const D* >(estimation->get_estimated()), shift))
+        {
+             _estimation = estimation;
+             _data = data;
+        }
 
     template<class D, class B>
         ShiftedDistributionEstimation< D, B >::ShiftedDistributionEstimation(const ShiftedDistributionEstimation< D, B >& estimation) : LazyEstimation< ShiftedDistribution< D >, B >(estimation)
-        { _estimation = estimation._estimation; } */
+        { 
+            _estimation = estimation._estimation;
+            _data = estimation._data;
+        }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::~ShiftedDistributionEstimation()
+        { 
+            if(_estimation)
+            {
+                delete _estimation;
+                _estimation = nullptr;
+            }
+            if(_data)
+            {
+                delete _data;
+                _data = nullptr;
+            }
+        }
+
+    template<class D, class B>
+        const LazyEstimation< D, B >* ShiftedDistributionEstimation< D, B >::get_estimation() const
+        { return _estimation; }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::Estimator::Estimator()
+        {
+            _shift = 0;
+            _estimator = nullptr;
+        }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::Estimator::Estimator(const Estimator& estimator) : PolymorphicCopy< UnivariateDistributionEstimation::Estimator, Estimator, typename B::Estimator >(estimator)
+        {
+            _shift = estimator._shift;
+            if(estimator._estimator)
+            { _estimator = static_cast< typename B::Estimator* >(estimator._estimator->copy().release()); }
+            else
+            { _estimator = nullptr; }
+        }
+
+    template<class D, class B>
+        ShiftedDistributionEstimation< D, B >::Estimator::~Estimator()
+        {
+            if(_estimator)
+            { delete _estimator; }
+        }
+
+    template<class D, class B>
+        std::unique_ptr< UnivariateDistributionEstimation > ShiftedDistributionEstimation< D, B >::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
+        { 
+            if(!_estimator)
+            { throw member_error("estimator", "you must give an estimator in order to compute a shifted estimation"); }
+            UnivariateDataFrame* shifted = new UnivariateDataFrame(*data.get_sample_space());
+            std::unique_ptr< UnivariateData::Generator > generator = data.generator();
+            while(generator->is_valid())
+            {
+                shifted->add_event(generator->event());
+                ++(*generator);
+            }
+            WeightedUnivariateData weighted = WeightedUnivariateData(shifted);
+            generator = data.generator();
+            Index index = 0;
+            while(generator->is_valid())
+            {
+                weighted.set_weight(index, generator->weight());
+                ++(*generator);
+                ++index;
+            }
+            std::unique_ptr< UnivariateDistributionEstimation > estimation;
+            if(lazy)
+            {
+                estimation = std::make_unique< LazyEstimation< ShiftedDistribution< D >, B > >(new ShiftedDistribution< D >(*static_cast< const D* >((*_estimator)(weighted, lazy)->get_estimated()), _shift));
+                delete shifted;
+            }
+            else
+            { estimation = std::make_unique< ShiftedDistributionEstimation< D, B > >(static_cast< LazyEstimation< D, B >* >((*_estimator)(weighted, lazy).release()), shifted, _shift); }
+            return std::move(estimation);
+        }
+
+    template<class D, class B>
+        typename D::event_type::value_type ShiftedDistributionEstimation< D, B >::Estimator::get_shift() const
+        { return _shift; }
+
+    template<class D, class B>
+        void ShiftedDistributionEstimation< D, B >::Estimator::set_shift(const typename D::event_type::value_type& shift)
+        { _shift = shift; }
+
+
+    template<class D, class B>
+        const typename B::Estimator* ShiftedDistributionEstimation< D, B >::Estimator::get_estimator() const
+        { return _estimator; }
+
+    template<class D, class B>
+        void ShiftedDistributionEstimation< D, B >::Estimator::set_estimator(const typename B::Estimator& estimator)
+        { _estimator = static_cast< typename B::Estimator* >(estimator.copy().release()); }
 
     template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()

@@ -11,7 +11,7 @@ from functools import wraps
 from optionals import pyplot
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation,
+from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation, _ShiftedDistributionEstimation,
                                              UnivariateDistributionEstimation,
                                                 CategoricalUnivariateDistributionEstimation,
                                                     CategoricalUnivariateDistributionSelection,
@@ -23,6 +23,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     BinomialDistributionMLEstimation, BinomialDistributionMMEstimation,
                                                     NegativeBinomialDistributionMLEstimation, NegativeBinomialDistributionMMEstimation,
                                                     DiscreteUnivariateMixtureDistributionEMEstimation,
+                                                    DiscreteUnivariateShiftedDistributionEstimation,
                                                 ContinuousUnivariateDistributionEstimation,
                                                     ContinuousUnivariateDistributionSelection,
                                                     ContinuousUnivariateFrequencyDistributionEstimation,
@@ -31,6 +32,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     RegularUnivariateHistogramDistributionSlopeHeuristicSelection,
                                                     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection,
                                                     ContinuousUnivariateMixtureDistributionEMEstimation,
+                                                    ContinuousUnivariateShiftedDistributionEstimation,
                                              MultivariateDistributionEstimation,
                                                  MixedMultivariateDistributionSelection,
                                                 _IndependentMultivariateDistributionEstimation,
@@ -68,6 +70,7 @@ __all__ = ['frequency_estimation',
            'multinomial_splitting_estimation',
            'independent_estimation',
            'mixture_estimation',
+           'shifted_estimation',
            'selection']
 
 UnivariateDistributionEstimation.estimated = property(UnivariateDistributionEstimation.get_estimated)
@@ -483,6 +486,33 @@ def mixture_estimation(data, algo='em', **kwargs):
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(em = MixedMultivariateMixtureDistributionEMEstimation.Estimator)
     return _estimation(algo, data, mapping, **kwargs)
+
+def shifted_estimation(data, **kwargs):
+    if isinstance(data, UnivariateData):
+        outcome = data.sample_space.outcome
+    elif isinstance(data, outcome_type):
+        outcome = data
+        data = None
+    else:
+        raise TypeError('\'data\' parameter')
+    if outcome in [outcome_type.MIXED, outcome_type.CATEGORICAL]:
+        raise ValueError('\'mult\' parameter')
+    elif outcome is outcome_type.DISCRETE:
+        mapping = dict(a = DiscreteUnivariateShiftedDistributionEstimation.Estimator)
+    elif outcome is outcome_type.CONTINUOUS:
+        mapping = dict(a = ContinuousUnivariateShiftedDistributionEstimation.Estimator)
+    return _estimation('a', data, mapping, **kwargs)
+
+def shifted_distribution_estimator_decorator(cls):
+
+    cls.shift = property(cls.get_shift, cls.set_shift)
+    del cls.get_shift, cls.set_shift
+
+    cls.estimator = property(cls.get_estimator, cls.set_estimator)
+    del cls.get_estimator, cls.set_estimator
+
+for cls in _ShiftedDistributionEstimation:
+    shifted_distribution_estimator_decorator(cls.Estimator)
 
 def selection(data, algo="criterion", *args, **kwargs):
     if isinstance(data, UnivariateData):
