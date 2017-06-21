@@ -5,7 +5,7 @@
 namespace autowig
 {
 
-    void method_decorator_098aef898fd2538e8aaeb9bc5bef7eb7(class ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > const & instance, const class ::statiskit::SlopeHeuristicSolver & param_out) { instance.operator*() = param_out; }
+    void method_decorator_098aef898fd2538e8aaeb9bc5bef7eb7(class ::std::unique_ptr< class ::statiskit::SlopeHeuristicSolver, struct ::std::default_delete< class ::statiskit::SlopeHeuristicSolver > > const & instance, class ::statiskit::SlopeHeuristicSolver & param_out)     { instance.operator*() = param_out; }
 }
 
 #if defined(_MSC_VER)
