@@ -411,6 +411,26 @@ namespace statiskit
             DiscreteUnivariateDistributionEstimation* _sum;
     };
 
+    struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    {
+            NegativeMultinomialDistributionEstimation();
+            NegativeMultinomialDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+            NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation);
+            virtual ~NegativeMultinomialDistributionEstimation();
+
+            struct STATISKIT_CORE_API WZ99Estimator : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator
+            {
+                public:
+                    WZ99Estimator();
+                    WZ99Estimator(const WZ99Estimator& estimator);
+                    virtual ~WZ99Estimator();
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
+            };
+    };
+
     template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >
     {
         public:

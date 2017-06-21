@@ -45,6 +45,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
                                                     DiscreteMultivariateDistributionSelection,
                                                     MultinomialSplittingDistributionEstimation,
+                                                    NegativeMultinomialDistributionEstimation,
                                                     DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
                                                 ContinuousMultivariateDistributionEstimation,
@@ -68,6 +69,7 @@ __all__ = ['frequency_estimation',
            'normal_estimation',
            'histogram_estimation',
            'multinomial_splitting_estimation',
+           'negative_multinomial_estimation',
            'independent_estimation',
            'mixture_estimation',
            'shifted_estimation',
@@ -81,14 +83,14 @@ def active_estimation_decorator(cls):
     cls.data = property(cls.get_data)
     del cls.get_data
 
-    def pdf_plot(self, axes=None, fmt=('|', '-'), color=('b', 'r'), alpha=(1., 1.), norm=False, **kwargs):
-        axes = self.data.pdf_plot(axes=axes, fmt=fmt[0], color=color[0], alpha=alpha[0], norm=norm, **kwargs.pop('data_frame', dict()))
+    def pdf_plot(self, axes=None, norm=False, **kwargs):
+        axes = self.data.pdf_plot(axes=axes, norm=norm, **kwargs.pop('data', dict(fmt='|')))
         if isinstance(norm, bool):
             if not norm:
                 norm = self.data.total
             else:
                 norm = 1.
-        return self.estimated.pdf_plot(axes=axes, fmt=fmt[1], color=color[1], alpha=alpha[1], norm=norm, **kwargs.pop('estimated', dict()))
+        return self.estimated.pdf_plot(axes=axes, norm=norm, **kwargs.pop('estimated', dict(fmt='-')))
 
     cls.pdf_plot = pdf_plot
     del pdf_plot
@@ -400,6 +402,10 @@ del MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSpl
 def multinomial_splitting_estimation(data=None, **kwargs):
     mapping = dict(dflt = MultinomialSplittingDistributionEstimation.Estimator)
     return _estimation('dflt', data, mapping, **kwargs)
+
+def negative_multinomial_estimation(data=None, **kwargs):
+    mapping = dict(WZ99 = NegativeMultinomialDistributionEstimation.WZ99Estimator)
+    return _estimation('WZ99', data, mapping, **kwargs)
 
 def independent_multivariate_distribution_estimation_decorator(cls):
 

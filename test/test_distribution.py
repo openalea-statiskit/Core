@@ -51,7 +51,7 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
         for v in numpy.linspace(self._dist.quantile(self._pmin),
                                 self._dist.quantile(self._pmax),
                                 num=self._num,
-                                dtype=numpy.int):
+                                dtype=numpy.double):
             self.assertAlmostEqual(self._dist.cdf(v + self._espilon), self._dist.cdf(v) + self._espilon * self._dist.pdf(v), places=self._places)
             if not self._dist.pdf(v) == 0:
                 self.assertAlmostEqual(math.log(self._dist.pdf(v)), self._dist.ldf(v))

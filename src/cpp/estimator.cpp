@@ -301,14 +301,17 @@ namespace statiskit
             alpha /= -total;
             alpha += mean;
             kappa = alpha / log(1 + mean/kappa);
-            if(!lazy)
-            { static_cast< NegativeBinomialDistributionMLEstimation* >(estimation.get())->_iterations.push_back(kappa); }
-            negative_binomial->set_kappa(kappa);
-            negative_binomial->set_pi(mean/(mean + kappa));
-            curr = negative_binomial->loglikelihood(data);
-            ++its;
+            if(kappa > 0.)
+            {
+                if(!lazy)
+                { static_cast< NegativeBinomialDistributionMLEstimation* >(estimation.get())->_iterations.push_back(kappa); }
+                negative_binomial->set_kappa(kappa);
+                negative_binomial->set_pi(mean / (mean + kappa));
+                curr = negative_binomial->loglikelihood(data);
+                ++its;
+            }
         } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
-        return estimation;
+        return std::move(estimation);
     }
 
     bool NegativeBinomialDistributionMLEstimation::Estimator::get_force() const
@@ -597,7 +600,6 @@ namespace statiskit
         { throw statiskit::lower_bound_error("maxbins", 0, 0, true); }
         _maxbins = maxbins;
     }
-
 
     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection::IrregularUnivariateHistogramDistributionSlopeHeuristicSelection(const UnivariateData* data) : SlopeHeuristicSelection< ContinuousUnivariateDistributionEstimation >(data)
     {}
@@ -970,6 +972,121 @@ namespace statiskit
     double MultinomialSplittingDistributionEstimation::Estimator::SumData::Generator::weight() const
     { return _generator->weight(); }
     
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation() : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >()
+    {}
+   
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
+    {}
+
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
+    {}
+
+    NegativeMultinomialDistributionEstimation::~NegativeMultinomialDistributionEstimation()
+    {}
+
+    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator() : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator()
+    {}
+
+    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator(const WZ99Estimator& estimator) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator(estimator)
+    {}
+
+    NegativeMultinomialDistributionEstimation::WZ99Estimator::~WZ99Estimator()
+    {}
+
+    std::unique_ptr< MultivariateDistributionEstimation > NegativeMultinomialDistributionEstimation::WZ99Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    {
+        const MultivariateSampleSpace* sample_space = data.get_sample_space();
+        for(Index index = 0, max_index = sample_space->size(); index < max_index; ++index)
+        {
+            if(sample_space->get(index)->get_outcome() != DISCRETE)
+            { throw statiskit::sample_space_error(DISCRETE); }
+        }
+        std::unique_ptr< MultivariateDistributionEstimation > estimation;
+        NaturalMeanVectorEstimation::Estimator mean_estimator = NaturalMeanVectorEstimation::Estimator();
+        std::unique_ptr< MeanVectorEstimation > mean_estimation = mean_estimator(data);
+        Eigen::VectorXd mean = mean_estimation->get_mean();
+        NaturalCovarianceMatrixEstimation::Estimator covariance_estimator = NaturalCovarianceMatrixEstimation::Estimator();
+        std::unique_ptr< CovarianceMatrixEstimation > covariance_estimation = covariance_estimator(data, mean);
+        Eigen::MatrixXd covariance = covariance_estimation->get_covariance();
+        double total = data.compute_total(), kappa;
+        double _mean = mean.sum(), variance = 0.;
+        for(Index i = 0, max_i = sample_space->size(); i < max_i; ++i)
+        {
+            for(Index j = 0; j <= i; ++j)
+            { variance += covariance(i, j); }
+        }
+        if(variance > _mean)
+        { kappa = pow(_mean, 2)/(variance - _mean); }
+        else
+        { kappa = 1.; }
+        double q =  _mean / (_mean + kappa);
+        NegativeBinomialDistribution negative_binomial = NegativeBinomialDistribution(kappa, 1. - q);
+        MultinomialSplittingDistribution* negative_multinomial = new MultinomialSplittingDistribution(negative_binomial, mean * q / kappa);
+        if(!lazy)
+        {
+            estimation = std::make_unique< NegativeMultinomialDistributionEstimation >(negative_multinomial, &data);
+            static_cast< NegativeMultinomialDistributionEstimation* >(estimation.get())->_iterations.push_back(kappa);
+        }
+        else
+        { estimation = std::make_unique< LazyEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(negative_multinomial); }
+        double prev, curr = kappa; //negative_multinomial->loglikelihood(data);
+        unsigned int its = 1;
+        double chisq = 0.;
+        std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        while(generator->is_valid())
+        {
+            const MultivariateEvent* event = generator->event();
+            if(event)
+            {
+                for(Index index = 0, max_index = event->size(); index < max_index; ++index)
+                {
+                    const UnivariateEvent* uevent = event->get(index); 
+                    if(uevent && uevent->get_event() == ELEMENTARY)
+                    { chisq += generator->weight() / total * pow(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() - mean(index), 2.) / mean(index); }
+                }
+            }
+            ++(*generator);
+        }        
+        do
+        {
+            prev = curr;
+            double _chisq = 0;
+            generator = data.generator();
+            while(generator->is_valid())
+            {
+                const MultivariateEvent* event = generator->event();
+                if(event)
+                {
+                    for(Index index = 0, max_index = event->size(); index < max_index; ++index)
+                    {
+                        const UnivariateEvent* uevent = event->get(index); 
+                        if(uevent && uevent->get_event() == ELEMENTARY)
+                        { _chisq += generator->weight() / total * pow(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() - mean(index), 2.) / (mean(index) * (1 + mean(index) / kappa)); }
+                    }
+                }
+                ++(*generator);
+            }    
+            kappa *= chisq / _chisq;
+            if(kappa > 0.)
+            {
+                if(!lazy)
+                { static_cast< NegativeMultinomialDistributionEstimation* >(estimation.get())->_iterations.push_back(kappa); }
+                negative_binomial.set_kappa(kappa);
+                q =  _mean / (_mean + kappa);
+                negative_binomial.set_pi(1. - q);
+                negative_multinomial->set_sum(negative_binomial);
+                negative_multinomial->set_pi(mean * q / kappa);
+                // curr = negative_multinomial->loglikelihood(data);
+                curr = kappa;
+                ++its;
+            }
+        } while(run(its, __impl::reldiff(prev, curr)));
+        return std::move(estimation);
+    }
+
+    std::unique_ptr< MultivariateDistributionEstimation::Estimator > NegativeMultinomialDistributionEstimation::WZ99Estimator::copy() const
+    { return std::make_unique< NegativeMultinomialDistributionEstimation::WZ99Estimator >(*this); }
+
     UnivariateConditionalDistributionEstimation::~UnivariateConditionalDistributionEstimation()
     {}
 }

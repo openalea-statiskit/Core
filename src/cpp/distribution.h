@@ -16,6 +16,8 @@
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>
 #include <boost/random/normal_distribution.hpp>
+#include <boost/random/gamma_distribution.hpp>
+#include <boost/random/beta_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <boost/math/special_functions/erf.hpp>
@@ -1572,6 +1574,214 @@ namespace statiskit
             double _sigma;
     };
 
+    /** \brief This class represents a Gamma distribution.
+     * 
+     * \details The Gamma distribution is an univariate continuous distribution.
+     *          The support is the set of positive real values \f$\mathbb{R}_+^*\f$.
+     * */                
+    class STATISKIT_CORE_API GammaDistribution : public PolymorphicCopy< UnivariateDistribution, GammaDistribution, ContinuousUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Gamma distribution with
+             *
+             * - \f$ \alpha = 1.\f$,
+             * - \f$ \beta = 1.\f$. 
+             * */
+            GammaDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for Gamma distribution instantiation with specified \f$\alpha\f$ and \f$\beta\f$ parameters.
+             *
+             * \param alpha the specified shape parameter \f$ \alpha \in \mathbb{R}_+^* \f$.
+             * \param beta the specified rate parameter \f$ \beta \in \mathbb{R}_+^* \f$.
+             * */            
+            GammaDistribution(const double& alpha, const double& beta);
+            
+            /// \brief A copy constructor
+            GammaDistribution(const GammaDistribution& gamma);
+
+            /// \brief A destructor
+            virtual ~GammaDistribution();
+
+            /** \brief Returns the number of parameters of the Gamma distribution.
+             *
+             * \details In the general case the number of parameters of a Gamma distribution is \f$2\f$ (\f$alpha\f$ and \f$beta\f$).
+             *          When \f$\alpha=1.\f$, the Gamma distribution is equivalent to the exponential distribution.
+             *          Therefore, in this case the number of parameters is \f$1\f$.
+             * */
+            virtual unsigned int get_nb_parameters() const;
+            
+            /// \brief Get the value of the shape parameter \f$\alpha\f$.
+            const double& get_alpha() const;
+            
+            /// \brief Set the value of the shape parameter \f$\alpha\f$.
+            void set_alpha(const double& mu);
+
+            /// \brief Get the value of the rate parameter \f$\beta\f$.
+            const double& get_beta() const;
+            
+            /// \brief Set the value of the rate parameter \f$\beta\f$.
+            void set_beta(const double& sigma);
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               \ln f(x) = \alpha \log\left(\beta\right) + \left(\alpha - 1\right) \log\left(x\right) - \beta x - \log \Gamma \left(\alpha\right).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */ 
+            virtual double ldf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               f(x) =  \frac{\beta^{\alpha} x^{\alpha - 1}  \exp \left( - \beta x \right)}{\Gamma \left(\alpha\right)}.
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double pdf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               P(X \leq x) = \frac{\gamma\left(\alpha, \beta x\right)}{\Gamma\left(\alpha\right)}.
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double cdf(const double& value) const;
+
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+             *
+             *  \details Let \f$x \in \mathbb{R}^{+}_{*} \f$ denote the value to compute and $p \in \left(0,1\right)$ denote a given probability, 
+             *           \f[
+             *               x = \frac{\gamma^{-1}_p\left(\alpha, p\right)}{\beta}
+             *           \f]       
+             * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            ///  \brief Get mean of the Gamma distribution \f$ E(X) = \frac{\alpha}{\beta}\f$ 
+            virtual double get_mean() const;
+
+            /// \brief Get variance of the Gamma distribution \f$ V(X) = \frac{\alpha}{\beta^2} \f$.
+            virtual double get_variance() const;
+
+        protected:
+            double _alpha;
+            double _beta;
+    };
+
+
+    /** \brief This class represents a Gamma distribution.
+     * 
+     * \details The Gamma distribution is an univariate continuous distribution.
+     *          The support is the set of positive real values \f$\mathbb{R}_+^*\f$.
+     * */                
+    class STATISKIT_CORE_API BetaDistribution : public PolymorphicCopy< UnivariateDistribution, BetaDistribution, ContinuousUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Gamma distribution with
+             *
+             * - \f$ \alpha = 1.\f$,
+             * - \f$ \beta = 1.\f$. 
+             * */
+            BetaDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for Gamma distribution instantiation with specified \f$\alpha\f$ and \f$\beta\f$ parameters.
+             *
+             * \param alpha the specified shape parameter \f$ \alpha \in \mathbb{R}_+^* \f$.
+             * \param beta the specified rate parameter \f$ \beta \in \mathbb{R}_+^* \f$.
+             * */            
+            BetaDistribution(const double& alpha, const double& beta);
+            
+            /// \brief A copy constructor
+            BetaDistribution(const BetaDistribution& beta);
+
+            /// \brief A destructor
+            virtual ~BetaDistribution();
+
+            /** \brief Returns the number of parameters of the Gamma distribution.
+             *
+             * \details In the general case the number of parameters of a Gamma distribution is \f$2\f$ (\f$alpha\f$ and \f$beta\f$).
+             *          When \f$\alpha=1.\f$, the Gamma distribution is equivalent to the exponential distribution.
+             *          Therefore, in this case the number of parameters is \f$1\f$.
+             * */
+            virtual unsigned int get_nb_parameters() const;
+            
+            /// \brief Get the value of the shape parameter \f$\alpha\f$.
+            const double& get_alpha() const;
+            
+            /// \brief Set the value of the shape parameter \f$\alpha\f$.
+            void set_alpha(const double& mu);
+
+            /// \brief Get the value of the rate parameter \f$\beta\f$.
+            const double& get_beta() const;
+            
+            /// \brief Set the value of the rate parameter \f$\beta\f$.
+            void set_beta(const double& sigma);
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               \ln f(x) = \alpha \log\left(\beta\right) + \left(\alpha - 1\right) \log\left(x\right) - \beta x - \log \Gamma \left(\alpha\right).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */ 
+            virtual double ldf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               f(x) =  \frac{\beta^{\alpha} x^{\alpha - 1}  \exp \left( - \beta x \right)}{\Gamma \left(\alpha\right)}.
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double pdf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               P(X \leq x) = \frac{\gamma\left(\alpha, \beta x\right)}{\Gamma\left(\alpha\right)}.
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double cdf(const double& value) const;
+
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+             *
+             *  \details Let \f$x \in \mathbb{R}^{+}_{*} \f$ denote the value to compute and $p \in \left(0,1\right)$ denote a given probability, 
+             *           \f[
+             *               x = \frac{\gamma^{-1}_p\left(\alpha, p\right)}{\beta}
+             *           \f]       
+             * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            ///  \brief Get mean of the Gamma distribution \f$ E(X) = \frac{\alpha}{\beta}\f$ 
+            virtual double get_mean() const;
+
+            /// \brief Get variance of the Gamma distribution \f$ V(X) = \frac{\alpha}{\beta^2} \f$.
+            virtual double get_variance() const;
+
+        protected:
+            double _alpha;
+            double _beta;
+    };
 
     /** \Brief This class UnivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random component \f$ Y\f$ given a multivariate component \f$ \boldsymbol{X} \f$.
      *
@@ -1700,6 +1910,30 @@ namespace statiskit
         protected:
             Eigen::VectorXd _mu;
             Eigen::MatrixXd _sigma;
+    };
+
+    class STATISKIT_CORE_API DirichletDistribution : public PolymorphicCopy< MultivariateDistribution, DirichletDistribution, ContinuousMultivariateDistribution >
+    {
+        public:
+            DirichletDistribution(const Index& nb_components);
+            DirichletDistribution(const Eigen::VectorXd& alpha);
+            DirichletDistribution(const DirichletDistribution& dirichlet);
+            virtual ~DirichletDistribution();
+
+            virtual Index get_nb_components() const;
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+            std::unique_ptr< MultivariateEvent > simulate() const;
+
+            const Eigen::VectorXd& get_alpha() const;
+            void set_alpha(const Eigen::VectorXd& alpha);
+
+        protected:
+            Eigen::VectorXd _alpha;
+            double _constant;
     };
 
     template<class D> class IndependentMultivariateDistribution : public PolymorphicCopy< MultivariateDistribution, IndependentMultivariateDistribution< D >, D >

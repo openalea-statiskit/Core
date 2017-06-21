@@ -84,7 +84,13 @@ namespace statiskit
             std::unique_ptr< UnivariateData::Generator > generator = data.generator();
             while(generator->is_valid())
             {
-                shifted->add_event(generator->event());
+                const UnivariateEvent* event = generator->event();
+                if(event->get_event() == ELEMENTARY)
+                { 
+                    ElementaryEvent< typename D::event_type >* shifted_event = new ElementaryEvent< typename D::event_type >(static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value() - _shift);
+                    shifted->add_event(shifted_event);
+                    delete shifted_event;
+                }
                 ++(*generator);
             }
             WeightedUnivariateData weighted = WeightedUnivariateData(shifted);
@@ -413,7 +419,6 @@ namespace statiskit
                 {
                     const typename D::observation_type* observation = mixture->get_observation(state);
                     typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
-                    Index index = 0;
                     while(generator->is_valid())
                     {
                         generator->weight(mixture->posterior(generator->event())[state]);

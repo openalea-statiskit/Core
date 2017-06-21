@@ -216,7 +216,7 @@ def _repr_html_(self):
 UnivariateDataFrame._repr_html_ = _repr_html_
 del _repr_html_
 
-def pdf_plot(self, axes=None, color='b', **kwargs):
+def pdf_plot(self, axes=None, **kwargs):
     from estimation import frequency_estimation, histogram_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
@@ -231,15 +231,15 @@ def pdf_plot(self, axes=None, color='b', **kwargs):
         raise TypeError('\'norm\' parameter')
     if sample_space.outcome is outcome_type.CATEGORICAL:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, **kwargs)
     elif sample_space.outcome is outcome_type.DISCRETE:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, pmin=0., pmax=1., **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, pmin=0., pmax=1., **kwargs)
     elif sample_space.outcome is outcome_type.CONTINUOUS:
         fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
             estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(algo='irr' if self.total > 700. else 'reg', lazy=True)))
-            axes = estimation.estimated.pdf_plot(axes=axes, color=color, fmt=fmt, **kwargs)
+            axes = estimation.estimated.pdf_plot(axes=axes, fmt=fmt, **kwargs)
         elif fmt == '-':
             raise NotImplementedError
     else:
@@ -249,7 +249,7 @@ def pdf_plot(self, axes=None, color='b', **kwargs):
 UnivariateDataFrame.pdf_plot = pdf_plot
 del pdf_plot
 
-def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
+def cdf_plot(self, axes=None, **kwargs):
     from estimation import frequency_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
@@ -268,10 +268,29 @@ def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
             kwargs['pmin'] = 0.
         if not 'pmax' in kwargs:
             kwargs['pmax'] = 1.
-    return estimation.estimated.cdf_plot(axes=axes, color=color, alpha=alpha, **kwargs)
+    return estimation.estimated.cdf_plot(axes=axes, **kwargs)
 
 UnivariateDataFrame.cdf_plot = cdf_plot
 del cdf_plot
+
+def box_plot(self, axes=None, **kwargs):
+    from estimation import frequency_estimation
+    sample_space = self.sample_space
+    norm = kwargs.pop('norm', False)
+    if isinstance(norm, bool):
+        if not norm:
+            kwargs['norm'] = self.total
+    elif isinstance(norm, (int, float)):
+        if norm <= 0:
+            raise ValueError('\'norm\' parameter')
+        kwargs['norm'] = norm
+    else:
+        raise TypeError('\'norm\' parameter')
+    estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
+    return estimation.estimated.box_plot(axes=axes, **kwargs)
+
+UnivariateDataFrame.box_plot = box_plot
+del box_plot
 
 MultivariateData.total = property(MultivariateData.compute_total)
 del MultivariateData.compute_total

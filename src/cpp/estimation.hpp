@@ -178,7 +178,7 @@ namespace statiskit
     template<class D, class B>
         std::unique_ptr< typename B::Estimator::estimation_type > Selection< D, B >::Estimator::operator() (const typename B::data_type& data, const bool& lazy) const
         {
-            std::unique_ptr< typename B::Estimator::estimation_type > estimation = std::make_unique< LazyEstimation< D, B > >();
+            std::unique_ptr< typename B::Estimator::estimation_type > estimation;
             if(lazy)
             {
                 std::unique_ptr< typename B::Estimator::estimation_type > _estimation;
@@ -219,7 +219,7 @@ namespace statiskit
                 estimation.reset(_estimation);
             }
             if(!estimation->get_estimated())
-            { std::runtime_error("All estimations failed, perform manually the estimation in order to investigate what went wrong"); }
+            { std::runtime_error("All estimations failed, perform manually the estimations in order to investigate what went wrong"); }
             return estimation;
         }
 

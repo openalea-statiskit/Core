@@ -7,6 +7,7 @@
 ##################################################################################
 
 from functools import wraps
+import math
 
 from optionals import pyplot, numpy
 from io import from_list
@@ -30,6 +31,8 @@ from __core.statiskit import (UnivariateDistribution,
                                     UnivariateHistogramDistribution,
                                     NormalDistribution,
                                     LogisticDistribution,
+                                    GammaDistribution,
+                                    BetaDistribution,
                                     ContinuousUnivariateMixtureDistribution,
                               MultivariateDistribution,
                                 _IndependentMultivariateDistribution,
@@ -43,6 +46,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
                                     MultinormalDistribution,
+                                    DirichletDistribution,
                                     ContinuousIndependentMultivariateDistribution,
                                     ContinuousMultivariateMixtureDistribution,
                               _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
@@ -80,8 +84,11 @@ __all__ = ['NominalDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
            'LogisticDistribution',
+           'GammaDistribution',
+           'BetaDistribution',
            'MultinomialSplittingDistribution',
            'MultinormalDistribution',
+           'DirichletDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
@@ -125,7 +132,7 @@ del simulation
 def pdf_plot(self, axes=None, fmt='|', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
-    labels = getattr(self, 'ordered', 'values')
+    labels = getattr(self, 'ordered_values', getattr(self, 'values'))
     x, labels = zip(*[(index, label) for index, label in enumerate(labels)])
     y = [self.probability(label, log=False) for label in labels]
     if 'norm' in kwargs:
@@ -134,16 +141,10 @@ def pdf_plot(self, axes=None, fmt='|', **kwargs):
     else:
         y = [p for p in y]
     if fmt == 'pie':
-        if 'color' in kwargs:
-            kwargs.pop('color')
         if not 'autopct' in kwargs:
             kwargs['autopct'] = '%.2f'
         axes.pie(y, labels=labels, **kwargs)
     else:
-        if not 'color' in kwargs:
-            kwargs['color'] = 'r'
-        if not 'alpha' in kwargs:
-            kwargs['alpha'] = 1.
         if '|' in fmt:
             fmt = fmt.replace('|', '')
             width = kwargs.pop('width', .8)
@@ -151,7 +152,7 @@ def pdf_plot(self, axes=None, fmt='|', **kwargs):
                 raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
             axes.bar([q-width/2. for q in x], y, width, align='center', **kwargs)
         if len(fmt) > 0:
-            axes.plot(x, y, fmt, alpha=alpha, **kwargs)
+            axes.plot(x, y, fmt, **kwargs)
         axes.set_xticks(x)
         axes.set_xticklabels(labels)
     return axes
@@ -193,7 +194,7 @@ del OrdinalDistribution.get_ordered_values, OrdinalDistribution.set_ordered_valu
 OrdinalDistribution.ordered_pi = property(OrdinalDistribution.get_ordered_pi, OrdinalDistribution.set_ordered_pi)
 del OrdinalDistribution.get_ordered_pi, OrdinalDistribution.set_ordered_pi
 
-def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
+def cdf_plot(self, axes=None, fmt='|', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     labels = self.ordered_values
@@ -211,9 +212,9 @@ def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
         width = kwargs.pop('width', .8)
         if not 0 < width <= 1.:
             raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center')
+        axes.bar([q-width/2. for q in x], y, width, align='center', **kwargs)
     else:
-        axes.plot(x, y, fmt, color=color, alpha=alpha)
+        axes.plot(x, y, fmt, **kwargs)
     axes.set_xticks(x)
     axes.set_xticklabels(labels)
     return axes
@@ -221,7 +222,7 @@ def cdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
 OrdinalDistribution.cdf_plot = cdf_plot
 del cdf_plot
 
-def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, **kwargs):
+def box_plot(self, axes=None, edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     elif not isinstance(axes, pyplot.Axes):
@@ -238,10 +239,11 @@ def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True,
     q2 = values.index(self.quantile(.5))
     q3 = values.index(self.quantile(.75))
     qe = values.index(self.quantile(max(whiskers)))
+    facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
     if not(qb <= q1 <= q2 <= q3 <= qe):
         raise ValueError('`whiskers` parameter')
     if vert:
-        axes.bar(pos-width/2., q3-q1, width, q1, facecolor=facecolor, edgecolor=edgecolor)
+        axes.bar(pos, q3-q1, width, q1, facecolor=facecolor, edgecolor=edgecolor, align='center')
         axes.plot([pos-width/2., pos+width/2.], [q2, q2], color=edgecolor)
         axes.plot([pos-width/2., pos+width/2.], [qb, qb], color=edgecolor)
         axes.plot([pos-width/2., pos+width/2.], [qe, qe], color=edgecolor)
@@ -282,7 +284,7 @@ del DiscreteUnivariateDistribution.get_mean
 DiscreteUnivariateDistribution.variance = property(DiscreteUnivariateDistribution.get_variance)
 del DiscreteUnivariateDistribution.get_variance
 
-def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
+def pdf_plot(self, axes=None, fmt='|', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     else:
@@ -301,15 +303,15 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., **kwargs):
         width = kwargs.pop('width', .2)
         if not 0 < width <= 1.:
             raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
-        axes.bar([q-width/2. for q in x], y, width, color=color, alpha=alpha, align='center')
+        axes.bar([q-width/2. for q in x], y, width, align='center', **kwargs)
     if len(fmt) > 0:
-        axes.plot(x, y, fmt, color=color, alpha=alpha)
+        axes.plot(x, y, fmt, **kwargs)
     return axes
 
 DiscreteUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
 
-def cdf_plot(self, axes=None, fmt='o-', color='r', alpha=1., **kwargs):
+def cdf_plot(self, axes=None, fmt='o-', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     else:
@@ -324,17 +326,17 @@ def cdf_plot(self, axes=None, fmt='o-', color='r', alpha=1., **kwargs):
         norm = kwargs.pop('norm')
         y = [norm * p for p in y]
     if 'o' in fmt:
-        axes.plot(x, y, 'o', color=color, alpha=alpha)
+        axes.plot(x, y, 'o', **kwargs)
         fmt = fmt.replace('o', '')
     if len(fmt) > 0:
         for i, j in enumerate(x):
-            axes.plot([j, j+1], [y[i], y[i]], fmt, color=color, alpha=alpha)
+            axes.plot([j, j+1], [y[i], y[i]], fmt, **kwargs)
     return axes
 
 DiscreteUnivariateDistribution.cdf_plot = cdf_plot
 del cdf_plot
 
-def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, **kwargs):
+def box_plot(self, axes=None, edgecolor="k", width=.5, vert=True, whiskers=(.09,0.91), pos=1, mean=None, sd=None, marker='o', **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     elif not isinstance(axes, pyplot.Axes):
@@ -350,10 +352,9 @@ def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True,
     q2 = self.quantile(.5)
     q3 = self.quantile(.75)
     qe = self.quantile(max(whiskers))
-    if not(qb <= q1 <= q2 <= q3 <= qe):
-        raise ValueError('`whiskers` parameter')
+    facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
     if vert:
-        axes.bar(pos-width/2., q3-q1, width, q1, facecolor=facecolor, edgecolor=edgecolor)
+        axes.bar(pos, q3-q1, width, q1, facecolor=facecolor, edgecolor=edgecolor, align='center')
         axes.plot([pos-width/2., pos+width/2.], [q2, q2], color=edgecolor)
         axes.plot([pos-width/2., pos+width/2.], [qb, qb], color=edgecolor)
         axes.plot([pos-width/2., pos+width/2.], [qe, qe], color=edgecolor)
@@ -366,6 +367,30 @@ def box_plot(self, axes=None, facecolor="r", edgecolor="k", width=.5, vert=True,
         axes.plot([qe, qe], [pos-width/2., pos+width/2.], color=edgecolor)
         axes.plot([qb, q1], [pos, pos], color=edgecolor)
         axes.plot([q3, qe], [pos, pos], color=edgecolor)
+    if mean is None:
+        mean = self.mean
+        if not qb <= mean <= qe:
+            mean = False
+    elif mean is True:
+        mean = self.mean
+    if mean:
+        if vert:
+            axes.plot([pos], [mean], linestyle='None', marker=marker, markeredgecolor=edgecolor, markerfacecolor=facecolor)
+        else:
+            axes.plot([mean], [pos], linestyle='None', marker=marker, markeredgecolor=edgecolor, markerfacecolor=facecolor)
+    if not mean and sd is not False:
+        mean = q2
+    if sd is None:
+        sd = math.sqrt(self.variance)
+        if not qb <= mean - sd and mean + sd <= qe:
+            sd = False
+    elif sd is True:
+        sd = math.sqrt(self.variance)
+    if sd:
+        if vert:
+            axes.plot([pos, pos], [mean - sd, mean + sd], linestyle='None', marker=marker, markeredgecolor=edgecolor, markerfacecolor=facecolor)
+        else:
+            axes.plot([mean - sd, mean + sd], [pos, pos], linestyle='None', marker=marker, markeredgecolor=edgecolor, markerfacecolor=facecolor)
     return axes
 
 DiscreteUnivariateDistribution.box_plot = box_plot
@@ -396,7 +421,25 @@ del box_plot
 PoissonDistribution.theta = property(PoissonDistribution.get_theta, PoissonDistribution.set_theta)
 del PoissonDistribution.get_theta, PoissonDistribution.set_theta
 
-def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
+BinomialDistribution.kappa = property(BinomialDistribution.get_kappa, BinomialDistribution.set_kappa)
+del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
+
+BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
+del BinomialDistribution.get_pi, BinomialDistribution.set_pi
+
+NegativeBinomialDistribution.kappa = property(NegativeBinomialDistribution.get_kappa, NegativeBinomialDistribution.set_kappa)
+del NegativeBinomialDistribution.get_kappa, NegativeBinomialDistribution.set_kappa
+
+NegativeBinomialDistribution.pi = property(NegativeBinomialDistribution.get_pi, NegativeBinomialDistribution.set_pi)
+del NegativeBinomialDistribution.get_pi, NegativeBinomialDistribution.set_pi
+
+ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
+del ContinuousUnivariateDistribution.get_mean
+
+ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
+del ContinuousUnivariateDistribution.get_variance
+
+def pdf_plot(self, axes=None, fmt='-', num=100, **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     else:
@@ -412,27 +455,15 @@ def pdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
         y = [norm * p for p in y]
     if '|' in fmt:
         fmt = fmt.replace('|', '')
-        axes.vlines(x, 0, y, color=color, alpha=alpha)
+        axes.vlines(x, 0, y, **kwargs)
     if len(fmt) > 0:
-        axes.plot(x, y, fmt, color=color, alpha=alpha)
+        axes.plot(x, y, fmt, **kwargs)
     return axes
-
-BinomialDistribution.kappa = property(BinomialDistribution.get_kappa, BinomialDistribution.set_kappa)
-del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
-
-BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
-del BinomialDistribution.get_pi, BinomialDistribution.set_pi
-
-ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
-del ContinuousUnivariateDistribution.get_mean
-
-ContinuousUnivariateDistribution.variance = property(ContinuousUnivariateDistribution.get_variance)
-del ContinuousUnivariateDistribution.get_variance
 
 ContinuousUnivariateDistribution.pdf_plot = pdf_plot
 del pdf_plot
 
-def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
+def cdf_plot(self, axes=None, fmt='-', num=100, **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
     else:
@@ -446,7 +477,7 @@ def cdf_plot(self, axes=None, fmt='-', color='r', alpha=1., num=100, **kwargs):
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
         y = [norm * p for p in y]
-    axes.plot(x, y, fmt, color=color, alpha=alpha)
+    axes.plot(x, y, fmt, **kwargs)
     return axes
 
 ContinuousUnivariateDistribution.cdf_plot = cdf_plot
@@ -525,8 +556,11 @@ def statiskit_univariate_frequency_distribution_decorator(cls):
 
         def wrapper(f):
             @wraps(f)
-            def box_plot(self, extrema=True, vert=True, pos=1, facecolor="r", edgecolor="k", **kwargs):
-                axes = f(self, vert=vert, pos=pos, facecolor=facecolor, edgecolor=edgecolor, **kwargs)
+            def box_plot(self, axes=None, extrema=True, vert=True, pos=1, edgecolor="k", **kwargs):
+                if axes is None:
+                    axes = pyplot.subplot(1, 1, 1)
+                facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
+                axes = f(self, axes=axes, vert=vert, pos=pos, facecolor=facecolor, edgecolor=edgecolor, **kwargs)
                 if extrema:
                     values = self.values
                     values = [values[0].value, values[-1].value]
@@ -577,7 +611,7 @@ UnivariateHistogramDistribution.bins = property(UnivariateHistogramDistribution.
 
 UnivariateHistogramDistribution.densities = property(UnivariateHistogramDistribution.get_densities)
 
-def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs):
+def pdf_plot(self, axes=None, fmt='|', fill=True, **kwargs):
     if axes is None:
         axes = pyplot.subplot(1,1,1)
         xmin, xmax = float("inf"), -1 * float("inf")
@@ -592,17 +626,18 @@ def pdf_plot(self, axes=None, fmt='|', color='r', alpha=1., fill=True, **kwargs)
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
         densities = [norm * d for d in densities]
+    color = kwargs.pop('color', axes._get_lines.get_next_color())
     if '|' in fmt:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
-            axes.bar(left=lc, height=d, width=rc-lc, bottom=0., facecolor=color, alpha=alpha, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge')
+            axes.bar(left=lc, height=d, width=rc-lc, bottom=0., facecolor=color, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge', **kwargs)
         fmt = fmt.replace('|', '')
     if 'o' in fmt:
         axes.plot(bins[:-1], densities, 'o', color=color, alpha=alpha)
-        axes.plot([bins[-1]], [densities[-1]], 'o', color=color, alpha=alpha)
+        axes.plot([bins[-1]], [densities[-1]], 'o', color=color, **kwargs)
         fmt = fmt.replace('o', '')
     if len(fmt) > 0:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
-            axes.plot([lc, rc], [d, d], fmt, color=color, alpha=alpha)
+            axes.plot([lc, rc], [d, d], fmt, color=color, **kwargs)
     return axes
 
 UnivariateHistogramDistribution.pdf_plot = pdf_plot
@@ -632,11 +667,71 @@ del __repr__
 def _repr_latex_(self):
     return "r$\mathcal{N}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
 
+NormalDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
 NormalDistribution.mu = property(NormalDistribution.get_mu, NormalDistribution.set_mu)
 del NormalDistribution.get_mu, NormalDistribution.set_mu
 
 NormalDistribution.sigma = property(NormalDistribution.get_sigma, NormalDistribution.set_sigma)
 del NormalDistribution.get_sigma, NormalDistribution.set_sigma
+
+def __repr__(self):
+    return "L(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+
+LogisticDistribution.__str__ = __repr__
+LogisticDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return "r$\mathcal{L}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+
+LogisticDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+LogisticDistribution.mu = property(LogisticDistribution.get_mu, LogisticDistribution.set_mu)
+del LogisticDistribution.get_mu, LogisticDistribution.set_mu
+
+LogisticDistribution.sigma = property(LogisticDistribution.get_sigma, LogisticDistribution.set_sigma)
+del LogisticDistribution.get_sigma, LogisticDistribution.set_sigma
+
+def __repr__(self):
+    return "Gamma(" + float_str(self.alpha) + ', ' + float_str(self.beta) + ')'
+
+GammaDistribution.__str__ = __repr__
+GammaDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return "r$\Gamma\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
+
+GammaDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+GammaDistribution.alpha = property(GammaDistribution.get_alpha, GammaDistribution.set_alpha)
+del GammaDistribution.get_alpha, GammaDistribution.set_alpha
+
+GammaDistribution.beta = property(GammaDistribution.get_beta, GammaDistribution.set_beta)
+del GammaDistribution.get_beta, GammaDistribution.set_beta
+
+def __repr__(self):
+    return "Beta(" + float_str(self.alpha) + ', ' + float_str(self.beta) + ')'
+
+BetaDistribution.__str__ = __repr__
+BetaDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return "r$\Beta\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
+
+BetaDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+BetaDistribution.alpha = property(BetaDistribution.get_alpha, BetaDistribution.set_alpha)
+del BetaDistribution.get_alpha, BetaDistribution.set_alpha
+
+BetaDistribution.beta = property(BetaDistribution.get_beta, BetaDistribution.set_beta)
+del BetaDistribution.get_beta, BetaDistribution.set_beta
 
 def wrapper_probability(f):
     @wraps(f)
@@ -680,6 +775,22 @@ del MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.s
 
 MultinomialSplittingDistribution.pi = property(MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi)
 del MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi
+
+def __repr__(self):
+    return "Dir(" + str(self.alpha) + ')'
+
+DirichletDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return "r$\mathrm{Dir}\left(" + _tools.remove_latex(self.alpha._repr_latex_()) + r'\right)$'
+
+DirichletDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+
+DirichletDistribution.alpha = property(DirichletDistribution.get_alpha, DirichletDistribution.set_alpha)
+del DirichletDistribution.get_alpha, DirichletDistribution.set_alpha
 
 def statiskit_independent_multivariate_distribution_decorator(cls):
     pass
@@ -739,6 +850,26 @@ def statiskit_mixture_distribution_decorator(cls):
     del cls.get_observation, cls.set_observation
 
     cls.observations = property(Observations)
+
+    if hasattr(cls, 'pdf_plot'):
+
+        def wrapper_pdf_plot(f):
+            @wraps(f)
+            def pdf_plot(self, axes=None, *args, **kwargs):
+                norm = kwargs.pop('norm', 1.)
+                states = kwargs.pop('states', True)
+                if states:
+                    if isinstance(states, list):
+                        skwargs = states
+                    else:
+                        skwargs = [{}] * self.nb_states
+                    for index, (pi, observation) in enumerate(zip(self.pi, self.observations)):
+                        skwargs[index].update(kwargs)
+                        axes = observation.pdf_plot(axes=axes, norm=pi*norm, *args, **skwargs[index])
+                return f(self, axes=axes, *args, norm=norm, **kwargs)
+            return pdf_plot
+
+        cls.pdf_plot = wrapper_pdf_plot(cls.pdf_plot)
 
 for cls in _MixtureDistribution:
     statiskit_mixture_distribution_decorator(cls)
