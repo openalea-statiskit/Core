@@ -11,7 +11,13 @@ from functools import wraps
 from optionals import pyplot
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation, _ShiftedDistributionEstimation,
+from statiskit.core.__core.statiskit import (Optimization,
+                                             _LazyEstimation,
+                                             _ActiveEstimation,
+                                             _OptimizationEstimationImpl,
+                                             _Selection,
+                                             _OptimizationEstimation,
+                                             _ShiftedDistributionEstimation,
                                              UnivariateDistributionEstimation,
                                                 CategoricalUnivariateDistributionEstimation,
                                                     CategoricalUnivariateDistributionSelection,
@@ -235,10 +241,6 @@ def selection_decorator(cls):
 for cls in _Selection:
     selection_decorator(cls)
 
-def optimization_estimation_impl_estimator_decorator(cls):
-
-    pass
-    
 def optimization_estimation_decorator(cls):
 
     class Iterations(object):
