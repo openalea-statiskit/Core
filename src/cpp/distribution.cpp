@@ -476,6 +476,181 @@ namespace statiskit
     double BinomialDistribution::get_variance() const
     { return _kappa * _pi * (1. - _pi); }
 
+    LogarithmicDistribution::LogarithmicDistribution()
+    { _theta = .5; }
+
+    LogarithmicDistribution::LogarithmicDistribution(const double& theta)
+    {
+        if(theta < 0 || theta > 1)
+        { throw interval_error("theta", theta, 0., 1., std::make_pair(false, false)); }
+        _theta = theta;
+    }
+
+    LogarithmicDistribution::LogarithmicDistribution(const LogarithmicDistribution& logarithmic)
+    { _theta = logarithmic._theta; }
+
+    unsigned int LogarithmicDistribution::get_nb_parameters() const
+    { return 1; }
+
+    const double& LogarithmicDistribution::get_theta() const
+    { return _theta; }
+
+    void LogarithmicDistribution::set_theta(const double& theta)
+    {
+        if(theta < 0 || theta > 1)
+        { throw interval_error("theta", theta, 0., 1., std::make_pair(false, false)); }
+        _theta = theta;
+    }
+
+    double LogarithmicDistribution::ldf(const int& value) const
+    {
+        double p;
+        if(value < 1)
+        { p = -1 * std::numeric_limits< double >::infinity(); }
+        else
+        {
+            try
+            { p = -log(- 1 * log(1 - _theta)) + value * log(_theta) - log(value); }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+    
+    double LogarithmicDistribution::pdf(const int& value) const
+    {
+        double p;
+        if(value < 1)
+        { p = 0; }
+        else
+        {
+            try
+            { p = - 1 / log(1 - _theta) * pow(_theta, value) / value; }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+
+    double LogarithmicDistribution::cdf(const int& value) const
+    { 
+        double p;
+        if(value < 1)
+        { p = 0; }
+        else
+        {
+            p = 0.;
+            for(int k = 1; k <= value; ++k)
+            { p += pdf(k); } 
+            // p = 1 + boost::math::ibeta(value + 1, 0, _theta) / log(1 - _theta);
+        }
+        return p;
+    }
+
+    int LogarithmicDistribution::quantile(const double& p) const
+    { 
+        int q = 0;
+        while(cdf(q) < p)
+        { ++q; }
+        return q;
+    }
+
+    double LogarithmicDistribution::get_mean() const
+    { return  - 1 / log(1 - _theta) * _theta / (1 - _theta); }
+
+    double LogarithmicDistribution::get_variance() const
+    { 
+        double mean = get_mean();
+        return mean * (1 / (1- _theta) - mean);
+        // return - _theta * (_theta + log(1 - _theta)) / pow((1 - _theta) * log(1 - _theta), 2); 
+    }
+
+    std::unique_ptr< UnivariateEvent > LogarithmicDistribution::simulate() const
+    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
+
+    GeometricDistribution::GeometricDistribution()
+    { _pi = .5; }
+
+    GeometricDistribution::GeometricDistribution(const double& pi)
+    {
+        if(pi < 0 || pi > 1)
+        { throw interval_error("pi", pi, 0., 1., std::make_pair(false, false)); }
+        _pi = pi;
+    }
+
+    GeometricDistribution::GeometricDistribution(const GeometricDistribution& geometric)
+    { _pi = geometric._pi; }
+
+    unsigned int GeometricDistribution::get_nb_parameters() const
+    { return 1; }
+
+    const double& GeometricDistribution::get_pi() const
+    { return _pi; }
+
+    void GeometricDistribution::set_pi(const double& pi)
+    {
+        if(pi < 0 || pi > 1)
+        { throw interval_error("pi", pi, 0., 1., std::make_pair(false, false)); }
+        _pi = pi;
+    }
+
+    double GeometricDistribution::ldf(const int& value) const
+    {
+        double p;
+        if(value < 1)
+        { p = -1 * std::numeric_limits< double >::infinity(); }
+        else
+        {
+            try
+            { p = (value - 1) * log(_pi) + log(1 - _pi); }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+    
+    double GeometricDistribution::pdf(const int& value) const
+    {
+        double p;
+        if(value < 1)
+        { p = 0; }
+        else
+        {
+            try
+            { p = pow(_pi, value - 1) * (1. - _pi); }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+
+    double GeometricDistribution::cdf(const int& value) const
+    { 
+        double p;
+        if(value < 1)
+        { p = 0; }
+        else
+        { p = 1 - pow(_pi, value); }
+        return p;
+    }
+
+    int GeometricDistribution::quantile(const double& p) const
+    { 
+        int q = 0;
+        while(cdf(q) < p)
+        { ++q; }
+        return q;
+    }
+
+    double GeometricDistribution::get_mean() const
+    { return 1 / (1 - _pi); }
+
+    double GeometricDistribution::get_variance() const
+    { return _pi / pow(1. - _pi, 2); }
+
+    std::unique_ptr< UnivariateEvent > GeometricDistribution::simulate() const
+    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
+
     NegativeBinomialDistribution::NegativeBinomialDistribution()
     {
         _kappa = 1.;
@@ -933,7 +1108,7 @@ namespace statiskit
     { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _sigma)); }
 
     double LogisticDistribution::quantile(const double& p) const
-    { return _mu + _sigma * log(p / (1 - p)); }
+    { return _mu - _sigma * log(1 / p - 1); }
 
     std::unique_ptr< UnivariateEvent > LogisticDistribution::simulate() const
     {       
@@ -1604,10 +1779,10 @@ namespace statiskit
     }
 
     double BetaDistribution::get_mean() const
-    { return _alpha / _beta; }
+    { return _alpha / (_alpha + _beta); }
 
     double BetaDistribution::get_variance() const
-    { return _alpha / pow(_beta, 2); }
+    { return _alpha * _beta / (pow(_alpha + _beta, 2) * (_alpha + _beta + 1)); }
 
     double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {

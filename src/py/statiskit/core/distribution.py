@@ -24,6 +24,8 @@ from __core.statiskit import (UnivariateDistribution,
                                     DiscreteUnivariateFrequencyDistribution,
                                     PoissonDistribution,
                                     BinomialDistribution,
+                                    LogarithmicDistribution,
+                                    GeometricDistribution,
                                     NegativeBinomialDistribution,
                                     DiscreteUnivariateMixtureDistribution,
                                 ContinuousUnivariateDistribution,
@@ -79,6 +81,8 @@ __all__ = ['NominalDistribution',
            'DiscreteUnivariateFrequencyDistribution',
            'PoissonDistribution',
            'BinomialDistribution',
+           'LogarithmicDistribution',
+           'GeometricDistribution',
            'NegativeBinomialDistribution',
            'ContinuousUnivariateFrequencyDistribution',
            'UnivariateHistogramDistribution',
@@ -418,14 +422,85 @@ del box_plot
 #DiscreteUnivariateDistribution.lorenz_plot = lorenz_plot
 #del lorenz_plot
 
+def __repr__(self):
+    return "P(" + str(self.theta) + ")"
+
+PoissonDistribution.__str__ = __repr__
+PoissonDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{P}\left(" + str(self.theta) + r"\right)$"
+
+PoissonDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
 PoissonDistribution.theta = property(PoissonDistribution.get_theta, PoissonDistribution.set_theta)
 del PoissonDistribution.get_theta, PoissonDistribution.set_theta
+
+def __repr__(self):
+    return "B(" + str(self.kappa) + ", " + str(self.theta) + ")"
+
+BinomialDistribution.__str__ = __repr__
+BinomialDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{B}(" + str(self.kappa) + ", " + str(self.theta) + r"\right)$"
+
+BinomialDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
 
 BinomialDistribution.kappa = property(BinomialDistribution.get_kappa, BinomialDistribution.set_kappa)
 del BinomialDistribution.get_kappa, BinomialDistribution.set_kappa
 
 BinomialDistribution.pi = property(BinomialDistribution.get_pi, BinomialDistribution.set_pi)
 del BinomialDistribution.get_pi, BinomialDistribution.set_pi
+
+def __repr__(self):
+    return "Log(" + str(self.theta) + ")"
+
+LogarithmicDistribution.__str__ = __repr__
+LogarithmicDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathrm{Log}\left(" + str(self.theta) + r"\right)$"
+
+LogarithmicDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+LogarithmicDistribution.theta = property(LogarithmicDistribution.get_theta, LogarithmicDistribution.set_theta)
+del LogarithmicDistribution.get_theta, LogarithmicDistribution.set_theta
+
+def __repr__(self):
+    return "G(" + str(self.pi) + ")"
+
+GeometricDistribution.__str__ = __repr__
+GeometricDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{G}\left(" + str(self.pi) + r"\right)$"
+
+GeometricDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+GeometricDistribution.pi = property(GeometricDistribution.get_pi, GeometricDistribution.set_pi)
+del GeometricDistribution.get_pi, GeometricDistribution.set_pi
+
+def __repr__(self):
+    return "NB(" + str(self.kappa) + ", " + str(self.pi) + ")"
+
+NegativeBinomialDistribution.__str__ = __repr__
+NegativeBinomialDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"\mathcal{NB}\left(" + str(self.kappa) + ", " + str(self.pi) + r"\right)"
+
+NegativeBinomialDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
 
 NegativeBinomialDistribution.kappa = property(NegativeBinomialDistribution.get_kappa, NegativeBinomialDistribution.set_kappa)
 del NegativeBinomialDistribution.get_kappa, NegativeBinomialDistribution.set_kappa

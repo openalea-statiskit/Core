@@ -124,14 +124,17 @@ del CategoricalSampleSpace.get_encoding, CategoricalSampleSpace.set_encoding, wr
 NominalSampleSpace.reference = property(NominalSampleSpace.get_reference, NominalSampleSpace.set_reference)
 del NominalSampleSpace.get_reference, NominalSampleSpace.set_reference
 
-def wrapper(f):
-    @wraps(f)
-    def get_ordered(self):
-        return [CategoricalElementaryEvent(value) for value in f(self)]
-    return get_ordered
+# def wrapper(f):
+#     @wraps(f)
+#     def get_ordered(self):
+#         return [CategoricalElementaryEvent(value) for value in f(self)]
+#     return get_ordered
 
-OrdinalSampleSpace.ordered = property(wrapper(OrdinalSampleSpace.get_ordered))
-del wrapper, OrdinalSampleSpace.get_ordered
+# OrdinalSampleSpace.ordered = property(wrapper(OrdinalSampleSpace.get_ordered))
+# del wrapper, OrdinalSampleSpace.get_ordered
+
+OrdinalSampleSpace.ordered = property(OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered)
+del OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered
 
 def __call__(self, event):
     """Convert a representation of an event into a discrete event

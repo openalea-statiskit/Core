@@ -155,6 +155,44 @@ namespace statiskit
         };
     };
 
+    struct STATISKIT_CORE_API LogarithmicDistributionMLEstimation : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >
+    {
+        LogarithmicDistributionMLEstimation();
+        LogarithmicDistributionMLEstimation(LogarithmicDistribution const * estimated, UnivariateData const * data);            
+        LogarithmicDistributionMLEstimation(const LogarithmicDistributionMLEstimation& estimation);
+        virtual ~LogarithmicDistributionMLEstimation();
+
+        struct STATISKIT_CORE_API Estimator : public OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+        };
+    };
+
+    struct STATISKIT_CORE_API GeometricDistributionMLEstimation : ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >
+    {
+        GeometricDistributionMLEstimation();
+        GeometricDistributionMLEstimation(GeometricDistribution const * estimated, UnivariateData const * data);            
+        GeometricDistributionMLEstimation(const GeometricDistributionMLEstimation& estimation);
+        virtual ~GeometricDistributionMLEstimation();
+
+        struct STATISKIT_CORE_API Estimator : public ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+        };
+    };
+
     struct STATISKIT_CORE_API NegativeBinomialDistributionMLEstimation : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >
     {
         NegativeBinomialDistributionMLEstimation();

@@ -234,6 +234,106 @@ namespace statiskit
     void BinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
     { _variance = variance.copy().release(); }
 
+    LogarithmicDistributionMLEstimation::LogarithmicDistributionMLEstimation() : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >()
+    {}
+
+    LogarithmicDistributionMLEstimation::LogarithmicDistributionMLEstimation(LogarithmicDistribution const * estimated, UnivariateData const * data) : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >(estimated, data)     
+    {}
+
+    LogarithmicDistributionMLEstimation::LogarithmicDistributionMLEstimation(const LogarithmicDistributionMLEstimation& estimation) : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >(estimation)     
+    {}
+
+    LogarithmicDistributionMLEstimation::~LogarithmicDistributionMLEstimation()
+    {}
+
+    LogarithmicDistributionMLEstimation::Estimator::Estimator()
+    {}
+
+    LogarithmicDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    LogarithmicDistributionMLEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< UnivariateDistributionEstimation > LogarithmicDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
+    {
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
+        { throw statiskit::sample_space_error(DISCRETE); }
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
+        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
+        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_mean();
+        double theta = 1 + 2 * (mean - 1);
+        theta = 1 - 1 / theta;
+        LogarithmicDistribution* logarithmic = new LogarithmicDistribution(theta);
+        if(!lazy)
+        {
+            estimation = std::make_unique< LogarithmicDistributionMLEstimation >(logarithmic, &data);
+            static_cast< LogarithmicDistributionMLEstimation* >(estimation.get())->_iterations.push_back(theta);
+        }
+        else
+        { estimation = std::make_unique< LazyEstimation< LogarithmicDistribution, DiscreteUnivariateDistributionEstimation > >(logarithmic); }
+        double prev, curr = logarithmic->loglikelihood(data);
+        unsigned int its = 1;
+        do
+        {
+            prev = curr;
+            theta = mean * log(1 - theta) / (mean * log(1 - theta) - 1);
+            if(theta > 0. && theta < 1.)
+            {
+                if(!lazy)
+                { static_cast< LogarithmicDistributionMLEstimation* >(estimation.get())->_iterations.push_back(theta); }
+                logarithmic->set_theta(theta);
+                curr = logarithmic->loglikelihood(data);
+                ++its;
+            }
+        } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
+        return std::move(estimation);
+    }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > LogarithmicDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
+    GeometricDistributionMLEstimation::GeometricDistributionMLEstimation() : ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >()
+    {}
+
+    GeometricDistributionMLEstimation::GeometricDistributionMLEstimation(GeometricDistribution const * estimated, UnivariateData const * data) : ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >(estimated, data)     
+    {}
+
+    GeometricDistributionMLEstimation::GeometricDistributionMLEstimation(const GeometricDistributionMLEstimation& estimation) : ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >(estimation)     
+    {}
+
+    GeometricDistributionMLEstimation::~GeometricDistributionMLEstimation()
+    {}
+
+    GeometricDistributionMLEstimation::Estimator::Estimator()
+    {}
+
+    GeometricDistributionMLEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    GeometricDistributionMLEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< UnivariateDistributionEstimation > GeometricDistributionMLEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
+    {
+        if(data.get_sample_space()->get_outcome() != DISCRETE)
+        { throw statiskit::sample_space_error(DISCRETE); }
+        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
+        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_mean(); 
+        GeometricDistribution* geometric = new GeometricDistribution(1 - 1 / mean);
+        std::unique_ptr< UnivariateDistributionEstimation > estimation;
+        if(lazy)
+        { estimation = std::make_unique< LazyEstimation< GeometricDistribution, DiscreteUnivariateDistributionEstimation > >(geometric); }
+        else
+        { estimation = std::make_unique< GeometricDistributionMLEstimation >(geometric, &data); }
+        return estimation;
+    }
+
+    std::unique_ptr< UnivariateDistributionEstimation::Estimator > GeometricDistributionMLEstimation::Estimator::copy() const
+    { return std::make_unique< Estimator >(*this); }
+
     NegativeBinomialDistributionMLEstimation::NegativeBinomialDistributionMLEstimation() : OptimizationEstimation<double, NegativeBinomialDistribution, DiscreteUnivariateDistributionEstimation >()
     {}
 

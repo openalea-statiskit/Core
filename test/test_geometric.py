@@ -1,4 +1,4 @@
-from test_distribution import AbstractTestContinuousUnivariateDistribution
+from test_distribution import AbstractTestDiscreteUnivariateDistribution
 
 from statiskit import core
 
@@ -9,20 +9,20 @@ from nose.plugins.attrib import attr
       osx=True,
       win=True,
       level=1)
-class TestNormal(unittest.TestCase, AbstractTestContinuousUnivariateDistribution):
+class TestGeometric(unittest.TestCase, AbstractTestDiscreteUnivariateDistribution):
 
     @classmethod
     def setUpClass(cls):
-        """Test normal_estimation distribution construction"""
-        cls._dist = core.NormalDistribution(1., 2.)
+        """Test geometric distribution construction"""
+        cls._dist = core.GeometricDistribution()
 
     def test_mle(self):
-        """Test normal ML estimation"""
+        """Test geometric distribution ML estimation"""
         data = self._dist.simulation(20)
-        mle = core.normal_estimation('ml', data)
+        mle = core.geometric_estimation('ml', data)
         self.assertGreaterEqual(mle.estimated.loglikelihood(data), self._dist.loglikelihood(data))
 
     @classmethod
     def tearDownClass(cls):
-        """Test distribution deletion"""
+        """Test geometric distribution deletion"""
         del cls._dist

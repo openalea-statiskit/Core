@@ -519,6 +519,72 @@ namespace statiskit
             double _pi;
     };
 
+    class STATISKIT_CORE_API LogarithmicDistribution : public PolymorphicCopy< UnivariateDistribution, LogarithmicDistribution, DiscreteUnivariateDistribution >
+    {
+        public:
+            LogarithmicDistribution();
+            LogarithmicDistribution(const double& theta);
+            LogarithmicDistribution(const LogarithmicDistribution& geometric);
+
+            virtual unsigned int get_nb_parameters() const;
+
+            /// \brief Get the value of theta 
+            const double& get_theta() const;
+
+            /// \brief Set the value of theta        
+            void set_theta(const double& theta);
+
+            virtual double ldf(const int& value) const;
+
+            virtual double pdf(const int& value) const;
+
+            virtual double cdf(const int& value) const;
+            
+            virtual int quantile(const double& p) const;
+            
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+            
+            virtual double get_mean() const;
+            
+            virtual double get_variance() const;
+
+        protected:
+            double _theta;
+    };
+    
+    class STATISKIT_CORE_API GeometricDistribution : public PolymorphicCopy< UnivariateDistribution, GeometricDistribution, DiscreteUnivariateDistribution >
+    {
+        public:
+            GeometricDistribution();
+            GeometricDistribution(const double& pi);
+            GeometricDistribution(const GeometricDistribution& geometric);
+
+            virtual unsigned int get_nb_parameters() const;
+
+            /// \brief Get the value of pi 
+            const double& get_pi() const;
+
+            /// \brief Set the value of pi        
+            void set_pi(const double& pi);
+
+            virtual double ldf(const int& value) const;
+
+            virtual double pdf(const int& value) const;
+
+            virtual double cdf(const int& value) const;
+            
+            virtual int quantile(const double& p) const;
+            
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+            
+            virtual double get_mean() const;
+            
+            virtual double get_variance() const;
+
+        protected:
+            double _pi;
+    };
+
     /** \brief This class NegativeBinomialDistribution represents a [negative binomial distribution](https://en.wikipedia.org/wiki/Negative_binomial_distribution)
      * 
      * \details The negative binomial distribution is an univariate discrete distribution of the number of successes in independent [Bernouilli trials](https://en.wikipedia.org/wiki/Bernoulli_trial) with a specified probability \f$\pi \in [0,1]\f$ of success before a specified number of failures denoted \f$\kappa \in \mathbb{R}_+^* \f$.

@@ -27,6 +27,8 @@ from statiskit.core.__core.statiskit import (Optimization,
                                                     DiscreteUnivariateDistributionSelection,
                                                     PoissonDistributionMLEstimation,# PoissonDistributionMMEstimation,
                                                     BinomialDistributionMLEstimation, BinomialDistributionMMEstimation,
+                                                    LogarithmicDistributionMLEstimation,
+                                                    GeometricDistributionMLEstimation,
                                                     NegativeBinomialDistributionMLEstimation, NegativeBinomialDistributionMMEstimation,
                                                     DiscreteUnivariateMixtureDistributionEMEstimation,
                                                     DiscreteUnivariateShiftedDistributionEstimation,
@@ -71,6 +73,8 @@ from _tools import unused_warning
 __all__ = ['frequency_estimation',
            'binomial_estimation',
            'poisson_estimation',
+           'logarithmic_estimation',
+           'geometric_estimation',
            'negative_binomial_estimation',
            'normal_estimation',
            'histogram_estimation',
@@ -348,6 +352,22 @@ def poisson_estimation(algo='mle', data=None, **kwargs):
                        dict(ml = PoissonDistributionMLEstimation.Estimator,
                             #mme = BinomialDistributionMMEstimation.Estimator),
                             ),
+                       **kwargs)
+
+def logarithmic_estimation(algo='ml', data=None, **kwargs):
+    """
+    """
+    return _estimation(algo, 
+                       data,
+                       dict(ml = LogarithmicDistributionMLEstimation.Estimator),
+                       **kwargs)
+
+def geometric_estimation(algo='ml', data=None, **kwargs):
+    """
+    """
+    return _estimation(algo, 
+                       data,
+                       dict(ml = GeometricDistributionMLEstimation.Estimator),
                        **kwargs)
 
 def negative_binomial_estimation(algo='ml', data=None, **kwargs):
