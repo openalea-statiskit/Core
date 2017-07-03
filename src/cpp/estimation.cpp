@@ -77,12 +77,6 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > CategoricalUnivariateDistributionEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
-    std::unique_ptr< UnivariateDistributionEstimation > UnivariateDistributionEstimation::Estimator::operator() (const MultivariateData& data, const Index& index) const
-    { 
-        std::unique_ptr< UnivariateData > _data = data.extract(index);
-        return this->operator() (*_data);
-    }
-
     MultivariateDistributionEstimation::~MultivariateDistributionEstimation()
     {}
 

@@ -14,7 +14,7 @@ namespace autowig
             virtual struct ::statiskit::MultivariateSampleSpace const * get_explanatory_space() const
             { return this->get_override("get_explanatory_space")(); }
                         
-            virtual struct ::statiskit::UnivariateDistribution const * operator()(struct ::statiskit::MultivariateEvent const & param_0) 
+            virtual struct ::statiskit::UnivariateDistribution const * operator()(struct ::statiskit::MultivariateEvent const & param_0) const
             { return this->get_override("operator()")(param_0); }
                         
 

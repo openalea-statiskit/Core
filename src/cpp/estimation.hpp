@@ -67,33 +67,7 @@ namespace statiskit
     template<class D, class B>
         const typename B::data_type * ActiveEstimation< D, B >::get_data() const
         { return _data; }
-
-    template<class D, class B, class R>
-        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation() : ActiveEstimation< D, B >()
-        {}
         
-    template<class D, class B, class R>        
-        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const D* estimated, const typename B::data_type* data, const R& response, const Indices& explanatories) : ActiveEstimation< D, B >(estimated, data) 
-        {
-            _response = response;
-            _explanatories = explanatories;
-        }
-
-    template<class D, class B, class R>                 
-        ConditionalActiveEstimation< D, B, R >::ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation) : ActiveEstimation< D, B >(estimation) 
-        {
-            _response = estimation._response;
-            _explanatories = estimation._explanatories;
-        }
-        
-    template<class D, class B, class R>                 
-        const R ConditionalActiveEstimation< D, B, R >::get_response() const
-        { return _response; }
-        
-    template<class D, class B, class R>                 
-        const Indices& ConditionalActiveEstimation< D, B, R >::get_explanatories() const  
-        { return _explanatories; }        
-
     template<class D, class B>
         Selection< D, B >::Selection() : ActiveEstimation< D, B >()
         {

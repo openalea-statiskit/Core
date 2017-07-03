@@ -1784,6 +1784,23 @@ namespace statiskit
     double BetaDistribution::get_variance() const
     { return _alpha * _beta / (pow(_alpha + _beta, 2) * (_alpha + _beta + 1)); }
 
+    double UnivariateConditionalDistribution::loglikelihood(const MultivariateData& data, const Index& response, const Indices& explanatories) const
+    {
+        double llh = 0.;
+        std::unique_ptr< UnivariateData > _response = data.extract(response);
+        std::unique_ptr< MultivariateData > _explanatories = data.extract(explanatories);
+        std::unique_ptr< UnivariateData::Generator > rgenerator = _response->generator();
+        std::unique_ptr< MultivariateData::Generator > egenerator = _explanatories->generator();
+        while(rgenerator->is_valid() && egenerator->is_valid() && boost::math::isfinite(llh))
+        { 
+            const UnivariateDistribution* distribution = this->operator() (*(egenerator->event()));
+            llh += rgenerator->weight() * distribution->probability(rgenerator->event(), true);
+            ++(*rgenerator);
+            ++(*egenerator);
+        }
+        return llh;        
+    }
+
     double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {
         double llh = 0.;
