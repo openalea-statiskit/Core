@@ -1,0 +1,41 @@
+#include "_core.h"
+
+
+
+namespace autowig
+{
+
+}
+
+#if defined(_MSC_VER)
+    #if (_MSC_VER == 1900)
+namespace boost
+{
+    template <> class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const volatile * get_pointer<class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const volatile >(class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const volatile *c) { return c; }
+}
+    #endif
+#endif
+
+
+
+void wrapper_7d35ddb2f28b57a1849a13f7711f313e()
+{
+
+    std::string name_fa414b05d29e5f4ea0b6d6cb5cf81b01 = boost::python::extract< std::string >(boost::python::scope().attr("__name__") + ".statiskit");
+    boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
+    boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    struct ::statiskit::UnivariateData const * (::statiskit::ActiveEstimation< ::statiskit::GeometricDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_51068c3b6ac05d2c9a851b2de5706c44)() const = &::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::get_data;
+    boost::python::class_< class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > > > class_7d35ddb2f28b57a1849a13f7711f313e("_ActiveEstimation_7d35ddb2f28b57a1849a13f7711f313e", "", boost::python::no_init);
+    class_7d35ddb2f28b57a1849a13f7711f313e.def(boost::python::init<  >(""));
+    class_7d35ddb2f28b57a1849a13f7711f313e.def(boost::python::init< struct ::statiskit::UnivariateData const * >(""));
+    class_7d35ddb2f28b57a1849a13f7711f313e.def(boost::python::init< class ::statiskit::GeometricDistribution const *, struct ::statiskit::UnivariateData const * >(""));
+    class_7d35ddb2f28b57a1849a13f7711f313e.def(boost::python::init< class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_7d35ddb2f28b57a1849a13f7711f313e.def("get_data", method_pointer_51068c3b6ac05d2c9a851b2de5706c44, boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
+
+    if(autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
+    {
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::ActiveEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type >();
+    }
+
+}

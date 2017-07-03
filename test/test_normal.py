@@ -14,7 +14,7 @@ class TestNormal(unittest.TestCase, AbstractTestContinuousUnivariateDistribution
     @classmethod
     def setUpClass(cls):
         """Test normal_estimation distribution construction"""
-        cls._dist = core.NormalDistribution()
+        cls._dist = core.NormalDistribution(1., 2.)
 
     def test_mle(self):
         """Test normal ML estimation"""

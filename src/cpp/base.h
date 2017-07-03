@@ -136,6 +136,7 @@ namespace statiskit
             unsigned int _maxits;
 
             bool run(const unsigned int& its, const double& delta) const;
+            bool run(const unsigned int& its, const double& delta, const unsigned int& scale) const;
     };
 }
 

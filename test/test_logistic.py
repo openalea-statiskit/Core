@@ -14,7 +14,7 @@ class TestLogistic(unittest.TestCase, AbstractTestContinuousUnivariateDistributi
     @classmethod
     def setUpClass(cls):
         """Test logistic distribution construction"""
-        cls._dist = core.LogisticDistribution()
+        cls._dist = core.LogisticDistribution(1., 1.)
 
     @classmethod
     def tearDownClass(cls):

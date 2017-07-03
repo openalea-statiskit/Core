@@ -201,28 +201,22 @@ del __str__
 def _repr_html_(self):
     sample_space = self.sample_space
     string = '<table style="max-width: 100%;">\n\t\t<tr>\n\t\t\t<th></th>\n\t\t\t<th>$'+ r'\mathbf{' + self.name + '}$</th>\n\t\t</tr>'
-    etc = False
     events = self.events
     for index, event in enumerate(events):
-        if index < controls.head or index >= max(controls.head, len(events) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(index) + '</th>\n'
-            string += '\n\t\t\t<td>'
-            if event is not None:
-                string += event._repr_latex_()
-            else:
-                string += sample_space._repr_latex_()
-            string += '</td>'
-        elif not etc:
-            etc = True
-            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>\n\t\t</tr>'
+        string += '\n\t\t<tr>\n\t\t\t<th>' + repr(index) + '</th>\n'
+        string += '\n\t\t\t<td>'
+        if event is not None:
+            string += event._repr_latex_()
+        else:
+            string += sample_space._repr_latex_()
+        string += '</td>'
     string += '\n\t</table>'
     return string
 
 UnivariateDataFrame._repr_html_ = _repr_html_
 del _repr_html_
 
-def pdf_plot(self, axes=None, color='b', **kwargs):
+def pdf_plot(self, axes=None, **kwargs):
     from estimation import frequency_estimation, histogram_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
@@ -237,15 +231,15 @@ def pdf_plot(self, axes=None, color='b', **kwargs):
         raise TypeError('\'norm\' parameter')
     if sample_space.outcome is outcome_type.CATEGORICAL:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, **kwargs)
     elif sample_space.outcome is outcome_type.DISCRETE:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
-        axes = estimation.estimated.pdf_plot(axes=axes, color=color, pmin=0., pmax=1., **kwargs)
+        axes = estimation.estimated.pdf_plot(axes=axes, pmin=0., pmax=1., **kwargs)
     elif sample_space.outcome is outcome_type.CONTINUOUS:
         fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
             estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(algo='irr' if self.total > 700. else 'reg', lazy=True)))
-            axes = estimation.estimated.pdf_plot(axes=axes, color=color, fmt=fmt, **kwargs)
+            axes = estimation.estimated.pdf_plot(axes=axes, fmt=fmt, **kwargs)
         elif fmt == '-':
             raise NotImplementedError
     else:
@@ -255,7 +249,7 @@ def pdf_plot(self, axes=None, color='b', **kwargs):
 UnivariateDataFrame.pdf_plot = pdf_plot
 del pdf_plot
 
-def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
+def cdf_plot(self, axes=None, **kwargs):
     from estimation import frequency_estimation
     sample_space = self.sample_space
     norm = kwargs.pop('norm', False)
@@ -274,10 +268,29 @@ def cdf_plot(self, axes=None, color='b', alpha=1., **kwargs):
             kwargs['pmin'] = 0.
         if not 'pmax' in kwargs:
             kwargs['pmax'] = 1.
-    return estimation.estimated.cdf_plot(axes=axes, color=color, alpha=alpha, **kwargs)
+    return estimation.estimated.cdf_plot(axes=axes, **kwargs)
 
 UnivariateDataFrame.cdf_plot = cdf_plot
 del cdf_plot
+
+def box_plot(self, axes=None, **kwargs):
+    from estimation import frequency_estimation
+    sample_space = self.sample_space
+    norm = kwargs.pop('norm', False)
+    if isinstance(norm, bool):
+        if not norm:
+            kwargs['norm'] = self.total
+    elif isinstance(norm, (int, float)):
+        if norm <= 0:
+            raise ValueError('\'norm\' parameter')
+        kwargs['norm'] = norm
+    else:
+        raise TypeError('\'norm\' parameter')
+    estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
+    return estimation.estimated.box_plot(axes=axes, **kwargs)
+
+UnivariateDataFrame.box_plot = box_plot
+del box_plot
 
 MultivariateData.total = property(MultivariateData.compute_total)
 del MultivariateData.compute_total
@@ -456,17 +469,11 @@ def _repr_html_(self):
     for component in self.components:
         string += '\n\t\t\t<th>'+ component.name + '</th>'
     string += '\n\t\t</tr>'
-    etc = False
     events = self.events
     for i, event in enumerate(events):
-        if i < controls.head or i >= max(controls.head, len(events) - controls.tail):
-            string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
-            string += '</td>\n\t\t\t<td>'.join(event[k]._repr_latex_() if event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(event)))
-            string += '</td>'
-        elif not etc:
-            etc = True
-            string += '\n\t\t<tr>\n\t\t\t<th> . . . </th>'
-            string += '\n\t\t\t<td>$\dots$</td>' * len(event)
+        string += '\n\t\t<tr>\n\t\t\t<th>' + repr(i) + '</th>' + '\n\t\t\t<td>'
+        string += '</td>\n\t\t\t<td>'.join(event[k]._repr_latex_() if event[k] is not None else self.sample_space[k]._repr_latex_() for k in range(len(event)))
+        string += '</td>'
     string += '\n\t</table>'
     return string
 

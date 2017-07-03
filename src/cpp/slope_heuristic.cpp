@@ -20,7 +20,7 @@ namespace statiskit
     { return _solver; }
 
     void SlopeHeuristicSolver::set_solver(const linalg::solver_type& solver)
-    { _solver = solver;; }
+    { _solver = solver; }
 
     SlopeHeuristicOLSSolver::SlopeHeuristicOLSSolver() : SlopeHeuristicSolver()
     {}

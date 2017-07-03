@@ -32,7 +32,7 @@ namespace autowig
 
     };
 
-    void method_decorator_63b969fdfda0571a865b8fd09d42ff6f(struct ::statiskit::MultivariateData::Generator & instance, struct ::statiskit::MultivariateData::Generator & param_out)     { instance.operator++() = param_out; }
+    void method_decorator_63b969fdfda0571a865b8fd09d42ff6f(struct ::statiskit::MultivariateData::Generator & instance, const struct ::statiskit::MultivariateData::Generator & param_out) { instance.operator++() = param_out; }
 }
 
 #if defined(_MSC_VER)

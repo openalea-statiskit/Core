@@ -17,17 +17,17 @@
 
 namespace statiskit
 {
-    /* template<class D, class B> class ShiftedDistributionEstimation : public LazyEstimation< ShiftedDistribution< D >, B >
+    template<class D, class B> class ShiftedDistributionEstimation : public LazyEstimation< ShiftedDistribution< D >, B >
     {
         public:
             ShiftedDistributionEstimation();
-            ShiftedDistributionEstimation(ActiveEstimation< D, B >* estimation, const typename D::event_type::value_type& shift);
+            ShiftedDistributionEstimation(LazyEstimation< D, B >* estimation, const UnivariateDataFrame* data, const typename D::event_type::value_type& shift);
             ShiftedDistributionEstimation(const ShiftedDistributionEstimation< D, B >& estimation);
             virtual ~ShiftedDistributionEstimation();
 
-            const ActiveEstimation< D, B >* get_estimation();
+            const LazyEstimation< D, B >* get_estimation() const;
 
-            class Estimator : public PolymorphicCopy< UnivariateDistributionEstimation, Estimator, typename B::Estimator >
+            class Estimator : public PolymorphicCopy< UnivariateDistributionEstimation::Estimator, Estimator, typename B::Estimator >
             {
                 public:
                     Estimator();
@@ -39,15 +39,24 @@ namespace statiskit
                     typename D::event_type::value_type get_shift() const;
                     void set_shift(const typename D::event_type::value_type& shift);
 
+                    const typename B::Estimator* get_estimator() const;
+                    void set_estimator(const typename B::Estimator& estimator);
+
                 protected:
                     typename D::event_type::value_type _shift;
-
-                    UnivariateData* compute_shifted(const UnivariateData& data);
+                    typename B::Estimator* _estimator;
             };
 
         protected:
-            ActiveEstimation< D, B >* _estimation;
-    };*/
+            LazyEstimation< D, B >* _estimation;
+            const UnivariateDataFrame* _data;
+    };
+
+    typedef ShiftedDistributionEstimation< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateShiftedDistributionEstimation;
+    typedef DiscreteUnivariateShiftedDistributionEstimation::Estimator DiscreteUnivariateShiftedDistributionEstimator;
+
+    typedef ShiftedDistributionEstimation< ContinuousUnivariateDistribution, ContinuousUnivariateDistributionEstimation > ContinuousUnivariateShiftedDistributionEstimation;
+    typedef ContinuousUnivariateShiftedDistributionEstimation::Estimator ContinuousUnivariateShiftedDistributionEstimator;
 
     template<class D, class B> struct UnivariateFrequencyDistributionEstimation : ActiveEstimation< D, B >
     {
@@ -143,6 +152,44 @@ namespace statiskit
             protected:
                 MeanEstimation::Estimator* _mean;
                 VarianceEstimation::Estimator* _variance;
+        };
+    };
+
+    struct STATISKIT_CORE_API LogarithmicDistributionMLEstimation : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >
+    {
+        LogarithmicDistributionMLEstimation();
+        LogarithmicDistributionMLEstimation(LogarithmicDistribution const * estimated, UnivariateData const * data);            
+        LogarithmicDistributionMLEstimation(const LogarithmicDistributionMLEstimation& estimation);
+        virtual ~LogarithmicDistributionMLEstimation();
+
+        struct STATISKIT_CORE_API Estimator : public OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
+        };
+    };
+
+    struct STATISKIT_CORE_API GeometricDistributionMLEstimation : ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >
+    {
+        GeometricDistributionMLEstimation();
+        GeometricDistributionMLEstimation(GeometricDistribution const * estimated, UnivariateData const * data);            
+        GeometricDistributionMLEstimation(const GeometricDistributionMLEstimation& estimation);
+        virtual ~GeometricDistributionMLEstimation();
+
+        struct STATISKIT_CORE_API Estimator : public ActiveEstimation<GeometricDistribution, DiscreteUnivariateDistributionEstimation >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation > operator() (const UnivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
         };
     };
 
@@ -400,6 +447,26 @@ namespace statiskit
 
         protected:
             DiscreteUnivariateDistributionEstimation* _sum;
+    };
+
+    struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    {
+            NegativeMultinomialDistributionEstimation();
+            NegativeMultinomialDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+            NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation);
+            virtual ~NegativeMultinomialDistributionEstimation();
+
+            struct STATISKIT_CORE_API WZ99Estimator : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator
+            {
+                public:
+                    WZ99Estimator();
+                    WZ99Estimator(const WZ99Estimator& estimator);
+                    virtual ~WZ99Estimator();
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
+            };
     };
 
     template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >

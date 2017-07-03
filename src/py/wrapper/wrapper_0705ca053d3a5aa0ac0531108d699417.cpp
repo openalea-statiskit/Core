@@ -5,7 +5,7 @@
 namespace autowig
 {
 
-    void method_decorator_92af2615e4f65b0f8f0b3674cdd442d0(class ::std::unique_ptr< struct ::statiskit::CovarianceMatrixEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::CovarianceMatrixEstimation::Estimator > > const & instance, struct ::statiskit::CovarianceMatrixEstimation::Estimator & param_out)     { instance.operator*() = param_out; }
+    void method_decorator_92af2615e4f65b0f8f0b3674cdd442d0(class ::std::unique_ptr< struct ::statiskit::CovarianceMatrixEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::CovarianceMatrixEstimation::Estimator > > const & instance, const struct ::statiskit::CovarianceMatrixEstimation::Estimator & param_out) { instance.operator*() = param_out; }
 }
 
 #if defined(_MSC_VER)

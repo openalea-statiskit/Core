@@ -5,7 +5,7 @@
 namespace autowig
 {
 
-    void method_decorator_f93c1e93a0245b05b5e5bf3026df3134(class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > const & instance, struct ::statiskit::MultivariateDistributionEstimation & param_out)     { instance.operator*() = param_out; }
+    void method_decorator_f93c1e93a0245b05b5e5bf3026df3134(class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > const & instance, const struct ::statiskit::MultivariateDistributionEstimation & param_out) { instance.operator*() = param_out; }
 }
 
 #if defined(_MSC_VER)

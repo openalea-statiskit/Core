@@ -11,7 +11,13 @@ from functools import wraps
 from optionals import pyplot
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation, _OptimizationEstimationImpl, _Selection, _OptimizationEstimation,
+from statiskit.core.__core.statiskit import (Optimization,
+                                             _LazyEstimation,
+                                             _ActiveEstimation,
+                                             _OptimizationEstimationImpl,
+                                             _Selection,
+                                             _OptimizationEstimation,
+                                             _ShiftedDistributionEstimation,
                                              UnivariateDistributionEstimation,
                                                 CategoricalUnivariateDistributionEstimation,
                                                     CategoricalUnivariateDistributionSelection,
@@ -21,8 +27,11 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     DiscreteUnivariateDistributionSelection,
                                                     PoissonDistributionMLEstimation,# PoissonDistributionMMEstimation,
                                                     BinomialDistributionMLEstimation, BinomialDistributionMMEstimation,
+                                                    LogarithmicDistributionMLEstimation,
+                                                    GeometricDistributionMLEstimation,
                                                     NegativeBinomialDistributionMLEstimation, NegativeBinomialDistributionMMEstimation,
                                                     DiscreteUnivariateMixtureDistributionEMEstimation,
+                                                    DiscreteUnivariateShiftedDistributionEstimation,
                                                 ContinuousUnivariateDistributionEstimation,
                                                     ContinuousUnivariateDistributionSelection,
                                                     ContinuousUnivariateFrequencyDistributionEstimation,
@@ -31,6 +40,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                     RegularUnivariateHistogramDistributionSlopeHeuristicSelection,
                                                     IrregularUnivariateHistogramDistributionSlopeHeuristicSelection,
                                                     ContinuousUnivariateMixtureDistributionEMEstimation,
+                                                    ContinuousUnivariateShiftedDistributionEstimation,
                                              MultivariateDistributionEstimation,
                                                  MixedMultivariateDistributionSelection,
                                                 _IndependentMultivariateDistributionEstimation,
@@ -43,6 +53,7 @@ from statiskit.core.__core.statiskit import (_LazyEstimation, _ActiveEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
                                                     DiscreteMultivariateDistributionSelection,
                                                     MultinomialSplittingDistributionEstimation,
+                                                    NegativeMultinomialDistributionEstimation,
                                                     DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
                                                 ContinuousMultivariateDistributionEstimation,
@@ -62,12 +73,16 @@ from _tools import unused_warning
 __all__ = ['frequency_estimation',
            'binomial_estimation',
            'poisson_estimation',
+           'logarithmic_estimation',
+           'geometric_estimation',
            'negative_binomial_estimation',
            'normal_estimation',
            'histogram_estimation',
            'multinomial_splitting_estimation',
+           'negative_multinomial_estimation',
            'independent_estimation',
            'mixture_estimation',
+           'shifted_estimation',
            'selection']
 
 UnivariateDistributionEstimation.estimated = property(UnivariateDistributionEstimation.get_estimated)
@@ -78,14 +93,14 @@ def active_estimation_decorator(cls):
     cls.data = property(cls.get_data)
     del cls.get_data
 
-    def pdf_plot(self, axes=None, fmt=('|', '-'), color=('b', 'r'), alpha=(1., 1.), norm=False, **kwargs):
-        axes = self.data.pdf_plot(axes=axes, fmt=fmt[0], color=color[0], alpha=alpha[0], norm=norm, **kwargs.pop('data_frame', dict()))
+    def pdf_plot(self, axes=None, norm=False, **kwargs):
+        axes = self.data.pdf_plot(axes=axes, norm=norm, **kwargs.pop('data', dict(fmt='|')))
         if isinstance(norm, bool):
             if not norm:
                 norm = self.data.total
             else:
                 norm = 1.
-        return self.estimated.pdf_plot(axes=axes, fmt=fmt[1], color=color[1], alpha=alpha[1], norm=norm, **kwargs.pop('estimated', dict()))
+        return self.estimated.pdf_plot(axes=axes, norm=norm, **kwargs.pop('estimated', dict(fmt='-')))
 
     cls.pdf_plot = pdf_plot
     del pdf_plot
@@ -230,10 +245,6 @@ def selection_decorator(cls):
 for cls in _Selection:
     selection_decorator(cls)
 
-def optimization_estimation_impl_estimator_decorator(cls):
-
-    pass
-    
 def optimization_estimation_decorator(cls):
 
     class Iterations(object):
@@ -343,6 +354,22 @@ def poisson_estimation(algo='mle', data=None, **kwargs):
                             ),
                        **kwargs)
 
+def logarithmic_estimation(algo='ml', data=None, **kwargs):
+    """
+    """
+    return _estimation(algo, 
+                       data,
+                       dict(ml = LogarithmicDistributionMLEstimation.Estimator),
+                       **kwargs)
+
+def geometric_estimation(algo='ml', data=None, **kwargs):
+    """
+    """
+    return _estimation(algo, 
+                       data,
+                       dict(ml = GeometricDistributionMLEstimation.Estimator),
+                       **kwargs)
+
 def negative_binomial_estimation(algo='ml', data=None, **kwargs):
     """
     """
@@ -397,6 +424,10 @@ del MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSpl
 def multinomial_splitting_estimation(data=None, **kwargs):
     mapping = dict(dflt = MultinomialSplittingDistributionEstimation.Estimator)
     return _estimation('dflt', data, mapping, **kwargs)
+
+def negative_multinomial_estimation(data=None, **kwargs):
+    mapping = dict(WZ99 = NegativeMultinomialDistributionEstimation.WZ99Estimator)
+    return _estimation('WZ99', data, mapping, **kwargs)
 
 def independent_multivariate_distribution_estimation_decorator(cls):
 
@@ -483,6 +514,33 @@ def mixture_estimation(data, algo='em', **kwargs):
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(em = MixedMultivariateMixtureDistributionEMEstimation.Estimator)
     return _estimation(algo, data, mapping, **kwargs)
+
+def shifted_estimation(data, **kwargs):
+    if isinstance(data, UnivariateData):
+        outcome = data.sample_space.outcome
+    elif isinstance(data, outcome_type):
+        outcome = data
+        data = None
+    else:
+        raise TypeError('\'data\' parameter')
+    if outcome in [outcome_type.MIXED, outcome_type.CATEGORICAL]:
+        raise ValueError('\'mult\' parameter')
+    elif outcome is outcome_type.DISCRETE:
+        mapping = dict(a = DiscreteUnivariateShiftedDistributionEstimation.Estimator)
+    elif outcome is outcome_type.CONTINUOUS:
+        mapping = dict(a = ContinuousUnivariateShiftedDistributionEstimation.Estimator)
+    return _estimation('a', data, mapping, **kwargs)
+
+def shifted_distribution_estimator_decorator(cls):
+
+    cls.shift = property(cls.get_shift, cls.set_shift)
+    del cls.get_shift, cls.set_shift
+
+    cls.estimator = property(cls.get_estimator, cls.set_estimator)
+    del cls.get_estimator, cls.set_estimator
+
+for cls in _ShiftedDistributionEstimation:
+    shifted_distribution_estimator_decorator(cls.Estimator)
 
 def selection(data, algo="criterion", *args, **kwargs):
     if isinstance(data, UnivariateData):
