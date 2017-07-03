@@ -18,7 +18,8 @@ from __core.statiskit import (UnivariateData,
                                     UnivariateDataFrame, 
                               MultivariateData,
                                 WeightedMultivariateData,
-                                MultivariateDataFrame)
+                                MultivariateDataFrame,
+                              UnivariateConditionalData)
 
 from controls import controls
 from event import outcome_type
@@ -352,12 +353,36 @@ def wrapper_components(f):
         if index < 0:
             index += len(self)
         if not 0 <= index < len(self):
-            raise IndexError(self._dataframe.__class__.__name__ + " index out of range")
+            raise IndexError(self._dataframe.__class__.__name__ + " component index out of range")
         return f(self._data, index)
 
 Components.__getitem__ = wrapper_components(MultivariateData.extract)
 del wrapper_components,
 MultivariateData.components = property(Components)
+
+def conditioning(self, explanatories, **kwargs):
+    explanatories = [index if index > 0 else index + self.nb_components for index in explanatories]
+    if not all(0 <= index < self.nb_components for index in explanatories):
+        raise IndexError(self.__class__.__name__ + " exaplantory component indices out of range")
+    if "response" in kwargs:
+        response = kwargs.pop("response")
+        if not 0 <= index < self.nb_components:
+            raise IndexError(self.__class__.__name__ + " response component index out of range")
+        return UnivariateConditionalData(self, response, explanatories)
+    elif "responses" in kwargs:
+        responses = [index if index > 0 else index + self.nb_components for index in kwargs.pop("responses")]
+        if not all(0 <= index < self.nb_components for index in responses):
+            raise IndexError(self.__class__.__name__ + " response component indices out of range")
+        return MultivariateConditionalData(self, responses, explanatories)
+    else:
+        reponses = [index for index in range(self.nb_components) if not index in explanatories]
+        if len(responses) == 1:
+            return self.conditioning(explanatories, reponse=reponses.pop())
+        else:
+            return self.conditioning(explanatories, responses=responses)
+
+MultivariateData.conditioning = conditioning
+del conditioning
 
 # MultivariateData.min = property(MultivariateData.compute_minimum)
 # del MultivariateData.compute_minimum

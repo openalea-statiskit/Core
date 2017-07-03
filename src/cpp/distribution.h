@@ -1857,7 +1857,9 @@ namespace statiskit
         typedef UnivariateDistribution response_type;
         
         /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
-        virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) = 0;
+        virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) const = 0;
+
+        double loglikelihood(const MultivariateData& data, const Index& response, const Indices& explanatories) const;
 
     	/// \Brief Get the sample space of the response component \f$ Y \f$.
         //virtual std::unique_ptr< UnivariateSampleSpace > get_response_space() const = 0;

@@ -829,5 +829,87 @@ namespace statiskit
         for(Indices::const_iterator it = indices.cbegin(), it_end = indices.cend(); it != it_end; ++it)
         { __indices.insert(__indices.end(), _indices[*it]); }
         return std::make_unique< MultivariateDataExtraction >(_weights, __indices);
-     }
+    }
+
+    UnivariateConditionalData::UnivariateConditionalData(const MultivariateData& data, const Index& response, const Indices& explanatories)
+    {
+       _response = data.extract(response).release();
+       _explanatories = data.extract(explanatories).release();
+    }
+
+    UnivariateConditionalData::UnivariateConditionalData(const UnivariateConditionalData& data)
+    {
+       _response = data._response->copy().release();
+       _explanatories = data._explanatories->copy().release();
+    }
+
+    UnivariateConditionalData::~UnivariateConditionalData()
+    {
+       if(_response)
+       {
+           delete _response;
+           _response = nullptr;
+       }
+       if(_explanatories)
+       {
+           delete _explanatories;
+           _explanatories = nullptr;
+       }
+    }
+
+    Index UnivariateConditionalData::size() const
+    { return _explanatories->size(); }
+
+    std::unique_ptr< UnivariateConditionalData::Generator > UnivariateConditionalData::generator() const
+    { return std::make_unique< Generator >(this); }
+
+    const UnivariateData* UnivariateConditionalData::get_response() const
+    { return _response; }
+
+    const MultivariateData* UnivariateConditionalData::get_explanatories() const
+    { return _explanatories; }
+
+    std::unique_ptr< UnivariateConditionalData > UnivariateConditionalData::copy() const
+    { return std::make_unique< UnivariateConditionalData >(*this); }
+
+    double UnivariateConditionalData::compute_total() const
+    { return _response->compute_total(); }
+
+    UnivariateConditionalData::Generator::Generator(const UnivariateConditionalData* data)
+    {
+       _rgenerator = data->_response->generator().release();
+       _egenerator = data->_explanatories->generator().release();
+    }
+
+    UnivariateConditionalData::Generator::~Generator()
+    {
+       if(_rgenerator)
+       {
+           delete _rgenerator;
+           _rgenerator = nullptr;
+       }
+       if(_egenerator)
+       {
+           delete _egenerator;
+           _egenerator = nullptr;
+       }
+    }
+
+    bool UnivariateConditionalData::Generator::is_valid() const
+    { return _rgenerator->is_valid(); }
+
+    UnivariateConditionalData::Generator& UnivariateConditionalData::Generator::operator++()
+    {
+        ++(_rgenerator);
+        ++(_egenerator);
+    }
+
+    const UnivariateEvent* UnivariateConditionalData::Generator::response() const
+    { return _rgenerator->event(); }
+
+    const MultivariateEvent* UnivariateConditionalData::Generator::explanatories() const
+    { return _egenerator->event(); }
+
+    double UnivariateConditionalData::Generator::weight() const
+    { return _rgenerator->weight(); }
 }

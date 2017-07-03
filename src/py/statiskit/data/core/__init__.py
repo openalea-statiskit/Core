@@ -17,8 +17,10 @@ def load(*args):
         kwargs['zebrafish'] = read_csv(filepath, header=True)
     if 'FPD17' in kwargs or len(args) == 0:
         filepath = os.path.join(os.path.dirname(__file__), "FPD17.csv")
-        FPD17 = read_csv(filepath, header=False)
-        kwargs['FPD17'] = FPD17
+        kwargs['FPD17'] = read_csv(filepath, header=False)
+    if 'KN03' in kwargs or len(args) == 0:
+        filepath = os.path.join(os.path.dirname(__file__), "KN03.csv")
+        kwargs['KN03'] = read_csv(filepath, header=True)
     args = [kwargs[arg] for arg in args]
 
     if len(args) == 1:

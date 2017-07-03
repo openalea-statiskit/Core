@@ -452,6 +452,48 @@ namespace statiskit
             };
     };
 
+    class STATISKIT_CORE_API UnivariateConditionalData
+    {
+        public:
+            class STATISKIT_CORE_API Generator
+            {
+                public:
+                    Generator(const UnivariateConditionalData* data);
+                    virtual ~Generator();
+
+                    virtual bool is_valid() const;
+
+                    virtual Generator& operator++();
+
+                    virtual const UnivariateEvent* response() const;
+                    virtual const MultivariateEvent* explanatories() const;
+
+                    virtual double weight() const;
+
+                protected:
+                    UnivariateData::Generator* _rgenerator;
+                    MultivariateData::Generator* _egenerator;
+            };
+
+            UnivariateConditionalData(const MultivariateData& data, const Index& response, const Indices& explanatories);
+            UnivariateConditionalData(const UnivariateConditionalData& data);
+            virtual ~UnivariateConditionalData();
+
+            virtual Index size() const;
+            
+            virtual std::unique_ptr< UnivariateConditionalData::Generator > generator() const;
+
+            virtual const UnivariateData* get_response() const;
+            virtual const MultivariateData* get_explanatories() const;
+        
+            virtual std::unique_ptr< UnivariateConditionalData > copy() const;
+            
+            double compute_total() const;
+
+        protected:
+            UnivariateData* _response;
+            MultivariateData* _explanatories;
+    };
 
     /*template<class D>
     class DataMask : public D

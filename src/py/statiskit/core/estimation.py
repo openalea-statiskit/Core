@@ -105,6 +105,30 @@ def active_estimation_decorator(cls):
     cls.pdf_plot = pdf_plot
     del pdf_plot
 
+    def cdf_plot(self, axes=None, norm=False, **kwargs):
+        axes = self.data.cdf_plot(axes=axes, norm=norm, **kwargs.pop('data', dict(fmt='|')))
+        if isinstance(norm, bool):
+            if not norm:
+                norm = self.data.total
+            else:
+                norm = 1.
+        return self.estimated.cdf_plot(axes=axes, norm=norm, **kwargs.pop('estimated', dict(fmt='-')))
+
+    cls.cdf_plot = cdf_plot
+    del cdf_plot
+
+    def box_plot(self, axes=None, norm=False, **kwargs):
+        axes = self.data.box_plot(axes=axes, norm=norm, **kwargs.pop('data', dict(fmt='|')))
+        if isinstance(norm, bool):
+            if not norm:
+                norm = self.data.total
+            else:
+                norm = 1.
+        return self.estimated.box_plot(axes=axes, norm=norm, **kwargs.pop('estimated', dict(fmt='-')))
+
+    cls.box_plot = box_plot
+    del box_plot
+
 for cls in _ActiveEstimation:
     active_estimation_decorator(cls)
 
@@ -335,6 +359,9 @@ def frequency_estimation(data, **kwargs):
             raise ValueError('\'outcome\' parameter')
     return _estimation('mle', data, mapping, **kwargs)
 
+BinomialDistributionMLEstimation.Estimator.force = property(BinomialDistributionMLEstimation.Estimator.get_force, BinomialDistributionMLEstimation.Estimator.set_force)
+del BinomialDistributionMLEstimation.Estimator.get_force, BinomialDistributionMLEstimation.Estimator.set_force
+
 def binomial_estimation(algo='ml', data=None, **kwargs):
     """
     """
@@ -369,6 +396,9 @@ def geometric_estimation(algo='ml', data=None, **kwargs):
                        data,
                        dict(ml = GeometricDistributionMLEstimation.Estimator),
                        **kwargs)
+
+NegativeBinomialDistributionMLEstimation.Estimator.force = property(NegativeBinomialDistributionMLEstimation.Estimator.get_force, NegativeBinomialDistributionMLEstimation.Estimator.set_force)
+del NegativeBinomialDistributionMLEstimation.Estimator.get_force, NegativeBinomialDistributionMLEstimation.Estimator.set_force
 
 def negative_binomial_estimation(algo='ml', data=None, **kwargs):
     """

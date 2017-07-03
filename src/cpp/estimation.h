@@ -36,7 +36,6 @@ namespace statiskit
 
             virtual ~Estimator() = 0;
 
-            virtual std::unique_ptr< estimation_type > operator() (const MultivariateData& data, const Index& index) const;
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
 
             virtual std::unique_ptr< Estimator > copy() const = 0;
@@ -71,21 +70,6 @@ namespace statiskit
 
         protected:
             typename B::data_type const * _data;
-    };
-
-    template<class D, class B, class R> class ConditionalActiveEstimation : public ActiveEstimation< D, B >
-    {
-        public:
-            ConditionalActiveEstimation();
-            ConditionalActiveEstimation(D const * estimated, typename B::data_type const * data, const R& response, const Indices& explanatories);
-            ConditionalActiveEstimation(const ConditionalActiveEstimation< D, B, R >& estimation);
-
-            const R get_response() const;
-            const Indices& get_explanatories() const;
-
-        protected:
-            R _response;
-            Indices _explanatories;
     };
 
     template<class D, class B> class Selection : public ActiveEstimation< D, B >
@@ -306,7 +290,7 @@ namespace statiskit
 
     struct STATISKIT_CORE_API UnivariateConditionalDistributionEstimation
     {
-        typedef MultivariateData data_type;
+        typedef UnivariateConditionalData data_type;
         typedef ::statiskit::UnivariateConditionalDistribution estimated_type;
         
         virtual ~UnivariateConditionalDistributionEstimation() = 0;
@@ -317,8 +301,7 @@ namespace statiskit
         { 
             typedef UnivariateConditionalDistributionEstimation estimation_type;
             
-            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const Indices& explanatories, const bool& lazy=true) const = 0;
-            // virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const Index& response, const bool& lazy=true) const;
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
         };
     };
 
