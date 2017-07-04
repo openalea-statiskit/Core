@@ -900,8 +900,9 @@ namespace statiskit
 
     UnivariateConditionalData::Generator& UnivariateConditionalData::Generator::operator++()
     {
-        ++(_rgenerator);
-        ++(_egenerator);
+        ++(*_rgenerator);
+        ++(*_egenerator);
+        return *this;
     }
 
     const UnivariateEvent* UnivariateConditionalData::Generator::response() const
