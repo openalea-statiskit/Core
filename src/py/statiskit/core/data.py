@@ -361,21 +361,21 @@ del wrapper_components,
 MultivariateData.components = property(Components)
 
 def conditioning(self, explanatories, **kwargs):
-    explanatories = [index if index > 0 else index + self.nb_components for index in explanatories]
-    if not all(0 <= index < self.nb_components for index in explanatories):
+    explanatories = [index if index > 0 else index + len(self.components) for index in explanatories]
+    if not all(0 <= index < len(self.components) for index in explanatories):
         raise IndexError(self.__class__.__name__ + " exaplantory component indices out of range")
     if "response" in kwargs:
         response = kwargs.pop("response")
-        if not 0 <= index < self.nb_components:
+        if not 0 <= index < len(self.components):
             raise IndexError(self.__class__.__name__ + " response component index out of range")
         return UnivariateConditionalData(self, response, explanatories)
     elif "responses" in kwargs:
-        responses = [index if index > 0 else index + self.nb_components for index in kwargs.pop("responses")]
-        if not all(0 <= index < self.nb_components for index in responses):
+        responses = [index if index > 0 else index + len(self.components) for index in kwargs.pop("responses")]
+        if not all(0 <= index < len(self.components) for index in responses):
             raise IndexError(self.__class__.__name__ + " response component indices out of range")
         return MultivariateConditionalData(self, responses, explanatories)
     else:
-        reponses = [index for index in range(self.nb_components) if not index in explanatories]
+        reponses = [index for index in range(len(self.components)) if not index in explanatories]
         if len(responses) == 1:
             return self.conditioning(explanatories, reponse=reponses.pop())
         else:
