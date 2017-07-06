@@ -302,6 +302,8 @@ namespace statiskit
             typedef UnivariateConditionalDistributionEstimation estimation_type;
             
             virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
+
+            virtual std::unique_ptr< Estimator > copy() const = 0;
         };
     };
 
@@ -310,16 +312,27 @@ namespace statiskit
         struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
+
+    typedef Selection< CategoricalUnivariateConditionalDistribution, CategoricalUnivariateConditionalDistributionEstimation > CategoricalUnivariateConditionalDistributionSelection;
+    typedef CategoricalUnivariateConditionalDistributionSelection::CriterionEstimator CategoricalUnivariateConditionalDistributionCriterionEstimator;
+
     struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
         struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
+
+    typedef Selection< DiscreteUnivariateConditionalDistribution, DiscreteUnivariateConditionalDistributionEstimation > DiscreteUnivariateConditionalDistributionSelection;
+    typedef DiscreteUnivariateConditionalDistributionSelection::CriterionEstimator DiscreteUnivariateConditionalDistributionCriterionEstimator;
+
     struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistributionEstimation : UnivariateConditionalDistributionEstimation
     {
         struct STATISKIT_CORE_API Estimator : UnivariateConditionalDistributionEstimation::Estimator
         {};
     };
+
+    typedef Selection< ContinuousUnivariateConditionalDistribution, ContinuousUnivariateConditionalDistributionEstimation > ContinuousUnivariateConditionalDistributionSelection;
+    typedef ContinuousUnivariateConditionalDistributionSelection::CriterionEstimator ContinuousUnivariateConditionalDistributionCriterionEstimator;
 
 }
 

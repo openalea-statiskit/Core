@@ -63,8 +63,11 @@ from statiskit.core.__core.statiskit import (Optimization,
                                              _MixtureDistributionEMEstimation,
                                              UnivariateConditionalDistributionEstimation,
                                                 CategoricalUnivariateConditionalDistributionEstimation,
+                                                    CategoricalUnivariateConditionalDistributionSelection,
                                                 DiscreteUnivariateConditionalDistributionEstimation,
-                                                ContinuousUnivariateConditionalDistributionEstimation)
+                                                    DiscreteUnivariateConditionalDistributionSelection,
+                                                ContinuousUnivariateConditionalDistributionEstimation,
+                                                    ContinuousUnivariateConditionalDistributionSelection)
 
 from event import outcome_type
 from data import UnivariateData, MultivariateData
@@ -575,7 +578,7 @@ for cls in _ShiftedDistributionEstimation:
 def selection(data, algo="criterion", *args, **kwargs):
     if isinstance(data, UnivariateData):
         outcome = data.sample_space.outcome
-        kwargs['mult'] = False
+        kwargs['multivariate'] = False
     elif isinstance(data, MultivariateData):
         if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
             outcome = outcome_type.CATEGORICAL
@@ -585,14 +588,19 @@ def selection(data, algo="criterion", *args, **kwargs):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
-        kwargs['mult'] = True
+        kwargs['multivariate'] = True
+    elif isinstance(data, UnivariateConditionalData):
+        outcome = data.sample_space.outcome
+        kwargs['multivariate'] = False
+        kwargs['conditional'] = True
     elif isinstance(data, outcome_type):
         outcome = data
         data = None
     else:
         raise TypeError('\'data\' parameter')
-    mult = kwargs.pop('mult', outcome is outcome_type.MIXED)
-    if mult:
+    multivariate = kwargs.pop('multivariate', outcome is outcome_type.MIXED)
+    conditional = kwargs.pop('conditional', False)
+    if multivariate:
         if outcome is outcome_type.MIXED:
             mapping = dict(criterion = MultivariateDistributionSelection.CriterionEstimator)
         elif outcome is outcome_type.CATEGORICAL:
@@ -602,14 +610,24 @@ def selection(data, algo="criterion", *args, **kwargs):
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(criterion = ContinuousMultivariateDistributionSelection.CriterionEstimator)
     else:
-        if outcome is outcome_type.MIXED:
-            raise ValueError('\'mult\' parameter')
-        elif outcome is outcome_type.CATEGORICAL:
-            mapping = dict(criterion = CategoricalUnivariateDistributionSelection.CriterionEstimator)
-        elif outcome is outcome_type.DISCRETE:
-            mapping = dict(criterion = DiscreteUnivariateDistributionSelection.CriterionEstimator)
-        elif outcome is outcome_type.CONTINUOUS:
-            mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
+        if conditional:
+            if outcome is outcome_type.MIXED:
+                raise ValueError('\'multivariate\' parameter')
+            elif outcome is outcome_type.CATEGORICAL:
+                mapping = dict(criterion = CategoricalUnivariateConditionalDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.DISCRETE:
+                mapping = dict(criterion = DiscreteUnivariateConditionalDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CONTINUOUS:
+                mapping = dict(criterion = ContinuousUnivariateConditionalDistributionSelection.CriterionEstimator)
+        else:
+            if outcome is outcome_type.MIXED:
+                raise ValueError('\'multivariate\' parameter')
+            elif outcome is outcome_type.CATEGORICAL:
+                mapping = dict(criterion = CategoricalUnivariateDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.DISCRETE:
+                mapping = dict(criterion = DiscreteUnivariateDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CONTINUOUS:
+                mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
     return _estimation(algo, data, mapping, **kwargs)
 
 UnivariateConditionalDistributionEstimation.estimated = property(UnivariateConditionalDistributionEstimation.get_estimated)
