@@ -296,6 +296,49 @@ del box_plot
 MultivariateData.total = property(MultivariateData.compute_total)
 del MultivariateData.compute_total
 
+def wrapper_extract(f):
+
+    @wraps(f)
+    def extract(self, *args, **kwargs):
+        if len(kwargs) == 0:
+            args = [index if index >= 0 else index + len(self.components) for index in args]
+            if len(args) == 1:
+                args = args.pop()
+            return f(self, args)
+        else:
+            if 'explanatories' not in kwargs:
+                if 'response' in kwargs:
+                    kwargs['explanatories'] = [index for index in range(len(self.components)) if not index == kwargs['response']]
+                elif 'responses' in kwargs:
+                    kwargs['explanatories'] = [index for index in range(len(self.components)) if index not in kwargs['responses']]
+                else:
+                    raise ValueError()
+            explanatories = [index if index >= 0 else index + len(self.components) for index in kwargs.pop('explanatories')]
+            if not all(0 <= index < len(self.components) for index in explanatories):
+                raise IndexError(self.__class__.__name__ + " explanatory component indices out of range")
+            if "response" in kwargs:
+                response = kwargs.pop("response")
+                if response < 0:
+                    response += len(self.components)
+                if not 0 <= response < len(self.components):
+                    raise IndexError(self.__class__.__name__ + " response component index out of range")
+                return UnivariateConditionalData(self, response, explanatories)
+            elif "responses" in kwargs:
+                responses = [index if index >= 0 else index + len(self.components) for index in kwargs.pop("responses")]
+                if not all(0 <= index < len(self.components) for index in responses):
+                    raise IndexError(self.__class__.__name__ + " response component indices out of range")
+                return MultivariateConditionalData(self, responses, explanatories)
+            else:
+                responses = [index for index in range(len(self.components)) if not index in explanatories]
+                if len(responses) == 1:
+                    return self.extract(explantories=explanatories, response=responses.pop())
+                else:
+                    return self.extract(explantories=explanatories, responses=responses)
+    return extract
+
+MultivariateData.extract = wrapper_extract(MultivariateData.extract)
+del wrapper_extract
+
 def get_mean(self):
     if not hasattr(self, '_mean'):
         return mean_vector_estimation('nat', self).mean
@@ -359,32 +402,6 @@ def wrapper_components(f):
 Components.__getitem__ = wrapper_components(MultivariateData.extract)
 del wrapper_components,
 MultivariateData.components = property(Components)
-
-def conditioning(self, explanatories, **kwargs):
-    explanatories = [index if index >= 0 else index + len(self.components) for index in explanatories]
-    if not all(0 <= index < len(self.components) for index in explanatories):
-        raise IndexError(self.__class__.__name__ + " explanatory component indices out of range")
-    if "response" in kwargs:
-        response = kwargs.pop("response")
-        if response < 0:
-            response += len(self.components)
-        if not 0 <= response < len(self.components):
-            raise IndexError(self.__class__.__name__ + " response component index out of range")
-        return UnivariateConditionalData(self, response, explanatories)
-    elif "responses" in kwargs:
-        responses = [index if index >= 0 else index + len(self.components) for index in kwargs.pop("responses")]
-        if not all(0 <= index < len(self.components) for index in responses):
-            raise IndexError(self.__class__.__name__ + " response component indices out of range")
-        return MultivariateConditionalData(self, responses, explanatories)
-    else:
-        responses = [index for index in range(len(self.components)) if not index in explanatories]
-        if len(responses) == 1:
-            return self.conditioning(explanatories, response=responses.pop())
-        else:
-            return self.conditioning(explanatories, responses=responses)
-
-MultivariateData.conditioning = conditioning
-del conditioning
 
 # MultivariateData.min = property(MultivariateData.compute_minimum)
 # del MultivariateData.compute_minimum

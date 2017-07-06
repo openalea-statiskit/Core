@@ -8,6 +8,12 @@ namespace autowig
     {
         public:
             
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > (result);
+            }
+                        
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         
@@ -51,11 +57,13 @@ void wrapper_7ed55bcdec33582fb2767f7d96937c85()
     double  (::statiskit::UnivariateConditionalDistribution::*method_pointer_8dba0d01abc159cf8681ca1cca6dbacb)(class ::statiskit::UnivariateConditionalData const &) const = &::statiskit::UnivariateConditionalDistribution::loglikelihood;
     struct ::statiskit::MultivariateSampleSpace const * (::statiskit::UnivariateConditionalDistribution::*method_pointer_152a627d69cd5b35837e015943fc1e75)() const = &::statiskit::UnivariateConditionalDistribution::get_explanatory_space;
     unsigned int  (::statiskit::UnivariateConditionalDistribution::*method_pointer_a19605344e725c65ab302819d1663dbe)() const = &::statiskit::UnivariateConditionalDistribution::get_nb_parameters;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >  (::statiskit::UnivariateConditionalDistribution::*method_pointer_2d42bbbaff065a9cb38813f62e9dafda)() const = &::statiskit::UnivariateConditionalDistribution::copy;
     boost::python::class_< autowig::Wrap_7ed55bcdec33582fb2767f7d96937c85, autowig::Held< autowig::Wrap_7ed55bcdec33582fb2767f7d96937c85 >::Type, boost::noncopyable > class_7ed55bcdec33582fb2767f7d96937c85("UnivariateConditionalDistribution", "", boost::python::no_init);
     class_7ed55bcdec33582fb2767f7d96937c85.def("__call__", boost::python::pure_virtual(method_pointer_53f978a20dca5ccd9144b1aeb74559b6), boost::python::return_value_policy< boost::python::reference_existing_object >(), ":Parameter:\n    `event` (:py:class:`statiskit.core.statiskit.MultivariateEvent`) - Undocumented\n\n:Return Type:\n    :py:class:`statiskit.core.statiskit.UnivariateDistribution`\n\n");
     class_7ed55bcdec33582fb2767f7d96937c85.def("loglikelihood", method_pointer_8dba0d01abc159cf8681ca1cca6dbacb, "");
     class_7ed55bcdec33582fb2767f7d96937c85.def("get_explanatory_space", boost::python::pure_virtual(method_pointer_152a627d69cd5b35837e015943fc1e75), boost::python::return_value_policy< boost::python::reference_existing_object >(), ":Return Type:\n    :py:class:`statiskit.core.statiskit.MultivariateSampleSpace`\n\n");
     class_7ed55bcdec33582fb2767f7d96937c85.def("get_nb_parameters", boost::python::pure_virtual(method_pointer_a19605344e725c65ab302819d1663dbe), ":Return Type:\n    :cpp:any:`unsigned` int\n\n");
+    class_7ed55bcdec33582fb2767f7d96937c85.def("copy", boost::python::pure_virtual(method_pointer_2d42bbbaff065a9cb38813f62e9dafda), "");
     if(autowig::Held< struct ::statiskit::UnivariateConditionalDistribution >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_7ed55bcdec33582fb2767f7d96937c85 >::Type, autowig::Held< struct ::statiskit::UnivariateConditionalDistribution >::Type >();

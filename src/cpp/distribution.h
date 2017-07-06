@@ -1870,8 +1870,8 @@ namespace statiskit
     	/// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
         virtual unsigned int get_nb_parameters() const = 0;
 
-        //double loglikelihood(const UnivariateData& data) const;
-    };
+        virtual std::unique_ptr< UnivariateConditionalDistribution > copy() const = 0;
+    }; 
     
     struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
     {

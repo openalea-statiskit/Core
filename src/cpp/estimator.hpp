@@ -121,7 +121,6 @@ namespace statiskit
         void ShiftedDistributionEstimation< D, B >::Estimator::set_shift(const typename D::event_type::value_type& shift)
         { _shift = shift; }
 
-
     template<class D, class B>
         const typename B::Estimator* ShiftedDistributionEstimation< D, B >::Estimator::get_estimator() const
         { return _estimator; }
