@@ -546,3 +546,5 @@ del _repr_html_
 #
 #UnivariateDataFrame.lorenz_plot = lorenz_plot
 #del lorenz_plot
+
+UnivariateConditionalData.response = property(UnivariateConditionalData.get_response)
