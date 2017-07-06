@@ -596,7 +596,7 @@ def selection(data, algo="criterion", *args, **kwargs):
             outcome = outcome_type.MIXED
         kwargs['multivariate'] = True
     elif isinstance(data, UnivariateConditionalData):
-        outcome = data.sample_space.outcome
+        outcome = data.response.sample_space.outcome
         kwargs['multivariate'] = False
         kwargs['conditional'] = True
     elif isinstance(data, outcome_type):
