@@ -147,6 +147,12 @@ def selection_decorator(cls):
         def __init__(self, estimation):
             self._estimation = estimation
 
+        def __str__(self):
+          return str(self[:])
+        
+        def __repr__(self):
+          return repr(self[:])
+        
         def plot(self, axes=None):
             if axes is None:
                 axes = pyplot.subplot(1,1,1)
