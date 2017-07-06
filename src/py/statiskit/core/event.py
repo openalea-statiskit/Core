@@ -295,7 +295,6 @@ def __repr__(self):
 MultivariateEvent.__repr__ = __repr__
 del __repr__
 
-
 def wrapper(f):
     @wraps(f)
     def __setitem__(self, index, event):

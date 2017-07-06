@@ -118,7 +118,7 @@ namespace statiskit
     bool Optimization::run(const unsigned int& its, const double& delta) const
     { 
         bool status = true;
-        if(its >= _minits)
+        if(its > _minits)
         {
             if(!boost::math::isfinite(delta) || its > _maxits)
             { status = false; }

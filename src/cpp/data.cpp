@@ -678,6 +678,9 @@ namespace statiskit
     MultivariateDataFrame::UnivariateDataExtraction::UnivariateDataExtraction(const MultivariateDataFrame* data, const Index& index)
     { _data = data->get_component(index); }
 
+    MultivariateDataFrame::UnivariateDataExtraction::UnivariateDataExtraction(const UnivariateDataExtraction& data)
+    { _data = data._data; }
+
     MultivariateDataFrame::UnivariateDataExtraction::~UnivariateDataExtraction()
     {}
 
@@ -691,6 +694,13 @@ namespace statiskit
     { 
         _data = data;
         _indices = std::vector< Index >(indices.cbegin(), indices.cend());
+        _sample_space = new SampleSpace(this);
+    }
+
+    MultivariateDataFrame::MultivariateDataExtraction::MultivariateDataExtraction(const MultivariateDataExtraction& data)
+    { 
+        _data = data._data;
+        _indices = data._indices;
         _sample_space = new SampleSpace(this);
     }
 
@@ -716,6 +726,9 @@ namespace statiskit
 
     MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::SampleSpace(const MultivariateDataExtraction* data)
     { _data = data; }
+
+    MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::SampleSpace(const SampleSpace& sample_space)
+    { _data = sample_space._data; }
 
     MultivariateDataFrame::MultivariateDataExtraction::SampleSpace::~SampleSpace()
     {}

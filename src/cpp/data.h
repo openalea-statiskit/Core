@@ -244,6 +244,7 @@ namespace statiskit
             {
                 public:
                     UnivariateDataExtraction(const MultivariateDataFrame* data, const Index& index);
+                    UnivariateDataExtraction(const UnivariateDataExtraction& data);
                     virtual ~UnivariateDataExtraction();
 
                     virtual std::unique_ptr< UnivariateData::Generator > generator() const;
@@ -258,6 +259,7 @@ namespace statiskit
             {
                 public:
                     MultivariateDataExtraction(const MultivariateDataFrame* data, const Indices& index);
+                    MultivariateDataExtraction(const MultivariateDataExtraction& data);
                     virtual ~MultivariateDataExtraction();
 
                     virtual std::unique_ptr< MultivariateData::Generator > generator() const;
@@ -277,6 +279,7 @@ namespace statiskit
                     {
                         public:
                             SampleSpace(const MultivariateDataExtraction* data);
+                            SampleSpace(const SampleSpace& sample_space);
                             virtual ~SampleSpace();
 
                             virtual Index size() const;
