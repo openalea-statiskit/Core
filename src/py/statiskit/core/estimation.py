@@ -578,6 +578,11 @@ def shifted_distribution_estimator_decorator(cls):
     cls.estimator = property(cls.get_estimator, cls.set_estimator)
     del cls.get_estimator, cls.set_estimator
 
+def shifted_distribution_estimation_decorator(cls):
+
+    cls.estimation = property(cls.get_estimation)
+    del cls.get_estimation
+    
 for cls in _ShiftedDistributionEstimation:
     shifted_distribution_estimator_decorator(cls.Estimator)
 

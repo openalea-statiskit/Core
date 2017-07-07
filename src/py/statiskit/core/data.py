@@ -306,34 +306,38 @@ def wrapper_extract(f):
                 args = args.pop()
             return f(self, args)
         else:
-            if 'explanatories' not in kwargs:
-                if 'response' in kwargs:
-                    kwargs['explanatories'] = [index for index in range(len(self.components)) if not index == kwargs['response']]
-                elif 'responses' in kwargs:
-                    kwargs['explanatories'] = [index for index in range(len(self.components)) if index not in kwargs['responses']]
-                else:
-                    raise ValueError()
-            explanatories = [index if index >= 0 else index + len(self.components) for index in kwargs.pop('explanatories')]
-            if not all(0 <= index < len(self.components) for index in explanatories):
-                raise IndexError(self.__class__.__name__ + " explanatory component indices out of range")
             if "response" in kwargs:
                 response = kwargs.pop("response")
                 if response < 0:
                     response += len(self.components)
                 if not 0 <= response < len(self.components):
                     raise IndexError(self.__class__.__name__ + " response component index out of range")
-                return UnivariateConditionalData(self, response, explanatories)
+                kwargs['response'] = response
             elif "responses" in kwargs:
                 responses = [index if index >= 0 else index + len(self.components) for index in kwargs.pop("responses")]
                 if not all(0 <= index < len(self.components) for index in responses):
                     raise IndexError(self.__class__.__name__ + " response component indices out of range")
+                kwargs['responses'] = responses
+            if 'explanatories' not in kwargs:
+                if 'response' in kwargs:
+                    kwargs['explanatories'] = [index for index in range(len(self.components)) if not index == response]
+                elif 'responses' in kwargs:
+                    kwargs['explanatories'] = [index for index in range(len(self.components)) if index not in responses]
+                else:
+                    raise ValueError()
+            explanatories = [index if index >= 0 else index + len(self.components) for index in kwargs.pop('explanatories')]
+            if not all(0 <= index < len(self.components) for index in explanatories):
+                raise IndexError(self.__class__.__name__ + " explanatory component indices out of range")
+            if 'response' in kwargs:
+                return UnivariateConditionalData(self, response, explanatories)
+            elif "responses" in kwargs:
                 return MultivariateConditionalData(self, responses, explanatories)
             else:
                 responses = [index for index in range(len(self.components)) if not index in explanatories]
                 if len(responses) == 1:
-                    return self.extract(explantories=explanatories, response=responses.pop())
+                    return self.extract(explanatories=explanatories, response=responses.pop())
                 else:
-                    return self.extract(explantories=explanatories, responses=responses)
+                    return self.extract(explanatories=explanatories, responses=responses)
     return extract
 
 MultivariateData.extract = wrapper_extract(MultivariateData.extract)
