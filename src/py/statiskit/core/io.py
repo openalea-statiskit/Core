@@ -111,7 +111,7 @@ def from_list(*data, **kwargs):
                     except:
                         nbstr += 1
             if nbstr > nbint + nbflt:
-                sample_spaces.append(NominalSampleSpace(_data))
+                sample_spaces.append(NominalSampleSpace([value.strip() for value in _data]))
             elif nbint > nbstr + nbflt:
                 sample_spaces.append(controls.ZZ)
             elif nbflt > nbstr + nbint:

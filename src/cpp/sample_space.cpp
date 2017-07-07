@@ -72,9 +72,11 @@ namespace statiskit
 
     NominalSampleSpace::NominalSampleSpace(const std::set< std::string >& values) : CategoricalSampleSpace(values)
     { 
+        std::cout << "yop" << std::endl;
         _reference = _values.cend();
         --_reference;
         _encoding = TREATMENT;
+        std::cout << "nop" << std::endl;
     }
 
     NominalSampleSpace::NominalSampleSpace(const NominalSampleSpace& sample_space) : CategoricalSampleSpace(sample_space)
