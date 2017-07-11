@@ -85,7 +85,7 @@ namespace statiskit
 
     double NominalDistribution::pdf(const int& position) const
     {  return _pi[position]; }
-   
+
     OrdinalDistribution::OrdinalDistribution(const std::vector< std::string >& values)
     {
         init(std::set< std::string >(values.cbegin(), values.cend()));
@@ -1884,8 +1884,11 @@ namespace statiskit
                         else
                         { throw std::exception(); }
                     }
-                }                
-                p = 0.;
+                }  
+                if(logarithm)              
+                { p = _sum->ldf(kappa); }
+                else
+                { p = _sum->pdf(kappa); }
                 double sum = 0.;
                 BinomialDistribution binomial = BinomialDistribution(kappa, 0);
                 const UnivariateEvent* uevent;
@@ -1983,6 +1986,119 @@ namespace statiskit
         { throw parameter_error("pi", "number of parameters"); }
     }
     
+    DirichletMultinomialSplittingDistribution::DirichletMultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& alpha)
+    {
+        set_sum(sum);
+        _alpha = Eigen::VectorXd::Ones(alpha.size());
+        set_alpha(alpha);
+    }
+
+    DirichletMultinomialSplittingDistribution::DirichletMultinomialSplittingDistribution(const DirichletMultinomialSplittingDistribution& multinomial)
+    {
+        _sum = static_cast< DiscreteUnivariateDistribution* >(multinomial._sum->copy().release());
+        _alpha = multinomial._alpha;
+    }
+
+    DirichletMultinomialSplittingDistribution::~DirichletMultinomialSplittingDistribution()
+    { delete _sum; }
+
+    Index DirichletMultinomialSplittingDistribution::get_nb_components() const
+    { return _alpha.size(); }
+
+    unsigned int DirichletMultinomialSplittingDistribution::get_nb_parameters() const
+    { return _sum->get_nb_parameters() + _alpha.size(); }
+
+    double DirichletMultinomialSplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
+    {
+        double p;
+        if(!logarithm)
+        { p = exp(probability(event, true));}
+        else
+        {
+            if(event && event->size() == get_nb_components())
+            {
+
+                try
+                {
+                    int kappa = 0;
+                    for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+                    {
+                        const UnivariateEvent* uevent = event->get(component);
+                        if(uevent)
+                        {
+                            if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                            { kappa += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+                            else
+                            { throw std::exception(); }
+                        }
+                    }                
+                    p = _sum->ldf(kappa) + boost::math::lgamma(kappa + 1) + boost::math::lgamma(_alpha.sum()) - boost::math::lgamma(_alpha.sum() + kappa);
+                    double sum = 0.;
+                    for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
+                    {
+                        const UnivariateEvent* uevent = event->get(component);
+                        if(uevent)
+                        {
+                            if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                            {
+                                int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
+                                p += boost::math::lgamma(_alpha[component] + value);
+                                p -= boost::math::lgamma(_alpha[component]) + boost::math::lgamma(value + 1);
+                            }
+                            else
+                            { throw std::exception(); }
+                        }
+                    }
+                }
+                catch(const std::exception& error)
+                { p = log(0.); }
+            }
+            else
+            { p = log(0.); }
+        }
+        return p;
+    }
+
+    std::unique_ptr< MultivariateEvent > DirichletMultinomialSplittingDistribution::simulate() const
+    {
+        DirichletDistribution dirichlet(_alpha);
+        std::unique_ptr< MultivariateEvent > event = dirichlet.simulate();
+        Eigen::VectorXd pi = Eigen::VectorXd::Zero(event->size() + 1);
+        for(Index index = 0, max_index = event->size(); index < max_index; ++index)
+        { pi(index) = static_cast< const ContinuousElementaryEvent* >(event->get(index))->get_value(); }
+        pi(event->size()) = 1 - pi.sum();
+        MultinomialSplittingDistribution multinomial = MultinomialSplittingDistribution(*_sum, pi);
+        return multinomial.simulate();
+    }
+
+    const DiscreteUnivariateDistribution* DirichletMultinomialSplittingDistribution::get_sum() const
+    { return _sum; }
+    
+    void DirichletMultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
+    { 
+        if(sum.cdf(-1) > 0.)
+        { throw parameter_error("sum", "must have a natural numbers subset as support"); }
+        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
+    }
+
+    const Eigen::VectorXd& DirichletMultinomialSplittingDistribution::get_alpha() const
+    { return _alpha; }
+
+    void DirichletMultinomialSplittingDistribution::set_alpha(const Eigen::VectorXd& alpha)
+    {
+        if(alpha.rows() == _alpha.size())
+        {
+            Index j = 0; 
+            while(j < alpha.rows() && alpha[j] >= 0.)
+            { ++j; }
+            if(j < alpha.rows())
+            { throw parameter_error("alpha", "contains negative values"); } 
+            _alpha = alpha;
+        }
+        else
+        { throw parameter_error("alpha", "number of parameters"); }
+    }
+
     MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)
     {
         _mu = mu;

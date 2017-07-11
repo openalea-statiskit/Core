@@ -134,7 +134,7 @@ namespace statiskit
 
         virtual double pdf(const int& position) const;
     };
-    
+
     /** \brief This class OrdinalDistribution represents the distribution of a random ordinal component \f$ S\f$. The support is a finite ordered set of categories (string) \f$ \mathcal{S} =\left\lbrace s_1, \ldots, s_J \right\rbrace \f$ and we have \f$ \sum_{j=1}^J P(S=s_j) = 1 \f$.
      * 
      * */
@@ -1947,6 +1947,32 @@ namespace statiskit
         protected:
             DiscreteUnivariateDistribution* _sum;
             Eigen::VectorXd _pi;
+    };
+
+    class STATISKIT_CORE_API DirichletMultinomialSplittingDistribution : public PolymorphicCopy< MultivariateDistribution, DirichletMultinomialSplittingDistribution, DiscreteMultivariateDistribution >
+    {
+        public:
+            DirichletMultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& alpha);
+            DirichletMultinomialSplittingDistribution(const DirichletMultinomialSplittingDistribution& multinomial);
+            virtual ~DirichletMultinomialSplittingDistribution();
+
+            virtual Index get_nb_components() const;
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+            std::unique_ptr< MultivariateEvent > simulate() const;
+
+            const DiscreteUnivariateDistribution* get_sum() const;
+            void set_sum(const DiscreteUnivariateDistribution& sum);
+
+            const Eigen::VectorXd& get_alpha() const;
+            void set_alpha(const Eigen::VectorXd& alpha);
+
+        protected:
+            DiscreteUnivariateDistribution* _sum;
+            Eigen::VectorXd _alpha;
     };
 
     struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution

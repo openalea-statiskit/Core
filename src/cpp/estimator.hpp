@@ -203,6 +203,163 @@ namespace statiskit
         std::unique_ptr< UnivariateDistributionEstimation::Estimator > UnivariateFrequencyDistributionEstimation< D, B >::Estimator::copy() const
         { return std::make_unique< Estimator >(*this); }
 
+    template<class E>
+        SplittingDistributionEstimation< E >::SplittingDistributionEstimation() : E()
+        { _sum = nullptr; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::SplittingDistributionEstimation(typename E::estimated_type const * estimated, MultivariateData const * data) : E(estimated, data)
+        { _sum = nullptr; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::SplittingDistributionEstimation(const SplittingDistributionEstimation< E >& estimation) : E(estimation)
+        { _sum = estimation._sum; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::~SplittingDistributionEstimation()
+        { 
+            if(_sum)
+            { delete _sum; }
+            _sum = nullptr;
+        }
+
+    template<class E>
+        const DiscreteUnivariateDistributionEstimation* SplittingDistributionEstimation< E >::get_sum() const
+        { return _sum; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::Estimator()
+        { _sum = nullptr; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::Estimator(const Estimator& estimator)
+        {
+            if(estimator._sum)
+            { _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(estimator._sum->copy().release()); }
+            else
+            { _sum = nullptr; }
+        }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::~Estimator()
+        {
+            if(_sum)
+            {
+                delete _sum;
+                _sum = nullptr;
+            }
+        }
+
+    template<class E>
+        const DiscreteUnivariateDistributionEstimation::Estimator* SplittingDistributionEstimation< E >::Estimator::get_sum() const
+        { return _sum; }
+
+    template<class E>
+        void SplittingDistributionEstimation< E >::Estimator::set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum)
+        { _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(sum.copy().release()); }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::SumData::SumData(const MultivariateData* data)
+        { _data = data; }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::SumData::~SumData()
+        {}
+
+    template<class E>
+        std::unique_ptr< UnivariateData::Generator > SplittingDistributionEstimation< E >::Estimator::SumData::generator() const
+        { return std::make_unique< SplittingDistributionEstimation< E >::Estimator::SumData::Generator >(_data); }
+
+    template<class E>
+        const UnivariateSampleSpace* SplittingDistributionEstimation< E >::Estimator::SumData::get_sample_space() const
+        { return &get_NN(); }
+
+    template<class E>
+        std::unique_ptr< UnivariateData > SplittingDistributionEstimation< E >::Estimator::SumData::copy() const
+        {
+            UnivariateDataFrame* data = new UnivariateDataFrame(get_NN());
+            std::unique_ptr< UnivariateData::Generator > _generator = generator();
+            while(_generator->is_valid())
+            {
+                data->add_event(_generator->event());
+                ++(*_generator);
+            }
+            _generator = generator();
+            WeightedSumData* weighted = new WeightedSumData(data);
+            for(Index index = 0, max_index = weighted->get_nb_weights(); index < max_index; ++index)
+            {
+                weighted->set_weight(index, _generator->weight());
+                ++(*_generator);
+            }
+            return std::unique_ptr< UnivariateData >(weighted);
+        }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::WeightedSumData::WeightedSumData(const UnivariateData* data)
+        { this->init(data); }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::WeightedSumData::WeightedSumData(const WeightedSumData& data)
+        { 
+            this->init(data);
+            this->_data = data._data->copy().release();
+        }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::WeightedSumData::~WeightedSumData()
+        { delete this->_data; }
+
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::SumData::Generator::Generator(const MultivariateData* data)
+        {
+           _sum = nullptr;
+           _generator = data->generator().release();
+        }
+
+    template<class E>
+        SplittingDistributionEstimation< E >::Estimator::SumData::Generator::~Generator()
+        {
+            if(_sum)
+            { delete _sum; }
+            _sum = nullptr;
+            if(_generator)
+            { delete _generator; }
+            _generator = nullptr;
+        }
+
+    template<class E>
+        bool SplittingDistributionEstimation< E >::Estimator::SumData::Generator::is_valid() const
+        { return _generator->is_valid(); }
+
+    template<class E>
+        UnivariateData::Generator& SplittingDistributionEstimation< E >::Estimator::SumData::Generator::operator++()
+        {
+           ++(*_generator);
+           return *this;
+        }
+
+    template<class E>
+        const UnivariateEvent* SplittingDistributionEstimation< E >::Estimator::SumData::Generator::event() const
+        {
+            if(_sum)
+            { delete _sum; }
+            int value = 0;
+            const MultivariateEvent* mevent = _generator->event();
+            for(Index component = 0, max_component = mevent->size(); component < max_component; ++component)
+            {
+                const UnivariateEvent* uevent = mevent->get(component);
+                if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                { value += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+            }
+            _sum = new DiscreteElementaryEvent(value);
+            return _sum;
+        }
+
+    template<class E>
+        double SplittingDistributionEstimation< E >::Estimator::SumData::Generator::weight() const
+        { return _generator->weight(); }
+
     template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()
         {}
