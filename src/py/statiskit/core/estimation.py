@@ -52,7 +52,9 @@ from statiskit.core.__core.statiskit import (Optimization,
                                                     CategoricalMultivariateMixtureDistributionEMEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
                                                     DiscreteMultivariateDistributionSelection,
+                                                    _SplittingDistributionEstimation,
                                                     MultinomialSplittingDistributionEstimation,
+                                                    DirichletMultinomialSplittingDistributionEstimation,
                                                     NegativeMultinomialDistributionEstimation,
                                                     DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
@@ -81,7 +83,7 @@ __all__ = ['frequency_estimation',
            'negative_binomial_estimation',
            'normal_estimation',
            'histogram_estimation',
-           'multinomial_splitting_estimation',
+           'splitting_estimation',
            'negative_multinomial_estimation',
            'independent_estimation',
            'mixture_estimation',
@@ -457,12 +459,24 @@ def histogram_estimation(data, algo='reg', **kwargs):
 MultivariateDistributionEstimation.estimated = property(MultivariateDistributionEstimation.get_estimated)
 del MultivariateDistributionEstimation.get_estimated
 
-MultinomialSplittingDistributionEstimation.Estimator.sum = property(MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSplittingDistributionEstimation.Estimator.set_sum)
-del MultinomialSplittingDistributionEstimation.Estimator.get_sum, MultinomialSplittingDistributionEstimation.Estimator.set_sum
+def splitting_distributon_estimator_decorator(cls):
 
-def multinomial_splitting_estimation(data=None, **kwargs):
-    mapping = dict(dflt = MultinomialSplittingDistributionEstimation.Estimator)
-    return _estimation('dflt', data, mapping, **kwargs)
+    cls.sum = property(cls.get_sum, cls.set_sum)
+    del cls.get_sum, cls.set_sum
+
+def splitting_distributon_estimation_decorator(cls):
+
+    cls.sum = property(cls.get_sum)
+    del cls.get_sum
+
+for cls in _SplittingDistributionEstimation:
+    splitting_distributon_estimation_decorator(cls)
+    splitting_distributon_estimator_decorator(cls.Estimator)
+
+def splitting_estimation(algo='MN', data=None, **kwargs):
+    mapping = dict(MN = MultinomialSplittingDistributionEstimation.Estimator,
+                   DM = DirichletMultinomialSplittingDistributionEstimation.Estimator)
+    return _estimation(algo, data, mapping, **kwargs)
 
 def negative_multinomial_estimation(data=None, **kwargs):
     mapping = dict(WZ99 = NegativeMultinomialDistributionEstimation.WZ99Estimator)

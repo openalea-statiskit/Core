@@ -375,26 +375,23 @@ namespace statiskit
         }; 
     };
 
-    class STATISKIT_CORE_API MultinomialSplittingDistributionEstimation : public ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    template<class E>
+    class SplittingDistributionEstimation : public E
     {
         public:
-            MultinomialSplittingDistributionEstimation();
-            MultinomialSplittingDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
-            MultinomialSplittingDistributionEstimation(const MultinomialSplittingDistributionEstimation& estimation);
-            virtual ~MultinomialSplittingDistributionEstimation();
+            SplittingDistributionEstimation();
+            SplittingDistributionEstimation(typename E::estimated_type const * estimated, MultivariateData const * data);
+            SplittingDistributionEstimation(const SplittingDistributionEstimation< E >& estimation);
+            virtual ~SplittingDistributionEstimation();
 
             const DiscreteUnivariateDistributionEstimation* get_sum() const;
 
-            class STATISKIT_CORE_API Estimator : public DiscreteMultivariateDistributionEstimation::Estimator
+            class Estimator : public E::Estimator
             {
                 public:
                     Estimator();
                     Estimator(const Estimator& estimator);
                     virtual ~Estimator();
-
-                    virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
-
-                    virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
 
                     const DiscreteUnivariateDistributionEstimation::Estimator* get_sum() const;
                     void set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum);
@@ -402,7 +399,7 @@ namespace statiskit
                 protected:
                     DiscreteUnivariateDistributionEstimation::Estimator* _sum;
 
-                    class STATISKIT_CORE_API SumData : public UnivariateData
+                    class SumData : public UnivariateData
                     {
                         public:
                             SumData(const MultivariateData* data);
@@ -417,7 +414,7 @@ namespace statiskit
                         protected:
                             const MultivariateData* _data;
 
-                            class STATISKIT_CORE_API Generator : public UnivariateData::Generator
+                            class Generator : public UnivariateData::Generator
                             {
                                 public:
                                     Generator(const MultivariateData* data);
@@ -437,7 +434,7 @@ namespace statiskit
 
                     };
 
-                    struct STATISKIT_CORE_API WeightedSumData : public PolymorphicCopy< UnivariateData, WeightedSumData, WeightedUnivariateData >
+                    struct WeightedSumData : public PolymorphicCopy< UnivariateData, WeightedSumData, WeightedUnivariateData >
                     {
                         WeightedSumData(const UnivariateData* data);
                         WeightedSumData(const WeightedSumData& data);
@@ -446,7 +443,45 @@ namespace statiskit
             };
 
         protected:
-            DiscreteUnivariateDistributionEstimation* _sum;
+            DiscreteUnivariateDistributionEstimation* _sum;        
+    };
+
+    struct STATISKIT_CORE_API MultinomialSplittingDistributionEstimation : SplittingDistributionEstimation< ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >
+    {
+        MultinomialSplittingDistributionEstimation();
+        MultinomialSplittingDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+        MultinomialSplittingDistributionEstimation(const MultinomialSplittingDistributionEstimation& estimation);
+        virtual ~MultinomialSplittingDistributionEstimation();
+
+        struct STATISKIT_CORE_API Estimator : SplittingDistributionEstimation< ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
+        };
+    };
+
+    struct STATISKIT_CORE_API DirichletMultinomialSplittingDistributionEstimation : SplittingDistributionEstimation< OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >
+    {
+        DirichletMultinomialSplittingDistributionEstimation();
+        DirichletMultinomialSplittingDistributionEstimation(DirichletMultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+        DirichletMultinomialSplittingDistributionEstimation(const DirichletMultinomialSplittingDistributionEstimation& estimation);
+        virtual ~DirichletMultinomialSplittingDistributionEstimation();
+
+        struct STATISKIT_CORE_API Estimator : SplittingDistributionEstimation< OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >::Estimator
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=true) const;
+
+            virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
+        };
     };
 
     struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >

@@ -21,6 +21,7 @@ class TestMultinomialSplitting(unittest.TestCase, AbstractTestDiscreteMultivaria
     def test_estimation(self):
         """Test multinomial splitting estimation"""
         data = self._dist.simulation(100)
-        est = core.multinomial_splitting_estimation(data,
-                                                    sum=core.binomial_estimation('ml'))
+        est = core.splitting_estimation('MN',
+                                        data,
+                                        sum=core.binomial_estimation('ml'))
         self.assertGreaterEqual(est.estimated.loglikelihood(data), self._dist.loglikelihood(data))

@@ -44,6 +44,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     CategoricalMultivariateMixtureDistribution,
                                 DiscreteMultivariateDistribution,
                                     MultinomialSplittingDistribution,
+                                    DirichletMultinomialSplittingDistribution,
                                     DiscreteIndependentMultivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
@@ -91,6 +92,7 @@ __all__ = ['NominalDistribution',
            'GammaDistribution',
            'BetaDistribution',
            'MultinomialSplittingDistribution',
+           'DirichletMultinomialSplittingDistribution',
            'MultinormalDistribution',
            'DirichletDistribution',
            'IndependentMultivariateDistribution',
@@ -439,14 +441,14 @@ PoissonDistribution.theta = property(PoissonDistribution.get_theta, PoissonDistr
 del PoissonDistribution.get_theta, PoissonDistribution.set_theta
 
 def __repr__(self):
-    return "B(" + str(self.kappa) + ", " + str(self.theta) + ")"
+    return "B(" + str(self.kappa) + ", " + str(self.pi) + ")"
 
 BinomialDistribution.__str__ = __repr__
 BinomialDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return r"$\mathcal{B}(" + str(self.kappa) + ", " + str(self.theta) + r"\right)$"
+    return r"$\mathcal{B}(" + str(self.kappa) + ", " + str(self.pi) + r"\right)$"
 
 BinomialDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -497,7 +499,7 @@ NegativeBinomialDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return r"\mathcal{NB}\left(" + str(self.kappa) + ", " + str(self.pi) + r"\right)"
+    return r"$\mathcal{NB}\left(" + str(self.kappa) + ", " + str(self.pi) + r"\right)$"
 
 NegativeBinomialDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -850,6 +852,12 @@ del MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.s
 
 MultinomialSplittingDistribution.pi = property(MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi)
 del MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi
+
+DirichletMultinomialSplittingDistribution.sum = property(DirichletMultinomialSplittingDistribution.get_sum, DirichletMultinomialSplittingDistribution.set_sum)
+del DirichletMultinomialSplittingDistribution.get_sum, DirichletMultinomialSplittingDistribution.set_sum
+
+DirichletMultinomialSplittingDistribution.alpha = property(DirichletMultinomialSplittingDistribution.get_alpha, DirichletMultinomialSplittingDistribution.set_alpha)
+del DirichletMultinomialSplittingDistribution.get_alpha, DirichletMultinomialSplittingDistribution.set_alpha
 
 def __repr__(self):
     return "Dir(" + str(self.alpha) + ')'

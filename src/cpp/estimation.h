@@ -60,6 +60,8 @@ namespace statiskit
     template<class D, class B> class ActiveEstimation : public LazyEstimation< D, B >
     {
         public:
+            typedef D estimated_type;
+            
             ActiveEstimation();
             ActiveEstimation(typename B::data_type const * data);
             ActiveEstimation(D const * estimated, typename B::data_type const * data);
