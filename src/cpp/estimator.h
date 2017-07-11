@@ -39,7 +39,7 @@ namespace statiskit
                     typename D::event_type::value_type get_shift() const;
                     void set_shift(const typename D::event_type::value_type& shift);
 
-                    const typename B::Estimator* get_estimator() const;
+                    const typename B::Estimator& get_estimator() const;
                     void set_estimator(const typename B::Estimator& estimator);
 
                 protected:
