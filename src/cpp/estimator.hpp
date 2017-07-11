@@ -122,12 +122,12 @@ namespace statiskit
         { _shift = shift; }
 
     template<class D, class B>
-        const typename B::Estimator* ShiftedDistributionEstimation< D, B >::Estimator::get_estimator() const
+        const typename ShiftedDistributionEstimation< D, B >::Estimator::estimator_type* ShiftedDistributionEstimation< D, B >::Estimator::get_estimator() const
         { return _estimator; }
 
     template<class D, class B>
-        void ShiftedDistributionEstimation< D, B >::Estimator::set_estimator(const typename B::Estimator& estimator)
-        { _estimator = static_cast< typename B::Estimator* >(estimator.copy().release()); }
+        void ShiftedDistributionEstimation< D, B >::Estimator::set_estimator(const estimator_type& estimator)
+        { _estimator = static_cast< estimator_type* >(estimator.copy().release()); }
 
     template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()
