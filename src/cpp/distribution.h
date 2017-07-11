@@ -1874,19 +1874,13 @@ namespace statiskit
     }; 
     
     struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef CategoricalUnivariateDistribution response_type;
-    };
+    {};
     
     struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef DiscreteUnivariateDistribution response_type;
-    };        
+    {};        
     
     struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef ContinuousUnivariateDistribution response_type;
-    };      
+    {};      
 
     struct STATISKIT_CORE_API MultivariateDistribution
     {
@@ -2082,20 +2076,14 @@ namespace statiskit
     }; 
     
     struct STATISKIT_CORE_API CategoricalMultivariateConditionalDistribution : MultivariateConditionalDistribution
-    {
-        typedef CategoricalMultivariateDistribution response_type;
-    };
+    {};
     
     struct STATISKIT_CORE_API DiscreteMultivariateConditionalDistribution : MultivariateConditionalDistribution
-    {
-        typedef DiscreteMultivariateDistribution response_type;
-    };        
+    {};        
     
     struct STATISKIT_CORE_API ContinuousMultivariateConditionalDistribution : MultivariateConditionalDistribution
-    {
-        typedef ContinuousMultivariateDistribution response_type;
-    };      
-    
+    {};      
+
     template<class D> class MixtureDistribution : public D
     {
         public:
