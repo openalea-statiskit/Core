@@ -30,6 +30,8 @@ namespace statiskit
             class Estimator : public PolymorphicCopy< UnivariateDistributionEstimation::Estimator, Estimator, typename B::Estimator >
             {
                 public:
+                    typedef typename B::Estimator estimator_type;
+
                     Estimator();
                     Estimator(const Estimator& estimator);
                     virtual ~Estimator();
@@ -39,12 +41,12 @@ namespace statiskit
                     typename D::event_type::value_type get_shift() const;
                     void set_shift(const typename D::event_type::value_type& shift);
 
-                    const typename B::Estimator& get_estimator() const;
-                    void set_estimator(const typename B::Estimator& estimator);
+                    const estimator_type* get_estimator() const;
+                    void set_estimator(const estimator_type& estimator);
 
                 protected:
                     typename D::event_type::value_type _shift;
-                    typename B::Estimator* _estimator;
+                    estimator_type* _estimator;
             };
 
         protected:
