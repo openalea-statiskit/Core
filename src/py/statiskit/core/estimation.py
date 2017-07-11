@@ -69,7 +69,15 @@ from statiskit.core.__core.statiskit import (Optimization,
                                                 DiscreteUnivariateConditionalDistributionEstimation,
                                                     DiscreteUnivariateConditionalDistributionSelection,
                                                 ContinuousUnivariateConditionalDistributionEstimation,
-                                                    ContinuousUnivariateConditionalDistributionSelection)
+                                                    ContinuousUnivariateConditionalDistributionSelection,
+                                             MultivariateConditionalDistributionEstimation,
+                                                MixedMultivariateConditionalDistributionSelection,
+                                                CategoricalMultivariateConditionalDistributionEstimation,
+                                                    CategoricalMultivariateConditionalDistributionSelection,
+                                                DiscreteMultivariateConditionalDistributionEstimation,
+                                                    DiscreteMultivariateConditionalDistributionSelection,
+                                                ContinuousMultivariateConditionalDistributionEstimation,
+                                                    ContinuousMultivariateConditionalDistributionSelection)
 
 from event import outcome_type
 from data import UnivariateData, MultivariateData, UnivariateConditionalData
@@ -605,11 +613,11 @@ def selection(data, algo="criterion", *args, **kwargs):
         outcome = data.sample_space.outcome
         kwargs['multivariate'] = False
     elif isinstance(data, MultivariateData):
-        if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
+        if all(sample_space.outcome is outcome_type.CATEGORICAL for sample_space in data.sample_space):
             outcome = outcome_type.CATEGORICAL
-        elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
+        elif all(sample_space.outcome is outcome_type.DISCRETE for sample_space in data.sample_space):
             outcome = outcome_type.DISCRETE
-        elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
+        elif all(sample_space.outcome is outcome_type.CONTINUOUS for sample_space in data.sample_space):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
@@ -617,6 +625,17 @@ def selection(data, algo="criterion", *args, **kwargs):
     elif isinstance(data, UnivariateConditionalData):
         outcome = data.response.sample_space.outcome
         kwargs['multivariate'] = False
+        kwargs['conditional'] = True
+    elif isinstance(data, MultivariateConditionalData):
+        if all(sample_space.outcome is outcome_type.CATEGORICAL for sample_space in data.responses.sample_space):
+            outcome = outcome_type.CATEGORICAL
+        elif all(sample_space.outcome is outcome_type.DISCRETE for sample_space in data.responses.sample_space):
+            outcome = outcome_type.DISCRETE
+        elif all(sample_space.outcome is outcome_type.CONTINUOUS for sample_space in data.responses.sample_space):
+            outcome = outcome_type.CONTINUOUS
+        else:
+            outcome = outcome_type.MIXED
+        kwargs['multivariate'] = True
         kwargs['conditional'] = True
     elif isinstance(data, outcome_type):
         outcome = data
@@ -626,14 +645,24 @@ def selection(data, algo="criterion", *args, **kwargs):
     multivariate = kwargs.pop('multivariate', outcome is outcome_type.MIXED)
     conditional = kwargs.pop('conditional', False)
     if multivariate:
-        if outcome is outcome_type.MIXED:
-            mapping = dict(criterion = MultivariateDistributionSelection.CriterionEstimator)
-        elif outcome is outcome_type.CATEGORICAL:
-            mapping = dict(criterion = CategoricalMultivariateDistributionSelection.CriterionEstimator)
-        elif outcome is outcome_type.DISCRETE:
-            mapping = dict(criterion = DiscreteMultivariateDistributionSelection.CriterionEstimator)
-        elif outcome is outcome_type.CONTINUOUS:
-            mapping = dict(criterion = ContinuousMultivariateDistributionSelection.CriterionEstimator)
+        if conditional:
+            if outcome is outcome_type.MIXED:
+                mapping = dict(criterion = MixedMultivariateConditionalDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CATEGORICAL:
+                mapping = dict(criterion = CategoricalMultivariateConditionalDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.DISCRETE:
+                mapping = dict(criterion = DiscreteMultivariateConditionalDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CONTINUOUS:
+                mapping = dict(criterion = ContinuousMultivariateConditionalDistributionSelection.CriterionEstimator)
+        else:
+            if outcome is outcome_type.MIXED:
+                mapping = dict(criterion = MixedMultivariateDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CATEGORICAL:
+                mapping = dict(criterion = CategoricalMultivariateDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.DISCRETE:
+                mapping = dict(criterion = DiscreteMultivariateDistributionSelection.CriterionEstimator)
+            elif outcome is outcome_type.CONTINUOUS:
+                mapping = dict(criterion = ContinuousMultivariateDistributionSelection.CriterionEstimator)
     else:
         if conditional:
             if outcome is outcome_type.MIXED:
@@ -657,3 +686,6 @@ def selection(data, algo="criterion", *args, **kwargs):
 
 UnivariateConditionalDistributionEstimation.estimated = property(UnivariateConditionalDistributionEstimation.get_estimated)
 del UnivariateConditionalDistributionEstimation.get_estimated
+
+MultivariateConditionalDistributionEstimation.estimated = property(MultivariateConditionalDistributionEstimation.get_estimated)
+del MultivariateConditionalDistributionEstimation.get_estimated

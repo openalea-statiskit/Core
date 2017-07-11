@@ -83,6 +83,9 @@ namespace statiskit
     MultivariateDistributionEstimation::Estimator::~Estimator()
     {}
 
-//    std::unique_ptr< UnivariateConditionalDistributionEstimation > UnivariateConditionalDistributionEstimation::Estimator::operator() (const data_type& data, const Index& response, const Indices& explanatories, const bool& lazy) const
-//    { return operator()(*(data.extract(explanatories).get()), response, lazy); }
+    UnivariateConditionalDistributionEstimation::~UnivariateConditionalDistributionEstimation()
+    {}
+
+    MultivariateConditionalDistributionEstimation::~MultivariateConditionalDistributionEstimation()
+    {}
 }

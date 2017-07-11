@@ -1142,7 +1142,4 @@ namespace statiskit
 
     std::unique_ptr< MultivariateDistributionEstimation::Estimator > NegativeMultinomialDistributionEstimation::WZ99Estimator::copy() const
     { return std::make_unique< NegativeMultinomialDistributionEstimation::WZ99Estimator >(*this); }
-
-    UnivariateConditionalDistributionEstimation::~UnivariateConditionalDistributionEstimation()
-    {}
 }

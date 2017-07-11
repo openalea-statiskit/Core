@@ -926,4 +926,87 @@ namespace statiskit
 
     double UnivariateConditionalData::Generator::weight() const
     { return _rgenerator->weight(); }
+
+    MultivariateConditionalData::MultivariateConditionalData(const MultivariateData& data, const Indices& responses, const Indices& explanatories)
+    {
+       _responses = data.extract(responses).release();
+       _explanatories = data.extract(explanatories).release();
+    }
+
+    MultivariateConditionalData::MultivariateConditionalData(const MultivariateConditionalData& data)
+    {
+       _responses = data._responses->copy().release();
+       _explanatories = data._explanatories->copy().release();
+    }
+
+    MultivariateConditionalData::~MultivariateConditionalData()
+    {
+       if(_responses)
+       {
+           delete _responses;
+           _responses = nullptr;
+       }
+       if(_explanatories)
+       {
+           delete _explanatories;
+           _explanatories = nullptr;
+       }
+    }
+
+    Index MultivariateConditionalData::size() const
+    { return _explanatories->size(); }
+
+    std::unique_ptr< MultivariateConditionalData::Generator > MultivariateConditionalData::generator() const
+    { return std::make_unique< Generator >(this); }
+
+    const MultivariateData* MultivariateConditionalData::get_responses() const
+    { return _responses; }
+
+    const MultivariateData* MultivariateConditionalData::get_explanatories() const
+    { return _explanatories; }
+
+    std::unique_ptr< MultivariateConditionalData > MultivariateConditionalData::copy() const
+    { return std::make_unique< MultivariateConditionalData >(*this); }
+
+    double MultivariateConditionalData::compute_total() const
+    { return _responses->compute_total(); }
+
+    MultivariateConditionalData::Generator::Generator(const MultivariateConditionalData* data)
+    {
+       _rgenerator = data->_responses->generator().release();
+       _egenerator = data->_explanatories->generator().release();
+    }
+
+    MultivariateConditionalData::Generator::~Generator()
+    {
+       if(_rgenerator)
+       {
+           delete _rgenerator;
+           _rgenerator = nullptr;
+       }
+       if(_egenerator)
+       {
+           delete _egenerator;
+           _egenerator = nullptr;
+       }
+    }
+
+    bool MultivariateConditionalData::Generator::is_valid() const
+    { return _rgenerator->is_valid(); }
+
+    MultivariateConditionalData::Generator& MultivariateConditionalData::Generator::operator++()
+    {
+        ++(*_rgenerator);
+        ++(*_egenerator);
+        return *this;
+    }
+
+    const MultivariateEvent* MultivariateConditionalData::Generator::responses() const
+    { return _rgenerator->event(); }
+
+    const MultivariateEvent* MultivariateConditionalData::Generator::explanatories() const
+    { return _egenerator->event(); }
+
+    double MultivariateConditionalData::Generator::weight() const
+    { return _rgenerator->weight(); }
 }
