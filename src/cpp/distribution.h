@@ -2058,6 +2058,8 @@ namespace statiskit
     {
         typedef MultivariateDistribution response_type;
         
+        virtual Index get_nb_components() const = 0;
+
         /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
         virtual const MultivariateDistribution* operator() (const MultivariateEvent& event) const = 0;
 
