@@ -23,6 +23,9 @@ namespace autowig
             virtual struct ::statiskit::MultivariateDistribution const * operator()(struct ::statiskit::MultivariateEvent const & param_0) const
             { return this->get_override("operator()")(param_0); }
                         
+            virtual ::statiskit::Index  get_nb_components() const
+            { return this->get_override("get_nb_components")(); }
+                        
 
         protected:
             
