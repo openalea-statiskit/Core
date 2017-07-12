@@ -19,7 +19,8 @@ from __core.statiskit import (UnivariateData,
                               MultivariateData,
                                 WeightedMultivariateData,
                                 MultivariateDataFrame,
-                              UnivariateConditionalData)
+                              UnivariateConditionalData,
+                              MultivariateConditionalData)
 
 from controls import controls
 from event import outcome_type

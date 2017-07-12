@@ -1874,19 +1874,13 @@ namespace statiskit
     }; 
     
     struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef CategoricalUnivariateDistribution response_type;
-    };
+    {};
     
     struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef DiscreteUnivariateDistribution response_type;
-    };        
+    {};        
     
     struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {
-        typedef ContinuousUnivariateDistribution response_type;
-    };      
+    {};      
 
     struct STATISKIT_CORE_API MultivariateDistribution
     {
@@ -2057,20 +2051,38 @@ namespace statiskit
     typedef IndependentMultivariateDistribution< DiscreteMultivariateDistribution > DiscreteIndependentMultivariateDistribution;
     typedef IndependentMultivariateDistribution< ContinuousMultivariateDistribution > ContinuousIndependentMultivariateDistribution;
 
-    /*class NormalRegression : public NormalDistribution, public ConditionalDistribution
+    /** \Brief This class MultivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random component \f$ Y\f$ given a multivariate component \f$ \boldsymbol{X} \f$.
+     *
+     */
+    struct STATISKIT_CORE_API MultivariateConditionalDistribution
     {
-        public:
-            NormalRegression(const std::unique_ptr< ScalarPredictor >& predictor, const double& sigma);
-            virtual ~NormalRegression();
-            NormalRegression(const NormalRegression& normal);
+        typedef MultivariateDistribution response_type;
+        
+        /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
+        virtual const MultivariateDistribution* operator() (const MultivariateEvent& event) const = 0;
 
-            virtual void conditioning(const MultivariateEvent& event);
+        double loglikelihood(const MultivariateConditionalData& data) const;
 
-            const std::unique_ptr< ScalarPredictor >& get_predictor() const;
+        /// \Brief Get the sample space of the response component \f$ Y \f$.
+        //virtual std::unique_ptr< MultivariateSampleSpace > get_response_space() const = 0;
 
-        protected:
-            std::unique_ptr< ScalarPredictor > _predictor;
-    };*/
+        /// \Brief Get the sample space of the explanatory components \f$ \boldsymbol{X} \f$.
+        virtual const MultivariateSampleSpace* get_explanatory_space() const = 0;
+
+        /// \Brief Get the number of parameters of the \f$ Y \vert \boldsymbol{X} \f$.
+        virtual unsigned int get_nb_parameters() const = 0;
+
+        virtual std::unique_ptr< MultivariateConditionalDistribution > copy() const = 0;
+    }; 
+    
+    struct STATISKIT_CORE_API CategoricalMultivariateConditionalDistribution : MultivariateConditionalDistribution
+    {};
+    
+    struct STATISKIT_CORE_API DiscreteMultivariateConditionalDistribution : MultivariateConditionalDistribution
+    {};        
+    
+    struct STATISKIT_CORE_API ContinuousMultivariateConditionalDistribution : MultivariateConditionalDistribution
+    {};      
 
     template<class D> class MixtureDistribution : public D
     {

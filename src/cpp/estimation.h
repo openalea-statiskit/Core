@@ -336,6 +336,54 @@ namespace statiskit
     typedef Selection< ContinuousUnivariateConditionalDistribution, ContinuousUnivariateConditionalDistributionEstimation > ContinuousUnivariateConditionalDistributionSelection;
     typedef ContinuousUnivariateConditionalDistributionSelection::CriterionEstimator ContinuousUnivariateConditionalDistributionCriterionEstimator;
 
+    struct STATISKIT_CORE_API MultivariateConditionalDistributionEstimation
+    {
+        typedef MultivariateConditionalData data_type;
+        typedef ::statiskit::MultivariateConditionalDistribution estimated_type;
+        
+        virtual ~MultivariateConditionalDistributionEstimation() = 0;
+
+        virtual estimated_type const * get_estimated() const = 0;
+
+        struct STATISKIT_CORE_API Estimator
+        { 
+            typedef MultivariateConditionalDistributionEstimation estimation_type;
+            
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
+
+            virtual std::unique_ptr< Estimator > copy() const = 0;
+        };
+    };
+
+    typedef Selection< MultivariateConditionalDistribution, MultivariateConditionalDistributionEstimation > MixedMultivariateConditionalDistributionSelection;
+    typedef MixedMultivariateConditionalDistributionSelection::CriterionEstimator MixedMultivariateConditionalDistributionCriterionEstimator;
+
+    struct STATISKIT_CORE_API CategoricalMultivariateConditionalDistributionEstimation : MultivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : MultivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+
+    typedef Selection< CategoricalMultivariateConditionalDistribution, CategoricalMultivariateConditionalDistributionEstimation > CategoricalMultivariateConditionalDistributionSelection;
+    typedef CategoricalMultivariateConditionalDistributionSelection::CriterionEstimator CategoricalMultivariateConditionalDistributionCriterionEstimator;
+
+    struct STATISKIT_CORE_API DiscreteMultivariateConditionalDistributionEstimation : MultivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : MultivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+
+    typedef Selection< DiscreteMultivariateConditionalDistribution, DiscreteMultivariateConditionalDistributionEstimation > DiscreteMultivariateConditionalDistributionSelection;
+    typedef DiscreteMultivariateConditionalDistributionSelection::CriterionEstimator DiscreteMultivariateConditionalDistributionCriterionEstimator;
+
+    struct STATISKIT_CORE_API ContinuousMultivariateConditionalDistributionEstimation : MultivariateConditionalDistributionEstimation
+    {
+        struct STATISKIT_CORE_API Estimator : MultivariateConditionalDistributionEstimation::Estimator
+        {};
+    };
+
+    typedef Selection< ContinuousMultivariateConditionalDistribution, ContinuousMultivariateConditionalDistributionEstimation > ContinuousMultivariateConditionalDistributionSelection;
+    typedef ContinuousMultivariateConditionalDistributionSelection::CriterionEstimator ContinuousMultivariateConditionalDistributionCriterionEstimator;
 }
 
 #include "estimation.hpp"

@@ -498,6 +498,49 @@ namespace statiskit
             MultivariateData* _explanatories;
     };
 
+    class STATISKIT_CORE_API MultivariateConditionalData
+    {
+        public:
+            class STATISKIT_CORE_API Generator
+            {
+                public:
+                    Generator(const MultivariateConditionalData* data);
+                    virtual ~Generator();
+
+                    virtual bool is_valid() const;
+
+                    virtual Generator& operator++();
+
+                    virtual const MultivariateEvent* responses() const;
+                    virtual const MultivariateEvent* explanatories() const;
+
+                    virtual double weight() const;
+
+                protected:
+                    MultivariateData::Generator* _rgenerator;
+                    MultivariateData::Generator* _egenerator;
+            };
+
+            MultivariateConditionalData(const MultivariateData& data, const Indices& responses, const Indices& explanatories);
+            MultivariateConditionalData(const MultivariateConditionalData& data);
+            virtual ~MultivariateConditionalData();
+
+            virtual Index size() const;
+            
+            virtual std::unique_ptr< MultivariateConditionalData::Generator > generator() const;
+
+            virtual const MultivariateData* get_responses() const;
+            virtual const MultivariateData* get_explanatories() const;
+        
+            virtual std::unique_ptr< MultivariateConditionalData > copy() const;
+            
+            double compute_total() const;
+
+        protected:
+            MultivariateData* _responses;
+            MultivariateData* _explanatories;
+    };
+
     /*template<class D>
     class DataMask : public D
     {

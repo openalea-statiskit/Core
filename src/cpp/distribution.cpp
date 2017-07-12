@@ -1787,19 +1787,12 @@ namespace statiskit
     double UnivariateConditionalDistribution::loglikelihood(const UnivariateConditionalData& data) const
     {
         double llh = 0.;
-        // std::unique_ptr< UnivariateData::Generator > rgenerator = data.get_response()->generator();
-        // std::unique_ptr< MultivariateData::Generator > egenerator = data.get_explanatories()->generator();
         std::unique_ptr< UnivariateConditionalData::Generator > generator = data.generator();
-        // while(rgenerator->is_valid() && egenerator->is_valid() && boost::math::isfinite(llh))
         while(generator->is_valid() && boost::math::isfinite(llh))
         { 
             const UnivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
             llh += generator->weight() * distribution->probability(generator->response(), true);
             ++(*generator);
-            // const UnivariateDistribution* distribution = this->operator() (*(egenerator->event()));
-            // llh += rgenerator->weight() * distribution->probability(rgenerator->event(), true);
-            // ++(*rgenerator);
-            // ++(*egenerator);
         }
         return llh;        
     }
@@ -2255,6 +2248,19 @@ namespace statiskit
         else
         { p = 1.; }
         return p;
+    }
+
+    double MultivariateConditionalDistribution::loglikelihood(const MultivariateConditionalData& data) const
+    {
+        double llh = 0.;
+        std::unique_ptr< MultivariateConditionalData::Generator > generator = data.generator();
+        while(generator->is_valid() && boost::math::isfinite(llh))
+        { 
+            const MultivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
+            llh += generator->weight() * distribution->probability(generator->responses(), true);
+            ++(*generator);
+        }
+        return llh;        
     }
 
     DiscreteUnivariateMixtureDistribution::DiscreteUnivariateMixtureDistribution(const std::vector< DiscreteUnivariateDistribution* > observations, const Eigen::VectorXd& pi)
