@@ -43,8 +43,7 @@ from __core.statiskit import (UnivariateDistribution,
                                     CategoricalIndependentMultivariateDistribution,
                                     CategoricalMultivariateMixtureDistribution,
                                 DiscreteMultivariateDistribution,
-                                    MultinomialSplittingDistribution,
-                                    DirichletMultinomialSplittingDistribution,
+                                    SplittingDistribution,
                                     DiscreteIndependentMultivariateDistribution,
                                     DiscreteMultivariateMixtureDistribution,
                                 ContinuousMultivariateDistribution,
@@ -91,8 +90,7 @@ __all__ = ['NominalDistribution',
            'LogisticDistribution',
            'GammaDistribution',
            'BetaDistribution',
-           'MultinomialSplittingDistribution',
-           'DirichletMultinomialSplittingDistribution',
+           'SplittingDistribution',
            'MultinormalDistribution',
            'DirichletDistribution',
            'IndependentMultivariateDistribution',
@@ -847,17 +845,24 @@ del simulation
 MultivariateDistribution.nb_parameters = property(MultivariateDistribution.get_nb_parameters)
 del MultivariateDistribution.get_nb_parameters
 
-MultinomialSplittingDistribution.sum = property(MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.set_sum)
-del MultinomialSplittingDistribution.get_sum, MultinomialSplittingDistribution.set_sum
+SplittingDistribution.sum = property(SplittingDistribution.get_sum, SplittingDistribution.set_sum)
+del SplittingDistribution.get_sum, SplittingDistribution.set_sum
 
-MultinomialSplittingDistribution.pi = property(MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi)
-del MultinomialSplittingDistribution.get_pi, MultinomialSplittingDistribution.set_pi
+SplittingDistribution.splitting = property(SplittingDistribution.get_splitting, SplittingDistribution.set_splitting)
+del SplittingDistribution.get_splitting, SplittingDistribution.set_splitting
 
-DirichletMultinomialSplittingDistribution.sum = property(DirichletMultinomialSplittingDistribution.get_sum, DirichletMultinomialSplittingDistribution.set_sum)
-del DirichletMultinomialSplittingDistribution.get_sum, DirichletMultinomialSplittingDistribution.set_sum
+def __str__(self):
+    return self.splitting.__str__() + " /\\ " + self.sum.__str__()
 
-DirichletMultinomialSplittingDistribution.alpha = property(DirichletMultinomialSplittingDistribution.get_alpha, DirichletMultinomialSplittingDistribution.set_alpha)
-del DirichletMultinomialSplittingDistribution.get_alpha, DirichletMultinomialSplittingDistribution.set_alpha
+SplittingDistribution.__str__ = __str__
+SplittingDistribution.__repr__ = __str__
+del __str__
+
+def _repr_latex_(self):
+    return self.splitting._repr_latex_()[:-1] + r" \underset{S}{\wedge} " + self.sum._repr_latex_()[1:]
+
+SplittingDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
 
 def __repr__(self):
     return "Dir(" + str(self.alpha) + ')'

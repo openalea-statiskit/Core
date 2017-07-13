@@ -11,6 +11,7 @@
 
 #include "base.h"
 #include "data.h"
+#include "operator.h"
 #include <statiskit/linalg/Eigen.h>
 
 #include <boost/random/poisson_distribution.hpp>
@@ -1917,12 +1918,12 @@ namespace statiskit
         typedef DiscreteUnivariateDistribution marginal_type;
     };
 
-    class STATISKIT_CORE_API MultinomialSplittingDistribution : public PolymorphicCopy< MultivariateDistribution, MultinomialSplittingDistribution, DiscreteMultivariateDistribution >
+    class STATISKIT_CORE_API SplittingDistribution : public PolymorphicCopy< MultivariateDistribution, SplittingDistribution, DiscreteMultivariateDistribution >
     {
         public:
-            MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi);
-            MultinomialSplittingDistribution(const MultinomialSplittingDistribution& multinomial);
-            virtual ~MultinomialSplittingDistribution();
+            SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SplittingOperator& splitting);
+            SplittingDistribution(const SplittingDistribution& multinomial);
+            virtual ~SplittingDistribution();
 
             virtual Index get_nb_components() const;
 
@@ -1935,38 +1936,12 @@ namespace statiskit
             const DiscreteUnivariateDistribution* get_sum() const;
             void set_sum(const DiscreteUnivariateDistribution& sum);
 
-            const Eigen::VectorXd& get_pi() const;
-            void set_pi(const Eigen::VectorXd& pi);
+            SplittingOperator* get_splitting() const;
+            void set_splitting(const SplittingOperator& splitting);
 
         protected:
             DiscreteUnivariateDistribution* _sum;
-            Eigen::VectorXd _pi;
-    };
-
-    class STATISKIT_CORE_API DirichletMultinomialSplittingDistribution : public PolymorphicCopy< MultivariateDistribution, DirichletMultinomialSplittingDistribution, DiscreteMultivariateDistribution >
-    {
-        public:
-            DirichletMultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& alpha);
-            DirichletMultinomialSplittingDistribution(const DirichletMultinomialSplittingDistribution& multinomial);
-            virtual ~DirichletMultinomialSplittingDistribution();
-
-            virtual Index get_nb_components() const;
-
-            virtual unsigned int get_nb_parameters() const;
-
-            virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
-
-            std::unique_ptr< MultivariateEvent > simulate() const;
-
-            const DiscreteUnivariateDistribution* get_sum() const;
-            void set_sum(const DiscreteUnivariateDistribution& sum);
-
-            const Eigen::VectorXd& get_alpha() const;
-            void set_alpha(const Eigen::VectorXd& alpha);
-
-        protected:
-            DiscreteUnivariateDistribution* _sum;
-            Eigen::VectorXd _alpha;
+            SplittingOperator* _splitting;
     };
 
     struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution

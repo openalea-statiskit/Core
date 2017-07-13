@@ -885,7 +885,302 @@ namespace statiskit
         _constant = constant;
     }
 
-    MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation() : SplittingDistributionEstimation< ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >()
+    SplittingOperatorEstimation::~SplittingOperatorEstimation()
+    {}
+
+    SplittingOperatorEstimation::Estimator::~Estimator()
+    {}
+
+    MultinomialSplittingOperatorEstimation::MultinomialSplittingOperatorEstimation(MultinomialSplittingOperator const * estimated, MultivariateData const * data) : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >(estimated, data)
+    {}
+
+    MultinomialSplittingOperatorEstimation::MultinomialSplittingOperatorEstimation(const MultinomialSplittingOperatorEstimation& estimation) : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >(estimation)
+    {}
+
+    MultinomialSplittingOperatorEstimation::~MultinomialSplittingOperatorEstimation()
+    {}
+
+    MultinomialSplittingOperatorEstimation::Estimator::Estimator()
+    {}
+
+    MultinomialSplittingOperatorEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    MultinomialSplittingOperatorEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< SplittingOperatorEstimation > MultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    {
+        std::unique_ptr< SplittingOperatorEstimation > estimation;
+        std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+        Eigen::VectorXd pi = Eigen::VectorXd::Zero(generator->event()->size());
+        while(generator->is_valid())
+        {
+            const MultivariateEvent* mevent = generator->event();
+            for(Index component = 0, max_component = mevent->size(); component < max_component; ++component)
+            {
+                const UnivariateEvent* uevent = mevent->get(component);
+                if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                { pi[component] += generator->weight() * static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+            }
+            ++(*generator);
+        }
+        MultinomialSplittingOperator* estimated = new MultinomialSplittingOperator(pi);
+        if(lazy)
+        { estimation = std::make_unique< LazyEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
+        else
+        { estimation = std::make_unique< MultinomialSplittingOperatorEstimation >(estimated, &data); }
+        return estimation;
+    }
+
+    DirichletMultinomialSplittingOperatorEstimation::DirichletMultinomialSplittingOperatorEstimation(DirichletMultinomialSplittingOperator const * estimated, MultivariateData const * data) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >(estimated, data)
+    {}
+
+    DirichletMultinomialSplittingOperatorEstimation::DirichletMultinomialSplittingOperatorEstimation(const DirichletMultinomialSplittingOperatorEstimation& estimation) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >(estimation)
+    {}
+
+    DirichletMultinomialSplittingOperatorEstimation::~DirichletMultinomialSplittingOperatorEstimation()
+    {}
+
+    DirichletMultinomialSplittingOperatorEstimation::Estimator::Estimator() : PolymorphicCopy<SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >() 
+    {}
+
+    DirichletMultinomialSplittingOperatorEstimation::Estimator::Estimator(const Estimator& estimator) : PolymorphicCopy<SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >(estimator)
+    {}
+
+    DirichletMultinomialSplittingOperatorEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< SplittingOperatorEstimation > DirichletMultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    {
+        std::unique_ptr< SplittingOperatorEstimation > estimation;
+        Eigen::VectorXd prev, curr = Eigen::VectorXd::Ones(data.get_sample_space()->size());
+        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(curr);
+        if(lazy)
+        { estimation = std::make_unique< LazyEstimation< DirichletMultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
+        else
+        { estimation = std::make_unique< DirichletMultinomialSplittingOperatorEstimation >(estimated, &data); }
+        double total = data.compute_total();
+        unsigned int its = 0;
+        do
+        {
+            prev = curr;
+            Eigen::VectorXd temp = Eigen::VectorXd::Zero(data.get_sample_space()->size());
+            for(Index component = 0, max_component = data.get_sample_space()->size(); component < max_component; ++component)
+            {
+                std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+                while(generator->is_valid())
+                {
+                    const MultivariateEvent* mevent = generator->event();
+                    if(mevent)
+                    {
+                        const UnivariateEvent* uevent = mevent->get(component);
+                        if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                        { temp[component] += generator->weight() * boost::math::digamma(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() + prev[component]); }
+                    }
+                    ++(*generator);
+                }
+                temp[component] -= total * boost::math::digamma(prev[component]);
+            }
+            std::pair< double, double > sums = std::make_pair(0., curr.sum());
+            std::unique_ptr< MultivariateData::Generator > generator = data.generator();
+            while(generator->is_valid())
+            {
+                const MultivariateEvent* event = generator->event();
+                if(event)
+                {
+                    int value = 0;
+                    for(Index component = 0, max_component = data.get_sample_space()->size(); component < max_component; ++component)
+                    {
+                        const UnivariateEvent* uevent = event->get(component);
+                        if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+                        { value += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+                    }
+                    sums.first += generator->weight() * boost::math::digamma(value + sums.second);
+                }
+                ++(*generator);
+            }
+            sums.first -= total * boost::math::digamma(sums.second);
+            temp /= sums.first;
+            if(prev.minCoeff() >= 0.)
+            { 
+                curr = prev.cwiseProduct(temp);
+                if(!lazy)
+                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(curr); }
+            }
+            ++its;
+        } while(run(its, __impl::reldiff(prev, curr)));
+        estimated->set_alpha(curr);
+        return estimation;
+    }
+
+    SplittingDistributionEstimation::SplittingDistributionEstimation(SplittingDistribution const * estimated, MultivariateData const * data) : ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
+    {
+        _sum = nullptr;
+        _splitting = nullptr;
+    }
+
+    SplittingDistributionEstimation::SplittingDistributionEstimation(const SplittingDistributionEstimation& estimation) : ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
+    {
+        _sum = estimation._sum;
+        _splitting = estimation._splitting;
+    }
+
+    SplittingDistributionEstimation::~SplittingDistributionEstimation()
+    {
+        if(_sum)
+        { delete _sum; }
+        if(_splitting)
+        { delete _splitting; }
+    }
+
+    const DiscreteUnivariateDistributionEstimation* SplittingDistributionEstimation::get_sum() const
+    { return _sum; }
+
+    const SplittingOperatorEstimation* SplittingDistributionEstimation::get_splitting() const
+    { return _splitting; }
+
+    SplittingDistributionEstimation::Estimator::Estimator()
+    {
+        _sum = nullptr;
+        _splitting = nullptr;
+    }
+
+    SplittingDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
+    {}
+
+    SplittingDistributionEstimation::Estimator::~Estimator()
+    {}
+
+    std::unique_ptr< MultivariateDistributionEstimation > SplittingDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    {
+        DiscreteUnivariateDistributionEstimation* sum = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(SplittingDistributionEstimation::Estimator::SumData(&data), lazy)).release());
+        SplittingOperatorEstimation* splitting = (*_splitting)(data, lazy).release();
+        SplittingDistribution* estimated = new SplittingDistribution(*(static_cast< const DiscreteUnivariateDistribution* >(sum->get_estimated())), *(splitting->get_estimated()));
+        std::unique_ptr< MultivariateDistributionEstimation > estimation;
+        if(lazy)
+        { 
+            estimation = std::make_unique< LazyEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
+            delete sum;
+            delete splitting;
+        }
+        else
+        {
+            estimation = std::make_unique< SplittingDistributionEstimation >(estimated, &data);
+            static_cast< SplittingDistributionEstimation* >(estimation.get())->_sum = sum;
+            static_cast< SplittingDistributionEstimation* >(estimation.get())->_splitting = splitting;
+        }
+        return estimation;
+    }
+
+    const DiscreteUnivariateDistributionEstimation::Estimator* SplittingDistributionEstimation::Estimator::get_sum() const
+    { return _sum; }
+
+    void  SplittingDistributionEstimation::Estimator::set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum)
+    {
+        if(_sum)
+        { delete _sum; }
+        _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(sum.copy().release());
+    }
+
+    const SplittingOperatorEstimation::Estimator* SplittingDistributionEstimation::Estimator::get_splitting() const
+    { return _splitting; }
+
+    void SplittingDistributionEstimation::Estimator::set_splitting(const SplittingOperatorEstimation::Estimator& splitting)
+    { 
+        if(_splitting)
+        { delete _splitting; }
+        _splitting = static_cast< SplittingOperatorEstimation::Estimator* >(splitting.copy().release());
+    }
+
+    SplittingDistributionEstimation::Estimator::SumData::SumData(const MultivariateData* data)
+    { _data = data; }
+
+    SplittingDistributionEstimation::Estimator::SumData::~SumData()
+    {}
+
+    std::unique_ptr< UnivariateData::Generator > SplittingDistributionEstimation::Estimator::SumData::generator() const
+    { return std::make_unique< SplittingDistributionEstimation::Estimator::SumData::Generator >(_data); }
+
+    const UnivariateSampleSpace* SplittingDistributionEstimation::Estimator::SumData::get_sample_space() const
+    { return &get_NN(); }
+
+    std::unique_ptr< UnivariateData > SplittingDistributionEstimation::Estimator::SumData::copy() const
+    {
+        UnivariateDataFrame* data = new UnivariateDataFrame(get_NN());
+        std::unique_ptr< UnivariateData::Generator > _generator = generator();
+        while(_generator->is_valid())
+        {
+            data->add_event(_generator->event());
+            ++(*_generator);
+        }
+        _generator = generator();
+        WeightedSumData* weighted = new WeightedSumData(data);
+        for(Index index = 0, max_index = weighted->get_nb_weights(); index < max_index; ++index)
+        {
+            weighted->set_weight(index, _generator->weight());
+            ++(*_generator);
+        }
+        return std::unique_ptr< UnivariateData >(weighted);
+    }
+
+    SplittingDistributionEstimation::Estimator::WeightedSumData::WeightedSumData(const UnivariateData* data)
+    { this->init(data); }
+
+    SplittingDistributionEstimation::Estimator::WeightedSumData::WeightedSumData(const WeightedSumData& data)
+    { 
+        this->init(data);
+        this->_data = data._data->copy().release();
+    }
+
+    SplittingDistributionEstimation::Estimator::WeightedSumData::~WeightedSumData()
+    { delete this->_data; }
+
+    SplittingDistributionEstimation::Estimator::SumData::Generator::Generator(const MultivariateData* data)
+    {
+       _sum = nullptr;
+       _generator = data->generator().release();
+    }
+
+    SplittingDistributionEstimation::Estimator::SumData::Generator::~Generator()
+    {
+        if(_sum)
+        { delete _sum; }
+        _sum = nullptr;
+        if(_generator)
+        { delete _generator; }
+        _generator = nullptr;
+    }
+
+    bool SplittingDistributionEstimation::Estimator::SumData::Generator::is_valid() const
+    { return _generator->is_valid(); }
+
+    UnivariateData::Generator& SplittingDistributionEstimation::Estimator::SumData::Generator::operator++()
+    {
+       ++(*_generator);
+       return *this;
+    }
+
+    const UnivariateEvent* SplittingDistributionEstimation::Estimator::SumData::Generator::event() const
+    {
+        if(_sum)
+        { delete _sum; }
+        int value = 0;
+        const MultivariateEvent* mevent = _generator->event();
+        for(Index component = 0, max_component = mevent->size(); component < max_component; ++component)
+        {
+            const UnivariateEvent* uevent = mevent->get(component);
+            if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
+            { value += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+        }
+        _sum = new DiscreteElementaryEvent(value);
+        return _sum;
+    }
+
+    double SplittingDistributionEstimation::Estimator::SumData::Generator::weight() const
+    { return _generator->weight(); }
+
+    /*MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation() : SplittingDistributionEstimation< ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >()
     {}
 
     MultinomialSplittingDistributionEstimation::MultinomialSplittingDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data) : SplittingDistributionEstimation< ActiveEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated, data)
@@ -1026,24 +1321,24 @@ namespace statiskit
     }
 
     std::unique_ptr< MultivariateDistributionEstimation::Estimator > DirichletMultinomialSplittingDistributionEstimation::Estimator::copy() const
-    { return std::make_unique< DirichletMultinomialSplittingDistributionEstimation::Estimator >(*this); }
+    { return std::make_unique< DirichletMultinomialSplittingDistributionEstimation::Estimator >(*this); }*/
     
-    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation() : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >()
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation() : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >()
     {}
    
-    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(SplittingDistribution const * estimated, MultivariateData const * data) : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
     {}
 
-    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
+    NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation) : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
     {}
 
     NegativeMultinomialDistributionEstimation::~NegativeMultinomialDistributionEstimation()
     {}
 
-    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator() : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator()
+    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator() : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator()
     {}
 
-    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator(const WZ99Estimator& estimator) : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator(estimator)
+    NegativeMultinomialDistributionEstimation::WZ99Estimator::WZ99Estimator(const WZ99Estimator& estimator) : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator(estimator)
     {}
 
     NegativeMultinomialDistributionEstimation::WZ99Estimator::~WZ99Estimator()
@@ -1077,14 +1372,14 @@ namespace statiskit
         { kappa = 1.; }
         double q =  _mean / (_mean + kappa);
         NegativeBinomialDistribution negative_binomial = NegativeBinomialDistribution(kappa, 1. - q);
-        MultinomialSplittingDistribution* negative_multinomial = new MultinomialSplittingDistribution(negative_binomial, mean * q / kappa);
+        SplittingDistribution* negative_multinomial = new SplittingDistribution(negative_binomial, MultinomialSplittingOperator(mean * q / kappa));
         if(!lazy)
         {
             estimation = std::make_unique< NegativeMultinomialDistributionEstimation >(negative_multinomial, &data);
             static_cast< NegativeMultinomialDistributionEstimation* >(estimation.get())->_iterations.push_back(kappa);
         }
         else
-        { estimation = std::make_unique< LazyEstimation< MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation > >(negative_multinomial); }
+        { estimation = std::make_unique< LazyEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation > >(negative_multinomial); }
         double prev, curr = kappa; //negative_multinomial->loglikelihood(data);
         unsigned int its = 1;
         double chisq = 0.;
@@ -1131,7 +1426,7 @@ namespace statiskit
                 q =  _mean / (_mean + kappa);
                 negative_binomial.set_pi(1. - q);
                 negative_multinomial->set_sum(negative_binomial);
-                negative_multinomial->set_pi(mean * q / kappa);
+                static_cast< MultinomialSplittingOperator* >(negative_multinomial->get_splitting())->set_pi(mean * q / kappa);
                 // curr = negative_multinomial->loglikelihood(data);
                 curr = kappa;
                 ++its;
