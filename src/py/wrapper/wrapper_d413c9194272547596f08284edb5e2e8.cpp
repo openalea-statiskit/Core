@@ -25,14 +25,14 @@ void wrapper_d413c9194272547596f08284edb5e2e8()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
-    boost::python::class_< struct ::statiskit::NegativeMultinomialDistributionEstimation, autowig::Held< struct ::statiskit::NegativeMultinomialDistributionEstimation >::Type, boost::python::bases< struct ::statiskit::OptimizationEstimation< double, class ::statiskit::MultinomialSplittingDistribution, struct ::statiskit::DiscreteMultivariateDistributionEstimation > > > class_d413c9194272547596f08284edb5e2e8("NegativeMultinomialDistributionEstimation", "", boost::python::no_init);
+    boost::python::class_< struct ::statiskit::NegativeMultinomialDistributionEstimation, autowig::Held< struct ::statiskit::NegativeMultinomialDistributionEstimation >::Type, boost::python::bases< struct ::statiskit::OptimizationEstimation< double, class ::statiskit::SplittingDistribution, struct ::statiskit::DiscreteMultivariateDistributionEstimation > > > class_d413c9194272547596f08284edb5e2e8("NegativeMultinomialDistributionEstimation", "", boost::python::no_init);
     class_d413c9194272547596f08284edb5e2e8.def(boost::python::init<  >(""));
-    class_d413c9194272547596f08284edb5e2e8.def(boost::python::init< class ::statiskit::MultinomialSplittingDistribution const *, struct ::statiskit::MultivariateData const * >(""));
+    class_d413c9194272547596f08284edb5e2e8.def(boost::python::init< class ::statiskit::SplittingDistribution const *, struct ::statiskit::MultivariateData const * >(""));
     class_d413c9194272547596f08284edb5e2e8.def(boost::python::init< struct ::statiskit::NegativeMultinomialDistributionEstimation const & >(""));
 
     if(autowig::Held< struct ::statiskit::NegativeMultinomialDistributionEstimation >::is_class)
     {
-        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeMultinomialDistributionEstimation >::Type, autowig::Held< struct ::statiskit::OptimizationEstimation< double, class ::statiskit::MultinomialSplittingDistribution, struct ::statiskit::DiscreteMultivariateDistributionEstimation > >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::NegativeMultinomialDistributionEstimation >::Type, autowig::Held< struct ::statiskit::OptimizationEstimation< double, class ::statiskit::SplittingDistribution, struct ::statiskit::DiscreteMultivariateDistributionEstimation > >::Type >();
     }
 
 }

@@ -377,7 +377,141 @@ namespace statiskit
         }; 
     };
 
-    template<class E>
+    struct STATISKIT_CORE_API SplittingOperatorEstimation
+    {
+        typedef MultivariateData data_type;
+        typedef SplittingOperator estimated_type;
+
+        virtual ~SplittingOperatorEstimation() = 0;
+
+        virtual estimated_type const * get_estimated() const = 0;
+        
+        struct STATISKIT_CORE_API Estimator
+        { 
+            typedef SplittingOperatorEstimation estimation_type;
+
+            virtual ~Estimator() = 0;
+
+            virtual std::unique_ptr< estimation_type > operator() (const data_type& data, const bool& lazy=true) const = 0;
+
+            virtual std::unique_ptr< Estimator > copy() const = 0;
+        };
+    };
+
+    typedef Selection< SplittingOperator, SplittingOperatorEstimation > SplittingOperatorSelection;
+    typedef SplittingOperatorSelection::CriterionEstimator SplittingOperatorCriterionEstimator;
+
+    struct STATISKIT_CORE_API MultinomialSplittingOperatorEstimation : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >
+    {
+        MultinomialSplittingOperatorEstimation(MultinomialSplittingOperator const * estimated, MultivariateData const * data);
+        MultinomialSplittingOperatorEstimation(const MultinomialSplittingOperatorEstimation& estimation);
+        virtual ~MultinomialSplittingOperatorEstimation();
+
+        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SplittingOperatorEstimation::Estimator, Estimator, ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< SplittingOperatorEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
+        };
+    };
+
+    struct STATISKIT_CORE_API DirichletMultinomialSplittingOperatorEstimation : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >
+    {
+        DirichletMultinomialSplittingOperatorEstimation(DirichletMultinomialSplittingOperator const * estimated, MultivariateData const * data);
+        DirichletMultinomialSplittingOperatorEstimation(const DirichletMultinomialSplittingOperatorEstimation& estimation);
+        virtual ~DirichletMultinomialSplittingOperatorEstimation();
+
+        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >
+        {
+            Estimator();
+            Estimator(const Estimator& estimator);
+            virtual ~Estimator();
+
+            virtual std::unique_ptr< SplittingOperatorEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
+        };
+    };
+
+    class STATISKIT_CORE_API SplittingDistributionEstimation : public ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    {
+        public:
+            SplittingDistributionEstimation(SplittingDistribution const * estimated, MultivariateData const * data);
+            SplittingDistributionEstimation(const SplittingDistributionEstimation& estimation);
+            virtual ~SplittingDistributionEstimation();
+
+            const DiscreteUnivariateDistributionEstimation* get_sum() const;
+
+            const SplittingOperatorEstimation* get_splitting() const;
+
+            class STATISKIT_CORE_API Estimator : public PolymorphicCopy< MultivariateDistributionEstimation::Estimator, Estimator, ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator >
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
+
+                    virtual std::unique_ptr< MultivariateDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
+
+                    const DiscreteUnivariateDistributionEstimation::Estimator* get_sum() const;
+                    void  set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum);
+
+                    const SplittingOperatorEstimation::Estimator* get_splitting() const;
+                    void set_splitting(const SplittingOperatorEstimation::Estimator& splitting);
+
+                protected:
+                    DiscreteUnivariateDistributionEstimation::Estimator* _sum;
+                    SplittingOperatorEstimation::Estimator* _splitting;
+
+                    class SumData : public UnivariateData
+                    {
+                        public:
+                            SumData(const MultivariateData* data);
+                            virtual ~SumData();
+
+                            virtual std::unique_ptr< UnivariateData::Generator > generator() const;
+
+                            const UnivariateSampleSpace* get_sample_space() const;
+
+                            virtual std::unique_ptr< UnivariateData > copy() const;
+
+                        protected:
+                            const MultivariateData* _data;
+
+                            class Generator : public UnivariateData::Generator
+                            {
+                                public:
+                                    Generator(const MultivariateData* data);
+                                    virtual ~Generator();
+
+                                    virtual bool is_valid() const;
+
+                                    virtual UnivariateData::Generator& operator++();
+
+                                    virtual const UnivariateEvent* event() const;
+                                    virtual double weight() const;
+
+                                protected:
+                                    mutable DiscreteElementaryEvent* _sum;
+                                    MultivariateData::Generator* _generator;
+                            };
+
+                    };
+
+                    struct WeightedSumData : public PolymorphicCopy< UnivariateData, WeightedSumData, WeightedUnivariateData >
+                    {
+                        WeightedSumData(const UnivariateData* data);
+                        WeightedSumData(const WeightedSumData& data);
+                        virtual ~WeightedSumData();
+                    };
+            };
+
+        protected:
+            DiscreteUnivariateDistributionEstimation* _sum;        
+            SplittingOperatorEstimation* _splitting;
+    };
+
+    /*template<class E>
     class SplittingDistributionEstimation : public E
     {
         public:
@@ -484,16 +618,16 @@ namespace statiskit
 
             virtual std::unique_ptr< MultivariateDistributionEstimation::Estimator > copy() const;
         };
-    };
+    };*/
 
-    struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >
+    struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >
     {
             NegativeMultinomialDistributionEstimation();
-            NegativeMultinomialDistributionEstimation(MultinomialSplittingDistribution const * estimated, MultivariateData const * data);
+            NegativeMultinomialDistributionEstimation(SplittingDistribution const * estimated, MultivariateData const * data);
             NegativeMultinomialDistributionEstimation(const NegativeMultinomialDistributionEstimation& estimation);
             virtual ~NegativeMultinomialDistributionEstimation();
 
-            struct STATISKIT_CORE_API WZ99Estimator : OptimizationEstimation<double, MultinomialSplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator
+            struct STATISKIT_CORE_API WZ99Estimator : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator
             {
                 public:
                     WZ99Estimator();

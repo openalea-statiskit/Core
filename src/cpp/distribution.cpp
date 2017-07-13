@@ -1837,75 +1837,62 @@ namespace statiskit
         return values;
     }
 
-    MultinomialSplittingDistribution::MultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& pi)
+    SplittingDistribution::SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SplittingOperator& splitting)
     {
+        _sum = nullptr;
+        _splitting = nullptr;
         set_sum(sum);
-        _pi = Eigen::VectorXd::Ones(pi.size());
-        set_pi(pi);
+        set_splitting(splitting);
     }
 
-    MultinomialSplittingDistribution::MultinomialSplittingDistribution(const MultinomialSplittingDistribution& multinomial)
+    SplittingDistribution::SplittingDistribution(const SplittingDistribution& splitting)
     {
-        _sum = static_cast< DiscreteUnivariateDistribution* >(multinomial._sum->copy().release());
-        _pi = multinomial._pi;
+        if(splitting._sum)
+        { _sum = static_cast< DiscreteUnivariateDistribution* >(splitting._sum->copy().release()); }
+        if(splitting._splitting)
+        { _splitting = splitting._splitting->copy().release(); }
     }
 
-    MultinomialSplittingDistribution::~MultinomialSplittingDistribution()
-    { delete _sum; }
+    SplittingDistribution::~SplittingDistribution()
+    {
+        if(_sum)
+        {
+            delete _sum;
+            _sum = nullptr;
+        }
+        if(_splitting)
+        {
+            delete _splitting;
+            _splitting = nullptr;
+        }
+    }
 
-    Index MultinomialSplittingDistribution::get_nb_components() const
-    { return _pi.size(); }
+    Index SplittingDistribution::get_nb_components() const
+    { return _splitting->get_nb_components(); }
 
-    unsigned int MultinomialSplittingDistribution::get_nb_parameters() const
-    { return _sum->get_nb_parameters() + _pi.size() - 1; }
+    unsigned int SplittingDistribution::get_nb_parameters() const
+    { return _sum->get_nb_parameters() + _splitting->get_nb_parameters(); }
 
-    double MultinomialSplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
+    double SplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
         double p;
         if(event && event->size() == get_nb_components())
         {
             try
             {
-                int kappa = 0;
+                int sum = 0;
                 for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
                 {
                     const UnivariateEvent* uevent = event->get(component);
                     if(uevent)
                     {
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                        { kappa += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
+                        { sum += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
                         else
                         { throw std::exception(); }
                     }
                 }  
-                if(logarithm)              
-                { p = _sum->ldf(kappa); }
-                else
-                { p = _sum->pdf(kappa); }
-                double sum = 0.;
-                BinomialDistribution binomial = BinomialDistribution(kappa, 0);
-                const UnivariateEvent* uevent;
-                for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
-                {
-                    uevent = event->get(component);
-                    if(uevent)
-                    {
-                        if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                        {
-                            int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                            binomial.set_pi(_pi[component] / (1 - sum));
-                            p += binomial.ldf(value);
-                            kappa -= value;
-                        }
-                        else
-                        { throw std::exception(); }
-                    }
-                    sum += _pi[component];
-                    binomial.set_kappa(kappa);
-                }
-                uevent = event->get(get_nb_components() - 1);
-                if(uevent->get_outcome() != DISCRETE || uevent->get_event() != ELEMENTARY || static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() != kappa)
-                { p = log(0.); }
+                p = _sum->ldf(sum) + _splitting->probability(event, logarithm);
             }
             catch(const std::exception& error)
             { p = log(0.); }
@@ -1917,179 +1904,34 @@ namespace statiskit
         return p;
     }
 
-    std::unique_ptr< MultivariateEvent > MultinomialSplittingDistribution::simulate() const
+    std::unique_ptr< MultivariateEvent > SplittingDistribution::simulate() const
     {
-        int kappa = static_cast< DiscreteElementaryEvent* >(_sum->simulate().get())->get_value();
-        double sum = 0.;
-        BinomialDistribution binomial = BinomialDistribution(kappa, 0);
-        VectorEvent* event = new VectorEvent(get_nb_components());
-        for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
-        { 
-            binomial.set_pi(_pi[component] / (1 - sum));
-            event->set(component, *(binomial.simulate().get()));
-            kappa -= static_cast< const DiscreteElementaryEvent* >(event->get(component))->get_value();
-            sum += _pi[component];
-            binomial.set_kappa(kappa);
-        }
-        event->set(event->size() - 1, DiscreteElementaryEvent(kappa));
-        return std::unique_ptr< MultivariateEvent >(event);
+        int sum = static_cast< DiscreteElementaryEvent* >(_sum->simulate().get())->get_value();
+        return _splitting->simulate(sum);
     }
 
-    const DiscreteUnivariateDistribution* MultinomialSplittingDistribution::get_sum() const
+    const DiscreteUnivariateDistribution* SplittingDistribution::get_sum() const
     { return _sum; }
     
-    void MultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
+    void SplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
     { 
         if(sum.cdf(-1) > 0.)
         { throw parameter_error("sum", "must have a natural numbers subset as support"); }
+        if(_sum)
+        { delete _sum; }
         _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
     }
 
-    const Eigen::VectorXd& MultinomialSplittingDistribution::get_pi() const
-    { return _pi; }
+    SplittingOperator* SplittingDistribution::get_splitting() const
+    { return _splitting; }
 
-    void MultinomialSplittingDistribution::set_pi(const Eigen::VectorXd& pi)
+    void SplittingDistribution::set_splitting(const SplittingOperator& splitting)
     {
-        if(pi.rows() == _pi.size() - 1)
-        {
-            Index j = 0; 
-            while(j < pi.rows() && pi[j] >= 0.)
-            { ++j; }
-            if(j < pi.rows())
-            { throw parameter_error("pi", "contains negative values"); } 
-            double sum = pi.sum();
-            if(sum < 1)
-            {
-                _pi.block(0, 0, _pi.size() - 1, 1) = pi / sum;
-                _pi[_pi.size()-1] = 1 - sum;
-            }
-            else
-            { throw parameter_error("pi", "last category values"); }                
-        }
-        else if(pi.rows() == _pi.size())
-        {
-            Index j = 0; 
-            while(j < pi.rows() && pi[j] >= 0.)
-            { ++j; }
-            if(j < pi.rows())
-            { throw parameter_error("pi", "contains negative values"); } 
-            _pi = pi / pi.sum();
-        }
-        else
-        { throw parameter_error("pi", "number of parameters"); }
-    }
-    
-    DirichletMultinomialSplittingDistribution::DirichletMultinomialSplittingDistribution(const DiscreteUnivariateDistribution& sum, const Eigen::VectorXd& alpha)
-    {
-        set_sum(sum);
-        _alpha = Eigen::VectorXd::Ones(alpha.size());
-        set_alpha(alpha);
-    }
-
-    DirichletMultinomialSplittingDistribution::DirichletMultinomialSplittingDistribution(const DirichletMultinomialSplittingDistribution& multinomial)
-    {
-        _sum = static_cast< DiscreteUnivariateDistribution* >(multinomial._sum->copy().release());
-        _alpha = multinomial._alpha;
-    }
-
-    DirichletMultinomialSplittingDistribution::~DirichletMultinomialSplittingDistribution()
-    { delete _sum; }
-
-    Index DirichletMultinomialSplittingDistribution::get_nb_components() const
-    { return _alpha.size(); }
-
-    unsigned int DirichletMultinomialSplittingDistribution::get_nb_parameters() const
-    { return _sum->get_nb_parameters() + _alpha.size(); }
-
-    double DirichletMultinomialSplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
-    {
-        double p;
-        if(!logarithm)
-        { p = exp(probability(event, true));}
-        else
-        {
-            if(event && event->size() == get_nb_components())
-            {
-
-                try
-                {
-                    int kappa = 0;
-                    for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
-                    {
-                        const UnivariateEvent* uevent = event->get(component);
-                        if(uevent)
-                        {
-                            if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                            { kappa += static_cast< const DiscreteElementaryEvent* >(uevent)->get_value(); }
-                            else
-                            { throw std::exception(); }
-                        }
-                    }                
-                    p = _sum->ldf(kappa) + boost::math::lgamma(kappa + 1) + boost::math::lgamma(_alpha.sum()) - boost::math::lgamma(_alpha.sum() + kappa);
-                    double sum = 0.;
-                    for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
-                    {
-                        const UnivariateEvent* uevent = event->get(component);
-                        if(uevent)
-                        {
-                            if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                            {
-                                int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                                p += boost::math::lgamma(_alpha[component] + value);
-                                p -= boost::math::lgamma(_alpha[component]) + boost::math::lgamma(value + 1);
-                            }
-                            else
-                            { throw std::exception(); }
-                        }
-                    }
-                }
-                catch(const std::exception& error)
-                { p = log(0.); }
-            }
-            else
-            { p = log(0.); }
-        }
-        return p;
-    }
-
-    std::unique_ptr< MultivariateEvent > DirichletMultinomialSplittingDistribution::simulate() const
-    {
-        DirichletDistribution dirichlet(_alpha);
-        std::unique_ptr< MultivariateEvent > event = dirichlet.simulate();
-        Eigen::VectorXd pi = Eigen::VectorXd::Zero(event->size() + 1);
-        for(Index index = 0, max_index = event->size(); index < max_index; ++index)
-        { pi(index) = static_cast< const ContinuousElementaryEvent* >(event->get(index))->get_value(); }
-        pi(event->size()) = 1 - pi.sum();
-        MultinomialSplittingDistribution multinomial = MultinomialSplittingDistribution(*_sum, pi);
-        return multinomial.simulate();
-    }
-
-    const DiscreteUnivariateDistribution* DirichletMultinomialSplittingDistribution::get_sum() const
-    { return _sum; }
-    
-    void DirichletMultinomialSplittingDistribution::set_sum(const DiscreteUnivariateDistribution& sum)
-    { 
-        if(sum.cdf(-1) > 0.)
-        { throw parameter_error("sum", "must have a natural numbers subset as support"); }
-        _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
-    }
-
-    const Eigen::VectorXd& DirichletMultinomialSplittingDistribution::get_alpha() const
-    { return _alpha; }
-
-    void DirichletMultinomialSplittingDistribution::set_alpha(const Eigen::VectorXd& alpha)
-    {
-        if(alpha.rows() == _alpha.size())
-        {
-            Index j = 0; 
-            while(j < alpha.rows() && alpha[j] >= 0.)
-            { ++j; }
-            if(j < alpha.rows())
-            { throw parameter_error("alpha", "contains negative values"); } 
-            _alpha = alpha;
-        }
-        else
-        { throw parameter_error("alpha", "number of parameters"); }
+        if(_splitting && !splitting.get_nb_components() == get_nb_components())
+        { throw parameter_error("splitting", "has not the required number of components"); } 
+        if(_splitting)
+        { delete _splitting; }
+        _splitting = splitting.copy().release();
     }
 
     MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)

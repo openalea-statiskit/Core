@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <statiskit/core/slope_heuristic.h>
 #include <statiskit/core/sample_space.h>
+#include <statiskit/core/operator.h>
 #include <statiskit/core/estimation.h>
 #include <statiskit/core/estimator.h>
 #include <statiskit/core/event.h>

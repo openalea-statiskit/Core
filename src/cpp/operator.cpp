@@ -1,5 +1,16 @@
 #include "operator.h"
 
+#include <boost/random/poisson_distribution.hpp>
+#include <boost/random/binomial_distribution.hpp>
+#include <boost/random/normal_distribution.hpp>
+#include <boost/random/gamma_distribution.hpp>
+#include <boost/random/beta_distribution.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/math/special_functions/erf.hpp>
+#include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/beta.hpp>
+
 namespace statiskit
 {
     double SplittingOperator::loglikelihood(const MultivariateData& data) const
@@ -29,11 +40,10 @@ namespace statiskit
     Index MultinomialSplittingOperator::get_nb_components() const
     { return _pi.size(); }
 
-
     unsigned int MultinomialSplittingOperator::get_nb_parameters() const
     { return _pi.size() - 1; }
 
-    double probability(const MultivariateEvent* event, const bool& logarithm) const
+    double MultinomialSplittingOperator::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
         double p;
         if(event && event->size() == get_nb_components())
@@ -73,10 +83,10 @@ namespace statiskit
     {
         double pi = 0.;
         Index component = 0, max_component = get_nb_components() - 1;
-        std::unique_ptr< VectorEvent > event(max_component + 1);
+        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(max_component + 1);
         while(component < max_component && sum > 0)
         {
-            boost::binomial_distribution<> dist(kappa, _pi[component] / (1 - pi));
+            boost::binomial_distribution<> dist(sum, _pi[component] / (1 - pi));
             boost::variate_generator<boost::mt19937&, boost::binomial_distribution<> > simulator(__impl::get_random_generator(), dist);
             int value = simulator();
             pi += _pi[component];
@@ -183,14 +193,20 @@ namespace statiskit
 
     std::unique_ptr< MultivariateEvent > DirichletMultinomialSplittingOperator::simulate(unsigned int sum)
     {
-        Eigen::VectorEvent _pi = Eigen::VectorXd::Zero(get_nb_components());
-        // TODO
+        Eigen::VectorXd _pi = Eigen::VectorXd::Zero(get_nb_components());
+        for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
+        {
+            boost::random::gamma_distribution<> dist(_alpha(component), 1.);
+            boost::variate_generator<boost::mt19937&, boost::random::gamma_distribution<> > simulator(__impl::get_random_generator(), dist);
+            _pi(component) = simulator(); 
+        }
+        _pi /= _pi.sum();
         double pi = 0.;
         Index component = 0, max_component = get_nb_components() - 1;
-        std::unique_ptr< VectorEvent > event(max_component + 1);
+        std::unique_ptr< VectorEvent > event = std::make_unique< VectorEvent >(max_component + 1);
         while(component < max_component && sum > 0)
         {
-            boost::binomial_distribution<> dist(kappa, _pi[component] / (1 - pi));
+            boost::binomial_distribution<> dist(sum, _pi[component] / (1 - pi));
             boost::variate_generator<boost::mt19937&, boost::binomial_distribution<> > simulator(__impl::get_random_generator(), dist);
             int value = simulator();
             pi += _pi[component];

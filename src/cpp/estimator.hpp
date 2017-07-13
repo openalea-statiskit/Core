@@ -203,7 +203,7 @@ namespace statiskit
         std::unique_ptr< UnivariateDistributionEstimation::Estimator > UnivariateFrequencyDistributionEstimation< D, B >::Estimator::copy() const
         { return std::make_unique< Estimator >(*this); }
 
-    template<class E>
+    /*template<class E>
         SplittingDistributionEstimation< E >::SplittingDistributionEstimation() : E()
         { _sum = nullptr; }
 
@@ -358,7 +358,7 @@ namespace statiskit
 
     template<class E>
         double SplittingDistributionEstimation< E >::Estimator::SumData::Generator::weight() const
-        { return _generator->weight(); }
+        { return _generator->weight(); }*/
 
     template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()

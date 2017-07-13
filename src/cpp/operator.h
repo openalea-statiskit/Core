@@ -17,7 +17,7 @@ namespace statiskit
 
         double loglikelihood(const MultivariateData& data) const;
 
-        std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) = 0;
+        virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) = 0;
 
         virtual std::unique_ptr< SplittingOperator > copy() const = 0;
     };
@@ -35,7 +35,7 @@ namespace statiskit
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
+            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
 
             const Eigen::VectorXd& get_pi() const;
             void set_pi(const Eigen::VectorXd& pi);
@@ -57,7 +57,7 @@ namespace statiskit
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
+            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
 
             const Eigen::VectorXd& get_alpha() const;
             void set_alpha(const Eigen::VectorXd& alpha);
@@ -66,3 +66,5 @@ namespace statiskit
             Eigen::VectorXd _alpha;
     };
 }
+
+#endif
