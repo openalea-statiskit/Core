@@ -97,7 +97,7 @@ namespace statiskit
         for(; component < max_component; ++component)
         { event->set(component, DiscreteElementaryEvent(0)); }
         event->set(max_component, DiscreteElementaryEvent(sum));
-        return event;
+        return std::move(event);
     }
 
     const Eigen::VectorXd& MultinomialSplittingOperator::get_pi() const
@@ -217,7 +217,7 @@ namespace statiskit
         for(; component < max_component; ++component)
         { event->set(component, DiscreteElementaryEvent(0)); }
         event->set(max_component, DiscreteElementaryEvent(sum));
-        return event;
+        return std::move(event);
     }
 
     const Eigen::VectorXd& DirichletMultinomialSplittingOperator::get_alpha() const
