@@ -52,7 +52,14 @@ from __core.statiskit import (UnivariateDistribution,
                                     ContinuousIndependentMultivariateDistribution,
                                     ContinuousMultivariateMixtureDistribution,
                               _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
-                              UnivariateConditionalDistribution)
+                              UnivariateConditionalDistribution,
+                                  CategoricalUnivariateConditionalDistribution,
+                                  DiscreteUnivariateConditionalDistribution,
+                                  ContinuousUnivariateConditionalDistribution,
+                              MultivariateConditionalDistribution,
+                                  CategoricalMultivariateConditionalDistribution,
+                                  DiscreteMultivariateConditionalDistribution,
+                                  ContinuousMultivariateConditionalDistribution)
 
 from controls import controls
 from event import (UnivariateEvent,

@@ -1934,6 +1934,12 @@ namespace statiskit
         _splitting = splitting.copy().release();
     }
 
+    SplittingDistribution::SplittingDistribution()
+    {
+        _sum = nullptr;
+        _splitting = nullptr;
+    }
+    
     MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)
     {
         _mu = mu;

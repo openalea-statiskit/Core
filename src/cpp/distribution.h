@@ -1942,6 +1942,8 @@ namespace statiskit
         protected:
             DiscreteUnivariateDistribution* _sum;
             SplittingOperator* _splitting;
+
+            SplittingDistribution();
     };
 
     struct STATISKIT_CORE_API ContinuousMultivariateDistribution : MultivariateDistribution
