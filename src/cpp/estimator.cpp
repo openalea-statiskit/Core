@@ -10,7 +10,7 @@
 #include <boost/math/special_functions/digamma.hpp>
 
 namespace statiskit
-{
+{    
     PoissonDistributionMLEstimation::PoissonDistributionMLEstimation() : ActiveEstimation< PoissonDistribution, DiscreteUnivariateDistributionEstimation >()
     {}
 
