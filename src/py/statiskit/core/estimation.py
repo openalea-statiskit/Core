@@ -82,7 +82,10 @@ from statiskit.core.__core.statiskit import (Optimization,
                                                     ContinuousMultivariateConditionalDistributionSelection)
 
 from event import outcome_type
-from data import UnivariateData, MultivariateData, UnivariateConditionalData
+from data import (UnivariateData,
+                  MultivariateData,
+                  UnivariateConditionalData,
+                  MultivariateConditionalData)
 from _tools import unused_warning
 
 __all__ = ['frequency_estimation',
