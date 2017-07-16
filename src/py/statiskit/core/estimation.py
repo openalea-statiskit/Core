@@ -501,7 +501,7 @@ def splitting_selection(*args, **kwargs):
             raise ValueError("'args' parameter")
     else:
         algo = kwargs.pop('algo', 'criterion')
-        mapping = dict(criterion = SplittingOperatorSelection.Estimator)
+        mapping = dict(criterion = SplittingOperatorSelection.CriterionEstimator)
         estimators = []
         for arg in args:
             estimators.append(splitting_selection(arg, **kwargs.pop(arg, dict())))
