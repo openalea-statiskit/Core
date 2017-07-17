@@ -507,7 +507,8 @@ def splitting_selection(*args, **kwargs):
         mapping = dict(criterion = SplittingOperatorSelection.CriterionEstimator)
         estimators = []
         for arg in args:
-            estimators.append(splitting_selection(arg, **kwargs.pop(arg, dict())))
+            estimators.append(splitting_selection(arg, **dict((key, value) for (key, value) in kwargs.iteritems() if key == "sum"))
+        kwargs.pop('sum', None)
         return _estimation(algo, data, mapping, estimators=estimators, **kwargs)
 
 def splitting_estimation(data=None, **kwargs):
