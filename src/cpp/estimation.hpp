@@ -161,11 +161,8 @@ namespace statiskit
                 { 
                     try
                     {
-                        std::cout << "estimate" << std::endl;
                         _estimation = (*(_estimators[index]))(data, true);
-                        std::cout << "score" << std::endl;
                         curr = scoring(_estimation->get_estimated(), data);
-                        std::cout << curr << std::endl;
                         if(curr > prev && boost::math::isfinite(curr))
                         {
                             prev = curr;
