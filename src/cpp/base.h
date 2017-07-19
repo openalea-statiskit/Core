@@ -43,6 +43,13 @@
   #endif
 #endif
 
+// #ifdef NDEBUG
+// #define BREAKPOINT 
+// #else
+#include <csignal>
+#define BREAKPOINT std::raise(SIGINT);
+// #endif
+
 namespace statiskit
 {
 

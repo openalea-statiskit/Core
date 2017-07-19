@@ -1849,8 +1849,12 @@ namespace statiskit
     {
         if(splitting._sum)
         { _sum = static_cast< DiscreteUnivariateDistribution* >(splitting._sum->copy().release()); }
+        else
+        { _sum = nullptr; }
         if(splitting._splitting)
         { _splitting = splitting._splitting->copy().release(); }
+        else
+        { _splitting = nullptr; }
     }
 
     SplittingDistribution::~SplittingDistribution()
