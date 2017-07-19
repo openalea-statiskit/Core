@@ -87,7 +87,8 @@ namespace statiskit
                 const UnivariateEvent* event = generator->event();
                 if(event->get_event() == ELEMENTARY)
                 { 
-                    ElementaryEvent< typename D::event_type >* shifted_event = new ElementaryEvent< typename D::event_type >(static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value() - _shift);
+                    typename D::event_type::value_type value = static_cast< const ElementaryEvent< typename D::event_type >* >(event)->get_value();
+                    ElementaryEvent< typename D::event_type >* shifted_event = new ElementaryEvent< typename D::event_type >(value - _shift);
                     shifted->add_event(shifted_event);
                     delete shifted_event;
                 }
@@ -398,7 +399,10 @@ namespace statiskit
     template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::Estimator::Estimator(const Estimator& estimator) 
         {
-            _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator._default_estimator->copy().release());
+            if(estimator._default_estimator)
+            { _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator._default_estimator->copy().release()); }
+            else
+            { _default_estimator = nullptr; }
             _estimators.clear();
             for(typename std::map< Index, typename E::Estimator::marginal_type* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
             { _estimators[it->first] = it->second->copy().release(); }
@@ -466,7 +470,8 @@ namespace statiskit
     template<class D, class E>
         void IndependentMultivariateDistributionEstimation< D, E >::Estimator::set_default_estimator(const typename E::Estimator::marginal_type& estimator)
         { 
-            delete _default_estimator;
+            if(_default_estimator)
+            { delete _default_estimator; }
             _default_estimator = static_cast< typename E::Estimator::marginal_type* >(estimator.copy().release());
         }
 
@@ -529,8 +534,14 @@ namespace statiskit
         MixtureDistributionEMEstimation< D, E >::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation< D*, D, E >::Estimator(estimator)
         {
             _pi = true;
-            _initializator = static_cast< D* >(estimator._initializator->copy().release());
-            _default_estimator = static_cast< typename E::Estimator* >(estimator._default_estimator->copy().release());
+            if(estimator._initializator)
+            { _initializator = static_cast< D* >(estimator._initializator->copy().release()); }
+            else
+            { _initializator = nullptr; }
+            if(estimator._default_estimator)
+            { _default_estimator = static_cast< typename E::Estimator* >(estimator._default_estimator->copy().release()); }
+            else
+            { _default_estimator = nullptr; }
             _estimators.clear();
             for(typename std::map< Index, typename E::Estimator* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
             { _estimators[it->first] = static_cast< typename E::Estimator* >(it->second->copy().release()); }
@@ -573,13 +584,11 @@ namespace statiskit
                 std::vector< typename E::Estimator::estimation_type* > estimations(mixture->get_nb_states(), nullptr);
                 for(Index state = 0, max_state = mixture->get_nb_states(); state < max_state; ++state)
                 {
-                    const typename D::observation_type* observation = mixture->get_observation(state);
                     typename E::Estimator::estimation_type::data_type::weighted_type::Generator* generator = static_cast< typename E::Estimator::estimation_type::data_type::weighted_type::Generator* >(weighted.generator().release());
                     while(generator->is_valid())
                     {
                         generator->weight(mixture->posterior(generator->event())[state]);
                         ++(*generator);
-
                     }
                     const typename E::Estimator* estimator = get_estimator(state);
                     if(estimator)
@@ -631,7 +640,8 @@ namespace statiskit
     template<class D, class E>
         void MixtureDistributionEMEstimation< D, E >::Estimator::set_default_estimator(const typename E::Estimator* estimator)
         { 
-            delete _default_estimator;
+            if(_default_estimator)
+            { delete _default_estimator; }
             if(estimator)
             { _default_estimator = static_cast< typename E::Estimator* >(estimator->copy().release()); }
             else
