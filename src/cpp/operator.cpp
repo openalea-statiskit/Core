@@ -79,7 +79,7 @@ namespace statiskit
         return p;
     }
 
-    std::unique_ptr< MultivariateEvent > MultinomialSplittingOperator::simulate(unsigned int sum)
+    std::unique_ptr< MultivariateEvent > MultinomialSplittingOperator::simulate(unsigned int sum) const
     {
         double pi = 0.;
         Index component = 0, max_component = get_nb_components() - 1;
@@ -191,7 +191,7 @@ namespace statiskit
         return p;
     }
 
-    std::unique_ptr< MultivariateEvent > DirichletMultinomialSplittingOperator::simulate(unsigned int sum)
+    std::unique_ptr< MultivariateEvent > DirichletMultinomialSplittingOperator::simulate(unsigned int sum) const
     {
         Eigen::VectorXd _pi = Eigen::VectorXd::Zero(get_nb_components());
         for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)

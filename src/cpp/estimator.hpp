@@ -533,7 +533,7 @@ namespace statiskit
     template<class D, class E>
         MixtureDistributionEMEstimation< D, E >::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation< D*, D, E >::Estimator(estimator)
         {
-            _pi = true;
+            _pi = estimator._pi;
             if(estimator._initializator)
             { _initializator = static_cast< D* >(estimator._initializator->copy().release()); }
             else
@@ -570,6 +570,7 @@ namespace statiskit
             double prev, curr = mixture->loglikelihood(data);
             unsigned int its = 0;
             std::unique_ptr< typename E::Estimator::estimation_type > estimation;
+            D* buffer = nullptr;
             if(!lazy)
             {
                 estimation = std::make_unique< MixtureDistributionEMEstimation< D, E > >(mixture, &data);
@@ -579,6 +580,9 @@ namespace statiskit
             { estimation = std::make_unique< LazyEstimation< D, MixtureDistributionEMEstimation< D, E > > >(mixture); }
             do
             {
+                std::cout << its << ": " << curr << std::endl;
+                delete buffer;
+                buffer = static_cast< D* >((mixture->copy().release()));
                 prev = curr;
                 Eigen::VectorXd pi = mixture->get_pi();
                 std::vector< typename E::Estimator::estimation_type* > estimations(mixture->get_nb_states(), nullptr);
@@ -593,6 +597,7 @@ namespace statiskit
                     const typename E::Estimator* estimator = get_estimator(state);
                     if(estimator)
                     {
+                        // __impl::set_maxits((uintptr_t)(estimator), its + 1);
                         try
                         { estimations[state] = (*estimator)(weighted, true).release(); }
                         catch(const std::exception& exception)
@@ -614,10 +619,23 @@ namespace statiskit
                 if(_pi)
                 { mixture->set_pi(pi); }
                 curr = mixture->loglikelihood(data);
-                if(!lazy)
+                if(!lazy && curr > prev)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
             } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
+            if(!boost::math::isfinite(curr) || curr < prev)
+            {
+                mixture->set_pi(buffer->get_pi());
+                for(Index state = 0, max_state = buffer->get_nb_states(); state < max_state; ++state)
+                { mixture->set_observation(state, *(buffer->get_observation(state))); }
+            }
+            // for(Index state = 0, max_state = mixture->get_nb_states(); state < max_state; ++state)
+            // {
+            //     const typename E::Estimator* estimator = get_estimator(state);
+            //     if(estimator)
+            //     { __impl::unset_maxits((uintptr_t)(estimator)); }
+            // }
+            delete buffer;
             return estimation;
         }
 

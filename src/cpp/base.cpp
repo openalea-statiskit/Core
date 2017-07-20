@@ -53,6 +53,35 @@ namespace statiskit
 
         boost::mt19937& get_random_generator()
         { return _random_generator; }
+
+        std::unordered_map< uintptr_t, unsigned int > iterations = std::unordered_map< uintptr_t, unsigned int >();
+
+        // unsigned int get_maxits(const uintptr_t& ptr, const unsigned int& maxits)
+        // {
+        //     unsigned int _maxits;
+        //     std::unordered_map< uintptr_t, unsigned int >::iterator it = iterations.find(ptr);
+        //     if(it == iterations.end())
+        //     { _maxits = maxits; }
+        //     else
+        //     { _maxits = it->second; }
+        //     return _maxits;
+        // }
+
+        // void set_maxits(const uintptr_t& ptr, const unsigned int& maxits)
+        // {
+        //     std::unordered_map< uintptr_t, unsigned int >::iterator it = iterations.find(ptr);
+        //     if(it == iterations.end())
+        //     { iterations[ptr] = maxits; }
+        //     else
+        //     { it->second = maxits; }
+        // }
+
+        // void unset_maxits(const uintptr_t& ptr)
+        // {
+        //     std::unordered_map< uintptr_t, unsigned int >::iterator it = iterations.find(ptr);
+        //     if(it != iterations.end())
+        //     { iterations.erase(it); }
+        // }
     }
     
     void set_seed()
@@ -114,13 +143,12 @@ namespace statiskit
     void Optimization::set_maxits(const unsigned int& maxits)
     { _maxits = maxits; }
 
-
     bool Optimization::run(const unsigned int& its, const double& delta) const
     { 
         bool status = true;
         if(its > _minits)
         {
-            if(!boost::math::isfinite(delta) || its > _maxits)
+            if(!boost::math::isfinite(delta) || its > _maxits)//__impl::get_maxits((uintptr_t)(this), _maxits))
             { status = false; }
             else if(delta < _mindiff)
             { status = false; }

@@ -590,6 +590,9 @@ namespace statiskit
 
     typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
     typedef ContinuousMultivariateMixtureDistributionEMEstimation::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< SplittingMixtureOperator, SplittingOperatorEstimation > SplittingMixtureOperatorEMEstimation;
+    typedef SplittingMixtureOperatorEMEstimation::Estimator SplittingMixtureOperatorEMEstimator;
 }
 
 #include "estimator.hpp"

@@ -2188,6 +2188,21 @@ namespace statiskit
     typedef MultivariateMixtureDistribution< DiscreteMultivariateDistribution > DiscreteMultivariateMixtureDistribution;
     typedef std::vector< DiscreteMultivariateDistribution* > DiscreteMultivariateDistributionVector;
 
+    struct STATISKIT_CORE_API SplittingMixtureOperator : PolymorphicCopy< SplittingOperator, SplittingMixtureOperator, MixtureDistribution< SplittingOperator > >
+    {
+        SplittingMixtureOperator(const std::vector< SplittingOperator* > observations, const Eigen::VectorXd& pi);
+        SplittingMixtureOperator(const SplittingMixtureOperator& mixture);
+        virtual ~SplittingMixtureOperator();
+
+        virtual void set_observation(const Index& index, const SplittingOperator& observation);
+
+        virtual Index get_nb_components() const;
+
+        virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
+
+        virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) const;
+    };
+
     typedef MultivariateMixtureDistribution< ContinuousMultivariateDistribution > ContinuousMultivariateMixtureDistribution;
     typedef std::vector< ContinuousMultivariateDistribution* > ContinuousMultivariateDistributionVector;
 }

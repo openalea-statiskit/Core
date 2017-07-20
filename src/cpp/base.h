@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
 
 #if defined WIN32 || defined _WIN32 || defined __CYGWIN__
   #ifdef LIBSTATISKIT_CORE
@@ -78,6 +79,10 @@ namespace statiskit
          * The random generator used is the <a href="http://www.boost.org/doc/libs/1_60_0/doc/html/boost/random/mt19937.html">Mersenne Twister</a> random generator of the Boost.Random library
          */
         STATISKIT_CORE_API boost::mt19937& get_random_generator();
+
+        unsigned int get_maxits(const uintptr_t& ptr, const unsigned int& maxits);
+        void set_maxits(const uintptr_t& ptr, const unsigned int& maxits);
+        void unset_maxits(const uintptr_t& ptr);
     }
 
     STATISKIT_CORE_API void set_seed();
