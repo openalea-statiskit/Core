@@ -159,13 +159,10 @@ namespace statiskit
                 double curr, prev = -1 * std::numeric_limits< double >::infinity();
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 { 
-                    std::cout << index << ": " << _estimators[index] << std::endl;
                     try
                     {
                         _estimation = (*(_estimators[index]))(data, true);
-                        std::cout << "estimated..." << std::endl;
                         curr = scoring(_estimation->get_estimated(), data);
-                        std::cout << "--> " << curr << std::endl;
                         if(curr > prev && boost::math::isfinite(curr))
                         {
                             prev = curr;
@@ -173,7 +170,7 @@ namespace statiskit
                         }
                     }
                     catch(const std::exception& e)
-                    { std::cout << "failure: " << e.what() << std::endl;}
+                    {}
                 }
             }
             else
@@ -181,7 +178,6 @@ namespace statiskit
                 Selection< D, B >* _estimation = new Selection< D, B >(data.copy().release());
                 for(Index index = 0, max_index = size(); index < max_index; ++index)
                 {
-                    std::cout << index << std::endl;
                     try
                     {
                         _estimation->_estimations.push_back(static_cast< B* >((*(_estimators[index]))(data, false).release()));
@@ -196,7 +192,6 @@ namespace statiskit
                 _estimation->finalize();
                 estimation.reset(_estimation);
             }
-            std::cout << estimation->get_estimated() << std::endl;
             if(!estimation || !estimation->get_estimated())
             { std::runtime_error("All estimations failed, perform manually the estimations in order to investigate what went wrong"); }
             return estimation;

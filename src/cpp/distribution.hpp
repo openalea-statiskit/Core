@@ -427,7 +427,7 @@ namespace statiskit
         }
 
     template<class D>
-        Index MixtureDistribution< D >::assignement(const typename D::data_type::event_type* event) const
+        Index MixtureDistribution< D >::assignment(const typename D::data_type::event_type* event) const
         {
             Eigen::VectorXd p = posterior(event, false);
             Index index;
@@ -435,6 +435,21 @@ namespace statiskit
             return index;
         }
         
+    template<class D>
+        std::vector< Index> MixtureDistribution< D >::assignment(const typename D::data_type& data) const
+        {
+            std::vector< Index > indices(data.size());
+            std::unique_ptr< typename D::data_type::Generator > generator = data.generator();
+            Index index = 0;
+            while(generator->is_valid())
+            {
+                indices[index] = assignment(generator->event());
+                ++index;
+                ++(*generator);
+            }
+            return indices;
+        }
+
     template<class D>
         double MixtureDistribution< D >::uncertainty(const typename D::data_type::event_type* event) const
         {
