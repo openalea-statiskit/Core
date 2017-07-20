@@ -1,3 +1,4 @@
+
 /**********************************************************************************/
 /*                                                                                */
 /* StatisKit-CoreThis software is distributed under the CeCILL-C license. You     */
@@ -2083,7 +2084,8 @@ namespace statiskit
 
             Eigen::VectorXd posterior(const typename D::data_type::event_type* event, const bool& logarithm=false) const;
         
-            Index assignement(const typename D::data_type::event_type* event) const;
+            Index assignment(const typename D::data_type::event_type* event) const;
+            std::vector< Index > assignment(const typename D::data_type& data) const;
 
             double uncertainty(const typename D::data_type::event_type* event) const;
             double uncertainty(const typename D::data_type& data) const;

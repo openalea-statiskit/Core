@@ -954,12 +954,14 @@ def statiskit_mixture_distribution_decorator(cls):
                 norm = kwargs.pop('norm', 1.)
                 states = kwargs.pop('states', True)
                 if states:
-                    if isinstance(states, list):
+                    if isinstance(states, (list, tuple)):
                         skwargs = states
                     else:
                         skwargs = [{}] * self.nb_states
                     for index, (pi, observation) in enumerate(zip(self.pi, self.observations)):
-                        skwargs[index].update(kwargs)
+                        for key, value in kwargs.iteritems():
+                            if not key in skwargs[index]:
+                                skwargs[index][key] = value
                         axes = observation.pdf_plot(axes=axes, norm=pi*norm, *args, **skwargs[index])
                 return f(self, axes=axes, *args, norm=norm, **kwargs)
             return pdf_plot
@@ -979,13 +981,13 @@ def statiskit_univariate_mixture_distribution_decorator(cls):
 
     cls.posterior = wrapper_posterior(cls.posterior)
 
-    def wrapper_assignement(f):
+    def wrapper_assignment(f):
         @wraps(f)
-        def assignement(self, event):
+        def assignment(self, event):
             return f(self, type_to_event(event))
-        return assignement
+        return assignment
 
-    cls.assignement = wrapper_assignement(cls.assignement)
+    cls.assignment = wrapper_assignment(cls.assignment)
 
     def wrapper_uncertainty(f):
         @wraps(f)
@@ -1011,13 +1013,17 @@ def statiskit_multivariate_mixture_distribution_decorator(cls):
 
     cls.posterior = wrapper_posterior(cls.posterior)
 
-    def wrapper_assignement(f):
+    def wrapper_assignment(f):
         @wraps(f)
-        def assignement(self, *event):
-            return f(self, types_to_event(*event))
-        return assignement
+        def assignment(self, *event):
+            if len(event) == 1 and isinstance(event[0], (UnivariateData, MultivariateData)):
+                event = event[0]
+            else:
+                event = types_to_event(*event)
+            return f(self, event)
+        return assignment
 
-    cls.assignement = wrapper_assignement(cls.assignement)
+    cls.assignment = wrapper_assignment(cls.assignment)
     
     def wrapper_uncertainty(f):
         @wraps(f)
