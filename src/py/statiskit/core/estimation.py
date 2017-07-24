@@ -63,6 +63,7 @@ from statiskit.core.__core.statiskit import (Optimization,
                                              SplittingOperatorEstimation,
                                                  MultinomialSplittingOperatorEstimation,
                                                  DirichletMultinomialSplittingOperatorEstimation,
+                                                 SplittingMixtureOperatorEMEstimation,
                                              SplittingOperatorSelection,
                                              _MixtureDistributionEMEstimation,
                                              UnivariateConditionalDistributionEstimation,
@@ -97,6 +98,7 @@ __all__ = ['frequency_estimation',
            'normal_estimation',
            'histogram_estimation',
            'splitting_selection',
+           'splitting_mixture_estimation',
            'splitting_estimation',
            'negative_multinomial_estimation',
            'independent_estimation',
@@ -309,11 +311,14 @@ def optimization_estimation_decorator(cls):
 
         @wraps(f1)
         def __getitem__(self, index):
-            if index < 0:
-                index += len(self)
-            if not 0 <= index < len(self):
-                raise IndexError(self._estimation.__class__.__name__ + " index out of range")
-            return f1(self._estimation, index)
+            if isinstance(index, slice):
+                return [self[index] for index in xrange(*index.indices(len(self)))]
+            else:
+                if index < 0:
+                    index += len(self)
+                if not 0 <= index < len(self):
+                    raise IndexError(self._estimation.__class__.__name__ + " index out of range")
+                return f1(self._estimation, index)
 
         return __len__, __getitem__
         
@@ -473,7 +478,6 @@ def histogram_estimation(data, algo='reg', **kwargs):
 MultivariateDistributionEstimation.estimated = property(MultivariateDistributionEstimation.get_estimated)
 del MultivariateDistributionEstimation.get_estimated
 
-
 SplittingDistributionEstimation.Estimator.sum = property(SplittingDistributionEstimation.Estimator.get_sum, SplittingDistributionEstimation.Estimator.set_sum)
 del SplittingDistributionEstimation.Estimator.get_sum, SplittingDistributionEstimation.Estimator.set_sum
 
@@ -514,6 +518,14 @@ def splitting_selection(*args, **kwargs):
 def splitting_estimation(data=None, **kwargs):
     mapping = dict(default = SplittingDistributionEstimation.Estimator)
     return _estimation('default', data, mapping, **kwargs)
+
+def splitting_mixture_estimation(algo='em', **kwargs):
+    mapping = dict(em = SplittingMixtureOperatorEMEstimation.Estimator)
+    data = kwargs.pop('data', None)
+    return _estimation(algo, data, mapping, **kwargs)
+
+SplittingOperatorEstimation.estimated = property(SplittingOperatorEstimation.get_estimated)
+del SplittingOperatorEstimation.get_estimated
 
 def negative_multinomial_estimation(data=None, **kwargs):
     mapping = dict(WZ99 = NegativeMultinomialDistributionEstimation.WZ99Estimator)

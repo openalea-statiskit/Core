@@ -2216,4 +2216,58 @@ namespace statiskit
         { throw lower_bound_error("epsilon", epsilon, 0., true); }
         _epsilon = epsilon;
     }
+
+
+    SplittingMixtureOperator::SplittingMixtureOperator(const std::vector< SplittingOperator* > observations, const Eigen::VectorXd& pi)
+    {
+        this->init(observations, pi);
+        typename std::vector< SplittingOperator* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
+        Index nb_components = (*it)->get_nb_components();
+        ++it;
+        while(it != it_end)
+        {
+            if((*it)->get_nb_components() != nb_components)
+            { throw parameter_error("observations", "not same number of components"); }
+            ++it;
+        }
+
+    }
+
+    SplittingMixtureOperator::SplittingMixtureOperator(const SplittingMixtureOperator& mixture)
+    { init(mixture); } 
+
+    SplittingMixtureOperator::~SplittingMixtureOperator()
+    {} 
+
+    void SplittingMixtureOperator::set_observation(const Index& index, const SplittingOperator& observation)
+    { 
+        if(observation.get_nb_components() != get_nb_components())
+        { throw parameter_error("observation", "not same number of components"); }
+        MixtureDistribution< SplittingOperator >::set_observation(index, observation);
+    }
+
+    Index SplittingMixtureOperator::get_nb_components() const
+    { return this->_observations.back()->get_nb_components(); }
+
+    double SplittingMixtureOperator::probability(const MultivariateEvent* event, const bool& logarithm) const
+    {
+        double p = 0.;
+        for(Index index = 0, max_index = get_nb_states(); index < max_index; ++index)
+        { p += _pi[index] * _observations[index]->probability(event, false); }
+        if(logarithm)
+        { p = log(p); }
+        return p;
+    }
+
+    std::unique_ptr< MultivariateEvent > SplittingMixtureOperator::simulate(unsigned int sum) const
+    {
+        double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
+        Index index = 0, max_index = get_nb_states();
+        while(cp < sp && index < max_index)
+        {
+            ++index;
+            cp += _pi[index];
+        }
+        return _observations[index]->simulate(sum);
+    }
 }

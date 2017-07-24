@@ -13,7 +13,8 @@ from optionals import pyplot, numpy
 from io import from_list
 
 import _core
-from __core.statiskit import (UnivariateDistribution,
+from __core.statiskit import (_ShiftedDistribution,
+                              UnivariateDistribution,
                                 _UnivariateFrequencyDistribution,
                                 _QuantitativeUnivariateFrequencyDistribution,
                                 CategoricalUnivariateDistribution,
@@ -102,6 +103,28 @@ __all__ = ['NominalDistribution',
            'DirichletDistribution',
            'IndependentMultivariateDistribution',
            'MixtureDistribution']
+
+def shifted_distribution_decorator(cls):
+
+    cls.distribution = property(cls.get_distribution, cls.set_distribution)
+    del cls.get_distribution, cls.set_distribution
+
+    cls.shift = property(cls.get_shift, cls.set_shift)
+    cls.get_shift, cls.set_shift
+
+    def __str__(self):
+        return self.distribution.__str__()[:-1] + ", " + str(self.shift) + ")"
+
+    cls.__str__ = __str__
+    cls.__repr__ = __str__
+
+    def _repr_latex_(self):
+        return self.distribution._repr_latex_()[:-8] + ", " + str(self.shift) + r"\right)$"
+
+    cls._repr_latex_ = _repr_latex_
+
+for cls in _ShiftedDistribution:
+    shifted_distribution_decorator(cls)
 
 UnivariateDistribution.nb_parameters = property(UnivariateDistribution.get_nb_parameters)
 del UnivariateDistribution.get_nb_parameters

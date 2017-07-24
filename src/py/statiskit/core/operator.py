@@ -4,10 +4,12 @@ import math
 import _core
 from __core.statiskit import (SplittingOperator,
                                   MultinomialSplittingOperator,
-                                  DirichletMultinomialSplittingOperator)
+                                  DirichletMultinomialSplittingOperator,
+                                  SplittingMixtureOperator)
 
 __all__ = ['MultinomialSplittingOperator',
-           'DirichletMultinomialSplittingOperator']
+           'DirichletMultinomialSplittingOperator',
+           'SplittingMixtureOperator']
 
 def wrapper_probability(f):
     @wraps(f)

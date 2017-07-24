@@ -9,6 +9,8 @@ namespace statiskit
 {
     struct STATISKIT_CORE_API SplittingOperator
     {
+        typedef MultivariateData data_type;
+
         virtual Index get_nb_components() const = 0;
 
         virtual unsigned int get_nb_parameters() const = 0;
@@ -17,7 +19,7 @@ namespace statiskit
 
         double loglikelihood(const MultivariateData& data) const;
 
-        virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) = 0;
+        virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) const = 0;
 
         virtual std::unique_ptr< SplittingOperator > copy() const = 0;
     };
@@ -35,7 +37,7 @@ namespace statiskit
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
+            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) const;
 
             const Eigen::VectorXd& get_pi() const;
             void set_pi(const Eigen::VectorXd& pi);
@@ -57,7 +59,7 @@ namespace statiskit
 
             virtual double probability(const MultivariateEvent* event, const bool& logarithm) const;
 
-            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum);
+            virtual std::unique_ptr< MultivariateEvent > simulate(unsigned int sum) const;
 
             const Eigen::VectorXd& get_alpha() const;
             void set_alpha(const Eigen::VectorXd& alpha);

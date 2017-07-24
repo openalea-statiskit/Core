@@ -1139,6 +1139,15 @@ namespace statiskit
         _splitting = static_cast< SplittingOperatorEstimation::Estimator* >(splitting.copy().release());
     }
 
+    std::unordered_set< uintptr_t > SplittingDistributionEstimation::Estimator::children() const
+    {
+        std::unordered_set< uintptr_t > ch;
+        ch.insert((uintptr_t)_sum);
+        __impl::merge(ch, compute_children(*_sum));
+        ch.insert((uintptr_t)_splitting);
+        __impl::merge(ch, compute_children(*_splitting));
+    }
+
     NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation() : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >()
     {}
    

@@ -246,6 +246,18 @@ namespace statiskit
         }
 
     template<class D, class B>
+        std::unordered_set< uintptr_t > Selection< D, B >::Estimator::children() const
+        {
+            std::unordered_set< uintptr_t > ch;
+            for(typename std::vector< typename B::Estimator* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend(); it != it_end; ++it)
+            {
+                ch.insert((uintptr_t)(*it));
+                __impl::merge(ch, this->compute_children(**it));
+            }
+            return ch;
+        }
+
+    template<class D, class B>
         Selection< D, B >::CriterionEstimator::CriterionEstimator()
         {
             this->init();

@@ -77,6 +77,14 @@ namespace statiskit
                 ++keep_first;
             }
         }
+
+        template<class T>
+        void merge(std::unordered_set< T >& lhs, const std::unordered_set< T >& rhs)
+        {
+            for(typename std::unordered_set< T >::const_iterator it = rhs.cbegin(), it_end = rhs.cend(); it != it_end; ++it)
+            { lhs.insert(*it); }
+        }
+
     }
 
     template<typename T, typename L>

@@ -131,6 +131,15 @@ namespace statiskit
         { _estimator = static_cast< estimator_type* >(estimator.copy().release()); }
 
     template<class D, class B>
+        std::unordered_set< uintptr_t > ShiftedDistributionEstimation< D, B >::Estimator::children() const
+        {
+            std::unordered_set< uintptr_t > ch;
+            ch.insert((uintptr_t)(_estimator));
+            __impl::merge(ch, this->compute_children(*_estimator));
+            return ch;
+        }
+
+    template<class D, class B>
         UnivariateFrequencyDistributionEstimation< D, B >::UnivariateFrequencyDistributionEstimation() : ActiveEstimation< D, B >()
         {}
 
@@ -528,12 +537,13 @@ namespace statiskit
             _initializator = nullptr;
             _default_estimator = nullptr;
             _estimators.clear();
+            _limit = true;
         }    
 
     template<class D, class E>
         MixtureDistributionEMEstimation< D, E >::Estimator::Estimator(const Estimator& estimator) : OptimizationEstimation< D*, D, E >::Estimator(estimator)
         {
-            _pi = true;
+            _pi = estimator._pi;
             if(estimator._initializator)
             { _initializator = static_cast< D* >(estimator._initializator->copy().release()); }
             else
@@ -545,6 +555,7 @@ namespace statiskit
             _estimators.clear();
             for(typename std::map< Index, typename E::Estimator* >::const_iterator it = estimator._estimators.cbegin(), it_end = estimator._estimators.cend(); it != it_end; ++it)            
             { _estimators[it->first] = static_cast< typename E::Estimator* >(it->second->copy().release()); }
+            _limit = estimator._limit;
         }
 
     template<class D, class E>
@@ -570,6 +581,7 @@ namespace statiskit
             double prev, curr = mixture->loglikelihood(data);
             unsigned int its = 0;
             std::unique_ptr< typename E::Estimator::estimation_type > estimation;
+            D* buffer = nullptr;
             if(!lazy)
             {
                 estimation = std::make_unique< MixtureDistributionEMEstimation< D, E > >(mixture, &data);
@@ -577,8 +589,17 @@ namespace statiskit
             }
             else
             { estimation = std::make_unique< LazyEstimation< D, MixtureDistributionEMEstimation< D, E > > >(mixture); }
+            std::unordered_set< uintptr_t > ch = this->children();
             do
             {
+                if(_limit)
+                {
+                    for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
+                    { __impl::set_maxits((uintptr_t)(*it), its + 1); }
+                }
+                std::cout << its << ": " << curr << std::endl;
+                delete buffer;
+                buffer = static_cast< D* >((mixture->copy().release()));
                 prev = curr;
                 Eigen::VectorXd pi = mixture->get_pi();
                 std::vector< typename E::Estimator::estimation_type* > estimations(mixture->get_nb_states(), nullptr);
@@ -614,10 +635,22 @@ namespace statiskit
                 if(_pi)
                 { mixture->set_pi(pi); }
                 curr = mixture->loglikelihood(data);
-                if(!lazy)
+                if(!lazy && curr > prev)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
             } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
+            if(!boost::math::isfinite(curr) || curr < prev)
+            {
+                mixture->set_pi(buffer->get_pi());
+                for(Index state = 0, max_state = buffer->get_nb_states(); state < max_state; ++state)
+                { mixture->set_observation(state, *(buffer->get_observation(state))); }
+            }
+            if(_limit)
+            {
+                for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
+                { __impl::unset_maxits((uintptr_t)(*it)); }
+            }
+            delete buffer;
             return estimation;
         }
 
@@ -678,7 +711,6 @@ namespace statiskit
             }
         }
 
-
     template<class D, class E>
         const D* MixtureDistributionEMEstimation< D, E >::Estimator::get_initializator() const
         { return _initializator; }
@@ -687,6 +719,27 @@ namespace statiskit
         void MixtureDistributionEMEstimation< D, E >::Estimator::set_initializator(const D& initializator)
         { _initializator = static_cast< D* >(initializator.copy().release()); }
 
+    template<class D, class E>
+        bool MixtureDistributionEMEstimation< D, E >::Estimator::get_limit() const
+        { return _limit; }
+
+    template<class D, class E>
+        void MixtureDistributionEMEstimation< D, E >::Estimator::set_limit(const bool& limit)
+        { _limit = limit; }
+
+    template<class D, class E>
+        std::unordered_set< uintptr_t > MixtureDistributionEMEstimation< D, E >::Estimator::children() const
+        {
+            std::unordered_set< uintptr_t > ch;
+            for(typename std::map< Index, typename E::Estimator* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend(); it != it_end; ++it)
+            {
+                ch.insert((uintptr_t)((it->second)));
+                __impl::merge(ch, this->compute_children(*(it->second)));
+            }
+            ch.insert((uintptr_t)(_default_estimator));
+            __impl::merge(ch, this->compute_children(*_default_estimator));
+            return ch;
+        }
 }
 
 #endif

@@ -14,7 +14,7 @@ namespace autowig
                  return ::std::unique_ptr< struct ::statiskit::SplittingOperator, struct ::std::default_delete< struct ::statiskit::SplittingOperator > > (result);
             }
                         
-            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  simulate(unsigned int  param_0) 
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  simulate(unsigned int  param_0) const
             {
                  ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > ::element_type* result = this->get_override("simulate")(param_0);
                  return ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > > (result);
@@ -63,14 +63,14 @@ void wrapper_ab524442712b568abd5678edae2dc32c()
     unsigned int  (::statiskit::SplittingOperator::*method_pointer_d1dabf55a37a5a758dad414bbf896af8)() const = &::statiskit::SplittingOperator::get_nb_parameters;
     double  (::statiskit::SplittingOperator::*method_pointer_1f87f52a31005a5fba59e09e9a1c5ad0)(struct ::statiskit::MultivariateEvent const *, bool const &) const = &::statiskit::SplittingOperator::probability;
     double  (::statiskit::SplittingOperator::*method_pointer_d975667392b25062936997f194070050)(struct ::statiskit::MultivariateData const &) const = &::statiskit::SplittingOperator::loglikelihood;
-    class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  (::statiskit::SplittingOperator::*method_pointer_df9697fcf66a55b4b6e6d4906c259f07)(unsigned int ) = &::statiskit::SplittingOperator::simulate;
+    class ::std::unique_ptr< struct ::statiskit::MultivariateEvent, struct ::std::default_delete< struct ::statiskit::MultivariateEvent > >  (::statiskit::SplittingOperator::*method_pointer_291dc5efdb0f513c9addda00e11041c6)(unsigned int ) const = &::statiskit::SplittingOperator::simulate;
     class ::std::unique_ptr< struct ::statiskit::SplittingOperator, struct ::std::default_delete< struct ::statiskit::SplittingOperator > >  (::statiskit::SplittingOperator::*method_pointer_eccd9a8a9bb55465ab06d9688c6819ef)() const = &::statiskit::SplittingOperator::copy;
     boost::python::class_< autowig::Wrap_ab524442712b568abd5678edae2dc32c, autowig::Held< autowig::Wrap_ab524442712b568abd5678edae2dc32c >::Type, boost::noncopyable > class_ab524442712b568abd5678edae2dc32c("SplittingOperator", "", boost::python::no_init);
     class_ab524442712b568abd5678edae2dc32c.def("get_nb_components", boost::python::pure_virtual(method_pointer_d1cab49f6990567fa30d88c43e7bab0d), "");
     class_ab524442712b568abd5678edae2dc32c.def("get_nb_parameters", boost::python::pure_virtual(method_pointer_d1dabf55a37a5a758dad414bbf896af8), "");
     class_ab524442712b568abd5678edae2dc32c.def("probability", boost::python::pure_virtual(method_pointer_1f87f52a31005a5fba59e09e9a1c5ad0), "");
     class_ab524442712b568abd5678edae2dc32c.def("loglikelihood", method_pointer_d975667392b25062936997f194070050, "");
-    class_ab524442712b568abd5678edae2dc32c.def("simulate", boost::python::pure_virtual(method_pointer_df9697fcf66a55b4b6e6d4906c259f07), "");
+    class_ab524442712b568abd5678edae2dc32c.def("simulate", boost::python::pure_virtual(method_pointer_291dc5efdb0f513c9addda00e11041c6), "");
     class_ab524442712b568abd5678edae2dc32c.def("copy", boost::python::pure_virtual(method_pointer_eccd9a8a9bb55465ab06d9688c6819ef), "");
     if(autowig::Held< struct ::statiskit::SplittingOperator >::is_class)
     {

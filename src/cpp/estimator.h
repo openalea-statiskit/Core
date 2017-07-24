@@ -47,6 +47,8 @@ namespace statiskit
                 protected:
                     typename D::event_type::value_type _shift;
                     estimator_type* _estimator;
+
+                    virtual std::unordered_set< uintptr_t > children() const;
             };
 
         protected:
@@ -386,7 +388,7 @@ namespace statiskit
 
         virtual estimated_type const * get_estimated() const = 0;
         
-        struct STATISKIT_CORE_API Estimator
+        struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
             typedef SplittingOperatorEstimation estimation_type;
 
@@ -462,6 +464,8 @@ namespace statiskit
                 protected:
                     DiscreteUnivariateDistributionEstimation::Estimator* _sum;
                     SplittingOperatorEstimation::Estimator* _splitting;
+
+                    virtual std::unordered_set< uintptr_t > children() const;
             };
 
         protected:
@@ -562,11 +566,17 @@ namespace statiskit
                 const D* get_initializator() const;
                 void set_initializator(const D& initializator);
 
+                bool get_limit() const;
+                void set_limit(const bool& limit);
+
             protected:
                 bool _pi;
                 D* _initializator;
                 typename E::Estimator* _default_estimator;
                 std::map< Index, typename E::Estimator* > _estimators;
+                bool _limit;
+
+                virtual std::unordered_set< uintptr_t > children() const;
         };
     };
     
@@ -590,6 +600,9 @@ namespace statiskit
 
     typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
     typedef ContinuousMultivariateMixtureDistributionEMEstimation::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
+
+    typedef MixtureDistributionEMEstimation< SplittingMixtureOperator, SplittingOperatorEstimation > SplittingMixtureOperatorEMEstimation;
+    typedef SplittingMixtureOperatorEMEstimation::Estimator SplittingMixtureOperatorEMEstimator;
 }
 
 #include "estimator.hpp"
