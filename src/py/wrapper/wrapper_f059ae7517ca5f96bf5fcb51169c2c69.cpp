@@ -56,13 +56,15 @@ void wrapper_f059ae7517ca5f96bf5fcb51169c2c69()
     boost::python::scope scope_69c7268d82c95dd5945a07ab3b0f9cb4 = module_69c7268d82c95dd5945a07ab3b0f9cb4;
     class ::std::unique_ptr< struct ::statiskit::SplittingOperatorEstimation, struct ::std::default_delete< struct ::statiskit::SplittingOperatorEstimation > >  (::statiskit::SplittingOperatorEstimation::Estimator::*method_pointer_1760c3e7aaad5c94a734d7aa7473fbdc)(::statiskit::SplittingOperatorEstimation::data_type const &, bool const &) const = &::statiskit::SplittingOperatorEstimation::Estimator::operator();
     class ::std::unique_ptr< struct ::statiskit::SplittingOperatorEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::SplittingOperatorEstimation::Estimator > >  (::statiskit::SplittingOperatorEstimation::Estimator::*method_pointer_b69a0dc2de2d53ae91b128eeaa1612e0)() const = &::statiskit::SplittingOperatorEstimation::Estimator::copy;
-    boost::python::class_< autowig::Wrap_f059ae7517ca5f96bf5fcb51169c2c69, autowig::Held< autowig::Wrap_f059ae7517ca5f96bf5fcb51169c2c69 >::Type, boost::noncopyable > class_f059ae7517ca5f96bf5fcb51169c2c69("Estimator", "", boost::python::no_init);
+    boost::python::class_< autowig::Wrap_f059ae7517ca5f96bf5fcb51169c2c69, autowig::Held< autowig::Wrap_f059ae7517ca5f96bf5fcb51169c2c69 >::Type, boost::python::bases< class ::statiskit::Estimator >, boost::noncopyable > class_f059ae7517ca5f96bf5fcb51169c2c69("Estimator", "", boost::python::no_init);
     class_f059ae7517ca5f96bf5fcb51169c2c69.def("__call__", boost::python::pure_virtual(method_pointer_1760c3e7aaad5c94a734d7aa7473fbdc), "");
     class_f059ae7517ca5f96bf5fcb51169c2c69.def("copy", boost::python::pure_virtual(method_pointer_b69a0dc2de2d53ae91b128eeaa1612e0), "");
+
     if(autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_f059ae7517ca5f96bf5fcb51169c2c69 >::Type, autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::Type >();
-    }    
+        boost::python::implicitly_convertible< autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::Type, autowig::Held< class ::statiskit::Estimator >::Type >();
+    }
 
 }

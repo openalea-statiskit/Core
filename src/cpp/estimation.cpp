@@ -14,6 +14,12 @@ namespace statiskit
     underdispersion_error::underdispersion_error() : parameter_error("data", " is underdispersed")
     {}
 
+    std::unordered_set< uintptr_t > Estimator::compute_children(const Estimator& estimator)
+    { return estimator.children(); }
+
+    std::unordered_set< uintptr_t > Estimator::children() const
+    { return std::unordered_set< uintptr_t >(); }
+
     UnivariateDistributionEstimation::~UnivariateDistributionEstimation()
     {}
 

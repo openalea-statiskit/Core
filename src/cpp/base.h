@@ -44,12 +44,12 @@
   #endif
 #endif
 
-// #ifdef NDEBUG
-// #define BREAKPOINT 
-// #else
+#ifdef NDEBUG
+#define BREAKPOINT 
+#else
 #include <csignal>
 #define BREAKPOINT std::raise(SIGINT);
-// #endif
+#endif
 
 namespace statiskit
 {
@@ -80,9 +80,11 @@ namespace statiskit
          */
         STATISKIT_CORE_API boost::mt19937& get_random_generator();
 
-        unsigned int get_maxits(const uintptr_t& ptr, const unsigned int& maxits);
-        void set_maxits(const uintptr_t& ptr, const unsigned int& maxits);
-        void unset_maxits(const uintptr_t& ptr);
+        STATISKIT_CORE_API unsigned int get_maxits(const uintptr_t& ptr, const unsigned int& maxits);
+        STATISKIT_CORE_API void set_maxits(const uintptr_t& ptr, const unsigned int& maxits);
+        STATISKIT_CORE_API void unset_maxits(const uintptr_t& ptr);
+
+        template<class T> void merge(std::unordered_set< T >& lhs, const std::unordered_set< T >& rhs);
     }
 
     STATISKIT_CORE_API void set_seed();

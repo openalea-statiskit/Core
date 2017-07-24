@@ -21,6 +21,14 @@ namespace statiskit
     struct STATISKIT_CORE_API underdispersion_error : parameter_error
     { underdispersion_error(); };
 
+    class STATISKIT_CORE_API Estimator
+    {
+        protected:
+            static std::unordered_set< uintptr_t > compute_children(const Estimator& estimator);
+            
+            virtual std::unordered_set< uintptr_t > children() const;
+    };
+
     struct STATISKIT_CORE_API UnivariateDistributionEstimation
     {
         typedef UnivariateData data_type;
@@ -30,7 +38,7 @@ namespace statiskit
 
         virtual estimated_type const * get_estimated() const = 0;
         
-        struct STATISKIT_CORE_API Estimator
+        struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
             typedef UnivariateDistributionEstimation estimation_type;
 
@@ -111,6 +119,8 @@ namespace statiskit
 
                     void init();
                     void init(const Estimator& estimator);
+
+                    virtual std::unordered_set< uintptr_t > children() const;
             };
 
             class CriterionEstimator : public PolymorphicCopy< typename B::Estimator::estimation_type::Estimator, CriterionEstimator, Estimator >
@@ -244,7 +254,7 @@ namespace statiskit
 
         virtual estimated_type const * get_estimated() const = 0;
         
-        struct STATISKIT_CORE_API Estimator
+        struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         {
             typedef MultivariateDistributionEstimation estimation_type;
             typedef UnivariateDistributionEstimation marginal_type;
@@ -299,7 +309,7 @@ namespace statiskit
 
         virtual estimated_type const * get_estimated() const = 0;
 
-        struct STATISKIT_CORE_API Estimator
+        struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
             typedef UnivariateConditionalDistributionEstimation estimation_type;
             
@@ -345,7 +355,7 @@ namespace statiskit
 
         virtual estimated_type const * get_estimated() const = 0;
 
-        struct STATISKIT_CORE_API Estimator
+        struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
             typedef MultivariateConditionalDistributionEstimation estimation_type;
             
