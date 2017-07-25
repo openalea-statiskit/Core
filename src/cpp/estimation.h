@@ -25,8 +25,10 @@ namespace statiskit
     {
         protected:
             static std::unordered_set< uintptr_t > compute_children(const Estimator& estimator);
-            
             virtual std::unordered_set< uintptr_t > children() const;
+
+            static uintptr_t compute_identifier(const Estimator& estimator);
+            virtual uintptr_t identifier() const;
     };
 
     struct STATISKIT_CORE_API UnivariateDistributionEstimation
@@ -163,7 +165,7 @@ namespace statiskit
 
             Index size() const;
 
-            class Estimator : public B::Estimator, public Optimization
+            class Estimator : public Optimization< typename B::Estimator >
             {
                 public:
                     Estimator();

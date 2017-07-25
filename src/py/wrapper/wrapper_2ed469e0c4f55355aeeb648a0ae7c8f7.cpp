@@ -54,14 +54,13 @@ void wrapper_2ed469e0c4f55355aeeb648a0ae7c8f7()
     boost::python::object module_a4ffccf09be35258a1a7081721670d59(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_a4ffccf09be35258a1a7081721670d59.c_str()))));
     boost::python::scope().attr("__optimization_estimation_impl_a4ffccf09be35258a1a7081721670d59") = module_a4ffccf09be35258a1a7081721670d59;
     boost::python::scope scope_a4ffccf09be35258a1a7081721670d59 = module_a4ffccf09be35258a1a7081721670d59;
-    boost::python::class_< autowig::Wrap_2ed469e0c4f55355aeeb648a0ae7c8f7, autowig::Held< autowig::Wrap_2ed469e0c4f55355aeeb648a0ae7c8f7 >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator, class ::statiskit::Optimization >, boost::noncopyable > class_2ed469e0c4f55355aeeb648a0ae7c8f7("Estimator", "", boost::python::no_init);
+    boost::python::class_< autowig::Wrap_2ed469e0c4f55355aeeb648a0ae7c8f7, autowig::Held< autowig::Wrap_2ed469e0c4f55355aeeb648a0ae7c8f7 >::Type, boost::python::bases< class ::statiskit::Optimization< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator > >, boost::noncopyable > class_2ed469e0c4f55355aeeb648a0ae7c8f7("Estimator", "", boost::python::no_init);
 
     if(autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_2ed469e0c4f55355aeeb648a0ae7c8f7 >::Type, autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type, autowig::Held< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< double, class ::statiskit::LogarithmicDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization< struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator > >::Type >();
     }
 
 }

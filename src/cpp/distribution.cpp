@@ -2221,7 +2221,7 @@ namespace statiskit
     SplittingMixtureOperator::SplittingMixtureOperator(const std::vector< SplittingOperator* > observations, const Eigen::VectorXd& pi)
     {
         this->init(observations, pi);
-        typename std::vector< SplittingOperator* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
+        std::vector< SplittingOperator* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
         Index nb_components = (*it)->get_nb_components();
         ++it;
         while(it != it_end)

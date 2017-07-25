@@ -102,6 +102,64 @@ namespace statiskit
     template<typename T>
         duplicated_value_error::duplicated_value_error(const std::string& parameter, const T& value) : parameter_error(parameter, "contains multiples " + __impl::to_string(value))
         {}
+
+    template<typename T>
+        Optimization< T >::Optimization()
+        {
+            _mindiff = 1e-5;
+            _minits = 1;
+            _maxits = 10e6;
+        }
+
+    template<typename T>
+        Optimization< T >::Optimization(const Optimization< T >& optimization)
+        {
+            _mindiff = optimization._mindiff;
+            _minits = optimization._minits;
+            _maxits = optimization._maxits;
+        }
+
+    template<typename T>
+        Optimization< T >::~Optimization()
+        {}
+
+    template<typename T>
+        const double& Optimization< T >::get_mindiff() const
+        { return _mindiff; }
+
+    template<typename T>
+        void Optimization< T >::set_mindiff(const double& mindiff)
+        { _mindiff = mindiff; }
+
+    template<typename T>
+        unsigned int Optimization< T >::get_minits() const
+        { return _minits; }
+
+    template<typename T>
+        void Optimization< T >::set_minits(const unsigned int& minits)
+        { _minits = minits; }
+
+    template<typename T>
+        unsigned int Optimization< T >::get_maxits() const
+        { return _maxits; }
+
+    template<typename T>
+        void Optimization< T >::set_maxits(const unsigned int& maxits)
+        { _maxits = maxits; }
+
+    template<typename T>
+        bool Optimization< T >::run(const unsigned int& its, const double& delta) const
+        { 
+            bool status = true;
+            if(its > _minits)
+            {
+                if(!boost::math::isfinite(delta) || __impl::get_maxits((uintptr_t)(this), _maxits))
+                { status = false; }
+                else if(delta < _mindiff)
+                { status = false; }
+            }
+            return status;
+        }
 }
 
 #if !defined(_WIN32) && !defined(WIN32)

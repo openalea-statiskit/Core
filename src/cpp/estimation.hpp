@@ -251,7 +251,7 @@ namespace statiskit
             std::unordered_set< uintptr_t > ch;
             for(typename std::vector< typename B::Estimator* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend(); it != it_end; ++it)
             {
-                ch.insert((uintptr_t)(*it));
+                ch.insert(this->compute_identifier(**it));
                 __impl::merge(ch, this->compute_children(**it));
             }
             return ch;
@@ -328,11 +328,11 @@ namespace statiskit
         { return _iterations.size(); }
 
     template<class T, class D, class B>
-        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator() : Optimization()
+        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator() : Optimization< typename B::Estimator >()
         {}
 
     template<class T, class D, class B>
-        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator(const Estimator& estimator) : Optimization(estimator)
+        OptimizationEstimationImpl< T, D, B >::Estimator::Estimator(const Estimator& estimator) : Optimization< typename B::Estimator >(estimator)
         {}
 
     template<class T, class D, class B>

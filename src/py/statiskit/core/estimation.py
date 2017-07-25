@@ -11,8 +11,7 @@ from functools import wraps
 from optionals import pyplot
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (Optimization,
-                                             _LazyEstimation,
+from statiskit.core.__core.statiskit import (_LazyEstimation,
                                              _ActiveEstimation,
                                              _OptimizationEstimationImpl,
                                              _Selection,
