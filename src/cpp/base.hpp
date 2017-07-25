@@ -153,9 +153,9 @@ namespace statiskit
             bool status = true;
             if(its > _minits)
             {
-                if(!boost::math::isfinite(delta) || __impl::get_maxits((uintptr_t)(this), _maxits))
+                if(!boost::math::isfinite(delta) || its > __impl::get_maxits((uintptr_t)(this), _maxits))
                 { status = false; }
-                else if(delta < _mindiff)
+                else if(std::fabs(delta) < _mindiff)
                 { status = false; }
             }
             return status;

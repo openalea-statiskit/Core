@@ -1008,7 +1008,7 @@ namespace statiskit
             temp /= sums.first;
             if(temp.minCoeff() >= 0.)
             { 
-                alpha = alpha.cwiseProduct(temp);
+                alpha = (alpha.cwiseProduct(temp)).eval();
                 if(!lazy)
                 { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(alpha); }
                 temp = estimated->get_alpha();

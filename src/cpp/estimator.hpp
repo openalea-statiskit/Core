@@ -638,7 +638,7 @@ namespace statiskit
                 if(!lazy && curr > prev)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
-            } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
+            } while(this->run(its, __impl::reldiff(prev, curr)));
             std::cout << its << ": " << prev << " " << curr << " (" <<  __impl::reldiff(prev, curr) << " & " << __impl::get_maxits(this->identifier(), this->_maxits) << ")" << std::endl;
             if(!boost::math::isfinite(curr) || curr < prev)
             {
