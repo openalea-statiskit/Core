@@ -22,6 +22,12 @@ before_script:
   - source before_script.sh
 
 script:
+  - if [[ "$RECIPE" = "python-statiskit_core" && "$TRAVIS_OS_NAME" = "linux" ]]; then
+      export TRAVIS_WAIT=30;
+    fi
+  - if [[ "$RECIPE" = "python-statiskit_core" && "$TRAVIS_OS_NAME" = "osx" ]]; then
+      export TRAVIS_WAIT=30;
+    fi
   - source script.sh
 
 after_success:
