@@ -20,6 +20,12 @@ namespace statiskit
     std::unordered_set< uintptr_t > Estimator::children() const
     { return std::unordered_set< uintptr_t >(); }
 
+    uintptr_t Estimator::identifier() const
+    { return (uintptr_t)(this); }
+
+    uintptr_t Estimator::compute_identifier(const Estimator& estimator)
+    { return estimator.identifier(); }
+
     UnivariateDistributionEstimation::~UnivariateDistributionEstimation()
     {}
 

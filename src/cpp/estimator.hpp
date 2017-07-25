@@ -134,7 +134,7 @@ namespace statiskit
         std::unordered_set< uintptr_t > ShiftedDistributionEstimation< D, B >::Estimator::children() const
         {
             std::unordered_set< uintptr_t > ch;
-            ch.insert((uintptr_t)(_estimator));
+            ch.insert(this->compute_identifier(*_estimator));
             __impl::merge(ch, this->compute_children(*_estimator));
             return ch;
         }
@@ -595,7 +595,7 @@ namespace statiskit
                 if(_limit)
                 {
                     for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
-                    { __impl::set_maxits((uintptr_t)(*it), its + 1); }
+                    { __impl::set_maxits(*it, its + 2); }
                 }
                 std::cout << its << ": " << curr << std::endl;
                 delete buffer;
@@ -639,6 +639,7 @@ namespace statiskit
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
             } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
+            std::cout << its << ": " << prev << " " << curr << " (" <<  __impl::reldiff(prev, curr) << " & " << __impl::get_maxits(this->identifier(), this->_maxits) << ")" << std::endl;
             if(!boost::math::isfinite(curr) || curr < prev)
             {
                 mixture->set_pi(buffer->get_pi());
@@ -648,7 +649,7 @@ namespace statiskit
             if(_limit)
             {
                 for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
-                { __impl::unset_maxits((uintptr_t)(*it)); }
+                { __impl::unset_maxits(*it); }
             }
             delete buffer;
             return estimation;
@@ -733,10 +734,10 @@ namespace statiskit
             std::unordered_set< uintptr_t > ch;
             for(typename std::map< Index, typename E::Estimator* >::const_iterator it = _estimators.cbegin(), it_end = _estimators.cend(); it != it_end; ++it)
             {
-                ch.insert((uintptr_t)((it->second)));
+                ch.insert(this->compute_identifier(*(it->second)));
                 __impl::merge(ch, this->compute_children(*(it->second)));
             }
-            ch.insert((uintptr_t)(_default_estimator));
+            ch.insert(this->compute_identifier(*_default_estimator));
             __impl::merge(ch, this->compute_children(*_default_estimator));
             return ch;
         }

@@ -54,14 +54,13 @@ void wrapper_73669872ae505cedacc2e24b29a905a0()
     boost::python::object module_8e7da3504a5b5679aa98d8889fb4d5d1(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_8e7da3504a5b5679aa98d8889fb4d5d1.c_str()))));
     boost::python::scope().attr("__optimization_estimation_impl_8e7da3504a5b5679aa98d8889fb4d5d1") = module_8e7da3504a5b5679aa98d8889fb4d5d1;
     boost::python::scope scope_8e7da3504a5b5679aa98d8889fb4d5d1 = module_8e7da3504a5b5679aa98d8889fb4d5d1;
-    boost::python::class_< autowig::Wrap_73669872ae505cedacc2e24b29a905a0, autowig::Held< autowig::Wrap_73669872ae505cedacc2e24b29a905a0 >::Type, boost::python::bases< struct ::statiskit::SplittingOperatorEstimation::Estimator, class ::statiskit::Optimization >, boost::noncopyable > class_73669872ae505cedacc2e24b29a905a0("Estimator", "", boost::python::no_init);
+    boost::python::class_< autowig::Wrap_73669872ae505cedacc2e24b29a905a0, autowig::Held< autowig::Wrap_73669872ae505cedacc2e24b29a905a0 >::Type, boost::python::bases< class ::statiskit::Optimization< struct ::statiskit::SplittingOperatorEstimation::Estimator > >, boost::noncopyable > class_73669872ae505cedacc2e24b29a905a0("Estimator", "", boost::python::no_init);
 
     if(autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_73669872ae505cedacc2e24b29a905a0 >::Type, autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< struct ::statiskit::SplittingMixtureOperator *, struct ::statiskit::SplittingMixtureOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization< struct ::statiskit::SplittingOperatorEstimation::Estimator > >::Type >();
     }
 
 }

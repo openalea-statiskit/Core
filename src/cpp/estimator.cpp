@@ -954,18 +954,22 @@ namespace statiskit
     std::unique_ptr< SplittingOperatorEstimation > DirichletMultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
         std::unique_ptr< SplittingOperatorEstimation > estimation;
-        Eigen::VectorXd prev, curr = Eigen::VectorXd::Ones(data.get_sample_space()->size());
-        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(curr);
+        NaturalMeanVectorEstimation::Estimator mean_estimator = NaturalMeanVectorEstimation::Estimator(); 
+        std::unique_ptr< MeanVectorEstimation > mean_estimation = mean_estimator(data);
+        Eigen::VectorXd temp, alpha = mean_estimation->get_mean();
+        alpha /= alpha.sum();
+        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(alpha);
         if(lazy)
         { estimation = std::make_unique< LazyEstimation< DirichletMultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
         else
         { estimation = std::make_unique< DirichletMultinomialSplittingOperatorEstimation >(estimated, &data); }
+        double prev, curr = estimated->loglikelihood(data);
         double total = data.compute_total();
         unsigned int its = 0;
         do
         {
             prev = curr;
-            Eigen::VectorXd temp = Eigen::VectorXd::Zero(data.get_sample_space()->size());
+            temp = Eigen::VectorXd::Zero(data.get_sample_space()->size());
             for(Index component = 0, max_component = data.get_sample_space()->size(); component < max_component; ++component)
             {
                 std::unique_ptr< MultivariateData::Generator > generator = data.generator();
@@ -976,13 +980,13 @@ namespace statiskit
                     {
                         const UnivariateEvent* uevent = mevent->get(component);
                         if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                        { temp[component] += generator->weight() * boost::math::digamma(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() + prev[component]); }
+                        { temp[component] += generator->weight() * boost::math::digamma(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() + alpha[component]); }
                     }
                     ++(*generator);
                 }
-                temp[component] -= total * boost::math::digamma(prev[component]);
+                temp[component] -= total * boost::math::digamma(alpha[component]);
             }
-            std::pair< double, double > sums = std::make_pair(0., curr.sum());
+            std::pair< double, double > sums = std::make_pair(0., alpha.sum());
             std::unique_ptr< MultivariateData::Generator > generator = data.generator();
             while(generator->is_valid())
             {
@@ -1004,13 +1008,17 @@ namespace statiskit
             temp /= sums.first;
             if(temp.minCoeff() >= 0.)
             { 
-                curr = prev.cwiseProduct(temp);
+                alpha = alpha.cwiseProduct(temp);
                 if(!lazy)
-                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(curr); }
+                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(alpha); }
+                temp = estimated->get_alpha();
+                estimated->set_alpha(alpha);
+                curr = estimated->loglikelihood(data);
             }
             ++its;
-        } while(run(its, __impl::reldiff(prev, curr)));
-        estimated->set_alpha(curr);
+        } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
+        if(curr < prev && temp.minCoeff() >= 0.)
+        { estimated->set_alpha(temp); }
         return estimation;
     }
 
@@ -1142,10 +1150,11 @@ namespace statiskit
     std::unordered_set< uintptr_t > SplittingDistributionEstimation::Estimator::children() const
     {
         std::unordered_set< uintptr_t > ch;
-        ch.insert((uintptr_t)_sum);
+        ch.insert(compute_identifier(*_sum));
         __impl::merge(ch, compute_children(*_sum));
-        ch.insert((uintptr_t)_splitting);
+        ch.insert(compute_identifier(*_splitting));
         __impl::merge(ch, compute_children(*_splitting));
+        return ch;
     }
 
     NegativeMultinomialDistributionEstimation::NegativeMultinomialDistributionEstimation() : OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >()

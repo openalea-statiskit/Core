@@ -54,14 +54,13 @@ void wrapper_d60be58cd9475c5bb6fb263896bb9405()
     boost::python::object module_af58ac2593135a578b4bfd4a8aa7e06b(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_af58ac2593135a578b4bfd4a8aa7e06b.c_str()))));
     boost::python::scope().attr("__optimization_estimation_impl_af58ac2593135a578b4bfd4a8aa7e06b") = module_af58ac2593135a578b4bfd4a8aa7e06b;
     boost::python::scope scope_af58ac2593135a578b4bfd4a8aa7e06b = module_af58ac2593135a578b4bfd4a8aa7e06b;
-    boost::python::class_< autowig::Wrap_d60be58cd9475c5bb6fb263896bb9405, autowig::Held< autowig::Wrap_d60be58cd9475c5bb6fb263896bb9405 >::Type, boost::python::bases< struct ::statiskit::SplittingOperatorEstimation::Estimator, class ::statiskit::Optimization >, boost::noncopyable > class_d60be58cd9475c5bb6fb263896bb9405("Estimator", "", boost::python::no_init);
+    boost::python::class_< autowig::Wrap_d60be58cd9475c5bb6fb263896bb9405, autowig::Held< autowig::Wrap_d60be58cd9475c5bb6fb263896bb9405 >::Type, boost::python::bases< class ::statiskit::Optimization< struct ::statiskit::SplittingOperatorEstimation::Estimator > >, boost::noncopyable > class_d60be58cd9475c5bb6fb263896bb9405("Estimator", "", boost::python::no_init);
 
     if(autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_d60be58cd9475c5bb6fb263896bb9405 >::Type, autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type >();
         boost::python::register_ptr_to_python< autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< struct ::statiskit::SplittingOperatorEstimation::Estimator >::Type >();
-        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization >::Type >();
+        boost::python::implicitly_convertible< autowig::Held< class ::statiskit::OptimizationEstimationImpl< class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 >, class ::statiskit::DirichletMultinomialSplittingOperator, struct ::statiskit::SplittingOperatorEstimation >::Estimator >::Type, autowig::Held< class ::statiskit::Optimization< struct ::statiskit::SplittingOperatorEstimation::Estimator > >::Type >();
     }
 
 }

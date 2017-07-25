@@ -1,15 +1,20 @@
 from functools import wraps
 
 import statiskit.core._core
-from statiskit.core.__core.statiskit import (Optimization,)
+from statiskit.core.__core.statiskit import (_Optimization,)
 
 __all__ = []
 
-Optimization.mindiff = property(Optimization.get_mindiff, Optimization.set_mindiff)
-del Optimization.get_mindiff, Optimization.set_mindiff
+def optimization_decorator(cls):
 
-Optimization.minits = property(Optimization.get_minits, Optimization.set_minits)
-del Optimization.get_minits, Optimization.set_minits
+    cls.minits = property(cls.get_minits, cls.set_minits)
+    del cls.get_minits, cls.set_minits
 
-Optimization.maxits = property(Optimization.get_maxits, Optimization.set_maxits)
-del Optimization.get_maxits, Optimization.set_maxits
+    cls.maxits = property(cls.get_maxits, cls.set_maxits)
+    del cls.get_maxits, cls.set_maxits
+
+    cls.mindiff = property(cls.get_mindiff, cls.set_mindiff)
+    del cls.get_mindiff, cls.set_mindiff
+    
+for cls in _Optimization:
+    optimization_decorator(cls)
