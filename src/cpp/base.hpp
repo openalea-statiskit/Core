@@ -155,8 +155,79 @@ namespace statiskit
             {
                 if(!boost::math::isfinite(delta) || its > __impl::get_maxits((uintptr_t)(this), _maxits))
                 { status = false; }
-                else if(std::fabs(delta) < _mindiff)
+                else if(delta < _mindiff)
                 { status = false; }
+            }
+            return status;
+        }
+
+    template<typename T>
+        SimulatedAnnealing< T >::SimulatedAnnealing()
+        {
+            _schedule = new ExponentialSchedule(1.);
+            _minits = 1;
+            _maxits = 10e6;
+        }
+
+    template<typename T>
+        SimulatedAnnealing< T >::SimulatedAnnealing(const SimulatedAnnealing< T >& simulated_annealing)
+        {
+            if(simulated_annealing._schedule)
+            { _schedule = simulated_annealing._schedule->copy().release(); }
+            else
+            { _schedule = nullptr; }
+            _minits = simulated_annealing._minits;
+            _maxits = simulated_annealing._maxits;
+        }
+
+    template<typename T>
+        SimulatedAnnealing< T >::~SimulatedAnnealing()
+        {
+            if(_schedule)
+            {
+                delete _schedule;
+                _schedule = nullptr;
+            }
+        }
+
+    template<typename T>
+        const Schedule* SimulatedAnnealing< T >::get_schedule() const
+        { return _schedule; }
+
+    template<typename T>
+        void SimulatedAnnealing< T >::set_schedule(const Schedule& schedule)
+        { _schedule = schedule.copy().release(); }
+
+    template<typename T>
+        unsigned int SimulatedAnnealing< T >::get_minits() const
+        { return _minits; }
+
+    template<typename T>
+        void SimulatedAnnealing< T >::set_minits(const unsigned int& minits)
+        { _minits = minits; }
+
+    template<typename T>
+        unsigned int SimulatedAnnealing< T >::get_maxits() const
+        { return _maxits; }
+
+    template<typename T>
+        void SimulatedAnnealing< T >::set_maxits(const unsigned int& maxits)
+        { _maxits = maxits; }
+
+    template<typename T>
+        bool SimulatedAnnealing< T >::accept(const unsigned int& its, const double& delta) const
+        { 
+            bool status = true;
+            if(its > _minits && delta < 0)
+            {
+                double maxits = __impl::get_maxits((uintptr_t)(this), _maxits);
+                if(its > maxits)
+                { status = false; }
+                else 
+                {
+                    double u = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
+                    status = u < exp(- delta / (*_schedule)((its - _minits) / maxits));
+                }
             }
             return status;
         }

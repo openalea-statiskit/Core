@@ -1790,8 +1790,12 @@ namespace statiskit
         std::unique_ptr< UnivariateConditionalData::Generator > generator = data.generator();
         while(generator->is_valid() && boost::math::isfinite(llh))
         { 
-            const UnivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
-            llh += generator->weight() * distribution->probability(generator->response(), true);
+            double weight = generator->weight();
+            if(weight > 0.)
+            {
+                const UnivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
+                llh += weight * distribution->probability(generator->response(), true);
+            }
             ++(*generator);
         }
         return llh;        
@@ -1803,7 +1807,9 @@ namespace statiskit
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
         while(generator->is_valid() && boost::math::isfinite(llh))
         { 
-            llh += generator->weight() * probability(generator->event(), true);
+            double weight = generator->weight();
+            if(weight > 0.)
+            { llh += weight * probability(generator->event(), true); }
             ++(*generator);
         }
         return llh;
@@ -2108,8 +2114,12 @@ namespace statiskit
         std::unique_ptr< MultivariateConditionalData::Generator > generator = data.generator();
         while(generator->is_valid() && boost::math::isfinite(llh))
         { 
-            const MultivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
-            llh += generator->weight() * distribution->probability(generator->responses(), true);
+            double weight = generator->weight();
+            if(weight > 0.)
+            {
+                const MultivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
+                llh += weight * distribution->probability(generator->responses(), true);
+            }
             ++(*generator);
         }
         return llh;        
