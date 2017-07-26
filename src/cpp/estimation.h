@@ -177,6 +177,28 @@ namespace statiskit
             std::vector< T > _iterations;
     };
 
+    template<class T, class D, class B> class SimulatedAnnealingEstimation : public ActiveEstimation< D, B >
+    {
+        public:
+            SimulatedAnnealingEstimation();
+            SimulatedAnnealingEstimation(D const * estimated, typename B::data_type const * data);            
+            SimulatedAnnealingEstimation(const SimulatedAnnealingEstimation< T, D, B >& estimation);
+            virtual ~SimulatedAnnealingEstimation();
+
+            Index size() const;
+
+            class Estimator : public SimulatedAnnealing< typename B::Estimator >
+            {
+                public:
+                    Estimator();
+                    Estimator(const Estimator& estimator);
+                    virtual ~Estimator();
+            };
+
+        protected:
+            std::vector< T > _iterations;
+    };
+
     template<class T, class D, class B> struct OptimizationEstimation : OptimizationEstimationImpl<T, D, B >
     {
         // using __impl::OptimizationEstimation<T, D, B >::OptimizationEstimation;

@@ -265,6 +265,8 @@ namespace statiskit
         std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
         double mean = mean_estimation->get_mean();
         double theta = 1 + 2 * (mean - 1);
+        if(theta <= 1)
+        { throw parameter_error("data", " has a mean inferior or equal to 1"); }
         theta = 1 - 1 / theta;
         LogarithmicDistribution* logarithmic = new LogarithmicDistribution(theta);
         if(!lazy)
@@ -275,7 +277,7 @@ namespace statiskit
         else
         { estimation = std::make_unique< LazyEstimation< LogarithmicDistribution, DiscreteUnivariateDistributionEstimation > >(logarithmic); }
         double prev, curr = logarithmic->loglikelihood(data);
-        unsigned int its = 1;
+        unsigned int its = 0;
         do
         {
             prev = curr;
@@ -289,7 +291,7 @@ namespace statiskit
                 ++its;
             }
         } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
-        return std::move(estimation);
+        return estimation;
     }
 
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > LogarithmicDistributionMLEstimation::Estimator::copy() const
@@ -412,7 +414,7 @@ namespace statiskit
                 ++its;
             }
         } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
-        return std::move(estimation);
+        return estimation;
     }
 
     bool NegativeBinomialDistributionMLEstimation::Estimator::get_force() const
@@ -954,22 +956,18 @@ namespace statiskit
     std::unique_ptr< SplittingOperatorEstimation > DirichletMultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
         std::unique_ptr< SplittingOperatorEstimation > estimation;
-        NaturalMeanVectorEstimation::Estimator mean_estimator = NaturalMeanVectorEstimation::Estimator(); 
-        std::unique_ptr< MeanVectorEstimation > mean_estimation = mean_estimator(data);
-        Eigen::VectorXd temp, alpha = mean_estimation->get_mean();
-        alpha /= alpha.sum();
-        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(alpha);
+        double total = data.compute_total();
+        Eigen::VectorXd prev, curr = Eigen::VectorXd::Ones(data.get_sample_space()->size());
+        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(curr);
         if(lazy)
         { estimation = std::make_unique< LazyEstimation< DirichletMultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
         else
         { estimation = std::make_unique< DirichletMultinomialSplittingOperatorEstimation >(estimated, &data); }
-        double prev, curr = estimated->loglikelihood(data);
-        double total = data.compute_total();
         unsigned int its = 0;
         do
         {
             prev = curr;
-            temp = Eigen::VectorXd::Zero(data.get_sample_space()->size());
+            Eigen::VectorXd temp = Eigen::VectorXd::Zero(data.get_sample_space()->size());
             for(Index component = 0, max_component = data.get_sample_space()->size(); component < max_component; ++component)
             {
                 std::unique_ptr< MultivariateData::Generator > generator = data.generator();
@@ -980,13 +978,13 @@ namespace statiskit
                     {
                         const UnivariateEvent* uevent = mevent->get(component);
                         if(uevent && uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
-                        { temp[component] += generator->weight() * boost::math::digamma(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() + alpha[component]); }
+                        { temp[component] += generator->weight() * boost::math::digamma(static_cast< const DiscreteElementaryEvent* >(uevent)->get_value() + prev[component]); }
                     }
                     ++(*generator);
                 }
-                temp[component] -= total * boost::math::digamma(alpha[component]);
+                temp[component] -= total * boost::math::digamma(prev[component]);
             }
-            std::pair< double, double > sums = std::make_pair(0., alpha.sum());
+            std::pair< double, double > sums = std::make_pair(0., curr.sum());
             std::unique_ptr< MultivariateData::Generator > generator = data.generator();
             while(generator->is_valid())
             {
@@ -1008,17 +1006,13 @@ namespace statiskit
             temp /= sums.first;
             if(temp.minCoeff() >= 0.)
             { 
-                alpha = alpha.cwiseProduct(temp);
+                curr = prev.cwiseProduct(temp);
                 if(!lazy)
-                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(alpha); }
-                temp = estimated->get_alpha();
-                estimated->set_alpha(alpha);
-                curr = estimated->loglikelihood(data);
+                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(curr); }
             }
             ++its;
-        } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
-        if(curr < prev && temp.minCoeff() >= 0.)
-        { estimated->set_alpha(temp); }
+        } while(run(its, __impl::reldiff(prev, curr)));
+        estimated->set_alpha(curr);
         return estimation;
     }
 
@@ -1115,8 +1109,10 @@ namespace statiskit
         if(lazy)
         { 
             estimation = std::make_unique< LazyEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
-            delete sum;
-            delete splitting;
+            if(sum)
+            { delete sum; }
+            if(splitting)
+            { delete splitting; }
         }
         else
         {
@@ -1266,7 +1262,7 @@ namespace statiskit
                 ++its;
             }
         } while(run(its, __impl::reldiff(prev, curr)));
-        return std::move(estimation);
+        return estimation;
     }
 
     std::unique_ptr< MultivariateDistributionEstimation::Estimator > NegativeMultinomialDistributionEstimation::WZ99Estimator::copy() const

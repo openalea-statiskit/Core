@@ -161,12 +161,15 @@ namespace statiskit
                 { 
                     try
                     {
-                        _estimation = (*(_estimators[index]))(data, true);
-                        curr = scoring(_estimation->get_estimated(), data);
-                        if(curr > prev && boost::math::isfinite(curr))
+                        if(_estimators[index])
                         {
-                            prev = curr;
-                            estimation.swap(_estimation);
+                            _estimation = (*(_estimators[index]))(data, true);
+                            curr = scoring(_estimation->get_estimated(), data);
+                            if(curr > prev && boost::math::isfinite(curr))
+                            {
+                                prev = curr;
+                                estimation.swap(_estimation);
+                            }
                         }
                     }
                     catch(const std::exception& e)
@@ -192,8 +195,8 @@ namespace statiskit
                 _estimation->finalize();
                 estimation.reset(_estimation);
             }
-            if(!estimation || !estimation->get_estimated())
-            { std::runtime_error("All estimations failed, perform manually the estimations in order to investigate what went wrong"); }
+            if(!estimation || !(estimation->get_estimated()))
+            { throw std::runtime_error("All estimations failed, perform manually the estimations in order to investigate what went wrong"); }
             return estimation;
         }
 
@@ -337,6 +340,41 @@ namespace statiskit
 
     template<class T, class D, class B>
         OptimizationEstimationImpl< T, D, B >::Estimator::~Estimator()
+        {}
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::SimulatedAnnealingEstimation() : ActiveEstimation< D, B >()
+        { _iterations.clear(); }
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::SimulatedAnnealingEstimation(const D * estimated, const typename B::data_type* data) : ActiveEstimation< D, B >(estimated, data)
+        { _iterations.clear(); }
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::SimulatedAnnealingEstimation(const SimulatedAnnealingEstimation< T, D, B >& estimation) : ActiveEstimation< D, B >(estimation)
+        { 
+            for(Index index = 0, max_index = this->_iterations.size(); index < max_index; ++index)
+            { _iterations[index] = static_cast< T >(_iterations[index]->copy().release()); }
+        }
+        
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::~SimulatedAnnealingEstimation()
+        { _iterations.clear(); }
+
+    template<class T, class D, class B>
+        Index SimulatedAnnealingEstimation< T, D, B >::size() const
+        { return _iterations.size(); }
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::Estimator::Estimator() : SimulatedAnnealing< typename B::Estimator >()
+        {}
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::Estimator::Estimator(const Estimator& estimator) : SimulatedAnnealing< typename B::Estimator >(estimator)
+        {}
+
+    template<class T, class D, class B>
+        SimulatedAnnealingEstimation< T, D, B >::Estimator::~Estimator()
         {}
 
     template<class T, class D, class B>

@@ -19,7 +19,9 @@ namespace statiskit
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
         while(generator->is_valid() && boost::math::isfinite(llh))
         { 
-            llh += generator->weight() * probability(generator->event(), true);
+            double weight = generator->weight();
+            if(weight > 0.)
+            { llh += weight * probability(generator->event(), true); }
             ++(*generator);
         }
         return llh;
@@ -60,8 +62,11 @@ namespace statiskit
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
                         {
                             int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                            p += value * log(_pi[component]) - boost::math::lgamma(value + 1);
-                            sum += value;
+                            if(!(_pi[component] <= 0. && value == 0))
+                            {
+                                p += value * log(_pi[component]) - boost::math::lgamma(value + 1);
+                                sum += value;
+                            }
                         }
                         else
                         { throw std::exception(); }
@@ -162,7 +167,7 @@ namespace statiskit
             {
                 p = 0.;
                 int sum = 0;
-                for(Index component = 0, max_component = get_nb_components() - 1; component < max_component; ++component)
+                for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
                 {
                     const UnivariateEvent* uevent = event->get(component);
                     if(uevent)

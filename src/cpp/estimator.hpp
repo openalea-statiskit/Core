@@ -111,7 +111,7 @@ namespace statiskit
             }
             else
             { estimation = std::make_unique< ShiftedDistributionEstimation< D, B > >(static_cast< LazyEstimation< D, B >* >((*_estimator)(weighted, lazy).release()), shifted, _shift); }
-            return std::move(estimation);
+            return estimation;
         }
 
     template<class D, class B>
@@ -538,6 +538,7 @@ namespace statiskit
             _default_estimator = nullptr;
             _estimators.clear();
             _limit = true;
+            this->_minits = 10;
         }    
 
     template<class D, class E>
@@ -595,9 +596,8 @@ namespace statiskit
                 if(_limit)
                 {
                     for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
-                    { __impl::set_maxits(*it, its + 2); }
+                    { __impl::set_maxits(*it, its + 1); }
                 }
-                std::cout << its << ": " << curr << std::endl;
                 delete buffer;
                 buffer = static_cast< D* >((mixture->copy().release()));
                 prev = curr;
@@ -635,23 +635,22 @@ namespace statiskit
                 if(_pi)
                 { mixture->set_pi(pi); }
                 curr = mixture->loglikelihood(data);
-                if(!lazy && curr > prev)
+                if(!lazy)
                 { static_cast< MixtureDistributionEMEstimation< D, E >* >(estimation.get())->_iterations.push_back(static_cast< D* >(mixture->copy().release())); }
                 ++its;
-            } while(this->run(its, __impl::reldiff(prev, curr)) && prev < curr);
-            std::cout << its << ": " << prev << " " << curr << " (" <<  __impl::reldiff(prev, curr) << " & " << __impl::get_maxits(this->identifier(), this->_maxits) << ")" << std::endl;
+            } while(this->run(its, __impl::reldiff(prev, curr)) && curr > prev);
             if(!boost::math::isfinite(curr) || curr < prev)
             {
                 mixture->set_pi(buffer->get_pi());
                 for(Index state = 0, max_state = buffer->get_nb_states(); state < max_state; ++state)
                 { mixture->set_observation(state, *(buffer->get_observation(state))); }
             }
+            delete buffer;
             if(_limit)
             {
                 for(std::unordered_set< uintptr_t >::const_iterator it = ch.begin(), it_end = ch.end(); it != it_end; ++it)
                 { __impl::unset_maxits(*it); }
             }
-            delete buffer;
             return estimation;
         }
 

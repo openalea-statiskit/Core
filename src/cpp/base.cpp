@@ -107,4 +107,25 @@ namespace statiskit
 
     nullptr_error::nullptr_error(const std::string& parameter) : parameter_error(parameter, "cannot be set to nullptr")
     {}
+
+    Schedule::~Schedule()
+    {}
+
+    ExponentialSchedule::ExponentialSchedule(const double& theta)
+    { _theta = theta; }
+
+    ExponentialSchedule::ExponentialSchedule(const ExponentialSchedule& schedule)
+    { _theta = schedule._theta; }
+
+    ExponentialSchedule::~ExponentialSchedule()
+    {}
+
+    double ExponentialSchedule::operator() (const double& stage) const
+    { return exp(- stage / _theta); }
+
+    const double& ExponentialSchedule::get_theta() const
+    { return _theta; }
+
+    void ExponentialSchedule::set_theta(const double& theta)
+    { _theta = theta; }
 }
