@@ -6,6 +6,7 @@
 #                                                                                #
 ##################################################################################
 
+import math
 from functools import wraps
 
 import statiskit.core._core
@@ -247,7 +248,10 @@ def __call__(self, event):
     if event is None or isinstance(event, ContinuousEvent):
         return event
     elif isinstance(event, float):
-        return ContinuousElementaryEvent(event)
+        if not math.isnan(event):
+            return ContinuousElementaryEvent(event)
+        else:
+            return None
     elif isinstance(event, basestring):
         event = event.replace('\n', '').strip(' ')
         if event in ['', '?']:
