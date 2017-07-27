@@ -175,9 +175,12 @@ namespace statiskit
                         if(uevent->get_outcome() == DISCRETE && uevent->get_event() == ELEMENTARY)
                         {
                             int value = static_cast< const DiscreteElementaryEvent* >(uevent)->get_value();
-                            p += boost::math::lgamma(_alpha[component] + value);
-                            p -= boost::math::lgamma(_alpha[component]) + boost::math::lgamma(value + 1);
-                            sum += value;
+                            if(!(_alpha[component] <= 0. && value == 0))
+                            {
+                                p += boost::math::lgamma(_alpha[component] + value);
+                                p -= boost::math::lgamma(_alpha[component]) + boost::math::lgamma(value + 1);
+                                sum += value;
+                            }
                         }
                         else
                         { throw std::exception(); }
