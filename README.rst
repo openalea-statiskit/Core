@@ -1,4 +1,4 @@
-**StatisKit-Core**: A collection of basic utilities for statistical analyses
+**StatisKit-Core**: A Collection of Basic Utilities for Statistical Analyses
 ############################################################################
 
 The criteria for included basic utilities is that the utility component be:
