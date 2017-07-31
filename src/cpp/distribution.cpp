@@ -862,7 +862,7 @@ namespace statiskit
     }
 
     double NormalDistribution::ldf(const double& value) const
-    { return -pow((value - _mu) / _sigma, 2) / 2. - log(_sigma)  - log(boost::math::constants::root_two_pi<double>()); }
+    { return - 1 / 2. * (pow((value - _mu) / _sigma, 2) + log(pow(_sigma, 2)) + log(2 * boost::math::constants::pi< double >())); }
 
     double NormalDistribution::pdf(const double& value) const
     { return exp(ldf(value)); }
