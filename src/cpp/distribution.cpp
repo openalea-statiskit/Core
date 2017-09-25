@@ -304,6 +304,35 @@ namespace statiskit
         return p;
     }
 
+    double DiscreteUnivariateDistribution::ldf(const int& value) const
+    { return log(pdf(value)); }
+
+    double DiscreteUnivariateDistribution::pdf(const int& value) const
+    { return exp(ldf(value)); }
+
+    double DiscreteUnivariateDistribution::cdf(const int& value) const
+    {
+        double p = 0.;
+        for(int k = 0; k <= value; ++k)
+        { p += pdf(k); } 
+        return p;
+    }
+
+    int DiscreteUnivariateDistribution::quantile(const double& p) const
+    {
+        int i = 0;
+        double _p = pdf(i);
+        while(_p < p)
+        {
+            ++i;
+            _p += pdf(i);
+        }
+        return i;        
+    }
+
+    std::unique_ptr< UnivariateEvent > DiscreteUnivariateDistribution::simulate() const
+    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
+
     PoissonDistribution::PoissonDistribution()
     { _theta = 1.; }
 
@@ -532,29 +561,6 @@ namespace statiskit
         return p;
     }
 
-    double LogarithmicDistribution::cdf(const int& value) const
-    { 
-        double p;
-        if(value < 1)
-        { p = 0; }
-        else
-        {
-            p = 0.;
-            for(int k = 1; k <= value; ++k)
-            { p += pdf(k); } 
-            // p = 1 + boost::math::ibeta(value + 1, 0, _theta) / log(1 - _theta);
-        }
-        return p;
-    }
-
-    int LogarithmicDistribution::quantile(const double& p) const
-    { 
-        int q = 0;
-        while(cdf(q) < p)
-        { ++q; }
-        return q;
-    }
-
     double LogarithmicDistribution::get_mean() const
     { return  - 1 / log(1 - _theta) * _theta / (1 - _theta); }
 
@@ -564,9 +570,6 @@ namespace statiskit
         return mean * (1 / (1- _theta) - mean);
         // return - _theta * (_theta + log(1 - _theta)) / pow((1 - _theta) * log(1 - _theta), 2); 
     }
-
-    std::unique_ptr< UnivariateEvent > LogarithmicDistribution::simulate() const
-    { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
 
     GeometricDistribution::GeometricDistribution()
     { _pi = .5; }
@@ -747,6 +750,204 @@ namespace statiskit
 
     std::unique_ptr< UnivariateEvent > NegativeBinomialDistribution::simulate() const
     { return std::make_unique< ElementaryEvent< DiscreteEvent > >(quantile(boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())())); }
+
+    BetaCompoundDiscreteUnivariateDistribution::BetaCompoundDiscreteUnivariateDistribution()
+    {
+        _alpha = 1.;
+        _gamma = 1.;
+    }
+
+    BetaCompoundDiscreteUnivariateDistribution::BetaCompoundDiscreteUnivariateDistribution(const BetaCompoundDiscreteUnivariateDistribution& distribution)
+    {
+        _alpha = distribution._alpha;
+        _gamma = distribution._gamma;
+    }
+
+    BetaCompoundDiscreteUnivariateDistribution::~BetaCompoundDiscreteUnivariateDistribution()
+    {}
+
+    unsigned int BetaCompoundDiscreteUnivariateDistribution::get_nb_parameters() const
+    { return 2; }
+
+    const double& BetaCompoundDiscreteUnivariateDistribution::get_alpha() const
+    { return _alpha; }
+
+    void BetaCompoundDiscreteUnivariateDistribution::set_alpha(const double& alpha)
+    {
+        if(alpha <= 0.)
+        { throw lower_bound_error("alpha", alpha, 0., true); }
+        _alpha = alpha;
+    }
+
+    const double& BetaCompoundDiscreteUnivariateDistribution::get_gamma() const
+    { return _gamma; }
+
+    void BetaCompoundDiscreteUnivariateDistribution::set_gamma(const double& gamma)
+    {
+        if(gamma <= 0.)
+        { throw lower_bound_error("gamma", gamma, 0., true); }
+        _gamma = gamma;
+    }
+
+    BetaBinomialDistribution::BetaBinomialDistribution()
+    { _kappa = 1; }
+
+    BetaBinomialDistribution::BetaBinomialDistribution(const unsigned int& kappa, const double& alpha, const double& gamma)
+    { 
+        set_alpha(alpha);
+        set_gamma(gamma);
+        set_kappa(kappa);
+    }
+
+    BetaBinomialDistribution::BetaBinomialDistribution(const BetaBinomialDistribution& binomial) : PolymorphicCopy< UnivariateDistribution, BetaBinomialDistribution, BetaCompoundDiscreteUnivariateDistribution >(binomial)
+    { _kappa = binomial._kappa; }
+
+    BetaBinomialDistribution::~BetaBinomialDistribution()
+    {}
+
+    unsigned int BetaBinomialDistribution::get_nb_parameters() const
+    { return 1 + BetaCompoundDiscreteUnivariateDistribution::get_nb_parameters(); }
+
+    const unsigned int& BetaBinomialDistribution::get_kappa() const
+    { return _kappa; }
+
+    void BetaBinomialDistribution::set_kappa(const unsigned int& kappa)
+    { _kappa = kappa; }
+
+    double BetaBinomialDistribution::ldf(const int& value) const
+    {
+        double p;
+        if(value < 0)
+        { p = -1 * std::numeric_limits< double >::infinity(); }
+        else
+        {
+            try
+            { 
+                p = boost::math::lgamma(_kappa + 1)
+                    - boost::math::lgamma(value + 1) - boost::math::lgamma(_kappa - value + 1)
+                    + boost::math::lgamma(_alpha + value) + boost::math::lgamma(_kappa - value + _gamma) + boost::math::lgamma(_alpha + _gamma)
+                    - boost::math::lgamma(_alpha + _gamma + _kappa) - boost::math::lgamma(_alpha) - boost::math::lgamma(_gamma); 
+            }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+    
+    double BetaBinomialDistribution::pdf(const int& value) const
+    {
+        double p;
+        if(value < 0 || value > _kappa)
+        { p = 0; }
+        else
+        {
+            try
+            { 
+                p = boost::math::tgamma(_kappa + 1)
+                    / (boost::math::tgamma(value + 1) * boost::math::tgamma(_kappa - value + 1))
+                    * boost::math::tgamma(_alpha + value) * boost::math::tgamma(_kappa - value + _gamma) * boost::math::tgamma(_alpha + _gamma)
+                    / (boost::math::tgamma(_alpha + _gamma + _kappa) * boost::math::tgamma(_alpha) * boost::math::tgamma(_gamma)); 
+            }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+
+    double BetaBinomialDistribution::get_mean() const
+    { return _kappa * _alpha / (_alpha + _gamma); }
+
+    double BetaBinomialDistribution::get_variance() const
+    { return _kappa * _alpha * _gamma * (_kappa + _alpha + _gamma) / (pow(_alpha + _gamma, 2) * (_alpha + _gamma + 1)); }
+
+    BetaNegativeBinomialDistribution::BetaNegativeBinomialDistribution()
+    { _kappa = 1.; }
+
+    BetaNegativeBinomialDistribution::BetaNegativeBinomialDistribution(const double& kappa, const double& alpha, const double& gamma)
+    {
+        set_alpha(alpha);
+        set_gamma(gamma);
+        set_kappa(kappa);
+    }
+
+    BetaNegativeBinomialDistribution::BetaNegativeBinomialDistribution(const BetaNegativeBinomialDistribution& negbinomial) : PolymorphicCopy< UnivariateDistribution, BetaNegativeBinomialDistribution, BetaCompoundDiscreteUnivariateDistribution >(negbinomial)
+    { _kappa = negbinomial._kappa; }
+
+    BetaNegativeBinomialDistribution::~BetaNegativeBinomialDistribution()
+    {}
+
+    unsigned int BetaNegativeBinomialDistribution::get_nb_parameters() const
+    { return 1 + BetaCompoundDiscreteUnivariateDistribution::get_nb_parameters(); }
+
+    const double& BetaNegativeBinomialDistribution::get_kappa() const
+    { return _kappa; }
+
+    void BetaNegativeBinomialDistribution::set_kappa(const double& kappa)
+    {
+        if(kappa <= 0.)
+        { throw lower_bound_error("kappa", kappa, 0., true); }
+        _kappa = kappa;
+    }
+
+    double BetaNegativeBinomialDistribution::ldf(const int& value) const
+    {
+        double p;
+        if(value < 0)
+        { p = -1 * std::numeric_limits< double >::infinity(); }
+        else
+        {
+            try
+            { 
+                p = boost::math::lgamma(value + _kappa)
+                    - boost::math::lgamma(value + 1) - boost::math::lgamma(_kappa)
+                    + boost::math::lgamma(_alpha + _kappa) + boost::math::lgamma(_gamma + value) + boost::math::lgamma(_alpha + _gamma)
+                    - boost::math::lgamma(_alpha + _gamma + _kappa + value) - boost::math::lgamma(_alpha) - boost::math::lgamma(_gamma); 
+            }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+    
+    double BetaNegativeBinomialDistribution::pdf(const int& value) const
+    {
+        double p;
+        if(value < 0)
+        { p = 0; }
+        else
+        {
+            try
+            { 
+                p = boost::math::tgamma(value + _kappa)
+                    / (boost::math::tgamma(value + 1) * boost::math::tgamma(_kappa))
+                    * boost::math::tgamma(_alpha + _kappa) * boost::math::tgamma(_gamma + value) * boost::math::tgamma(_alpha + _gamma)
+                    / (boost::math::tgamma(_alpha + _gamma + _kappa + value) * boost::math::tgamma(_alpha) * boost::math::tgamma(_gamma)); 
+            }
+            catch(const std::exception& error)
+            { p = std::numeric_limits< double >::quiet_NaN(); }
+        }
+        return p;
+    }
+
+    double BetaNegativeBinomialDistribution::get_mean() const
+    {
+        double mean;
+        if(_alpha > 1.) 
+        { mean = _kappa * _gamma / (_alpha - 1); }
+        else
+        { mean = std::numeric_limits< double >::infinity(); }
+        return mean;
+    }
+
+    double BetaNegativeBinomialDistribution::get_variance() const
+    {
+        double variance;
+        if(_alpha > 2) 
+        { variance = _kappa * (_alpha + _kappa - 1) * _gamma * (_alpha + _gamma - 1) / ((_alpha - 2) * pow(_alpha - 1, 2)); }
+        else
+        { variance = std::numeric_limits< double >::infinity(); }
+        return variance;
+    }
 
     double ContinuousUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const
     {

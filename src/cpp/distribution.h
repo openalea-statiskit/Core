@@ -277,14 +277,14 @@ namespace statiskit
          * \details Let \f$n \in \mathbb{Z} \f$ denote the value, \f$ \ln P\left(N = n\right) \f$.
          * \param value The considered value.
          * */ 
-        virtual double ldf(const int& value) const = 0;
+        virtual double ldf(const int& value) const;
         
 		/** \brief Compute the probability of a value
          *
          * \details Let \f$n \in \mathbb{Z} \f$ denote the value, \f$ P\left(N = n\right) \f$.
          * \param value The considered value.
          * */        
-        virtual double pdf(const int& value) const = 0;  
+        virtual double pdf(const int& value) const;  
                   
 		/** \brief Compute the cumulative probability of a value
          *
@@ -294,13 +294,15 @@ namespace statiskit
          *          \f]
          * \param value The considered value.
          * */
-        virtual double cdf(const int& value) const = 0;
+        virtual double cdf(const int& value) const;
         
         /** \brief Compute the quantile of a probability. This is the value \f$ n \in \mathbb{Z} \f$ such that \f$ P(N \leq n) \leq p < P(N \leq n+1) \f$.
           * \param value The considered value.       
         * */
-        virtual int quantile(const double& p) const = 0;
+        virtual int quantile(const double& p) const;
         
+        virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
         /// \brief Get mean of a discrete random component \f$ E(N) = \sum_{n\in\mathbb{Z}} n P(N=n) \f$.
         virtual double get_mean() const = 0;
         
@@ -539,13 +541,7 @@ namespace statiskit
             virtual double ldf(const int& value) const;
 
             virtual double pdf(const int& value) const;
-
-            virtual double cdf(const int& value) const;
-            
-            virtual int quantile(const double& p) const;
-            
-            virtual std::unique_ptr< UnivariateEvent > simulate() const;
-            
+                                    
             virtual double get_mean() const;
             
             virtual double get_variance() const;
@@ -687,6 +683,143 @@ namespace statiskit
             double _pi;
     };
     
+    class STATISKIT_CORE_API BetaCompoundDiscreteUnivariateDistribution : public DiscreteUnivariateDistribution
+    {
+        public:
+            BetaCompoundDiscreteUnivariateDistribution();
+            BetaCompoundDiscreteUnivariateDistribution(const BetaCompoundDiscreteUnivariateDistribution& distribution);
+            virtual ~BetaCompoundDiscreteUnivariateDistribution();
+
+            virtual unsigned int get_nb_parameters() const;
+
+            const double& get_alpha() const;
+            void set_alpha(const double& alpha);
+
+            const double& get_gamma() const;
+            void set_gamma(const double& gamma);
+
+        protected:
+            double _alpha;
+            double _gamma;
+    };
+
+    class STATISKIT_CORE_API BetaBinomialDistribution : public PolymorphicCopy< UnivariateDistribution, BetaBinomialDistribution, BetaCompoundDiscreteUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a negative binomial distribution with
+             *
+             * - \f$\kappa = 1.\f$,
+             * - \f$\pi = 0.5\f$. 
+             * */
+            BetaBinomialDistribution();
+
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for negative binomial distribution instantiation with specified \f$\kappa\f$ and \f$\pi\f$ parameters.
+             *
+             * \param kappa The specified number of failures \f$ \kappa \in \mathbb{R}_+^* \f$.
+             * \param pi The specified probability of success of Bernouilli trials  \f$ \pi \in [0,1] \f$.
+             * */
+            BetaBinomialDistribution(const unsigned int& kappa, const double& alpha, const double& gamma);
+
+            /** \brief Copy constructor */
+            BetaBinomialDistribution(const BetaBinomialDistribution& binomial);
+
+            virtual ~BetaBinomialDistribution();
+
+            /** \brief Returns the number of parameters of the negative binomial distribution
+             *
+             * \details The number of parameters of a negative binomial distribution is \f$2\f$ (\f$\kappa\f$ and \f$\pi\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+
+            /// \brief Get the value of kappa 
+            const unsigned int& get_kappa() const;
+
+            /// \brief Set the value of kappa 
+
+            void set_kappa(const unsigned int& kappa);
+
+            virtual double ldf(const int& value) const;
+
+            /** \brief Compute the probability of an outcome
+             *
+             *
+             * \param value The considered outcome.
+             * \see \ref statiskit::NegativeBinomialDistribution::ldf.
+             * */
+            virtual double pdf(const int& value) const;
+            
+            /// \brief Get mean of a negative binomial distribution \f$ E(N) = \kappa \pi / (1-\pi) \f$.
+            virtual double get_mean() const;
+            
+            /// \brief Get variance of a negative binomial distribution \f$ V(N) = \kappa \pi / (1-\pi)^2 \f$.           
+            virtual double get_variance() const;
+
+        protected:
+            unsigned int _kappa;
+    };
+
+    class STATISKIT_CORE_API BetaNegativeBinomialDistribution : public PolymorphicCopy< UnivariateDistribution, BetaNegativeBinomialDistribution, BetaCompoundDiscreteUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a negative binomial distribution with
+             *
+             * - \f$\kappa = 1.\f$,
+             * - \f$\pi = 0.5\f$. 
+             * */
+            BetaNegativeBinomialDistribution();
+
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for negative binomial distribution instantiation with specified \f$\kappa\f$ and \f$\pi\f$ parameters.
+             *
+             * \param kappa The specified number of failures \f$ \kappa \in \mathbb{R}_+^* \f$.
+             * \param pi The specified probability of success of Bernouilli trials  \f$ \pi \in [0,1] \f$.
+             * */
+            BetaNegativeBinomialDistribution(const double& kappa, const double& alpha, const double& gamma);
+
+            /** \brief Copy constructor */
+            BetaNegativeBinomialDistribution(const BetaNegativeBinomialDistribution& negbinomial);
+
+            virtual ~BetaNegativeBinomialDistribution();
+            /** \brief Returns the number of parameters of the negative binomial distribution
+             *
+             * \details The number of parameters of a negative binomial distribution is \f$2\f$ (\f$\kappa\f$ and \f$\pi\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+
+            /// \brief Get the value of kappa 
+            const double& get_kappa() const;
+
+            /// \brief Set the value of kappa 
+
+            void set_kappa(const double& kappa);
+
+            virtual double ldf(const int& value) const;
+
+            /** \brief Compute the probability of an outcome
+             *
+             *
+             * \param value The considered outcome.
+             * \see \ref statiskit::NegativeBinomialDistribution::ldf.
+             * */
+            virtual double pdf(const int& value) const;
+            
+            /// \brief Get mean of a negative binomial distribution \f$ E(N) = \kappa \pi / (1-\pi) \f$.
+            virtual double get_mean() const;
+            
+            /// \brief Get variance of a negative binomial distribution \f$ V(N) = \kappa \pi / (1-\pi)^2 \f$.           
+            virtual double get_variance() const;
+
+        protected:
+            double _kappa;
+    };
+
     /** \brief This virtual class ContinuousUnivariateDistribution represents the distribution of a random continuous component \f$ X\f$. The support is \f$ \mathbb{R} \f$ and we have \f$ \int_{-\infty}^{\infty} f(x) dx = 1\f$.
      * 
      * */

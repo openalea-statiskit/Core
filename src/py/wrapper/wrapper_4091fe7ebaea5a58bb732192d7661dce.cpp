@@ -9,13 +9,9 @@ void wrapper_4091fe7ebaea5a58bb732192d7661dce()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::enum_< enum ::statiskit::outcome_type > enum_4091fe7ebaea5a58bb732192d7661dce("outcome_type");
-
     enum_4091fe7ebaea5a58bb732192d7661dce.value("CATEGORICAL", ::statiskit::CATEGORICAL);
-
     enum_4091fe7ebaea5a58bb732192d7661dce.value("DISCRETE", ::statiskit::DISCRETE);
-
     enum_4091fe7ebaea5a58bb732192d7661dce.value("CONTINUOUS", ::statiskit::CONTINUOUS);
-
     enum_4091fe7ebaea5a58bb732192d7661dce.value("MIXED", ::statiskit::MIXED);
 
 }
