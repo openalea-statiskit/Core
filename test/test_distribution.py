@@ -40,13 +40,13 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
         for p in numpy.linspace(self._pmin, self._pmax, num=self._num):
             q = self._dist.quantile(p)
             self.assertGreaterEqual(self._dist.cdf(q), p)
-            self.assertLess(self._dist.cdf(q-1), p)
+            self.assertLess(self._dist.cdf(q - 1), p)
 
     def test_moments(self):
         """Test moments"""
         data = self._dist.simulation(1000)
-        self.assertAlmostEqual((data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
-        self.assertAlmostEqual((data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
 
 class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistribution):
 
@@ -72,8 +72,8 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
     def test_moments(self):
         """Test moments"""
         data = self._dist.simulation(1000)
-        self.assertAlmostEqual((data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
-        self.assertAlmostEqual((data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
         
 class AbstractTestMultivariateDistribution(AbstractTestDistribution):
 

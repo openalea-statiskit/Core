@@ -14,24 +14,6 @@ namespace autowig
             virtual double  get_mean() const
             { return this->get_override("get_mean")(); }
                         
-            virtual int  quantile(double const & param_0) const
-            { return this->get_override("quantile")(param_0); }
-                        
-            virtual double  cdf(int const & param_0) const
-            { return this->get_override("cdf")(param_0); }
-                        
-            virtual double  pdf(int const & param_0) const
-            { return this->get_override("pdf")(param_0); }
-                        
-            virtual double  ldf(int const & param_0) const
-            { return this->get_override("ldf")(param_0); }
-                        
-            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > >  simulate() const
-            {
-                 ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > ::element_type* result = this->get_override("simulate")();
-                 return ::std::unique_ptr< struct ::statiskit::UnivariateEvent, struct ::std::default_delete< struct ::statiskit::UnivariateEvent > > (result);
-            }
-                        
             virtual unsigned int  get_nb_parameters() const
             { return this->get_override("get_nb_parameters")(); }
                         

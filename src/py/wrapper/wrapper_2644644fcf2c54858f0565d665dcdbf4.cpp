@@ -17,13 +17,9 @@ void wrapper_2644644fcf2c54858f0565d665dcdbf4()
     boost::python::scope().attr("_criterion_estimator") = module_f4db63bd9e7254c18d0dca2fbb1da1ac;
     boost::python::scope scope_f4db63bd9e7254c18d0dca2fbb1da1ac = module_f4db63bd9e7254c18d0dca2fbb1da1ac;
     boost::python::enum_< enum ::statiskit::Selection< struct ::statiskit::MultivariateConditionalDistribution, struct ::statiskit::MultivariateConditionalDistributionEstimation >::CriterionEstimator::criterion_type > enum_2644644fcf2c54858f0565d665dcdbf4("criterion_type");
-
     enum_2644644fcf2c54858f0565d665dcdbf4.value("AIC", ::statiskit::Selection< struct ::statiskit::MultivariateConditionalDistribution, struct ::statiskit::MultivariateConditionalDistributionEstimation >::CriterionEstimator::AIC);
-
     enum_2644644fcf2c54858f0565d665dcdbf4.value("AI_CC", ::statiskit::Selection< struct ::statiskit::MultivariateConditionalDistribution, struct ::statiskit::MultivariateConditionalDistributionEstimation >::CriterionEstimator::AICc);
-
     enum_2644644fcf2c54858f0565d665dcdbf4.value("BIC", ::statiskit::Selection< struct ::statiskit::MultivariateConditionalDistribution, struct ::statiskit::MultivariateConditionalDistributionEstimation >::CriterionEstimator::BIC);
-
     enum_2644644fcf2c54858f0565d665dcdbf4.value("HQIC", ::statiskit::Selection< struct ::statiskit::MultivariateConditionalDistribution, struct ::statiskit::MultivariateConditionalDistributionEstimation >::CriterionEstimator::HQIC);
 
 }

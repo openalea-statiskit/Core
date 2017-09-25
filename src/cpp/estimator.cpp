@@ -135,6 +135,7 @@ namespace statiskit
         else
         {
             ++kappa;
+            curr = prev;
             do
             {
                 prev = curr;

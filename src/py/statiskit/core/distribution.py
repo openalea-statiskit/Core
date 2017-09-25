@@ -28,6 +28,9 @@ from __core.statiskit import (_ShiftedDistribution,
                                     LogarithmicDistribution,
                                     GeometricDistribution,
                                     NegativeBinomialDistribution,
+                                    BetaCompoundDiscreteUnivariateDistribution,
+                                        BetaBinomialDistribution,
+                                        BetaNegativeBinomialDistribution,
                                     DiscreteUnivariateMixtureDistribution,
                                 ContinuousUnivariateDistribution,
                                     ContinuousUnivariateFrequencyDistribution,
@@ -92,6 +95,8 @@ __all__ = ['NominalDistribution',
            'LogarithmicDistribution',
            'GeometricDistribution',
            'NegativeBinomialDistribution',
+           'BetaBinomialDistribution',
+           'BetaNegativeBinomialDistribution',
            'ContinuousUnivariateFrequencyDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
@@ -273,7 +278,8 @@ def box_plot(self, axes=None, edgecolor="k", width=.5, vert=True, whiskers=(.09,
     q2 = values.index(self.quantile(.5))
     q3 = values.index(self.quantile(.75))
     qe = values.index(self.quantile(max(whiskers)))
-    facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
+    facecolor = kwargs.pop('facecolor', next(axes._get_lines.prop_cycler)['color'])
+    # facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
     if not(qb <= q1 <= q2 <= q3 <= qe):
         raise ValueError('`whiskers` parameter')
     if vert:
@@ -386,7 +392,8 @@ def box_plot(self, axes=None, edgecolor="k", width=.5, vert=True, whiskers=(.09,
     q2 = self.quantile(.5)
     q3 = self.quantile(.75)
     qe = self.quantile(max(whiskers))
-    facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
+    facecolor = kwargs.pop('facecolor', next(axes._get_lines.prop_cycler)['color'])
+    # facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
     if vert:
         axes.bar(pos, q3-q1, width, q1, facecolor=facecolor, edgecolor=edgecolor, align='center')
         axes.plot([pos-width/2., pos+width/2.], [q2, q2], color=edgecolor)
@@ -476,7 +483,7 @@ BinomialDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return r"$\mathcal{B}(" + str(self.kappa) + ", " + str(self.pi) + r"\right)$"
+    return r"$\mathcal{B}\left(" + str(self.kappa) + ", " + str(self.pi) + r"\right)$"
 
 BinomialDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -537,6 +544,44 @@ del NegativeBinomialDistribution.get_kappa, NegativeBinomialDistribution.set_kap
 
 NegativeBinomialDistribution.pi = property(NegativeBinomialDistribution.get_pi, NegativeBinomialDistribution.set_pi)
 del NegativeBinomialDistribution.get_pi, NegativeBinomialDistribution.set_pi
+
+BetaCompoundDiscreteUnivariateDistribution.alpha = property(BetaCompoundDiscreteUnivariateDistribution.get_alpha, BetaCompoundDiscreteUnivariateDistribution.set_alpha)
+del BetaCompoundDiscreteUnivariateDistribution.get_alpha, BetaCompoundDiscreteUnivariateDistribution.set_alpha
+
+BetaCompoundDiscreteUnivariateDistribution.gamma = property(BetaCompoundDiscreteUnivariateDistribution.get_gamma, BetaCompoundDiscreteUnivariateDistribution.set_gamma)
+del BetaCompoundDiscreteUnivariateDistribution.get_gamma, BetaCompoundDiscreteUnivariateDistribution.set_gamma
+
+def __repr__(self):
+    return "BetaB(" + str(self.kappa) + ", " + str(self.alpha) + ", " + str(self.gamma) + ")"
+
+BetaBinomialDistribution.__str__ = __repr__
+BetaBinomialDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\beta\mathcal{B}\left(" + str(self.kappa) + ", " + str(self.alpha) + ", " + str(self.gamma) + r"\right)$"
+
+BetaBinomialDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+BetaBinomialDistribution.kappa = property(BetaBinomialDistribution.get_kappa, BetaBinomialDistribution.set_kappa)
+del BetaBinomialDistribution.get_kappa, BetaBinomialDistribution.set_kappa
+
+def __repr__(self):
+    return "BetaNB(" + str(self.kappa) + ", " + str(self.alpha) + ", " + str(self.gamma) + ")"
+
+BetaNegativeBinomialDistribution.__str__ = __repr__
+BetaNegativeBinomialDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\beta\mathcal{NB}\left(" + str(self.kappa) + ", " + str(self.alpha) + ", " + str(self.gamma) + r"\right)$"
+
+BetaNegativeBinomialDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+BetaNegativeBinomialDistribution.kappa = property(BetaNegativeBinomialDistribution.get_kappa, BetaNegativeBinomialDistribution.set_kappa)
+del BetaNegativeBinomialDistribution.get_kappa, BetaNegativeBinomialDistribution.set_kappa
 
 ContinuousUnivariateDistribution.mean = property(ContinuousUnivariateDistribution.get_mean)
 del ContinuousUnivariateDistribution.get_mean
@@ -664,7 +709,8 @@ def statiskit_univariate_frequency_distribution_decorator(cls):
             def box_plot(self, axes=None, extrema=True, vert=True, pos=1, edgecolor="k", **kwargs):
                 if axes is None:
                     axes = pyplot.subplot(1, 1, 1)
-                facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
+                facecolor = kwargs.pop('facecolor', next(axes._get_lines.prop_cycler)['color'])
+                # facecolor = kwargs.pop('facecolor', axes._get_lines.get_next_color())
                 axes = f(self, axes=axes, vert=vert, pos=pos, facecolor=facecolor, edgecolor=edgecolor, **kwargs)
                 if extrema:
                     values = self.values
@@ -731,7 +777,8 @@ def pdf_plot(self, axes=None, fmt='|', fill=True, **kwargs):
     if 'norm' in kwargs:
         norm = kwargs.pop('norm')
         densities = [norm * d for d in densities]
-    color = kwargs.pop('color', axes._get_lines.get_next_color())
+    color = kwargs.pop('color', next(axes._get_lines.prop_cycler)['color'])
+    # color = kwargs.pop('color', axes._get_lines.get_next_color())
     if '|' in fmt:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
             axes.bar(left=lc, height=d, width=rc-lc, bottom=0., facecolor=color, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge', **kwargs)

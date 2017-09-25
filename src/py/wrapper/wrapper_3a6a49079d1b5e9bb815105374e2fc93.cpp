@@ -9,11 +9,8 @@ void wrapper_3a6a49079d1b5e9bb815105374e2fc93()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::enum_< enum ::statiskit::encoding_type > enum_3a6a49079d1b5e9bb815105374e2fc93("encoding_type");
-
     enum_3a6a49079d1b5e9bb815105374e2fc93.value("TREATMENT", ::statiskit::TREATMENT);
-
     enum_3a6a49079d1b5e9bb815105374e2fc93.value("DEVIATION", ::statiskit::DEVIATION);
-
     enum_3a6a49079d1b5e9bb815105374e2fc93.value("CUMULATIVE", ::statiskit::CUMULATIVE);
 
 }
