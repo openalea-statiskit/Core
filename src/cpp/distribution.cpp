@@ -1363,10 +1363,10 @@ namespace statiskit
     }
 
     double LaplaceDistribution::ldf(const double& value) const
-    { return abs(_mu - value) / _sigma - log(2*_sigma); }
+    { return fabs(_mu - value) / _sigma - log(2*_sigma); }
     
     double LaplaceDistribution::pdf(const double& value) const
-    { return  0.5 * exp( abs(_mu - value) / _sigma) / _sigma; }
+    { return  0.5 * exp(fabs(_mu - value) / _sigma) / _sigma; }
 
     double LaplaceDistribution::cdf(const double& value) const
     {

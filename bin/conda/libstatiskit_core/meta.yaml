@@ -15,10 +15,8 @@ about:
 requirements:
     build:
         - libdev
-        - libboost
         - libstatiskit_linalg
         - libstatiskit_stl
     run:
-        - libboost
         - libstatiskit_linalg
         - libstatiskit_stl
