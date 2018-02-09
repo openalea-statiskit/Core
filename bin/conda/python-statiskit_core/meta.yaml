@@ -16,7 +16,7 @@ requirements:
   build:
     - libtoolchain
     - python-toolchain
-    - libboost-dev
+    - libboost_python-dev
     - libstatiskit_core
     - python
   run:

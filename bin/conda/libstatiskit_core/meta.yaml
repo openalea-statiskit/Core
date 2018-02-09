@@ -15,7 +15,7 @@ about:
 requirements:
     build:
         - libtoolchain
-        - libboost-dev
+        - libboost_python-dev
         - libstatiskit_linalg
         - libstatiskit_stl
     run:
