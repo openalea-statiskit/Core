@@ -6,7 +6,9 @@ try:
     Import("env")
     pyenv = env.Clone(tools = ['boost_python'])
 
-    pyenv.AppendUnique(LIBS  = ['statiskit_core'])
+    pyenv.AppendUnique(LIBS = ['statiskit_core'])
+    if env['SYSTEM'] == 'linux':
+        pyenv.AppendUnique(CCFLAGS = ['-Wno-deprecated-declarations'])
 
     exclude = """
     """.split()
