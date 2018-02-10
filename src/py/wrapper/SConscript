@@ -9,6 +9,8 @@ try:
     pyenv.AppendUnique(LIBS = ['statiskit_core'])
     if env['SYSTEM'] == 'linux':
         pyenv.AppendUnique(CCFLAGS = ['-Wno-deprecated-declarations'])
+    elif env['SYSTEM'] == 'osx':
+        pyenv.AppendUnique(CCFLAGS = ['-Wno-delete-non-virtual-dtor'])
 
     exclude = """
     """.split()
