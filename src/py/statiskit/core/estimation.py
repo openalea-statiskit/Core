@@ -1,6 +1,6 @@
 from functools import wraps
 
-from optionals import pyplot
+from .optionals import pyplot
 
 import statiskit.core._core
 from statiskit.core.__core.statiskit import (_LazyEstimation,
@@ -73,12 +73,12 @@ from statiskit.core.__core.statiskit import (_LazyEstimation,
                                                 ContinuousMultivariateConditionalDistributionEstimation,
                                                     ContinuousMultivariateConditionalDistributionSelection)
 
-from event import outcome_type
-from data import (UnivariateData,
-                  MultivariateData,
-                  UnivariateConditionalData,
-                  MultivariateConditionalData)
-from _tools import unused_warning
+from .event import outcome_type
+from .data import (UnivariateData,
+                   MultivariateData,
+                   UnivariateConditionalData,
+                   MultivariateConditionalData)
+from ._tools import unused_warning
 
 __all__ = ['frequency_estimation',
            'binomial_estimation',

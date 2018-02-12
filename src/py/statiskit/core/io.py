@@ -6,9 +6,9 @@ import warnings
 from tempfile import NamedTemporaryFile
 import os
 
-from controls import controls
-from data import UnivariateDataFrame, MultivariateDataFrame
-from sample_space import NominalSampleSpace
+from .controls import controls
+from .data import UnivariateDataFrame, MultivariateDataFrame
+from .sample_space import NominalSampleSpace
 
 def read_csv(filepath, sep=None, header=False, **kwargs):
     """

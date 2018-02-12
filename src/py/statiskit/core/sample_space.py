@@ -18,9 +18,9 @@ from statiskit.core.__core.statiskit import (encoding_type,
                                               MultivariateSampleSpace,
                                                  VectorSampleSpace)
 
-from controls import *
-from event import *
-from _tools import remove_latex
+from .controls import *
+from .event import *
+from ._tools import remove_latex
 
 __all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
            'IntegerSampleSpace',

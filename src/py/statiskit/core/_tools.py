@@ -1,4 +1,4 @@
-from controls import controls
+from .controls import controls
 
 def unused_warning(**kwargs):
     pass

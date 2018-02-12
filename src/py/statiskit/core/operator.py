@@ -1,11 +1,11 @@
 from functools import wraps
 import math
 
-import _core
-from __core.statiskit import (SplittingOperator,
-                                  MultinomialSplittingOperator,
-                                  DirichletMultinomialSplittingOperator,
-                                  SplittingMixtureOperator)
+import ._core
+from .__core.statiskit import (SplittingOperator,
+                                   MultinomialSplittingOperator,
+                                   DirichletMultinomialSplittingOperator,
+                                   SplittingMixtureOperator)
 
 __all__ = ['MultinomialSplittingOperator',
            'DirichletMultinomialSplittingOperator',

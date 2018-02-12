@@ -3,23 +3,23 @@ import warnings
 import re
 import ast
 
-import _core
-from __core.statiskit import (UnivariateData,
-                                WeightedUnivariateData,
-                                NamedData,
-                                    UnivariateDataFrame, 
-                              MultivariateData,
-                                WeightedMultivariateData,
-                                MultivariateDataFrame,
-                              UnivariateConditionalData,
-                              MultivariateConditionalData)
+import ._core
+from .__core.statiskit import (UnivariateData,
+                                 WeightedUnivariateData,
+                                 NamedData,
+                                   UnivariateDataFrame, 
+                               MultivariateData,
+                                 WeightedMultivariateData,
+                                 MultivariateDataFrame,
+                               UnivariateConditionalData,
+                               MultivariateConditionalData)
 
-from controls import controls
-from event import outcome_type
-from moment import (mean_estimation,
-                    mean_vector_estimation,
-                    variance_estimation,
-                    covariance_matrix_estimation)
+from .controls import controls
+from .event import outcome_type
+from .moment import (mean_estimation,
+                     mean_vector_estimation,
+                     variance_estimation,
+                     covariance_matrix_estimation)
 
 __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',

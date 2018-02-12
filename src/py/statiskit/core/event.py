@@ -1,16 +1,16 @@
 from functools import wraps
 
-import _core
-from __core.statiskit import (outcome_type, event_type,
-                              UnivariateEvent, CategoricalEvent, DiscreteEvent, ContinuousEvent,
-                              _ElementaryEvent, _CensoredEvent, _LeftCensoredEvent, _RightCensoredEvent, _IntervalCensoredEvent,
-                              CategoricalElementaryEvent, CategoricalCensoredEvent,
-                              DiscreteElementaryEvent, DiscreteCensoredEvent, DiscreteLeftCensoredEvent, DiscreteRightCensoredEvent, DiscreteIntervalCensoredEvent,
-                              ContinuousElementaryEvent, ContinuousCensoredEvent, ContinuousLeftCensoredEvent, ContinuousRightCensoredEvent,ContinuousIntervalCensoredEvent,
-                              MultivariateEvent, VectorEvent)
+import ._core
+from .__core.statiskit import (outcome_type, event_type,
+                               UnivariateEvent, CategoricalEvent, DiscreteEvent, ContinuousEvent,
+                               _ElementaryEvent, _CensoredEvent, _LeftCensoredEvent, _RightCensoredEvent, _IntervalCensoredEvent,
+                               CategoricalElementaryEvent, CategoricalCensoredEvent,
+                               DiscreteElementaryEvent, DiscreteCensoredEvent, DiscreteLeftCensoredEvent, DiscreteRightCensoredEvent, DiscreteIntervalCensoredEvent,
+                               ContinuousElementaryEvent, ContinuousCensoredEvent, ContinuousLeftCensoredEvent, ContinuousRightCensoredEvent,ContinuousIntervalCensoredEvent,
+                               MultivariateEvent, VectorEvent)
 
-from controls import controls
-from _tools import float_str, remove_latex
+from .controls import controls
+from ._tools import float_str, remove_latex
 
 __all__ = ['outcome_type', 'event_type',
            'CategoricalElementaryEvent', 'CategoricalCensoredEvent',

@@ -1,5 +1,6 @@
 from functools import wraps
-from optionals import pyplot
+
+from .optionals import pyplot
 
 import statiskit.core._core
 from statiskit.core.__core.statiskit import SlopeHeuristic, _SlopeHeuristicSelection
