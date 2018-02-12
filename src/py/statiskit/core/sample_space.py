@@ -1,8 +1,8 @@
 import math
 from functools import wraps
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (encoding_type,
+from . import _core
+from .__core.statiskit import (encoding_type,
                                              UnivariateSampleSpace,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,

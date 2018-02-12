@@ -1,7 +1,7 @@
 from functools import wraps
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (MeanEstimation,
+from . import _core
+from .__core.statiskit import (MeanEstimation,
                                                  NaturalMeanEstimation,
                                              MeanVectorEstimation,
                                                  NaturalMeanVectorEstimation,

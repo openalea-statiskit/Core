@@ -1,9 +1,7 @@
 from functools import wraps
 
-from .optionals import pyplot
-
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation,
+from . import _core
+from .__core.statiskit import (_LazyEstimation,
                                              _ActiveEstimation,
                                              _OptimizationEstimationImpl,
                                              _Selection,
@@ -78,6 +76,7 @@ from .data import (UnivariateData,
                    MultivariateData,
                    UnivariateConditionalData,
                    MultivariateConditionalData)
+from .optionals import pyplot
 from ._tools import unused_warning
 
 __all__ = ['frequency_estimation',

@@ -1,10 +1,9 @@
 from functools import wraps
 import math
 
-from .optionals import pyplot, numpy
-from .io import from_list
+from statiskit import linalg
 
-import ._core
+from . import _core
 from .__core.statiskit import (_ShiftedDistribution,
                                UnivariateDistribution,
                                  _UnivariateFrequencyDistribution,
@@ -57,6 +56,8 @@ from .__core.statiskit import (_ShiftedDistribution,
                                    DiscreteMultivariateConditionalDistribution,
                                    ContinuousMultivariateConditionalDistribution)
 
+from .optionals import pyplot, numpy
+from .io import from_list
 from .controls import controls
 from .event import (UnivariateEvent,
                        CategoricalEvent,
@@ -76,8 +77,6 @@ from .data import (UnivariateData,
 from .sample_space import (NominalSampleSpace,
                            OrdinalSampleSpace)
 from ._tools import float_str, remove_latex
-
-from statiskit import linalg
 
 __all__ = ['NominalDistribution',
            'OrdinalDistribution',

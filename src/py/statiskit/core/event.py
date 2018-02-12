@@ -1,6 +1,6 @@
 from functools import wraps
 
-import ._core
+from . import _core
 from .__core.statiskit import (outcome_type, event_type,
                                UnivariateEvent, CategoricalEvent, DiscreteEvent, ContinuousEvent,
                                _ElementaryEvent, _CensoredEvent, _LeftCensoredEvent, _RightCensoredEvent, _IntervalCensoredEvent,

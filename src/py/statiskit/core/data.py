@@ -3,7 +3,7 @@ import warnings
 import re
 import ast
 
-import ._core
+from . import _core
 from .__core.statiskit import (UnivariateData,
                                  WeightedUnivariateData,
                                  NamedData,

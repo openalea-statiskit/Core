@@ -1,14 +1,14 @@
-import _core
-
-__all__ = ['read_csv', 'from_list', 'from_pandas']
-
 import warnings
 from tempfile import NamedTemporaryFile
 import os
 
+from . import _core
+
 from .controls import controls
 from .data import UnivariateDataFrame, MultivariateDataFrame
 from .sample_space import NominalSampleSpace
+
+__all__ = ['read_csv', 'from_list', 'from_pandas']
 
 def read_csv(filepath, sep=None, header=False, **kwargs):
     """

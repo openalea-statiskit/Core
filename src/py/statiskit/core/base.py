@@ -1,7 +1,7 @@
 from functools import wraps
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (_Optimization,)
+from . import _core
+from .__core.statiskit import (_Optimization,)
 
 __all__ = []
 

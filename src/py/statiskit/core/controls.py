@@ -1,7 +1,7 @@
 import types
 from functools import wraps
 
-import ._core
+from . import _core
 from .__core.statiskit import get_nn, get_zz, get_rr, get_nr, get_pr, set_seed
 
 __all__ = ['controls']
