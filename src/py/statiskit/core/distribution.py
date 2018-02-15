@@ -32,19 +32,19 @@ from .__core.statiskit import (_ShiftedDistribution,
                                      BetaDistribution,
                                      ContinuousUnivariateMixtureDistribution,
                                MultivariateDistribution,
-                                 _IndependentMultivariateDistribution,
+                                 # _IndependentMultivariateDistribution,
                                  MixedMultivariateMixtureDistribution,
                                  CategoricalMultivariateDistribution,
-                                     CategoricalIndependentMultivariateDistribution,
+                                     # CategoricalIndependentMultivariateDistribution,
                                      CategoricalMultivariateMixtureDistribution,
                                  DiscreteMultivariateDistribution,
                                      SplittingDistribution,
-                                     DiscreteIndependentMultivariateDistribution,
+                                     # DiscreteIndependentMultivariateDistribution,
                                      DiscreteMultivariateMixtureDistribution,
                                  ContinuousMultivariateDistribution,
                                      MultinormalDistribution,
                                      DirichletDistribution,
-                                     ContinuousIndependentMultivariateDistribution,
+                                     # ContinuousIndependentMultivariateDistribution,
                                      ContinuousMultivariateMixtureDistribution,
                                _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
                                UnivariateConditionalDistribution,
@@ -97,7 +97,7 @@ __all__ = ['NominalDistribution',
            'SplittingDistribution',
            'MultinormalDistribution',
            'DirichletDistribution',
-           'IndependentMultivariateDistribution',
+           # 'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
 def shifted_distribution_decorator(cls):
@@ -140,6 +140,7 @@ def wrapper_probability(f):
     return probability
 
 UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.probability)
+OrdinalDistribution.probability = wrapper_probability(OrdinalDistribution.probability)
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
@@ -916,18 +917,18 @@ del MultivariateDistribution.get_nb_parameters
 SplittingDistribution.sum = property(SplittingDistribution.get_sum, SplittingDistribution.set_sum)
 del SplittingDistribution.get_sum, SplittingDistribution.set_sum
 
-SplittingDistribution.splitting = property(SplittingDistribution.get_splitting, SplittingDistribution.set_splitting)
-del SplittingDistribution.get_splitting, SplittingDistribution.set_splitting
+SplittingDistribution.singular = property(SplittingDistribution.get_singular, SplittingDistribution.set_singular)
+del SplittingDistribution.get_singular, SplittingDistribution.set_singular
 
 def __str__(self):
-    return self.splitting.__str__() + " /\\ " + self.sum.__str__()
+    return self.singular.__str__() + " /\\ " + self.sum.__str__()
 
 SplittingDistribution.__str__ = __str__
 SplittingDistribution.__repr__ = __str__
 del __str__
 
 def _repr_latex_(self):
-    return self.splitting._repr_latex_()[:-1] + r" \underset{S}{\wedge} " + self.sum._repr_latex_()[1:]
+    return self.singular._repr_latex_()[:-1] + r" \underset{S}{\wedge} " + self.sum._repr_latex_()[1:]
 
 SplittingDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -948,23 +949,23 @@ del _repr_latex_
 DirichletDistribution.alpha = property(DirichletDistribution.get_alpha, DirichletDistribution.set_alpha)
 del DirichletDistribution.get_alpha, DirichletDistribution.set_alpha
 
-def statiskit_independent_multivariate_distribution_decorator(cls):
-    pass
+# def statiskit_independent_multivariate_distribution_decorator(cls):
+#     pass
 
-for cls in _IndependentMultivariateDistribution:
-    statiskit_independent_multivariate_distribution_decorator(cls)
+# for cls in _IndependentMultivariateDistribution:
+#     statiskit_independent_multivariate_distribution_decorator(cls)
 
-def IndependentMultivariateDistribution(*args):
-    if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
-        return CategoricalIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
-        return DiscreteIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
-        return ContinuousIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, UnivariateDistribution) for arg in args):
-        return MixedIndependentMultivariateDistribution(args)
-    else:
-        raise TypeError('\'args\' parameter')
+# def IndependentMultivariateDistribution(*args):
+#     if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
+#         return CategoricalIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
+#         return DiscreteIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
+#         return ContinuousIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, UnivariateDistribution) for arg in args):
+#         return MixedIndependentMultivariateDistribution(args)
+#     else:
+#         raise TypeError('\'args\' parameter')
 
 def statiskit_mixture_distribution_decorator(cls):
     

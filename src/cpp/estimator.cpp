@@ -29,9 +29,9 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation; 
-        NaturalMeanEstimation::Estimator estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > _estimation = estimator(data);
-        double mean = _estimation->get_mean(); 
+        UnivariateMeanEstimation::Estimator estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > _estimation = estimator(data);
+        double mean = _estimation->get_location(); 
         if(boost::math::isfinite(mean))
         {
             PoissonDistribution* poisson = new PoissonDistribution(mean);
@@ -72,12 +72,12 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean();
-        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double variance = variance_estimation->get_variance(); 
+        UnivariateMeanEstimation::Estimator mean_estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_location();
+        UnivariateVarianceEstimation::Estimator variance_estimator = UnivariateVarianceEstimation::Estimator(false);
+        std::unique_ptr< UnivariateDispersionEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_dispersion(); 
         if(variance > mean && !_force)
         { throw overdispersion_error(); }
         unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
@@ -174,20 +174,20 @@ namespace statiskit
 
     BinomialDistributionMMEstimation::Estimator::Estimator()
     {
-        _mean = new NaturalMeanEstimation::Estimator();
-        _variance = new NaturalVarianceEstimation::Estimator(false);
+        _location = new UnivariateMeanEstimation::Estimator();
+        _dispersion = new UnivariateVarianceEstimation::Estimator(false);
     }
 
     BinomialDistributionMMEstimation::Estimator::Estimator(const Estimator& estimator)
     {
-        _mean = estimator._mean->copy().release();
-        _variance = estimator._variance->copy().release();
+        _location = estimator._location->copy().release();
+        _dispersion = estimator._dispersion->copy().release();
     }
 
     BinomialDistributionMMEstimation::Estimator::~Estimator()
     {
-        delete _mean;
-        delete _variance;
+        delete _location;
+        delete _dispersion;
     }
 
     std::unique_ptr< UnivariateDistributionEstimation > BinomialDistributionMMEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
@@ -195,10 +195,10 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation; 
-        std::unique_ptr< MeanEstimation > mean_estimation = (*_mean)(data);
-        double mean = mean_estimation->get_mean(); 
-        std::unique_ptr< VarianceEstimation > variance_estimation = (*_variance)(data, mean);
-        double variance = variance_estimation->get_variance(); 
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = (*_location)(data);
+        double mean = mean_estimation->get_location(); 
+        std::unique_ptr< UnivariateDispersionEstimation > variance_estimation = (*_dispersion)(data, mean);
+        double variance = variance_estimation->get_dispersion(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && mean > variance)
         {
             unsigned int kappa = std::max<int>(round(pow(mean, 2)/(mean - variance)), static_cast< DiscreteElementaryEvent* >(data.compute_maximum().get())->get_value());
@@ -216,17 +216,17 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > BinomialDistributionMMEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
 
-    MeanEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_mean()
-    { return _mean; }
+    UnivariateLocationEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_location()
+    { return _location; }
 
-    void BinomialDistributionMMEstimation::Estimator::set_mean(const MeanEstimation::Estimator& mean)
-    { _mean = mean.copy().release(); }
+    void BinomialDistributionMMEstimation::Estimator::set_location(const UnivariateLocationEstimation::Estimator& location)
+    { _location = location.copy().release(); }
 
-    VarianceEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_variance()
-    { return _variance; }
+    UnivariateDispersionEstimation::Estimator* BinomialDistributionMMEstimation::Estimator::get_dispersion()
+    { return _dispersion; }
 
-    void BinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
-    { _variance = variance.copy().release(); }
+    void BinomialDistributionMMEstimation::Estimator::set_dispersion(const UnivariateDispersionEstimation::Estimator& dispersion)
+    { _dispersion = dispersion.copy().release(); }
 
     LogarithmicDistributionMLEstimation::LogarithmicDistributionMLEstimation() : OptimizationEstimation<double, LogarithmicDistribution, DiscreteUnivariateDistributionEstimation >()
     {}
@@ -254,9 +254,9 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean();
+        UnivariateMeanEstimation::Estimator mean_estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_location();
         double theta = 1 + 2 * (mean - 1);
         if(theta <= 1)
         { throw parameter_error("data", " has a mean inferior or equal to 1"); }
@@ -315,9 +315,9 @@ namespace statiskit
     {
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean(); 
+        UnivariateMeanEstimation::Estimator mean_estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_location(); 
         GeometricDistribution* geometric = new GeometricDistribution(1 - 1 / mean);
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
         if(lazy)
@@ -356,12 +356,12 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean();
-        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double variance = variance_estimation->get_variance();
+        UnivariateMeanEstimation::Estimator mean_estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_location();
+        UnivariateVarianceEstimation::Estimator variance_estimator = UnivariateVarianceEstimation::Estimator(false);
+        std::unique_ptr< UnivariateDispersionEstimation > variance_estimation = variance_estimator(data, mean);
+        double variance = variance_estimation->get_dispersion();
         if(variance < mean && !_force)
         { throw underdispersion_error(); }
         double total = data.compute_total(), kappa;
@@ -433,20 +433,20 @@ namespace statiskit
 
     NegativeBinomialDistributionMMEstimation::Estimator::Estimator()
     {
-        _mean = new NaturalMeanEstimation::Estimator();
-        _variance = new NaturalVarianceEstimation::Estimator(false);
+        _location = new UnivariateMeanEstimation::Estimator();
+        _dispersion = new UnivariateVarianceEstimation::Estimator(false);
     }
 
     NegativeBinomialDistributionMMEstimation::Estimator::Estimator(const Estimator& estimator)
     {
-        _mean = estimator._mean->copy().release();
-        _variance = estimator._variance->copy().release();
+        _location = estimator._location->copy().release();
+        _dispersion = estimator._dispersion->copy().release();
     }
 
     NegativeBinomialDistributionMMEstimation::Estimator::~Estimator()
     {
-        delete _mean;
-        delete _variance;
+        delete _location;
+        delete _dispersion;
     }
 
     std::unique_ptr< UnivariateDistributionEstimation > NegativeBinomialDistributionMMEstimation::Estimator::operator() (const UnivariateData& data, const bool& lazy) const
@@ -454,10 +454,10 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != DISCRETE)
         { throw statiskit::sample_space_error(DISCRETE); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation; 
-        std::unique_ptr< MeanEstimation > mean_estimation = (*_mean)(data);
-        double mean = mean_estimation->get_mean(); 
-        std::unique_ptr< VarianceEstimation > variance_estimation = (*_variance)(data, mean);
-        double variance = variance_estimation->get_variance(); 
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = (*_location)(data);
+        double mean = mean_estimation->get_location(); 
+        std::unique_ptr< UnivariateDispersionEstimation > variance_estimation = (*_dispersion)(data, mean);
+        double variance = variance_estimation->get_dispersion(); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(variance) && variance > mean)
         {
             NegativeBinomialDistribution* negbinomial = new NegativeBinomialDistribution(pow(mean, 2)/(variance - mean), 1. - mean/variance);
@@ -474,17 +474,17 @@ namespace statiskit
     std::unique_ptr< UnivariateDistributionEstimation::Estimator > NegativeBinomialDistributionMMEstimation::Estimator::copy() const
     { return std::make_unique< Estimator >(*this); }
     
-    MeanEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_mean()
-    { return _mean; }
+    UnivariateLocationEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_location()
+    { return _location; }
 
-    void NegativeBinomialDistributionMMEstimation::Estimator::set_mean(const MeanEstimation::Estimator& mean)
-    { _mean = mean.copy().release(); }
+    void NegativeBinomialDistributionMMEstimation::Estimator::set_location(const UnivariateLocationEstimation::Estimator& mean)
+    { _location = mean.copy().release(); }
 
-    VarianceEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_variance()
-    { return _variance; }
+    UnivariateDispersionEstimation::Estimator* NegativeBinomialDistributionMMEstimation::Estimator::get_dispersion()
+    { return _dispersion; }
 
-    void NegativeBinomialDistributionMMEstimation::Estimator::set_variance(const VarianceEstimation::Estimator& variance)
-    { _variance = variance.copy().release(); }
+    void NegativeBinomialDistributionMMEstimation::Estimator::set_dispersion(const UnivariateDispersionEstimation::Estimator& dispersion)
+    { _dispersion = dispersion.copy().release(); }
 
     NormalDistributionMLEstimation::NormalDistributionMLEstimation() : ActiveEstimation< NormalDistribution, ContinuousUnivariateDistributionEstimation >()
     {}
@@ -509,12 +509,12 @@ namespace statiskit
         if(data.get_sample_space()->get_outcome() != CONTINUOUS)
         { throw statiskit::sample_space_error(CONTINUOUS); }
         std::unique_ptr< UnivariateDistributionEstimation > estimation;
-        NaturalMeanEstimation::Estimator mean_estimator = NaturalMeanEstimation::Estimator();
-        std::unique_ptr< MeanEstimation > mean_estimation = mean_estimator(data);
-        double mean = mean_estimation->get_mean(); 
-        NaturalVarianceEstimation::Estimator variance_estimator = NaturalVarianceEstimation::Estimator(false);
-        std::unique_ptr< VarianceEstimation > variance_estimation = variance_estimator(data, mean);
-        double std_err = sqrt(variance_estimation->get_variance()); 
+        UnivariateMeanEstimation::Estimator mean_estimator = UnivariateMeanEstimation::Estimator();
+        std::unique_ptr< UnivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        double mean = mean_estimation->get_location(); 
+        UnivariateVarianceEstimation::Estimator variance_estimator = UnivariateVarianceEstimation::Estimator(false);
+        std::unique_ptr< UnivariateDispersionEstimation > variance_estimation = variance_estimator(data, mean);
+        double std_err = sqrt(variance_estimation->get_dispersion()); 
         if(boost::math::isfinite(mean) && boost::math::isfinite(std_err))
         {
             NormalDistribution* normal = new NormalDistribution(mean, std_err);
@@ -880,33 +880,33 @@ namespace statiskit
         _constant = constant;
     }
 
-    SplittingOperatorEstimation::~SplittingOperatorEstimation()
+    SingularDistributionEstimation::~SingularDistributionEstimation()
     {}
 
-    SplittingOperatorEstimation::Estimator::~Estimator()
+    SingularDistributionEstimation::Estimator::~Estimator()
     {}
 
-    MultinomialSplittingOperatorEstimation::MultinomialSplittingOperatorEstimation(MultinomialSplittingOperator const * estimated, MultivariateData const * data) : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >(estimated, data)
+    MultinomialSingularDistributionEstimation::MultinomialSingularDistributionEstimation(MultinomialSingularDistribution const * estimated, MultivariateData const * data) : ActiveEstimation< MultinomialSingularDistribution, SingularDistributionEstimation >(estimated, data)
     {}
 
-    MultinomialSplittingOperatorEstimation::MultinomialSplittingOperatorEstimation(const MultinomialSplittingOperatorEstimation& estimation) : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >(estimation)
+    MultinomialSingularDistributionEstimation::MultinomialSingularDistributionEstimation(const MultinomialSingularDistributionEstimation& estimation) : ActiveEstimation< MultinomialSingularDistribution, SingularDistributionEstimation >(estimation)
     {}
 
-    MultinomialSplittingOperatorEstimation::~MultinomialSplittingOperatorEstimation()
+    MultinomialSingularDistributionEstimation::~MultinomialSingularDistributionEstimation()
     {}
 
-    MultinomialSplittingOperatorEstimation::Estimator::Estimator()
+    MultinomialSingularDistributionEstimation::Estimator::Estimator()
     {}
 
-    MultinomialSplittingOperatorEstimation::Estimator::Estimator(const Estimator& estimator)
+    MultinomialSingularDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
     {}
 
-    MultinomialSplittingOperatorEstimation::Estimator::~Estimator()
+    MultinomialSingularDistributionEstimation::Estimator::~Estimator()
     {}
 
-    std::unique_ptr< SplittingOperatorEstimation > MultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    std::unique_ptr< SingularDistributionEstimation > MultinomialSingularDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
-        std::unique_ptr< SplittingOperatorEstimation > estimation;
+        std::unique_ptr< SingularDistributionEstimation > estimation;
         std::unique_ptr< MultivariateData::Generator > generator = data.generator();
         Eigen::VectorXd pi = Eigen::VectorXd::Zero(generator->event()->size());
         while(generator->is_valid())
@@ -920,42 +920,42 @@ namespace statiskit
             }
             ++(*generator);
         }
-        MultinomialSplittingOperator* estimated = new MultinomialSplittingOperator(pi);
+        MultinomialSingularDistribution* estimated = new MultinomialSingularDistribution(pi);
         if(lazy)
-        { estimation = std::make_unique< LazyEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
+        { estimation = std::make_unique< LazyEstimation< MultinomialSingularDistribution, SingularDistributionEstimation > >(estimated); }
         else
-        { estimation = std::make_unique< MultinomialSplittingOperatorEstimation >(estimated, &data); }
+        { estimation = std::make_unique< MultinomialSingularDistributionEstimation >(estimated, &data); }
         return estimation;
     }
 
-    DirichletMultinomialSplittingOperatorEstimation::DirichletMultinomialSplittingOperatorEstimation(DirichletMultinomialSplittingOperator const * estimated, MultivariateData const * data) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >(estimated, data)
+    DirichletMultinomialSingularDistributionEstimation::DirichletMultinomialSingularDistributionEstimation(DirichletMultinomialSingularDistribution const * estimated, MultivariateData const * data) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >(estimated, data)
     {}
 
-    DirichletMultinomialSplittingOperatorEstimation::DirichletMultinomialSplittingOperatorEstimation(const DirichletMultinomialSplittingOperatorEstimation& estimation) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >(estimation)
+    DirichletMultinomialSingularDistributionEstimation::DirichletMultinomialSingularDistributionEstimation(const DirichletMultinomialSingularDistributionEstimation& estimation) : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >(estimation)
     {}
 
-    DirichletMultinomialSplittingOperatorEstimation::~DirichletMultinomialSplittingOperatorEstimation()
+    DirichletMultinomialSingularDistributionEstimation::~DirichletMultinomialSingularDistributionEstimation()
     {}
 
-    DirichletMultinomialSplittingOperatorEstimation::Estimator::Estimator() : PolymorphicCopy<SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >() 
+    DirichletMultinomialSingularDistributionEstimation::Estimator::Estimator() : PolymorphicCopy<SingularDistributionEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >::Estimator >() 
     {}
 
-    DirichletMultinomialSplittingOperatorEstimation::Estimator::Estimator(const Estimator& estimator) : PolymorphicCopy<SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >(estimator)
+    DirichletMultinomialSingularDistributionEstimation::Estimator::Estimator(const Estimator& estimator) : PolymorphicCopy<SingularDistributionEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >::Estimator >(estimator)
     {}
 
-    DirichletMultinomialSplittingOperatorEstimation::Estimator::~Estimator()
+    DirichletMultinomialSingularDistributionEstimation::Estimator::~Estimator()
     {}
 
-    std::unique_ptr< SplittingOperatorEstimation > DirichletMultinomialSplittingOperatorEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
+    std::unique_ptr< SingularDistributionEstimation > DirichletMultinomialSingularDistributionEstimation::Estimator::operator() (const MultivariateData& data, const bool& lazy) const
     {
-        std::unique_ptr< SplittingOperatorEstimation > estimation;
+        std::unique_ptr< SingularDistributionEstimation > estimation;
         double total = data.compute_total();
         Eigen::VectorXd prev, curr = Eigen::VectorXd::Ones(data.get_sample_space()->size());
-        DirichletMultinomialSplittingOperator* estimated = new DirichletMultinomialSplittingOperator(curr);
+        DirichletMultinomialSingularDistribution* estimated = new DirichletMultinomialSingularDistribution(curr);
         if(lazy)
-        { estimation = std::make_unique< LazyEstimation< DirichletMultinomialSplittingOperator, SplittingOperatorEstimation > >(estimated); }
+        { estimation = std::make_unique< LazyEstimation< DirichletMultinomialSingularDistribution, SingularDistributionEstimation > >(estimated); }
         else
-        { estimation = std::make_unique< DirichletMultinomialSplittingOperatorEstimation >(estimated, &data); }
+        { estimation = std::make_unique< DirichletMultinomialSingularDistributionEstimation >(estimated, &data); }
         unsigned int its = 0;
         do
         {
@@ -1001,7 +1001,7 @@ namespace statiskit
             { 
                 curr = prev.cwiseProduct(temp);
                 if(!lazy)
-                { static_cast< DirichletMultinomialSplittingOperatorEstimation* >(estimation.get())->_iterations.push_back(curr); }
+                { static_cast< DirichletMultinomialSingularDistributionEstimation* >(estimation.get())->_iterations.push_back(curr); }
             }
             ++its;
         } while(run(its, __impl::reldiff(prev, curr)));
@@ -1012,33 +1012,33 @@ namespace statiskit
     SplittingDistributionEstimation::SplittingDistributionEstimation(SplittingDistribution const * estimated, MultivariateData const * data) : ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimated, data)
     {
         _sum = nullptr;
-        _splitting = nullptr;
+        _singular = nullptr;
     }
 
     SplittingDistributionEstimation::SplittingDistributionEstimation(const SplittingDistributionEstimation& estimation) : ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >(estimation)
     {
         _sum = estimation._sum;
-        _splitting = estimation._splitting;
+        _singular = estimation._singular;
     }
 
     SplittingDistributionEstimation::~SplittingDistributionEstimation()
     {
         if(_sum)
         { delete _sum; }
-        if(_splitting)
-        { delete _splitting; }
+        if(_singular)
+        { delete _singular; }
     }
 
     const DiscreteUnivariateDistributionEstimation* SplittingDistributionEstimation::get_sum() const
     { return _sum; }
 
-    const SplittingOperatorEstimation* SplittingDistributionEstimation::get_splitting() const
-    { return _splitting; }
+    const SingularDistributionEstimation* SplittingDistributionEstimation::get_singular() const
+    { return _singular; }
 
     SplittingDistributionEstimation::Estimator::Estimator()
     {
         _sum = nullptr;
-        _splitting = nullptr;
+        _singular = nullptr;
     }
 
     SplittingDistributionEstimation::Estimator::Estimator(const Estimator& estimator)
@@ -1047,10 +1047,10 @@ namespace statiskit
         { _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >((estimator._sum->copy()).release()); }
         else
         { _sum = nullptr; }
-        if(estimator._splitting)
-        { _splitting = estimator._splitting->copy().release(); }
+        if(estimator._singular)
+        { _singular = estimator._singular->copy().release(); }
         else
-        { _splitting = nullptr; }    
+        { _singular = nullptr; }    
     }
 
     SplittingDistributionEstimation::Estimator::~Estimator()
@@ -1060,10 +1060,10 @@ namespace statiskit
             delete _sum;
             _sum = nullptr;
         }
-        if(_splitting)
+        if(_singular)
         {
-            delete _splitting;
-            _splitting = nullptr;
+            delete _singular;
+            _singular = nullptr;
         }
     }
 
@@ -1096,22 +1096,22 @@ namespace statiskit
         }
         DiscreteUnivariateDistributionEstimation* sum = static_cast< DiscreteUnivariateDistributionEstimation* >(((*_sum)(weighted_sum_data, lazy)).release());
         delete sum_data;
-        SplittingOperatorEstimation* splitting = (*_splitting)(data, lazy).release();
-        SplittingDistribution* estimated = new SplittingDistribution(*(static_cast< const DiscreteUnivariateDistribution* >(sum->get_estimated())), *(splitting->get_estimated()));
+        SingularDistributionEstimation* singular = (*_singular)(data, lazy).release();
+        SplittingDistribution* estimated = new SplittingDistribution(*(static_cast< const DiscreteUnivariateDistribution* >(sum->get_estimated())), *(singular->get_estimated()));
         std::unique_ptr< MultivariateDistributionEstimation > estimation;
         if(lazy)
         { 
             estimation = std::make_unique< LazyEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation > >(estimated);
             if(sum)
             { delete sum; }
-            if(splitting)
-            { delete splitting; }
+            if(singular)
+            { delete singular; }
         }
         else
         {
             estimation = std::make_unique< SplittingDistributionEstimation >(estimated, &data);
             static_cast< SplittingDistributionEstimation* >(estimation.get())->_sum = sum;
-            static_cast< SplittingDistributionEstimation* >(estimation.get())->_splitting = splitting;
+            static_cast< SplittingDistributionEstimation* >(estimation.get())->_singular = singular;
         }
         return estimation;
     }
@@ -1126,14 +1126,14 @@ namespace statiskit
         _sum = static_cast< DiscreteUnivariateDistributionEstimation::Estimator* >(sum.copy().release());
     }
 
-    const SplittingOperatorEstimation::Estimator* SplittingDistributionEstimation::Estimator::get_splitting() const
-    { return _splitting; }
+    const SingularDistributionEstimation::Estimator* SplittingDistributionEstimation::Estimator::get_singular() const
+    { return _singular; }
 
-    void SplittingDistributionEstimation::Estimator::set_splitting(const SplittingOperatorEstimation::Estimator& splitting)
+    void SplittingDistributionEstimation::Estimator::set_singular(const SingularDistributionEstimation::Estimator& singular)
     { 
-        if(_splitting)
-        { delete _splitting; }
-        _splitting = static_cast< SplittingOperatorEstimation::Estimator* >(splitting.copy().release());
+        if(_singular)
+        { delete _singular; }
+        _singular = static_cast< SingularDistributionEstimation::Estimator* >(singular.copy().release());
     }
 
     std::unordered_set< uintptr_t > SplittingDistributionEstimation::Estimator::children() const
@@ -1141,8 +1141,8 @@ namespace statiskit
         std::unordered_set< uintptr_t > ch;
         ch.insert(compute_identifier(*_sum));
         __impl::merge(ch, compute_children(*_sum));
-        ch.insert(compute_identifier(*_splitting));
-        __impl::merge(ch, compute_children(*_splitting));
+        ch.insert(compute_identifier(*_singular));
+        __impl::merge(ch, compute_children(*_singular));
         return ch;
     }
 
@@ -1176,26 +1176,26 @@ namespace statiskit
             { throw statiskit::sample_space_error(DISCRETE); }
         }
         std::unique_ptr< MultivariateDistributionEstimation > estimation;
-        NaturalMeanVectorEstimation::Estimator mean_estimator = NaturalMeanVectorEstimation::Estimator();
-        std::unique_ptr< MeanVectorEstimation > mean_estimation = mean_estimator(data);
-        Eigen::VectorXd mean = mean_estimation->get_mean();
-        NaturalCovarianceMatrixEstimation::Estimator covariance_estimator = NaturalCovarianceMatrixEstimation::Estimator();
-        std::unique_ptr< CovarianceMatrixEstimation > covariance_estimation = covariance_estimator(data, mean);
-        Eigen::MatrixXd covariance = covariance_estimation->get_covariance();
+        MultivariateMeanEstimation::Estimator mean_estimator = MultivariateMeanEstimation::Estimator();
+        std::unique_ptr< MultivariateLocationEstimation > mean_estimation = mean_estimator(data);
+        Eigen::VectorXd mean = mean_estimation->get_location();
+        MultivariateVarianceEstimation::Estimator covariance_estimator = MultivariateVarianceEstimation::Estimator();
+        std::unique_ptr< MultivariateDispersionEstimation > covariance_estimation = covariance_estimator(data, mean);
+        Eigen::MatrixXd covariance = covariance_estimation->get_dispersion();
         double total = data.compute_total(), kappa;
-        double _mean = mean.sum(), variance = 0.;
+        double _location = mean.sum(), variance = 0.;
         for(Index i = 0, max_i = sample_space->size(); i < max_i; ++i)
         {
             for(Index j = 0; j <= i; ++j)
             { variance += covariance(i, j); }
         }
-        if(variance > _mean)
-        { kappa = pow(_mean, 2)/(variance - _mean); }
+        if(variance > _location)
+        { kappa = pow(_location, 2)/(variance - _location); }
         else
         { kappa = 1.; }
-        double q =  _mean / (_mean + kappa);
+        double q =  _location / (_location + kappa);
         NegativeBinomialDistribution negative_binomial = NegativeBinomialDistribution(kappa, 1. - q);
-        SplittingDistribution* negative_multinomial = new SplittingDistribution(negative_binomial, MultinomialSplittingOperator(mean * q / kappa));
+        SplittingDistribution* negative_multinomial = new SplittingDistribution(negative_binomial, MultinomialSingularDistribution(mean * q / kappa));
         if(!lazy)
         {
             estimation = std::make_unique< NegativeMultinomialDistributionEstimation >(negative_multinomial, &data);
@@ -1246,10 +1246,10 @@ namespace statiskit
                 if(!lazy)
                 { static_cast< NegativeMultinomialDistributionEstimation* >(estimation.get())->_iterations.push_back(kappa); }
                 negative_binomial.set_kappa(kappa);
-                q =  _mean / (_mean + kappa);
+                q =  _location / (_location + kappa);
                 negative_binomial.set_pi(1. - q);
                 negative_multinomial->set_sum(negative_binomial);
-                static_cast< MultinomialSplittingOperator* >(negative_multinomial->get_splitting())->set_pi(mean * q / kappa);
+                static_cast< MultinomialSingularDistribution* >(negative_multinomial->get_singular())->set_pi(mean * q / kappa);
                 // curr = negative_multinomial->loglikelihood(data);
                 curr = kappa;
                 ++its;

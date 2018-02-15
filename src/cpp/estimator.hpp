@@ -362,7 +362,7 @@ namespace statiskit
         double SplittingDistributionEstimation< E >::Estimator::SumData::Generator::weight() const
         { return _generator->weight(); }*/
 
-    template<class D, class E>
+    /* template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()
         {}
 
@@ -504,7 +504,7 @@ namespace statiskit
                 delete it->second;
                 _estimators.erase(it);
             }
-        }
+        }*/
 
     template<class D, class E>
         MixtureDistributionEMEstimation< D, E >::MixtureDistributionEMEstimation() : OptimizationEstimation< D*, D, E >()

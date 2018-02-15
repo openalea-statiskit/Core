@@ -50,25 +50,25 @@ class TestData(unittest.TestCase):
         for component in self._data.components:
             component.pdf_plot()
 
-    def test_mean(self):
-        """Test univariate and multivariate data mean"""
-        mean = self._data.mean
+    def test_location(self):
+        """Test univariate and multivariate data location"""
+        location = self._data.location
         for index, component in enumerate(self._data.components):
             if index == 0:
-                self.assertTrue(math.isnan(mean[index]))
-                self.assertTrue(math.isnan(component.mean))
+                self.assertTrue(math.isnan(location[index]))
+                self.assertTrue(math.isnan(component.location))
             else:
-                self.assertAlmostEqual(mean[index], component.mean)
+                self.assertAlmostEqual(location[index], component.location)
 
-    def test_variance(self):
-        """Test univariate and multivariate data variance"""
-        covariance = self._data.covariance
+    def test_dispersion(self):
+        """Test univariate and multivariate data dispersion"""
+        dispersion = self._data.dispersion
         for index, component in enumerate(self._data.components):
             if index == 0:
-                self.assertTrue(math.isnan(covariance[index, index]))
-                self.assertTrue(math.isnan(component.variance))
+                self.assertTrue(math.isnan(dispersion[index, index]))
+                self.assertTrue(math.isnan(component.dispersion))
             else:
-                self.assertAlmostEqual(covariance[index, index], component.variance)
+                self.assertAlmostEqual(dispersion[index, index], component.dispersion)
 
     def test_extract(self):
         """Test multivariate data extraction"""

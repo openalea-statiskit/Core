@@ -45,8 +45,8 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
     def test_moments(self):
         """Test moments"""
         data = self._dist.simulation(1000)
-        self.assertAlmostEqual(abs(data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
-        self.assertAlmostEqual(abs(data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.location - self._dist.mean) / data.location, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.dispersion - self._dist.variance) / data.dispersion, self._epsilon, delta=self._delta)
 
 class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistribution):
 
@@ -72,8 +72,8 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
     def test_moments(self):
         """Test moments"""
         data = self._dist.simulation(1000)
-        self.assertAlmostEqual(abs(data.mean - self._dist.mean) / data.mean, self._epsilon, delta=self._delta)
-        self.assertAlmostEqual(abs(data.variance - self._dist.variance) / data.variance, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.location - self._dist.mean) / data.location, self._epsilon, delta=self._delta)
+        self.assertAlmostEqual(abs(data.dispersion - self._dist.variance) / data.dispersion, self._epsilon, delta=self._delta)
         
 class AbstractTestMultivariateDistribution(AbstractTestDistribution):
 

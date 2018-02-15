@@ -3,7 +3,7 @@
 
 #include "base.h"
 #include "distribution.h"
-#include "moment.h"
+#include "indicator.h"
 #include "slope_heuristic.h"
 #include "estimation.h"
 
@@ -139,15 +139,15 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                MeanEstimation::Estimator* get_mean();
-                void set_mean(const MeanEstimation::Estimator& mean);
+                UnivariateLocationEstimation::Estimator* get_location();
+                void set_location(const UnivariateLocationEstimation::Estimator& location);
 
-                VarianceEstimation::Estimator* get_variance();
-                void set_variance(const VarianceEstimation::Estimator& variance);
+                UnivariateDispersionEstimation::Estimator* get_dispersion();
+                void set_dispersion(const UnivariateDispersionEstimation::Estimator& dispersion);
 
             protected:
-                MeanEstimation::Estimator* _mean;
-                VarianceEstimation::Estimator* _variance;
+                UnivariateLocationEstimation::Estimator* _location;
+                UnivariateDispersionEstimation::Estimator* _dispersion;
         };
     };
 
@@ -258,15 +258,15 @@ namespace statiskit
 
                 virtual std::unique_ptr< UnivariateDistributionEstimation::Estimator > copy() const;
 
-                MeanEstimation::Estimator* get_mean();
-                void set_mean(const MeanEstimation::Estimator& mean);
+                UnivariateLocationEstimation::Estimator* get_location();
+                void set_location(const UnivariateLocationEstimation::Estimator& location);
 
-                VarianceEstimation::Estimator* get_variance();
-                void set_variance(const VarianceEstimation::Estimator& variance);
+                UnivariateDispersionEstimation::Estimator* get_dispersion();
+                void set_dispersion(const UnivariateDispersionEstimation::Estimator& dispersion);
 
             protected:
-                MeanEstimation::Estimator* _mean;
-                VarianceEstimation::Estimator* _variance;
+                UnivariateLocationEstimation::Estimator* _location;
+                UnivariateDispersionEstimation::Estimator* _dispersion;
         };
     };
     
@@ -371,18 +371,18 @@ namespace statiskit
         }; 
     };
 
-    struct STATISKIT_CORE_API SplittingOperatorEstimation
+    struct STATISKIT_CORE_API SingularDistributionEstimation
     {
         typedef MultivariateData data_type;
-        typedef SplittingOperator estimated_type;
+        typedef SingularDistribution estimated_type;
 
-        virtual ~SplittingOperatorEstimation() = 0;
+        virtual ~SingularDistributionEstimation() = 0;
 
         virtual estimated_type const * get_estimated() const = 0;
         
         struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
-            typedef SplittingOperatorEstimation estimation_type;
+            typedef SingularDistributionEstimation estimation_type;
 
             virtual ~Estimator() = 0;
 
@@ -392,38 +392,38 @@ namespace statiskit
         };
     };
 
-    typedef Selection< SplittingOperator, SplittingOperatorEstimation > SplittingOperatorSelection;
-    typedef SplittingOperatorSelection::CriterionEstimator SplittingOperatorCriterionEstimator;
+    typedef Selection< SingularDistribution, SingularDistributionEstimation > SingularDistributionSelection;
+    typedef SingularDistributionSelection::CriterionEstimator SingularDistributionCriterionEstimator;
 
-    struct STATISKIT_CORE_API MultinomialSplittingOperatorEstimation : ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >
+    struct STATISKIT_CORE_API MultinomialSingularDistributionEstimation : ActiveEstimation< MultinomialSingularDistribution, SingularDistributionEstimation >
     {
-        MultinomialSplittingOperatorEstimation(MultinomialSplittingOperator const * estimated, MultivariateData const * data);
-        MultinomialSplittingOperatorEstimation(const MultinomialSplittingOperatorEstimation& estimation);
-        virtual ~MultinomialSplittingOperatorEstimation();
+        MultinomialSingularDistributionEstimation(MultinomialSingularDistribution const * estimated, MultivariateData const * data);
+        MultinomialSingularDistributionEstimation(const MultinomialSingularDistributionEstimation& estimation);
+        virtual ~MultinomialSingularDistributionEstimation();
 
-        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SplittingOperatorEstimation::Estimator, Estimator, ActiveEstimation< MultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >
+        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SingularDistributionEstimation::Estimator, Estimator, ActiveEstimation< MultinomialSingularDistribution, SingularDistributionEstimation >::Estimator >
         {
             Estimator();
             Estimator(const Estimator& estimator);
             virtual ~Estimator();
 
-            virtual std::unique_ptr< SplittingOperatorEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
+            virtual std::unique_ptr< SingularDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
         };
     };
 
-    struct STATISKIT_CORE_API DirichletMultinomialSplittingOperatorEstimation : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >
+    struct STATISKIT_CORE_API DirichletMultinomialSingularDistributionEstimation : OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >
     {
-        DirichletMultinomialSplittingOperatorEstimation(DirichletMultinomialSplittingOperator const * estimated, MultivariateData const * data);
-        DirichletMultinomialSplittingOperatorEstimation(const DirichletMultinomialSplittingOperatorEstimation& estimation);
-        virtual ~DirichletMultinomialSplittingOperatorEstimation();
+        DirichletMultinomialSingularDistributionEstimation(DirichletMultinomialSingularDistribution const * estimated, MultivariateData const * data);
+        DirichletMultinomialSingularDistributionEstimation(const DirichletMultinomialSingularDistributionEstimation& estimation);
+        virtual ~DirichletMultinomialSingularDistributionEstimation();
 
-        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SplittingOperatorEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSplittingOperator, SplittingOperatorEstimation >::Estimator >
+        struct STATISKIT_CORE_API Estimator : PolymorphicCopy< SingularDistributionEstimation::Estimator, Estimator, OptimizationEstimation<Eigen::VectorXd, DirichletMultinomialSingularDistribution, SingularDistributionEstimation >::Estimator >
         {
             Estimator();
             Estimator(const Estimator& estimator);
             virtual ~Estimator();
 
-            virtual std::unique_ptr< SplittingOperatorEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
+            virtual std::unique_ptr< SingularDistributionEstimation > operator() (const MultivariateData& data, const bool& lazy=false) const;
         };
     };
 
@@ -436,7 +436,7 @@ namespace statiskit
 
             const DiscreteUnivariateDistributionEstimation* get_sum() const;
 
-            const SplittingOperatorEstimation* get_splitting() const;
+            const SingularDistributionEstimation* get_singular() const;
 
             class STATISKIT_CORE_API Estimator : public PolymorphicCopy< MultivariateDistributionEstimation::Estimator, Estimator, ActiveEstimation< SplittingDistribution, DiscreteMultivariateDistributionEstimation >::Estimator >
             {
@@ -450,19 +450,19 @@ namespace statiskit
                     const DiscreteUnivariateDistributionEstimation::Estimator* get_sum() const;
                     void  set_sum(const DiscreteUnivariateDistributionEstimation::Estimator& sum);
 
-                    const SplittingOperatorEstimation::Estimator* get_splitting() const;
-                    void set_splitting(const SplittingOperatorEstimation::Estimator& splitting);
+                    const SingularDistributionEstimation::Estimator* get_singular() const;
+                    void set_singular(const SingularDistributionEstimation::Estimator& singular);
 
                 protected:
                     DiscreteUnivariateDistributionEstimation::Estimator* _sum;
-                    SplittingOperatorEstimation::Estimator* _splitting;
+                    SingularDistributionEstimation::Estimator* _singular;
 
                     virtual std::unordered_set< uintptr_t > children() const;
             };
 
         protected:
             DiscreteUnivariateDistributionEstimation* _sum;        
-            SplittingOperatorEstimation* _splitting;
+            SingularDistributionEstimation* _singular;
     };
 
     struct STATISKIT_CORE_API NegativeMultinomialDistributionEstimation : public OptimizationEstimation<double, SplittingDistribution, DiscreteMultivariateDistributionEstimation >
@@ -485,7 +485,7 @@ namespace statiskit
             };
     };
 
-    template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >
+    /*template<class D, class E> class IndependentMultivariateDistributionEstimation : public ActiveEstimation< IndependentMultivariateDistribution< D >, E >
     {
         public:
             IndependentMultivariateDistributionEstimation();
@@ -526,7 +526,7 @@ namespace statiskit
     typedef IndependentMultivariateDistributionEstimation< MultivariateDistribution, MultivariateDistributionEstimation > MixedIndependentMultivariateDistributionEstimation;
     typedef IndependentMultivariateDistributionEstimation< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalIndependentMultivariateDistributionEstimation;
     typedef IndependentMultivariateDistributionEstimation< DiscreteMultivariateDistribution, DiscreteMultivariateDistributionEstimation > DiscreteIndependentMultivariateDistributionEstimation;
-    typedef IndependentMultivariateDistributionEstimation< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousIndependentMultivariateDistributionEstimation;
+    typedef IndependentMultivariateDistributionEstimation< ContinuousMultivariateDistribution, ContinuousMultivariateDistributionEstimation > ContinuousIndependentMultivariateDistributionEstimation;*/
 
     template<class D, class E> struct MixtureDistributionEMEstimation : OptimizationEstimation< D*, D, E >
     {
@@ -593,8 +593,8 @@ namespace statiskit
     typedef MixtureDistributionEMEstimation< ContinuousMultivariateMixtureDistribution, ContinuousMultivariateDistributionEstimation > ContinuousMultivariateMixtureDistributionEMEstimation;
     typedef ContinuousMultivariateMixtureDistributionEMEstimation::Estimator ContinuousMultivariateMixtureDistributionEMEstimator;
 
-    typedef MixtureDistributionEMEstimation< SplittingMixtureOperator, SplittingOperatorEstimation > SplittingMixtureOperatorEMEstimation;
-    typedef SplittingMixtureOperatorEMEstimation::Estimator SplittingMixtureOperatorEMEstimator;
+    typedef MixtureDistributionEMEstimation< MixtureSingularDistribution, SingularDistributionEstimation > MixtureSingularDistributionEMEstimation;
+    typedef MixtureSingularDistributionEMEstimation::Estimator MixtureSingularDistributionEMEstimator;
 }
 
 #include "estimator.hpp"

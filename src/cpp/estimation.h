@@ -255,12 +255,11 @@ namespace statiskit
     typedef Selection< CategoricalUnivariateDistribution, CategoricalUnivariateDistributionEstimation > CategoricalUnivariateDistributionSelection;
     typedef CategoricalUnivariateDistributionSelection::CriterionEstimator CategoricalUnivariateDistributionCriterionEstimator;
 
-
     struct STATISKIT_CORE_API DiscreteUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
 
     typedef Selection< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation > DiscreteUnivariateDistributionSelection;
-    typedef DiscreteUnivariateDistributionSelection::CriterionEstimator DiscreteUnivariateDistributionCriterionEstimator;
+    typedef Selection< DiscreteUnivariateDistribution, DiscreteUnivariateDistributionEstimation >::CriterionEstimator DiscreteUnivariateDistributionCriterionEstimator;
 
     struct STATISKIT_CORE_API ContinuousUnivariateDistributionEstimation : UnivariateDistributionEstimation
     { struct STATISKIT_CORE_API Estimator : UnivariateDistributionEstimation::Estimator {}; };
@@ -298,7 +297,8 @@ namespace statiskit
     {
         typedef CategoricalUnivariateDistributionEstimation marginal_type;
 
-        struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator {};
+        struct STATISKIT_CORE_API Estimator : MultivariateDistributionEstimation::Estimator 
+        { typedef marginal_type::Estimator marginal_type; };
     };
 
     typedef Selection< CategoricalMultivariateDistribution, CategoricalMultivariateDistributionEstimation > CategoricalMultivariateDistributionSelection;

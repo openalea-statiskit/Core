@@ -24,7 +24,7 @@ try:
         targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
                                         module='../py/wrapper/_core.cpp',
                                         decorator='../py/statiskit/core/_core.py',
-                                        parser_bootstrap=1,
+                                        parser_bootstrap=3,
                                         controller='AutoWIG.py',
                                         depends=['statiskit_linalg', 'statiskit_stl'])
         Alias("autowig", targets)

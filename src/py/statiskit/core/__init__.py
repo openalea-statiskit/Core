@@ -10,7 +10,7 @@ from .sample_space import *
 from .data import *
 from .io import *
 from .distribution import *
-from .operator import *
+from .singular import *
 from .slope_heuristic import *
 from .estimation import *
-
+from .indicator import *
