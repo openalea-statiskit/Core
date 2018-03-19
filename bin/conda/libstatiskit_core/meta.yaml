@@ -11,13 +11,13 @@ build:
 about:
     home: http://statiskit-core.readthedocs.io/
     license: Apache License 2.0
+    summary: A C++ Library of Basic Utilities for Statistical Analyses
 
 requirements:
     build:
         - libtoolchain
-        - libboost_python-dev
-        - libstatiskit_linalg
-        - libstatiskit_stl
+        - libstatiskit_stl-dev
+        - libstatiskit_linalg-dev
     run:
-        - libstatiskit_linalg
         - libstatiskit_stl
+        - libstatiskit_linalg
