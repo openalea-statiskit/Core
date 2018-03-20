@@ -10,13 +10,16 @@ build:
     
 about:
     home: http://statiskit-core.readthedocs.io/
-    license: CeCILL
+    license: Apache License 2.0
+    summary: A C++ Library of Basic Utilities for Statistical Analyses
 
 requirements:
     build:
-        - libdev
-        - libstatiskit_linalg
-        - libstatiskit_stl
+        - libtoolchain
+        - libstatiskit_stl-dev
+        - libstatiskit_linalg-dev
+        - libboost_core-dev
     run:
-        - libstatiskit_linalg
+        - libboost
         - libstatiskit_stl
+        - libstatiskit_linalg

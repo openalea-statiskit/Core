@@ -1,11 +1,3 @@
-/**********************************************************************************/
-/*                                                                                */
-/* StatisKit-CoreThis software is distributed under the CeCILL-C license. You     */
-/* should have received a copy of the legalcode along with this work. If not, see */
-/* <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 */
-/*                                                                                */
-/**********************************************************************************/
-
 #include "distribution.h"
 #include "base.h"
 
@@ -2044,12 +2036,12 @@ namespace statiskit
         return values;
     }
 
-    SplittingDistribution::SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SplittingOperator& splitting)
+    SplittingDistribution::SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SingularDistribution& singular)
     {
         _sum = nullptr;
-        _splitting = nullptr;
+        _singular = nullptr;
         set_sum(sum);
-        set_splitting(splitting);
+        set_singular(singular);
     }
 
     SplittingDistribution::SplittingDistribution(const SplittingDistribution& splitting)
@@ -2058,10 +2050,10 @@ namespace statiskit
         { _sum = static_cast< DiscreteUnivariateDistribution* >(splitting._sum->copy().release()); }
         else
         { _sum = nullptr; }
-        if(splitting._splitting)
-        { _splitting = splitting._splitting->copy().release(); }
+        if(splitting._singular)
+        { _singular = splitting._singular->copy().release(); }
         else
-        { _splitting = nullptr; }
+        { _singular = nullptr; }
     }
 
     SplittingDistribution::~SplittingDistribution()
@@ -2071,18 +2063,18 @@ namespace statiskit
             delete _sum;
             _sum = nullptr;
         }
-        if(_splitting)
+        if(_singular)
         {
-            delete _splitting;
-            _splitting = nullptr;
+            delete _singular;
+            _singular = nullptr;
         }
     }
 
     Index SplittingDistribution::get_nb_components() const
-    { return _splitting->get_nb_components(); }
+    { return _singular->get_nb_components(); }
 
     unsigned int SplittingDistribution::get_nb_parameters() const
-    { return _sum->get_nb_parameters() + _splitting->get_nb_parameters(); }
+    { return _sum->get_nb_parameters() + _singular->get_nb_parameters(); }
 
     double SplittingDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
@@ -2103,7 +2095,7 @@ namespace statiskit
                         { throw std::exception(); }
                     }
                 }  
-                p = _sum->ldf(sum) + _splitting->probability(event, logarithm);
+                p = _sum->ldf(sum) + _singular->probability(event, logarithm);
             }
             catch(const std::exception& error)
             { p = log(0.); }
@@ -2118,7 +2110,7 @@ namespace statiskit
     std::unique_ptr< MultivariateEvent > SplittingDistribution::simulate() const
     {
         int sum = static_cast< DiscreteElementaryEvent* >(_sum->simulate().get())->get_value();
-        return _splitting->simulate(sum);
+        return _singular->simulate(sum);
     }
 
     const DiscreteUnivariateDistribution* SplittingDistribution::get_sum() const
@@ -2133,22 +2125,22 @@ namespace statiskit
         _sum = static_cast< DiscreteUnivariateDistribution* >(sum.copy().release()); 
     }
 
-    SplittingOperator* SplittingDistribution::get_splitting() const
-    { return _splitting; }
+    SingularDistribution* SplittingDistribution::get_singular() const
+    { return _singular; }
 
-    void SplittingDistribution::set_splitting(const SplittingOperator& splitting)
+    void SplittingDistribution::set_singular(const SingularDistribution& singular)
     {
-        if(_splitting && !splitting.get_nb_components() == get_nb_components())
-        { throw parameter_error("splitting", "has not the required number of components"); } 
-        if(_splitting)
-        { delete _splitting; }
-        _splitting = splitting.copy().release();
+        if(_singular && !singular.get_nb_components() == get_nb_components())
+        { throw parameter_error("singular", "has not the required number of components"); } 
+        if(_singular)
+        { delete _singular; }
+        _singular = singular.copy().release();
     }
 
     SplittingDistribution::SplittingDistribution()
     {
         _sum = nullptr;
-        _splitting = nullptr;
+        _singular = nullptr;
     }
     
     MultinormalDistribution::MultinormalDistribution(const Eigen::VectorXd& mu, const Eigen::MatrixXd& sigma)
@@ -2429,10 +2421,10 @@ namespace statiskit
     }
 
 
-    SplittingMixtureOperator::SplittingMixtureOperator(const std::vector< SplittingOperator* > observations, const Eigen::VectorXd& pi)
+    MixtureSingularDistribution::MixtureSingularDistribution(const std::vector< SingularDistribution* > observations, const Eigen::VectorXd& pi)
     {
         this->init(observations, pi);
-        std::vector< SplittingOperator* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
+        std::vector< SingularDistribution* >::const_iterator it = observations.cbegin(), it_end = observations.cend();
         Index nb_components = (*it)->get_nb_components();
         ++it;
         while(it != it_end)
@@ -2444,23 +2436,23 @@ namespace statiskit
 
     }
 
-    SplittingMixtureOperator::SplittingMixtureOperator(const SplittingMixtureOperator& mixture)
+    MixtureSingularDistribution::MixtureSingularDistribution(const MixtureSingularDistribution& mixture)
     { init(mixture); } 
 
-    SplittingMixtureOperator::~SplittingMixtureOperator()
+    MixtureSingularDistribution::~MixtureSingularDistribution()
     {} 
 
-    void SplittingMixtureOperator::set_observation(const Index& index, const SplittingOperator& observation)
+    void MixtureSingularDistribution::set_observation(const Index& index, const SingularDistribution& observation)
     { 
         if(observation.get_nb_components() != get_nb_components())
         { throw parameter_error("observation", "not same number of components"); }
-        MixtureDistribution< SplittingOperator >::set_observation(index, observation);
+        MixtureDistribution< SingularDistribution >::set_observation(index, observation);
     }
 
-    Index SplittingMixtureOperator::get_nb_components() const
+    Index MixtureSingularDistribution::get_nb_components() const
     { return this->_observations.back()->get_nb_components(); }
 
-    double SplittingMixtureOperator::probability(const MultivariateEvent* event, const bool& logarithm) const
+    double MixtureSingularDistribution::probability(const MultivariateEvent* event, const bool& logarithm) const
     {
         double p = 0.;
         for(Index index = 0, max_index = get_nb_states(); index < max_index; ++index)
@@ -2470,7 +2462,7 @@ namespace statiskit
         return p;
     }
 
-    std::unique_ptr< MultivariateEvent > SplittingMixtureOperator::simulate(unsigned int sum) const
+    std::unique_ptr< MultivariateEvent > MixtureSingularDistribution::simulate(unsigned int sum) const
     {
         double cp = _pi[0], sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
         Index index = 0, max_index = get_nb_states();

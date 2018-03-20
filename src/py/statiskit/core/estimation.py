@@ -1,17 +1,7 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
 from functools import wraps
 
-from optionals import pyplot
-
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (_LazyEstimation,
+from . import _core
+from .__core.statiskit import (_LazyEstimation,
                                              _ActiveEstimation,
                                              _OptimizationEstimationImpl,
                                              _Selection,
@@ -42,28 +32,27 @@ from statiskit.core.__core.statiskit import (_LazyEstimation,
                                                     ContinuousUnivariateShiftedDistributionEstimation,
                                              MultivariateDistributionEstimation,
                                                  MixedMultivariateDistributionSelection,
-                                                _IndependentMultivariateDistributionEstimation,
-                                                MixedIndependentMultivariateDistributionEstimation,
-                                                MixedMultivariateMixtureDistributionEMEstimation,
+                                                # _IndependentMultivariateDistributionEstimation,
+                                                # MixedIndependentMultivariateDistributionEstimation,
                                                 CategoricalMultivariateDistributionEstimation,
                                                     CategoricalMultivariateDistributionSelection,
-                                                    CategoricalIndependentMultivariateDistributionEstimation,
+                                                    # CategoricalIndependentMultivariateDistributionEstimation,
                                                     CategoricalMultivariateMixtureDistributionEMEstimation,
                                                 DiscreteMultivariateDistributionEstimation,
                                                     DiscreteMultivariateDistributionSelection,
                                                     SplittingDistributionEstimation,
                                                     NegativeMultinomialDistributionEstimation,
-                                                    DiscreteIndependentMultivariateDistributionEstimation,
+                                                    # DiscreteIndependentMultivariateDistributionEstimation,
                                                     DiscreteMultivariateMixtureDistributionEMEstimation,
                                                 ContinuousMultivariateDistributionEstimation,
                                                     ContinuousMultivariateDistributionSelection,
-                                                    ContinuousIndependentMultivariateDistributionEstimation,
+                                                    # ContinuousIndependentMultivariateDistributionEstimation,
                                                     ContinuousMultivariateMixtureDistributionEMEstimation,
-                                             SplittingOperatorEstimation,
-                                                 MultinomialSplittingOperatorEstimation,
-                                                 DirichletMultinomialSplittingOperatorEstimation,
-                                                 SplittingMixtureOperatorEMEstimation,
-                                             SplittingOperatorSelection,
+                                             SingularDistributionEstimation,
+                                                 MultinomialSingularDistributionEstimation,
+                                                 DirichletMultinomialSingularDistributionEstimation,
+                                                 MixtureSingularDistributionEMEstimation,
+                                             SingularDistributionSelection,
                                              _MixtureDistributionEMEstimation,
                                              UnivariateConditionalDistributionEstimation,
                                                 CategoricalUnivariateConditionalDistributionEstimation,
@@ -81,12 +70,13 @@ from statiskit.core.__core.statiskit import (_LazyEstimation,
                                                 ContinuousMultivariateConditionalDistributionEstimation,
                                                     ContinuousMultivariateConditionalDistributionSelection)
 
-from event import outcome_type
-from data import (UnivariateData,
-                  MultivariateData,
-                  UnivariateConditionalData,
-                  MultivariateConditionalData)
-from _tools import unused_warning
+from .event import outcome_type
+from .data import (UnivariateData,
+                   MultivariateData,
+                   UnivariateConditionalData,
+                   MultivariateConditionalData)
+from .optionals import pyplot
+from ._tools import unused_warning
 
 __all__ = ['frequency_estimation',
            'binomial_estimation',
@@ -96,11 +86,10 @@ __all__ = ['frequency_estimation',
            'negative_binomial_estimation',
            'normal_estimation',
            'histogram_estimation',
-           'splitting_selection',
-           'splitting_mixture_estimation',
+           'singular_selection',
            'splitting_estimation',
            'negative_multinomial_estimation',
-           'independent_estimation',
+           # 'independent_estimation',
            'mixture_estimation',
            'shifted_estimation',
            'selection']
@@ -277,6 +266,7 @@ def selection_decorator(cls):
         Estimators.__setitem__ = wrapper__setitem__(cls.set_estimator)
         del cls.set_estimator
 
+
         def set_estimators(self, estimators):
             # _estimators = self.estimators[:]
             try:
@@ -320,9 +310,12 @@ def optimization_estimation_decorator(cls):
                 return f1(self._estimation, index)
 
         return __len__, __getitem__
-        
-    Iterations.__len__, Iterations.__getitem__ = wrapper_iterations(cls.__len__, cls.get_iteration)
-    del cls.get_iteration
+
+    try:        
+        Iterations.__len__, Iterations.__getitem__ = wrapper_iterations(cls.__len__, cls.get_iteration)
+        del cls.get_iteration
+    except:
+        pass
 
     cls.iterations = property(Iterations)
 
@@ -480,16 +473,16 @@ del MultivariateDistributionEstimation.get_estimated
 SplittingDistributionEstimation.Estimator.sum = property(SplittingDistributionEstimation.Estimator.get_sum, SplittingDistributionEstimation.Estimator.set_sum)
 del SplittingDistributionEstimation.Estimator.get_sum, SplittingDistributionEstimation.Estimator.set_sum
 
-SplittingDistributionEstimation.Estimator.splitting = property(SplittingDistributionEstimation.Estimator.get_splitting, SplittingDistributionEstimation.Estimator.set_splitting)
-del SplittingDistributionEstimation.Estimator.get_splitting, SplittingDistributionEstimation.Estimator.set_splitting
+SplittingDistributionEstimation.Estimator.singular = property(SplittingDistributionEstimation.Estimator.get_singular, SplittingDistributionEstimation.Estimator.set_singular)
+del SplittingDistributionEstimation.Estimator.get_singular, SplittingDistributionEstimation.Estimator.set_singular
 
 SplittingDistributionEstimation.sum = property(SplittingDistributionEstimation.get_sum)
 del SplittingDistributionEstimation.get_sum
 
-SplittingDistributionEstimation.splitting = property(SplittingDistributionEstimation.get_splitting)
-del SplittingDistributionEstimation.get_splitting
+SplittingDistributionEstimation.get_singular = property(SplittingDistributionEstimation.get_singular)
+del SplittingDistributionEstimation.get_singular
 
-def splitting_selection(*args, **kwargs):
+def singular_selection(*args, **kwargs):
     data = kwargs.pop('data', None)
     if len(args) == 0:
         raise ValueError()
@@ -497,20 +490,20 @@ def splitting_selection(*args, **kwargs):
         arg = args[0]
         if arg == 'MN':
             algo = kwargs.pop('algo', 'default')
-            mapping = dict(default = MultinomialSplittingOperatorEstimation.Estimator)
+            mapping = dict(default = MultinomialSingularDistributionEstimation.Estimator)
             return _estimation(algo, data, mapping, **kwargs)
         elif arg == 'DM':
             algo = kwargs.pop('algo', 'default')
-            mapping = dict(default = DirichletMultinomialSplittingOperatorEstimation.Estimator)
+            mapping = dict(default = DirichletMultinomialSingularDistributionEstimation.Estimator)
             return _estimation(algo, data, mapping, **kwargs)
         else:
             raise ValueError("'args' parameter")
     else:
         algo = kwargs.pop('algo', 'criterion')
-        mapping = dict(criterion = SplittingOperatorSelection.CriterionEstimator)
+        mapping = dict(criterion = SingularDistributionSelection.CriterionEstimator)
         estimators = []
         for arg in args:
-            estimators.append(splitting_selection(arg, **dict((key, value) for (key, value) in kwargs.iteritems() if key == "sum")))
+            estimators.append(singular_selection(arg, **dict((key, value) for (key, value) in kwargs.iteritems() if key == "sum")))
         kwargs.pop('sum', None)
         return _estimation(algo, data, mapping, estimators=estimators, **kwargs)
 
@@ -518,13 +511,8 @@ def splitting_estimation(data=None, **kwargs):
     mapping = dict(default = SplittingDistributionEstimation.Estimator)
     return _estimation('default', data, mapping, **kwargs)
 
-def splitting_mixture_estimation(algo='em', **kwargs):
-    mapping = dict(em = SplittingMixtureOperatorEMEstimation.Estimator)
-    data = kwargs.pop('data', None)
-    return _estimation(algo, data, mapping, **kwargs)
-
-SplittingOperatorEstimation.estimated = property(SplittingOperatorEstimation.get_estimated)
-del SplittingOperatorEstimation.get_estimated
+SingularDistributionEstimation.estimated = property(SingularDistributionEstimation.get_estimated)
+del SingularDistributionEstimation.get_estimated
 
 def negative_multinomial_estimation(data=None, **kwargs):
     mapping = dict(WZ99 = NegativeMultinomialDistributionEstimation.WZ99Estimator)
@@ -536,34 +524,33 @@ def independent_multivariate_distribution_estimation_decorator(cls):
     # cls.marginals = property(cls.get_marginal)
     # del cls.get_marginals
 
-for cls in _IndependentMultivariateDistributionEstimation:
-    independent_multivariate_distribution_estimation_decorator(cls)
+# for cls in _IndependentMultivariateDistributionEstimation:
+#     independent_multivariate_distribution_estimation_decorator(cls)
 
-def independent_estimation(data, **kwargs):
-    if isinstance(data, MultivariateData):
-        if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
-            mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
-        elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
-            mapping = dict(dflt = DiscreteIndependentMultivariateDistributionEstimation.Estimator)
-        elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
-            mapping = dict(dflt = ContinuousIndependentMultivariateDistributionEstimation.Estimator)
-        else:
-            mapping = dict(dflt = MixedIndependentMultivariateDistributionEstimation.Estimator)
-    elif isinstance(data, outcome_type):
-        if data is outcome_type.MIXED:
-            mapping = dict(dflt = MixedIndependentMultivariateDistributionEstimation.Estimator)
-        elif data is outcome_type.CATEGORICAL:
-            mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
-        elif data is outcome_type.DISCRETE:
-            mapping = dict(dflt = DiscreteIndependentMultivariateDistributionEstimation.Estimator)
-        elif data is outcome_type.CONTINUOUS:
-            mapping = dict(dflt = ContinuousIndependentMultivariateDistributionEstimation.Estimator)
-        else:
-            raise ValueError('\'data\' parameter')
-    else:
-        raise TypeError('\'data\' parameter')
-    return _estimation('dflt', data, mapping, **kwargs)
-
+# def independent_estimation(data, **kwargs):
+#     if isinstance(data, MultivariateData):
+#         if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
+#             mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
+#         elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
+#             mapping = dict(dflt = DiscreteIndependentMultivariateDistributionEstimation.Estimator)
+#         elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
+#             mapping = dict(dflt = ContinuousIndependentMultivariateDistributionEstimation.Estimator)
+#         else:
+#             mapping = dict(dflt = MixedIndependentMultivariateDistributionEstimation.Estimator)
+#     elif isinstance(data, outcome_type):
+#         if data is outcome_type.MIXED:
+#             mapping = dict(dflt = MixedIndependentMultivariateDistributionEstimation.Estimator)
+#         elif data is outcome_type.CATEGORICAL:
+#             mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
+#         elif data is outcome_type.DISCRETE:
+#             mapping = dict(dflt = DiscreteIndependentMultivariateDistributionEstimation.Estimator)
+#         elif data is outcome_type.CONTINUOUS:
+#             mapping = dict(dflt = ContinuousIndependentMultivariateDistributionEstimation.Estimator)
+#         else:
+#             raise ValueError('\'data\' parameter')
+#     else:
+#         raise TypeError('\'data\' parameter')
+#     return _estimation('dflt', data, mapping, **kwargs)
 
 def mixture_distribution_em_estimator_decorator(cls):
 
@@ -602,7 +589,10 @@ def mixture_estimation(data, algo='em', **kwargs):
         elif outcome is outcome_type.CATEGORICAL:
             mapping = dict(em = CategoricalMultivariateMixtureDistributionEMEstimation.Estimator)
         elif outcome is outcome_type.DISCRETE:
-            mapping = dict(em = DiscreteMultivariateMixtureDistributionEMEstimation.Estimator)
+            if kwargs.pop('singular', False):
+                mapping = dict(em = DiscreteMultivariateMixtureDistributionEMEstimation.Estimator)
+            else:
+                mapping = dict(em = MixtureSingularDistributionEMEstimation.Estimator)
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(em = ContinuousMultivariateMixtureDistributionEMEstimation.Estimator)
     else:

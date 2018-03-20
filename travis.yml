@@ -5,14 +5,18 @@ os:
   - osx
 
 sudo: required
-
-services:
-  - docker
   
 env:
- - CONDA_RECIPE=libstatiskit_core
- - CONDA_RECIPE=python-statiskit_core
-    
+ - CONDA_RECIPE=bin/conda/libstatiskit_core-dev
+   CONDA_VERSION=2
+ - CONDA_RECIPE=bin/conda/libstatiskit_core-dev
+   CONDA_VERSION=3
+ - CONDA_RECIPE=bin/conda/libstatiskit_core
+ - CONDA_RECIPE=bin/conda/python-statiskit_core
+   CONDA_VERSION=2
+ - CONDA_RECIPE=bin/conda/python-statiskit_core
+   CONDA_VERSION=3
+
 install:
   - git clone https://github.com/StatisKit/travis-ci.git
   - cd travis-ci
@@ -37,7 +41,7 @@ deploy:
   skip_cleanup: true
   provider: script
   on:
-      branch: master
+    all_branches: true
   script: bash deploy_script.sh
 
 after_deploy:

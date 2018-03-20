@@ -1,18 +1,9 @@
-
-/**********************************************************************************/
-/*                                                                                */
-/* StatisKit-CoreThis software is distributed under the CeCILL-C license. You     */
-/* should have received a copy of the legalcode along with this work. If not, see */
-/* <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 */
-/*                                                                                */
-/**********************************************************************************/
-
 #ifndef STATISKIT_CORE_DISTRIBUTION_H
 #define STATISKIT_CORE_DISTRIBUTION_H
 
 #include "base.h"
 #include "data.h"
-#include "operator.h"
+#include "singular.h"
 #include <statiskit/linalg/Eigen.h>
 
 #include <boost/random/poisson_distribution.hpp>
@@ -2055,8 +2046,8 @@ namespace statiskit
     class STATISKIT_CORE_API SplittingDistribution : public PolymorphicCopy< MultivariateDistribution, SplittingDistribution, DiscreteMultivariateDistribution >
     {
         public:
-            SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SplittingOperator& splitting);
-            SplittingDistribution(const SplittingDistribution& multinomial);
+            SplittingDistribution(const DiscreteUnivariateDistribution& sum, const SingularDistribution& singular);
+            SplittingDistribution(const SplittingDistribution& splitting);
             virtual ~SplittingDistribution();
 
             virtual Index get_nb_components() const;
@@ -2070,12 +2061,12 @@ namespace statiskit
             const DiscreteUnivariateDistribution* get_sum() const;
             void set_sum(const DiscreteUnivariateDistribution& sum);
 
-            SplittingOperator* get_splitting() const;
-            void set_splitting(const SplittingOperator& splitting);
+            SingularDistribution* get_singular() const;
+            void set_singular(const SingularDistribution& singular);
 
         protected:
             DiscreteUnivariateDistribution* _sum;
-            SplittingOperator* _splitting;
+            SingularDistribution* _singular;
 
             SplittingDistribution();
     };
@@ -2135,10 +2126,10 @@ namespace statiskit
             double _constant;
     };
 
-    template<class D> class IndependentMultivariateDistribution : public PolymorphicCopy< MultivariateDistribution, IndependentMultivariateDistribution< D >, D >
+    /*template<class D> class IndependentMultivariateDistribution : public PolymorphicCopy< MultivariateDistribution, IndependentMultivariateDistribution< D >, D >
     {
         public:
-            IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals);
+            IndependentMultivariateDistribution(const std::vector< typename D::marginal_type* >& marginals);
             IndependentMultivariateDistribution(const IndependentMultivariateDistribution< D >& independent);
             virtual ~IndependentMultivariateDistribution();
             
@@ -2160,7 +2151,7 @@ namespace statiskit
     typedef IndependentMultivariateDistribution< MultivariateDistribution > MixedIndependentMultivariateDistribution;
     typedef IndependentMultivariateDistribution< CategoricalMultivariateDistribution > CategoricalIndependentMultivariateDistribution;
     typedef IndependentMultivariateDistribution< DiscreteMultivariateDistribution > DiscreteIndependentMultivariateDistribution;
-    typedef IndependentMultivariateDistribution< ContinuousMultivariateDistribution > ContinuousIndependentMultivariateDistribution;
+    typedef IndependentMultivariateDistribution< ContinuousMultivariateDistribution > ContinuousIndependentMultivariateDistribution;*/
 
     /** \Brief This class MultivariateConditionalDistribution represents the conditional distribution \f$ Y \vert \boldsymbol{X} \f$ of an univariate random component \f$ Y\f$ given a multivariate component \f$ \boldsymbol{X} \f$.
      *
@@ -2321,13 +2312,13 @@ namespace statiskit
     typedef MultivariateMixtureDistribution< DiscreteMultivariateDistribution > DiscreteMultivariateMixtureDistribution;
     typedef std::vector< DiscreteMultivariateDistribution* > DiscreteMultivariateDistributionVector;
 
-    struct STATISKIT_CORE_API SplittingMixtureOperator : PolymorphicCopy< SplittingOperator, SplittingMixtureOperator, MixtureDistribution< SplittingOperator > >
+    struct STATISKIT_CORE_API MixtureSingularDistribution : PolymorphicCopy< SingularDistribution, MixtureSingularDistribution, MixtureDistribution< SingularDistribution > >
     {
-        SplittingMixtureOperator(const std::vector< SplittingOperator* > observations, const Eigen::VectorXd& pi);
-        SplittingMixtureOperator(const SplittingMixtureOperator& mixture);
-        virtual ~SplittingMixtureOperator();
+        MixtureSingularDistribution(const std::vector< SingularDistribution* > observations, const Eigen::VectorXd& pi);
+        MixtureSingularDistribution(const MixtureSingularDistribution& mixture);
+        virtual ~MixtureSingularDistribution();
 
-        virtual void set_observation(const Index& index, const SplittingOperator& observation);
+        virtual void set_observation(const Index& index, const SingularDistribution& observation);
 
         virtual Index get_nb_components() const;
 

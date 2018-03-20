@@ -1,16 +1,8 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
 import math
 from functools import wraps
 
-import statiskit.core._core
-from statiskit.core.__core.statiskit import (encoding_type,
+from . import _core
+from .__core.statiskit import (encoding_type,
                                              UnivariateSampleSpace,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,
@@ -26,9 +18,9 @@ from statiskit.core.__core.statiskit import (encoding_type,
                                               MultivariateSampleSpace,
                                                  VectorSampleSpace)
 
-from controls import *
-from event import *
-from _tools import remove_latex
+from .controls import *
+from .event import *
+from ._tools import remove_latex
 
 __all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
            'IntegerSampleSpace',

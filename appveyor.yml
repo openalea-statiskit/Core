@@ -1,11 +1,20 @@
+# image: Visual Studio 2015 Update 2
+image: Visual Studio 2013
+
 platform:
-  - x86
   - x64
 
 environment:
   matrix:
-    - CONDA_RECIPE: libstatiskit_core
-    - CONDA_RECIPE: python-statiskit_core
+    - CONDA_RECIPE: bin/conda/libstatiskit_core-dev
+      CONDA_VERSION: 2
+    - CONDA_RECIPE: bin/conda/libstatiskit_core-dev
+      CONDA_VERSION: 3
+    - CONDA_RECIPE: bin\conda\libstatiskit_core
+    - CONDA_RECIPE: bin\conda\python-statiskit_core
+      CONDA_VERSION: 2
+    - CONDA_RECIPE: bin\conda\python-statiskit_core
+      CONDA_VERSION: 3
 
 install:
   - git clone https://github.com/StatisKit/appveyor-ci.git
@@ -23,8 +32,6 @@ after_build:
 
 deploy:
   provider: Script
-  on:
-    branch: master
  
 before_deploy:
   - call before_deploy.bat

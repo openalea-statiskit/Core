@@ -1,91 +1,82 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
 from functools import wraps
 import math
 
-from optionals import pyplot, numpy
-from io import from_list
+from statiskit import linalg
 
-import _core
-from __core.statiskit import (_ShiftedDistribution,
-                              UnivariateDistribution,
-                                _UnivariateFrequencyDistribution,
-                                _QuantitativeUnivariateFrequencyDistribution,
-                                CategoricalUnivariateDistribution,
-                                    NominalDistribution,
-                                    OrdinalDistribution,
-                                    CategoricalUnivariateMixtureDistribution,
-                                DiscreteUnivariateDistribution,
-                                    DiscreteUnivariateFrequencyDistribution,
-                                    PoissonDistribution,
-                                    BinomialDistribution,
-                                    LogarithmicDistribution,
-                                    GeometricDistribution,
-                                    NegativeBinomialDistribution,
-                                    BetaCompoundDiscreteUnivariateDistribution,
-                                        BetaBinomialDistribution,
-                                        BetaNegativeBinomialDistribution,
-                                    DiscreteUnivariateMixtureDistribution,
-                                ContinuousUnivariateDistribution,
-                                    ContinuousUnivariateFrequencyDistribution,
-                                    UnivariateHistogramDistribution,
-                                    NormalDistribution,
-                                    LogisticDistribution,
-                                    GammaDistribution,
-                                    BetaDistribution,
-                                    ContinuousUnivariateMixtureDistribution,
-                              MultivariateDistribution,
-                                _IndependentMultivariateDistribution,
-                                MixedMultivariateMixtureDistribution,
-                                CategoricalMultivariateDistribution,
-                                    CategoricalIndependentMultivariateDistribution,
-                                    CategoricalMultivariateMixtureDistribution,
-                                DiscreteMultivariateDistribution,
-                                    SplittingDistribution,
-                                    DiscreteIndependentMultivariateDistribution,
-                                    DiscreteMultivariateMixtureDistribution,
-                                ContinuousMultivariateDistribution,
-                                    MultinormalDistribution,
-                                    DirichletDistribution,
-                                    ContinuousIndependentMultivariateDistribution,
-                                    ContinuousMultivariateMixtureDistribution,
-                              _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
-                              UnivariateConditionalDistribution,
-                                  CategoricalUnivariateConditionalDistribution,
-                                  DiscreteUnivariateConditionalDistribution,
-                                  ContinuousUnivariateConditionalDistribution,
-                              MultivariateConditionalDistribution,
-                                  CategoricalMultivariateConditionalDistribution,
-                                  DiscreteMultivariateConditionalDistribution,
-                                  ContinuousMultivariateConditionalDistribution)
+from . import _core
+from .__core.statiskit import (_ShiftedDistribution,
+                               UnivariateDistribution,
+                                 _UnivariateFrequencyDistribution,
+                                 _QuantitativeUnivariateFrequencyDistribution,
+                                 CategoricalUnivariateDistribution,
+                                     NominalDistribution,
+                                     OrdinalDistribution,
+                                     CategoricalUnivariateMixtureDistribution,
+                                 DiscreteUnivariateDistribution,
+                                     DiscreteUnivariateFrequencyDistribution,
+                                     PoissonDistribution,
+                                     BinomialDistribution,
+                                     LogarithmicDistribution,
+                                     GeometricDistribution,
+                                     NegativeBinomialDistribution,
+                                     BetaCompoundDiscreteUnivariateDistribution,
+                                         BetaBinomialDistribution,
+                                         BetaNegativeBinomialDistribution,
+                                     DiscreteUnivariateMixtureDistribution,
+                                 ContinuousUnivariateDistribution,
+                                     ContinuousUnivariateFrequencyDistribution,
+                                     UnivariateHistogramDistribution,
+                                     NormalDistribution,
+                                     LogisticDistribution,
+                                     GammaDistribution,
+                                     BetaDistribution,
+                                     ContinuousUnivariateMixtureDistribution,
+                               MultivariateDistribution,
+                                 # _IndependentMultivariateDistribution,
+                                 MixedMultivariateMixtureDistribution,
+                                 CategoricalMultivariateDistribution,
+                                     # CategoricalIndependentMultivariateDistribution,
+                                     CategoricalMultivariateMixtureDistribution,
+                                 DiscreteMultivariateDistribution,
+                                     SplittingDistribution,
+                                     # DiscreteIndependentMultivariateDistribution,
+                                     DiscreteMultivariateMixtureDistribution,
+                                 ContinuousMultivariateDistribution,
+                                     MultinormalDistribution,
+                                     DirichletDistribution,
+                                     # ContinuousIndependentMultivariateDistribution,
+                                     ContinuousMultivariateMixtureDistribution,
+                               _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
+                               UnivariateConditionalDistribution,
+                                   CategoricalUnivariateConditionalDistribution,
+                                   DiscreteUnivariateConditionalDistribution,
+                                   ContinuousUnivariateConditionalDistribution,
+                               MultivariateConditionalDistribution,
+                                   CategoricalMultivariateConditionalDistribution,
+                                   DiscreteMultivariateConditionalDistribution,
+                                   ContinuousMultivariateConditionalDistribution)
 
-from controls import controls
-from event import (UnivariateEvent,
+from .optionals import pyplot, numpy
+from .io import from_list
+from .controls import controls
+from .event import (UnivariateEvent,
                        CategoricalEvent,
                            CategoricalElementaryEvent,
                        DiscreteEvent,
                            DiscreteElementaryEvent,
                        ContinuousEvent,
                            ContinuousElementaryEvent,
-                   MultivariateEvent,
+                    MultivariateEvent,
                        VectorEvent,
-                   type_to_event,
-                   types_to_event)
-from data import (UnivariateData,
-                      UnivariateDataFrame,
-                  MultivariateData,
-                      MultivariateDataFrame)
-from sample_space import (NominalSampleSpace,
-                          OrdinalSampleSpace)
-from _tools import float_str, remove_latex
-
-from statiskit import linalg
+                    type_to_event,
+                    types_to_event)
+from .data import (UnivariateData,
+                       UnivariateDataFrame,
+                   MultivariateData,
+                       MultivariateDataFrame)
+from .sample_space import (NominalSampleSpace,
+                           OrdinalSampleSpace)
+from ._tools import float_str, remove_latex
 
 __all__ = ['NominalDistribution',
            'OrdinalDistribution',
@@ -106,7 +97,7 @@ __all__ = ['NominalDistribution',
            'SplittingDistribution',
            'MultinormalDistribution',
            'DirichletDistribution',
-           'IndependentMultivariateDistribution',
+           # 'IndependentMultivariateDistribution',
            'MixtureDistribution']
 
 def shifted_distribution_decorator(cls):
@@ -149,6 +140,7 @@ def wrapper_probability(f):
     return probability
 
 UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.probability)
+OrdinalDistribution.probability = wrapper_probability(OrdinalDistribution.probability)
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
@@ -925,18 +917,18 @@ del MultivariateDistribution.get_nb_parameters
 SplittingDistribution.sum = property(SplittingDistribution.get_sum, SplittingDistribution.set_sum)
 del SplittingDistribution.get_sum, SplittingDistribution.set_sum
 
-SplittingDistribution.splitting = property(SplittingDistribution.get_splitting, SplittingDistribution.set_splitting)
-del SplittingDistribution.get_splitting, SplittingDistribution.set_splitting
+SplittingDistribution.singular = property(SplittingDistribution.get_singular, SplittingDistribution.set_singular)
+del SplittingDistribution.get_singular, SplittingDistribution.set_singular
 
 def __str__(self):
-    return self.splitting.__str__() + " /\\ " + self.sum.__str__()
+    return self.singular.__str__() + " /\\ " + self.sum.__str__()
 
 SplittingDistribution.__str__ = __str__
 SplittingDistribution.__repr__ = __str__
 del __str__
 
 def _repr_latex_(self):
-    return self.splitting._repr_latex_()[:-1] + r" \underset{S}{\wedge} " + self.sum._repr_latex_()[1:]
+    return self.singular._repr_latex_()[:-1] + r" \underset{S}{\wedge} " + self.sum._repr_latex_()[1:]
 
 SplittingDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -957,23 +949,23 @@ del _repr_latex_
 DirichletDistribution.alpha = property(DirichletDistribution.get_alpha, DirichletDistribution.set_alpha)
 del DirichletDistribution.get_alpha, DirichletDistribution.set_alpha
 
-def statiskit_independent_multivariate_distribution_decorator(cls):
-    pass
+# def statiskit_independent_multivariate_distribution_decorator(cls):
+#     pass
 
-for cls in _IndependentMultivariateDistribution:
-    statiskit_independent_multivariate_distribution_decorator(cls)
+# for cls in _IndependentMultivariateDistribution:
+#     statiskit_independent_multivariate_distribution_decorator(cls)
 
-def IndependentMultivariateDistribution(*args):
-    if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
-        return CategoricalIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
-        return DiscreteIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
-        return ContinuousIndependentMultivariateDistribution(args)
-    elif all(isinstance(arg, UnivariateDistribution) for arg in args):
-        return MixedIndependentMultivariateDistribution(args)
-    else:
-        raise TypeError('\'args\' parameter')
+# def IndependentMultivariateDistribution(*args):
+#     if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
+#         return CategoricalIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
+#         return DiscreteIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
+#         return ContinuousIndependentMultivariateDistribution(args)
+#     elif all(isinstance(arg, UnivariateDistribution) for arg in args):
+#         return MixedIndependentMultivariateDistribution(args)
+#     else:
+#         raise TypeError('\'args\' parameter')
 
 def statiskit_mixture_distribution_decorator(cls):
     

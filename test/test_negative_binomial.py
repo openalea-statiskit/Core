@@ -28,8 +28,8 @@ class TestNegativeBinomial(unittest.TestCase, AbstractTestDiscreteUnivariateDist
         """Test negative binomial MM estimation"""
         data = self._dist.simulation(100)
         mme = core.negative_binomial_estimation('mm', data)
-        self.assertAlmostEqual(mme.estimated.mean, float(data.mean))
-        self.assertAlmostEqual(mme.estimated.variance, float(data.variance))
+        self.assertAlmostEqual(mme.estimated.mean, float(data.location))
+        self.assertAlmostEqual(mme.estimated.variance, float(data.dispersion))
 
     @classmethod
     def tearDownClass(cls):

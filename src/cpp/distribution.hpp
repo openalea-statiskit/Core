@@ -1,11 +1,3 @@
-/**********************************************************************************/
-/*                                                                                */
-/* StatisKit-CoreThis software is distributed under the CeCILL-C license. You     */
-/* should have received a copy of the legalcode along with this work. If not, see */
-/* <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 */
-/*                                                                                */
-/**********************************************************************************/
-
 #ifndef STATISKIT_CORE_DISTRIBUTION_HPP
 #define STATISKIT_CORE_DISTRIBUTION_HPP
 
@@ -250,20 +242,28 @@ namespace statiskit
             _distribution = static_cast< T* >(distribution.copy().release());
         }
 
-    template<class D>
+    /*template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const std::vector< typename D::marginal_type >& marginals)
         {
             _marginals.resize(marginals.size(), nullptr);
-            for(Index component = 0, max_component = marginals.size(); component < max_component; ++component)
-            { _marginals[component] = static_cast< typename D::marginal_type* >(marginals[index].copy().release()); }
+            Index component = 0;
+            for(typename std::vector< typename D::marginal_type >::const_iterator it = marginals.cbegin(), it_end = marginals.cend(); it != it_end; ++it_end)
+            {
+                _marginals[component] = static_cast< typename D::marginal_type* >(it->copy().release());
+                ++component;
+            }
         }
 
     template<class D>
         IndependentMultivariateDistribution< D >::IndependentMultivariateDistribution(const IndependentMultivariateDistribution< D >& independent)
         {
             _marginals.resize(independent.get_nb_components(), nullptr);
-            for(Index component = 0, max_component = independent.get_nb_components(); component < max_component; ++component)
-            { _marginals[component] = static_cast< typename D::marginal_type* >(independent._marginals[component]->copy().release()); }
+            Index component = 0;
+            for(typename std::vector< typename D::marginal_type* >::const_iterator it = independent._marginals.cbegin(), it_end = independent._marginals.cend(); it != it_end; ++it_end)
+            {
+                _marginals[component] = static_cast< typename D::marginal_type* >((*it)->copy().release());
+                ++component;
+            }
          }
 
     template<class D>
@@ -341,7 +341,7 @@ namespace statiskit
             for(Index component = 0, max_component = get_nb_components(); component < max_component; ++component)
             { event->set(component, *(_marginals[component]->simulate().get())); }
             return std::unique_ptr< MultivariateEvent >(event);
-        }
+        }*/
 
     template<class D>
         MixtureDistribution< D >::MixtureDistribution()

@@ -1,33 +1,23 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
 from functools import wraps
 import warnings
 import re
 import ast
 
-import _core
-from __core.statiskit import (UnivariateData,
-                                WeightedUnivariateData,
-                                NamedData,
-                                    UnivariateDataFrame, 
-                              MultivariateData,
-                                WeightedMultivariateData,
-                                MultivariateDataFrame,
-                              UnivariateConditionalData,
-                              MultivariateConditionalData)
+from . import _core
+from .__core.statiskit import (UnivariateData,
+                                 WeightedUnivariateData,
+                                 NamedData,
+                                   UnivariateDataFrame, 
+                               MultivariateData,
+                                 WeightedMultivariateData,
+                                 MultivariateDataFrame,
+                               UnivariateConditionalData,
+                               MultivariateConditionalData)
 
-from controls import controls
-from event import outcome_type
-from moment import (mean_estimation,
-                    mean_vector_estimation,
-                    variance_estimation,
-                    covariance_matrix_estimation)
+from .controls import controls
+from .event import outcome_type
+from .indicator import (location_estimation,
+                        dispersion_estimation)
 
 __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',
@@ -47,35 +37,29 @@ del UnivariateData.compute_minimum
 UnivariateData.max = property(UnivariateData.compute_maximum)
 del UnivariateData.compute_maximum
 
-def get_mean(self):
-    if not hasattr(self, '_mean'):
-        return mean_estimation('nat', self).mean
+def get_location(self):
+    if not hasattr(self, '_location'):
+        return location_estimation('mean', data=self).location
     else:
-        return self._mean(self).mean
+        return self._location(self).location
 
-def set_mean(self, mean):
-    self._mean = mean_estimation(mean)
+def set_location(self, location):
+    self._location = location_estimation(location, data="univariate")
 
-UnivariateData.mean = property(get_mean, set_mean)
-del get_mean, set_mean
+UnivariateData.location = property(get_location, set_location)
+del get_location, set_location
 
-def get_variance(self):
-    if not hasattr(self, '_variance'):
-        return variance_estimation('nat', self).variance
+def get_dispersion(self):
+    if not hasattr(self, '_dispersion'):
+        return dispersion_estimation('variance', data=self).dispersion
     else:
-        return self._variance(self).variance
+        return self._dispersion(self, location=self.location).dispersion
 
-def set_variance(self, variance):
-    self._variance = variance_estimation(variance)
+def set_dispersion(self, dispersion):
+    self._dispersion = dispersion_estimation(dispersion, data="univariate")
 
-UnivariateData.variance = property(get_variance, set_variance)
-del get_variance, set_variance
-
-def standard_deviation(self):
-    return (self.variance)**(1/2.)
-
-UnivariateData.standard_deviation = standard_deviation
-del standard_deviation
+UnivariateData.dispersion = property(get_dispersion, set_dispersion)
+del get_dispersion, set_dispersion
 
 def wrapper_set_name(f):
     @wraps(f)
@@ -344,29 +328,29 @@ def wrapper_extract(f):
 MultivariateData.extract = wrapper_extract(MultivariateData.extract)
 del wrapper_extract
 
-def get_mean(self):
-    if not hasattr(self, '_mean'):
-        return mean_vector_estimation('nat', self).mean
+def get_location(self):
+    if not hasattr(self, '_location'):
+        return location_estimation('mean', data=self).location
     else:
-        return self._mean(self).mean
+        return self._location(self).location
 
-def set_mean(self, mean):
-    self._mean = mean_vector_estimation(mean)
+def set_location(self, location):
+    self._location = location_estimation(location, data="multivariate")
 
-MultivariateData.mean = property(get_mean, set_mean)
-del get_mean, set_mean
+MultivariateData.location = property(get_location, set_location)
+del get_location, set_location
 
-def get_covariance(self):
-    if not hasattr(self, '_covariance'):
-        return covariance_matrix_estimation('nat', self).covariance
+def get_dispersion(self):
+    if not hasattr(self, '_dispersion'):
+        return dispersion_estimation('variance', location=self.location, data=self).dispersion
     else:
-        return self._covariance(self).covariance
+        return self._dispersion(self, location=self.location).dispersion
 
-def set_covariance(self, covariance):
-    self._covariance = variance_matrix_estimation(covariance)
+def set_dispersion(self, dispersion):
+    self._dispersion = dispersion_estimation(dispersion)
 
-MultivariateData.covariance = property(get_covariance, set_covariance)
-del get_covariance, set_covariance
+MultivariateData.dispersion = property(get_dispersion, set_dispersion)
+del get_dispersion, set_dispersion
 
 class Components(object):
 
@@ -404,6 +388,7 @@ def wrapper_components(f):
             raise IndexError(self._dataframe.__class__.__name__ + " component index out of range")
         return f(self._data, index)
 
+    return __getitem__
 Components.__getitem__ = wrapper_components(MultivariateData.extract)
 del wrapper_components,
 MultivariateData.components = property(Components)

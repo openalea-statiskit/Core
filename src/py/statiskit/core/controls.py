@@ -1,16 +1,8 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
 import types
 from functools import wraps
 
-import _core
-from __core.statiskit import get_nn, get_zz, get_rr, get_nr, get_pr, set_seed
+from . import _core
+from .__core.statiskit import get_nn, get_zz, get_rr, get_nr, get_pr, set_seed
 
 __all__ = ['controls']
 

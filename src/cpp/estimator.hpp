@@ -1,11 +1,3 @@
-/**********************************************************************************/
-/*                                                                                */
-/* StatisKit-CoreThis software is distributed under the CeCILL-C license. You     */
-/* should have received a copy of the legalcode along with this work. If not, see */
-/* <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 */
-/*                                                                                */
-/**********************************************************************************/
-
 #ifndef STATISKIT_CORE_ESTIMATOR_HPP
 #define STATISKIT_CORE_ESTIMATOR_HPP
 
@@ -370,7 +362,7 @@ namespace statiskit
         double SplittingDistributionEstimation< E >::Estimator::SumData::Generator::weight() const
         { return _generator->weight(); }*/
 
-    template<class D, class E>
+    /* template<class D, class E>
         IndependentMultivariateDistributionEstimation< D, E >::IndependentMultivariateDistributionEstimation() : ActiveEstimation< IndependentMultivariateDistribution< D >, E >()
         {}
 
@@ -512,7 +504,7 @@ namespace statiskit
                 delete it->second;
                 _estimators.erase(it);
             }
-        }
+        }*/
 
     template<class D, class E>
         MixtureDistributionEMEstimation< D, E >::MixtureDistributionEMEstimation() : OptimizationEstimation< D*, D, E >()

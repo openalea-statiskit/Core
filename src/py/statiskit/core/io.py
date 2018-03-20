@@ -1,22 +1,14 @@
-##################################################################################
-#                                                                                #
-# StatisKit-CoreThis software is distributed under the CeCILL-C license. You     #
-# should have received a copy of the legalcode along with this work. If not, see #
-# <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html>.                 #
-#                                                                                #
-##################################################################################
-
-import _core
-
-__all__ = ['read_csv', 'from_list', 'from_pandas']
-
 import warnings
 from tempfile import NamedTemporaryFile
 import os
 
-from controls import controls
-from data import UnivariateDataFrame, MultivariateDataFrame
-from sample_space import NominalSampleSpace
+from . import _core
+
+from .controls import controls
+from .data import UnivariateDataFrame, MultivariateDataFrame
+from .sample_space import NominalSampleSpace
+
+__all__ = ['read_csv', 'from_list', 'from_pandas']
 
 def read_csv(filepath, sep=None, header=False, **kwargs):
     """

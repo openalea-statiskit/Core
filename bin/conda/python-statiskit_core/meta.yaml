@@ -10,18 +10,16 @@ build:
 
 about:
   home: http://statiskit-core.readthedocs.io
-  license: CeCILL
+  license: Apache License 2.0
 
 requirements:
   build:
-    - libdev
-    - python-dev
-    - libboost
+    - libtoolchain
+    - python-toolchain
+    - libboost_python-dev
     - libstatiskit_core
     - python
   run:
-    - librun
-    - libboost
     - libstatiskit_core
     - python-statiskit_linalg
     - python-statiskit_stl
@@ -29,11 +27,11 @@ requirements:
 
 test:                                               
   requires:
-    - python-dev
+    - python-toolchain
     - matplotlib
     - numpy
-  # imports:
-  #   - statiskit.core
+  imports:
+    - statiskit.core
   source_files:                                
     - test/test_*.py
   commands:                                       
