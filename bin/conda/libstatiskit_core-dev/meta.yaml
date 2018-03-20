@@ -15,12 +15,12 @@ about:
 
 requirements:
   build:
-    - python
     - libtoolchain
     - libtoolchain-dev
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
+    - libboost_core-dev
   run:
-    - python
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
+    - libboost_core-dev
