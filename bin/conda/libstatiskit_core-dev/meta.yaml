@@ -19,7 +19,7 @@ requirements:
     - libtoolchain-dev
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
-    - libboost_core-dev
+    # - libboost_core-dev
   run:
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
