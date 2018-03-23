@@ -590,9 +590,9 @@ def mixture_estimation(data, algo='em', **kwargs):
             mapping = dict(em = CategoricalMultivariateMixtureDistributionEMEstimation.Estimator)
         elif outcome is outcome_type.DISCRETE:
             if kwargs.pop('singular', False):
-                mapping = dict(em = DiscreteMultivariateMixtureDistributionEMEstimation.Estimator)
-            else:
                 mapping = dict(em = MixtureSingularDistributionEMEstimation.Estimator)
+            else:
+                mapping = dict(em = DiscreteMultivariateMixtureDistributionEMEstimation.Estimator)
         elif outcome is outcome_type.CONTINUOUS:
             mapping = dict(em = ContinuousMultivariateMixtureDistributionEMEstimation.Estimator)
     else:
