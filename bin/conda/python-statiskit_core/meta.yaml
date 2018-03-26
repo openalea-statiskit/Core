@@ -11,6 +11,7 @@ build:
 about:
   home: http://statiskit-core.readthedocs.io
   license: Apache License 2.0
+  summary: A Python Interface from C++ Library of Basic Utilities for Statistical Analyses
 
 requirements:
   build:
