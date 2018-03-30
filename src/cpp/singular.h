@@ -1,5 +1,5 @@
-#ifndef STATISKIT_CORE_OPERATOR_H
-#define STATISKIT_CORE_OPERATOR_H
+#ifndef STATISKIT_CORE_SINGULAR_H
+#define STATISKIT_CORE_SINGULAR_H
 
 #include "base.h"
 #include "data.h"
