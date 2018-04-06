@@ -72,7 +72,7 @@ class TestData(unittest.TestCase):
 
     def test_extract(self):
         """Test multivariate data extraction"""
-        data = self._data.extract([0, 1])
+        data = self._data.extract(0, 1)
         self.assertEqual(len(data), len(self._data))
 
     def test_cdf_plot(self):

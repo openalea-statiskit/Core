@@ -7,6 +7,7 @@ from . import _core
 from .controls import controls
 from .data import UnivariateDataFrame, MultivariateDataFrame
 from .sample_space import NominalSampleSpace
+from .event import outcome_type
 
 __all__ = ['read_csv', 'from_list', 'from_pandas']
 
@@ -88,20 +89,31 @@ def from_list(*data, **kwargs):
         sample_spaces = kwargs.pop('sample_spaces')
     else:
         sample_spaces = []
-        for _data in data:
+        outcomes = kwargs.pop('outcomes', [None] * len(data))
+        outcomes = [outcome if outcome is None or isinstance(outcome, outcome_type) else outcome_type.names[outcome] for outcome in outcomes]
+        for index, _data in enumerate(data):
             nbstr = 0
             nbint = 0
             nbflt = 0
-            for event in _data:
-                try:
-                    controls.ZZ(event)
-                    nbint += 1
-                except:
+            if outcomes[index] is None:
+                for event in _data:
                     try:
-                        controls.RR(event)
-                        nbflt += 1
+                        controls.ZZ(event)
+                        nbint += 1
                     except:
-                        nbstr += 1
+                        try:
+                            controls.RR(event)
+                            nbflt += 1
+                        except:
+                            nbstr += 1
+            elif outcomes[index] is outcome_type.CATEGORICAL:
+                nbstr = float("inf")
+            elif outcomes[index] is outcome_type.DISCRETE:
+                nbint = float("inf")
+            elif outcomes[index] is outcome_type.CONTINUOUS:
+                nbflt = float("inf")
+            else:
+                raise ValueError("'outcomes' parameter")
             if nbstr > nbint + nbflt:
                 sample_spaces.append(NominalSampleSpace([value.strip() for value in _data]))
             elif nbint > nbstr + nbflt:

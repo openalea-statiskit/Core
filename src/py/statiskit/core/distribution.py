@@ -140,7 +140,6 @@ def wrapper_probability(f):
     return probability
 
 UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.probability)
-OrdinalDistribution.probability = wrapper_probability(OrdinalDistribution.probability)
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):

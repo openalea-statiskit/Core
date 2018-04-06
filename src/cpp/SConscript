@@ -21,10 +21,8 @@ wigenv.AppendUnique(CPPDEFINES=['EIGEN_NO_STATIC_ASSERT'])
 targets = wigenv.BoostPythonWIG('statiskit_core', [target for target in targets if target.name.endswith('.h')],
                                 module='../py/wrapper/_core.cpp',
                                 decorator='../py/statiskit/core/_core.py',
-                                parser_bootstrap=1,
-                                parser_maximum=1000,
                                 controller='AutoWIG.py',
-                                depends=['statiskit_linalg', 'statiskit_stl'])
+                                depends=['statiskit_linalg'])
 Alias("autowig", targets)
 wigenv.Depends(targets, "cpp-dev")
 
