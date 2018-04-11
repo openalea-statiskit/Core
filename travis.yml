@@ -9,10 +9,10 @@ sudo: required
 env:
  - CONDA_RECIPE=bin/conda/libstatiskit_core-dev
    CONDA_VERSION=2
-   TRAVIS_WAIT=30
+   TRAVIS_WAIT=50
  - CONDA_RECIPE=bin/conda/libstatiskit_core-dev
    CONDA_VERSION=3
-   TRAVIS_WAIT=30
+   TRAVIS_WAIT=50
  - CONDA_RECIPE=bin/conda/libstatiskit_core
  - CONDA_RECIPE=bin/conda/python-statiskit_core
    CONDA_VERSION=2
