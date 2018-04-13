@@ -192,5 +192,7 @@ namespace statiskit
     };
 }
 
+#ifndef AUTOWIG
 #include "slope_heuristic.hpp"
+#endif
 #endif

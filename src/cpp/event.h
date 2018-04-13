@@ -197,5 +197,7 @@ namespace statiskit
     };
 }
 
+#ifndef AUTOWIG
 #include "event.hpp"
+#endif
 #endif

@@ -420,5 +420,7 @@ namespace statiskit
     typedef ContinuousMultivariateConditionalDistributionSelection::CriterionEstimator ContinuousMultivariateConditionalDistributionCriterionEstimator;  
 }
 
+#ifndef AUTOWIG
 #include "estimation.hpp"
+#endif
 #endif

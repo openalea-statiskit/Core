@@ -16,6 +16,7 @@ about:
 
 requirements:
   build:
+    - python
     - libtoolchain
     - libtoolchain-dev
     - libstatiskit_stl-dev
@@ -23,6 +24,7 @@ requirements:
     - libboost_core-dev
     # - gcc_impl_linux-64 7.2.0 hc5ce805_2
   run:
+    - python
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
     - libboost_core-dev

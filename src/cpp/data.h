@@ -608,5 +608,7 @@ namespace statiskit
     };*/
 }
 
+#ifndef AUTOWIG
 #include "data.hpp"
+#endif
 #endif

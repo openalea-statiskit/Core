@@ -2323,5 +2323,7 @@ namespace statiskit
     typedef std::vector< ContinuousMultivariateDistribution* > ContinuousMultivariateDistributionVector;
 }
 
+#ifndef AUTOWIG
 #include "distribution.hpp"
+#endif
 #endif
