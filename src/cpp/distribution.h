@@ -24,6 +24,8 @@ namespace statiskit
     {	
         typedef UnivariateData data_type;
 
+        virtual ~UnivariateDistribution() = 0;
+
     	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
         
@@ -1982,6 +1984,8 @@ namespace statiskit
     {
         typedef UnivariateDistribution response_type;
         
+        virtual ~UnivariateConditionalDistribution() = 0;
+
         /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
         virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) const = 0;
 
@@ -2013,6 +2017,8 @@ namespace statiskit
         typedef MultivariateData data_type;
         typedef UnivariateDistribution marginal_type;
             
+        virtual ~MultivariateDistribution() = 0;
+
         /// \brief Get the number of components of the distribution.
         virtual Index get_nb_components() const = 0;
 
@@ -2157,6 +2163,8 @@ namespace statiskit
     struct STATISKIT_CORE_API MultivariateConditionalDistribution
     {
         typedef MultivariateDistribution response_type;
+        
+        virtual ~MultivariateConditionalDistribution() = 0;
         
         virtual Index get_nb_components() const = 0;
 

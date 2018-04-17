@@ -3,6 +3,9 @@
 
 namespace statiskit
 {
+    UnivariateDistribution::~UnivariateDistribution()
+    {}
+
     double UnivariateDistribution::loglikelihood(const UnivariateData& data) const
     {
         double llh = 0.;
@@ -1994,6 +1997,12 @@ namespace statiskit
         return llh;        
     }
 
+    UnivariateConditionalDistribution::~UnivariateConditionalDistribution()
+    {}
+
+    MultivariateDistribution::~MultivariateDistribution()
+    {}
+
     double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {
         double llh = 0.;
@@ -2301,6 +2310,9 @@ namespace statiskit
         return p;
     }
 
+    MultivariateConditionalDistribution::~MultivariateConditionalDistribution()
+    {}
+    
     double MultivariateConditionalDistribution::loglikelihood(const MultivariateConditionalData& data) const
     {
         double llh = 0.;

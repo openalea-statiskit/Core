@@ -1,10 +1,8 @@
 set -ve
 
-if [ "$(uname)" == "Darwin" ]; then
+if [[  ! ( "$(uname)" == "Linux" && "$PY3K" == "1" ) ]]; then
    scons cpp-dev --prefix=$PREFIX -j$CPU_COUNT
-fi
-
-if [ "$(uname)" == "Linux" ]; then
+else
     scons autowig --prefix=$PREFIX -j$CPU_COUNT --autowig-no-wrappers
 fi
 
