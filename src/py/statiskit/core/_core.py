@@ -1,8 +1,8 @@
 __all__ = []
 
 # Import dependency decorator modules
-import ._stl
-import ._linalg
+import statiskit.stl._stl
+import statiskit.linalg._linalg
 
 # Import Boost.Python module
 from . import __core
