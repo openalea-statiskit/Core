@@ -23,6 +23,9 @@ namespace statiskit
     UnivariateMeanEstimation::UnivariateMeanEstimation(const UnivariateMeanEstimation& estimation)
     { _location = estimation._location; }
 
+    UnivariateMeanEstimation::~UnivariateMeanEstimation()
+    {}
+    
     const double& UnivariateMeanEstimation::get_location() const
     { return _location; }
 
