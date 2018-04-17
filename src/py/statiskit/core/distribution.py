@@ -905,7 +905,9 @@ def wrapper_probability(f):
 MultivariateDistribution.probability = wrapper_probability(MultivariateDistribution.probability)
 
 def simulation(self, size):
-    return from_list(*list(map(list, list(zip(*[self.simulate() for index in range(size)])))))
+    events = [self.simulate() for index in range(size)]
+    data = from_list(*list(map(list, list(zip(*events)))))
+    return data
 
 MultivariateDistribution.simulation = simulation
 del simulation

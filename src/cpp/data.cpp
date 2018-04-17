@@ -553,7 +553,7 @@ namespace statiskit
             if(_sample_space->is_compatible(event))
             {
                 for(Index _index = 0, _max_index = get_nb_components(); _index < _max_index; ++_index)
-                { _components[_index]->set_event(index, event->get(_index)); }
+                { _components[_index]->set_event(index, event->get(_index)->copy().release()); }
             }
             else
             { throw statiskit::parameter_error("event", "incompatible"); } 
@@ -572,7 +572,7 @@ namespace statiskit
             if(_sample_space->is_compatible(event))
             {
                 for(Index index = 0, max_index = get_nb_components(); index < max_index; ++index)
-                { _components[index]->add_event(event->get(index)); }
+                { _components[index]->add_event(event->get(index)->copy().release()); }
             }
             else
             { throw statiskit::parameter_error("event", "incompatible"); } 

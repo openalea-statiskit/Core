@@ -25,14 +25,14 @@ def read_csv(filepath, sep=None, header=False, **kwargs):
         data = [[] for event in lines[0].split(sep)]
     for line in lines:
         for index, event in enumerate(line.split(sep)):
-            data[index].append(event.strip().strip('"').strip("'"))
+            data[index].append(str(event.strip().strip('"').strip("'")))
     data = from_list(*data, **kwargs)
     if header:
         if isinstance(data, UnivariateDataFrame):
             data.name = names.pop()
         elif isinstance(data, MultivariateDataFrame):
                 for i, j in enumerate(names):
-                    data.components[i].name = j
+                    data.components[i].name = str(j)
     return data
 
 def write_csv(data, filepath, sep=' ', header=False, censored=True):
@@ -44,7 +44,7 @@ def write_csv(data, filepath, sep=' ', header=False, censored=True):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'w') as filehandler:
         if header:
-            filehandler.write(sep.join(component.name for component in data.components)+'\n')
+            filehandler.write(sep.join(unicode(component.name) for component in data.components)+'\n')
         if censored:
             for mevent in data.events:
                 line = []
@@ -69,7 +69,7 @@ def write_csv(data, filepath, sep=' ', header=False, censored=True):
                                 raise NotImplementedError
                         else:
                             raise NotImplementedError
-                filehandler.write(sep.join(line)+'\n')
+                filehandler.write(unicode(sep.join(line)+'\n'))
         else:
             for mevent in data.events:
                 line = []
