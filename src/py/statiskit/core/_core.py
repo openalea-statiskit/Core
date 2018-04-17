@@ -1,7 +1,7 @@
 __all__ = []
 
 # Import dependency decorator modules
-import statiskit.stl._stl
+import statiskit.stl.__stl
 import statiskit.linalg._linalg
 
 # Import Boost.Python module
@@ -287,7 +287,7 @@ __core.statiskit.MultivariateConditionalDistributionEstimation.Estimator.Estimat
 __core.statiskit.DiscreteMultivariateDistributionEstimation.MarginalType = __core.statiskit.DiscreteUnivariateDistributionEstimation
 __core.statiskit._MixtureDistribution_b24ad967ae66587ba612c3f37635bddb.ObservationType = __core.statiskit.MultivariateDistribution
 __core.statiskit.CategoricalMultivariateDistribution.MarginalType = __core.statiskit.CategoricalUnivariateDistribution
-__core.statiskit.CategoricalEvent.ValueType = .__stl.std._BasicString_448c20257e485acda59dc59305fceb58
+__core.statiskit.CategoricalEvent.ValueType = statiskit.stl.__stl.std._BasicString_448c20257e485acda59dc59305fceb58
 __core.statiskit.CategoricalEvent.DistributionType = __core.statiskit.CategoricalUnivariateDistribution
 __core.statiskit.CategoricalUnivariateDistribution.EventType = __core.statiskit.CategoricalEvent
 __core.statiskit.UnivariateConditionalDistributionEstimation.Estimator.EstimationType = __core.statiskit.UnivariateConditionalDistributionEstimation
