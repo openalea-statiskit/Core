@@ -115,7 +115,7 @@ def from_list(*data, **kwargs):
             else:
                 raise ValueError("'outcomes' parameter")
             if nbstr > nbint + nbflt:
-                sample_spaces.append(NominalSampleSpace([value.strip() for value in _data]))
+                sample_spaces.append(NominalSampleSpace([str(value.strip()) for value in _data]))
             elif nbint > nbstr + nbflt:
                 sample_spaces.append(controls.ZZ)
             elif nbflt > nbstr + nbint:
