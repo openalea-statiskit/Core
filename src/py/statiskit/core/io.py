@@ -1,6 +1,7 @@
 import warnings
 from tempfile import NamedTemporaryFile
 import os
+import six
 
 from . import _core
 
@@ -44,7 +45,10 @@ def write_csv(data, filepath, sep=' ', header=False, censored=True):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'w') as filehandler:
         if header:
-            filehandler.write(sep.join(unicode(component.name) for component in data.components)+'\n')
+            if six.PY2:
+                filehandler.write(unicode(sep.join(component.name for component in data.components)+'\n'))
+            else:
+                filehandler.write(sep.join(component.name for component in data.components)+'\n')
         if censored:
             for mevent in data.events:
                 line = []
@@ -69,7 +73,10 @@ def write_csv(data, filepath, sep=' ', header=False, censored=True):
                                 raise NotImplementedError
                         else:
                             raise NotImplementedError
-                filehandler.write(unicode(sep.join(line)+'\n'))
+                if six.PY2:
+                    filehandler.write(unicode(sep.join(line)+'\n'))
+                else:
+                    filehandler.write(sep.join(line)+'\n')
         else:
             for mevent in data.events:
                 line = []
