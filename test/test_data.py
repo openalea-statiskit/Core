@@ -28,6 +28,7 @@ class TestData(unittest.TestCase):
         del self.__class__._data
         self.__class__._data = data
 
+    @attr(win = False)
     def test_access(self):
         """Test named data access"""
         for uevent, mevent in zip(self._data.pen.events, self._data.events):
