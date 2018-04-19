@@ -62,6 +62,7 @@ namespace statiskit
         STATISKIT_CORE_API double reldiff(const Eigen::MatrixXd& prev, const Eigen::MatrixXd& curr);
 
         template<class T> std::string to_string(const T& t, const unsigned int& width=0);
+        template<class T> std::string to_string(const std::set< T >& s, const unsigned int& width=0);
 
         template<typename T> T normalize(const T& input, const bool& logarithm=false);
 
@@ -78,6 +79,8 @@ namespace statiskit
         STATISKIT_CORE_API void unset_maxits(const uintptr_t& ptr);
 
         template<class T> void merge(std::unordered_set< T >& lhs, const std::unordered_set< T >& rhs);
+
+        template<class U, class V> std::set< U > keys(const std::map< U, V >& map);
     }
 
     STATISKIT_CORE_API void set_seed();
@@ -117,6 +120,9 @@ namespace statiskit
 
     struct STATISKIT_CORE_API interval_error : parameter_error
     { template<typename T, typename L, typename U> interval_error(const std::string& parameter, const T& value, const L& lower, const U& upper, const std::pair<bool, bool>& strict); };
+
+    struct STATISKIT_CORE_API in_set_error : parameter_error
+    { template<typename T, typename L> in_set_error(const std::string& parameter, const T& value, const std::set< L >& values, const bool& in = true); };
 
     struct STATISKIT_CORE_API duplicated_value_error : parameter_error
     { template<typename T> duplicated_value_error(const std::string& parameter, const T& value); };

@@ -39,7 +39,7 @@ namespace statiskit
                 switch(event->get_event())
                 {
                     case ELEMENTARY:
-                        compatible = _values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value()) != _values.cend();
+                        compatible = is_compatible(static_cast< const CategoricalElementaryEvent* >(event)->get_value()); //_values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value()) != _values.cend();
                         break;
                     case CENSORED:
                         {
@@ -48,7 +48,7 @@ namespace statiskit
                             compatible = true;
                             while(compatible && it != ite)
                             {
-                                compatible = _values.find(*it) != _values.cend();
+                                compatible = is_compatible(*it);
                                 ++it;
                             }
                         }
@@ -61,6 +61,9 @@ namespace statiskit
         }
         return compatible;
     }
+
+    bool CategoricalSampleSpace::is_compatible(const std::string& value) const
+    { return _values.find(value) != _values.end(); }
 
     NominalSampleSpace::NominalSampleSpace(const std::set< std::string >& values) : CategoricalSampleSpace(values)
     { 
@@ -304,6 +307,90 @@ namespace statiskit
 
     std::unique_ptr< NominalSampleSpace > OrdinalSampleSpace::as_nominal() const
     { return std::make_unique< NominalSampleSpace >(_values); }
+
+
+    HierarchicalSampleSpace::HierarchicalSampleSpace(const CategoricalSampleSpace& root_sample_space) : CategoricalSampleSpace(root_sample_space.get_values())
+    { _tree_sample_space[""] = static_cast< CategoricalSampleSpace* >(root_sample_space.copy().release()); }
+
+    HierarchicalSampleSpace::HierarchicalSampleSpace(const HierarchicalSampleSpace& p_sample_space) : CategoricalSampleSpace(p_sample_space.get_values())
+    { _tree_sample_space = p_sample_space._tree_sample_space; }
+
+    HierarchicalSampleSpace::~HierarchicalSampleSpace()
+    { 
+        for(std::map< std::string, CategoricalSampleSpace* >::iterator it = _tree_sample_space.begin(), it_end = _tree_sample_space.end(); it != it_end; ++it)
+        { delete it->second; }
+        _tree_sample_space.clear();
+    }
+
+    ordering_type HierarchicalSampleSpace::get_ordering() const
+    {
+        // std::map< std::string, CategoricalSampleSpace* >::const_iterator it = _tree_sample_space.cbegin(), it_end = _tree_sample_space.cend();
+        // ordering_type ordering = it->second->get_ordering();
+        // if(ordering != PARTIAL)
+        // {
+        //     ++it;
+        //     while(it != it_end && ordering == it->second->get_ordering())
+        //     { ++it; }
+        // }
+        // if(it != it_end)
+        // { ordering = PARTIAL; }
+        // return ordering;
+        return PARTIAL;
+    }
+
+    void HierarchicalSampleSpace::set_encoding(const encoding_type& encoding)
+    {}
+
+    Eigen::RowVectorXd HierarchicalSampleSpace::encode(const std::string& value) const
+    {
+        Eigen::RowVectorXd dummy; // TODO
+        throw not_implemented_error("encode");
+        return dummy;
+    }
+
+    void HierarchicalSampleSpace::partition(const std::string& value, const CategoricalSampleSpace& sample_space)
+    {
+        if(CategoricalSampleSpace::is_compatible(value))
+        {  
+            const std::set< std::string >& values = sample_space.get_values();
+            std::set< std::string >::const_iterator it = values.cbegin(), it_end = values.cend();
+            while(!is_compatible(*it) && it != it_end)
+            { ++it; }
+            if(it == it_end)
+            {
+                _values.erase(value);
+                _values.insert(values.cbegin(), values.cend()); 
+                _tree_sample_space[value] = static_cast< CategoricalSampleSpace* >(sample_space.copy().release());;        
+            }    
+            else
+            { throw in_set_error("value", *it, __impl::keys(_tree_sample_space)); }
+        }    
+        else
+        { throw in_set_error("value", value, _values, false); }
+    }
+
+    std::unique_ptr< UnivariateSampleSpace > HierarchicalSampleSpace::copy() const
+    { return std::make_unique< HierarchicalSampleSpace >(*this); }
+
+    std::map< std::string, CategoricalSampleSpace* >::const_iterator HierarchicalSampleSpace::cbegin() const
+    { return _tree_sample_space.cbegin(); }
+
+    std::map< std::string, CategoricalSampleSpace* >::const_iterator HierarchicalSampleSpace::cend() const
+    { return _tree_sample_space.cend(); }
+            
+    const CategoricalSampleSpace* HierarchicalSampleSpace::get_sample_space(const std::string& value)
+    { return _tree_sample_space[value]; }
+
+    bool HierarchicalSampleSpace::is_compatible(const std::string& value) const
+    {
+        bool compatible = CategoricalSampleSpace::is_compatible(value);
+        if(!compatible)
+        {
+            if(value != "")
+            { compatible = _tree_sample_space.find(value) != _tree_sample_space.end(); }
+        }
+        return compatible;
+    }
 
     outcome_type DiscreteSampleSpace::get_outcome() const
     { return DISCRETE; }

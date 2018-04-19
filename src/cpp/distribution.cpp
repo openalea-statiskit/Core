@@ -223,6 +223,151 @@ namespace statiskit
         { _pi[j] = _ordered_pi[_rank[j]]; }
     }
 
+    HierarchicalDistribution::HierarchicalDistribution(const HierarchicalSampleSpace& hss)
+    {
+        for(std::map< std::string, CategoricalSampleSpace* >::const_iterator it = hss.cbegin(), it_end = hss.cend(); it != it_end; ++it)
+        {
+            switch(it->second->get_ordering())
+            {
+                case NONE:
+                    _tree_distribution[it->first] = new NominalDistribution(it->second->get_values());
+                    break;
+                case TOTAL:
+                    _tree_distribution[it->first] = new OrdinalDistribution(static_cast< OrdinalSampleSpace* >(it->second)->get_ordered());
+                    break;
+                case PARTIAL:
+                    _tree_distribution[it->first] = new HierarchicalDistribution(*(static_cast< HierarchicalSampleSpace* >(it->second)));
+                    break;
+            }
+            for(std::set< std::string >::const_iterator it2 = it->second->get_values().cbegin(), it2_end = it->second->get_values().cend(); it2 != it2_end; ++it2)
+            { _parents[*it2] = it->first; }
+        }
+        _values = hss.get_values();
+    }
+
+    HierarchicalDistribution::HierarchicalDistribution(const HierarchicalDistribution& hd)
+    { _tree_distribution =  hd._tree_distribution; }
+
+    HierarchicalDistribution::~HierarchicalDistribution()
+    {}
+
+    unsigned int HierarchicalDistribution::get_nb_parameters() const
+    {
+        unsigned int nb_parameters = 0;
+        for(std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it = _tree_distribution.cbegin(), it_end = _tree_distribution.cend(); it != it_end; ++it)
+        { nb_parameters += it->second->get_nb_parameters(); }
+        return nb_parameters;
+    }
+
+    std::unique_ptr< UnivariateEvent > HierarchicalDistribution::simulate() const
+    {
+        std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find("");
+        std::set< std::string >::const_iterator it_leave;
+        std::string value;
+        if(it_dist != _tree_distribution.cend())
+        {
+            value = (static_cast< CategoricalElementaryEvent* >((it_dist->second->simulate()).get()))->get_value();
+            it_leave = _values.find(value);
+            while(it_leave == _values.cend())
+            {
+                it_dist = _tree_distribution.find(value);
+                if(it_dist != _tree_distribution.cend())
+                {
+                    value = (static_cast< CategoricalElementaryEvent* >((it_dist->second->simulate()).get()))->get_value();
+                    it_leave = _values.find(value);
+                }
+                else
+                { throw std::runtime_error("internal error"); }
+            }
+        }
+        else
+        { throw std::runtime_error("internal error"); }
+        return std::make_unique< CategoricalElementaryEvent >(value);
+    }
+   
+    double HierarchicalDistribution::ldf(const std::string& value) const
+    {
+        double l;
+        std::set< std::string >::const_iterator it = _values.find(value);
+        if(it != _values.cend())
+        {    
+            std::map< std::string, std::string >::const_iterator it_par = _parents.find(value);
+            if(it_par != _parents.cend())
+            {
+                while(it_par->second != "")
+                {
+                    std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find(it_par->second);
+                    if(it_dist != _tree_distribution.cend())
+                    {
+                        l = (it_dist->second)->pdf(value);
+                        std::string current_value = it_par->second;
+                        while(current_value != "")
+                        {
+                            l += internal_ldf(current_value);
+                            it_par = _parents.find(current_value);
+                            if(it_par != _parents.cend())
+                            { current_value = it_par->second; }
+                            else
+                            { throw std::runtime_error("internal error"); }
+                        }                        
+
+                    }
+                    else
+                    { throw std::runtime_error("internal error"); }                        
+                }  
+            }
+            else
+            { throw std::runtime_error("internal error"); }
+        }
+        else
+        { throw in_set_error("value", value, _values); }    
+        return l;
+    }
+
+    double HierarchicalDistribution::pdf(const std::string& value) const
+    { return exp(ldf(value)); }
+
+    double HierarchicalDistribution::pdf(const int& position) const
+    {
+        std::set< std::string >::const_iterator it = _values.cbegin();
+        if(position >= 0 && position < _values.size())
+        { std::advance(it, position); }
+        else
+        { throw interval_error("position", position, 0, _values.size()-1, std::make_pair(false,false)); }
+        return pdf(*it);
+    }
+            
+    std::set< std::string > HierarchicalDistribution::get_values() const
+    { return _values; }
+
+    double HierarchicalDistribution::internal_ldf(const std::string& value) const
+    {
+        double l;
+        if(value == "")
+        { l = 0; }
+        else
+        {
+            std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it = _tree_distribution.find(value);
+            if(it != _tree_distribution.cend())
+            {
+                std::map< std::string, std::string >::const_iterator it_par = _parents.find(value);
+                if(it_par != _parents.cend())
+                {
+                    std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find(it_par->second);
+                    if(it_dist != _tree_distribution.cend())
+                    { l = (it_dist->second)->ldf(value); }
+                    else
+                    { throw std::runtime_error("internal error"); }
+                }
+                else
+                { throw std::runtime_error("internal error"); }
+            }
+            else
+            { throw in_set_error("value", value, __impl::keys(_tree_distribution)); }         
+        } 
+        return l;       
+    }
+
     double DiscreteUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const
     {
         double p;

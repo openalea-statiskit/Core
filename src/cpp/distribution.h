@@ -199,6 +199,33 @@ namespace statiskit
         protected:
             std::vector< Index > _rank;
     };
+
+    class STATISKIT_CORE_API  HierarchicalDistribution : public PolymorphicCopy< UnivariateDistribution, HierarchicalDistribution, CategoricalUnivariateDistribution >
+    {
+        public:
+            HierarchicalDistribution(const HierarchicalSampleSpace& hss);
+            HierarchicalDistribution(const HierarchicalDistribution& hd);
+            ~HierarchicalDistribution();
+
+            virtual unsigned int get_nb_parameters() const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            virtual double ldf(const std::string& value) const;
+           
+            virtual double pdf(const std::string& value) const;
+                   
+            virtual double pdf(const int& position) const;
+            
+            virtual std::set< std::string > get_values() const;
+
+            double internal_ldf(const std::string& value) const;
+
+        protected:
+            std::map< std::string, CategoricalUnivariateDistribution* > _tree_distribution;
+            std::map< std::string, std::string > _parents; 
+            std::set< std::string > _values;
+    };    
  
     template<class T> struct QuantitativeUnivariateFrequencyDistribution : PolymorphicCopy< UnivariateDistribution, QuantitativeUnivariateFrequencyDistribution< T >, UnivariateFrequencyDistribution< T > >
     {

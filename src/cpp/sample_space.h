@@ -48,7 +48,7 @@ namespace statiskit
             virtual ~CategoricalSampleSpace();
 
             virtual bool is_compatible(const UnivariateEvent* event) const;
-            
+
             virtual outcome_type get_outcome() const; 
             
             Index get_cardinality() const;
@@ -62,7 +62,10 @@ namespace statiskit
 
         protected:
             std::set< std::string > _values;
-            encoding_type _encoding;            
+            encoding_type _encoding;     
+
+            virtual bool is_compatible(const std::string& value) const;
+       
     };
 
     class OrdinalSampleSpace;
@@ -120,6 +123,35 @@ namespace statiskit
 
         protected:
             std::vector< Index > _rank;
+    };
+
+    class STATISKIT_CORE_API HierarchicalSampleSpace : public CategoricalSampleSpace
+    {
+        public:
+            HierarchicalSampleSpace(const CategoricalSampleSpace& root_sample_space);
+            HierarchicalSampleSpace(const HierarchicalSampleSpace& p_sample_space);
+            virtual ~HierarchicalSampleSpace();
+
+            virtual ordering_type get_ordering() const;
+
+            void set_encoding(const encoding_type& encoding);
+
+            virtual Eigen::RowVectorXd encode(const std::string& value) const;
+
+            void partition(const std::string& value, const CategoricalSampleSpace& sample_space);
+
+            virtual std::unique_ptr< UnivariateSampleSpace > copy() const;
+
+            std::map< std::string, CategoricalSampleSpace* >::const_iterator cbegin() const;
+            std::map< std::string, CategoricalSampleSpace* >::const_iterator cend() const;
+
+            const CategoricalSampleSpace* get_sample_space(const std::string& value);
+
+        protected:
+            std::map< std::string, CategoricalSampleSpace* > _tree_sample_space;
+
+            virtual bool is_compatible(const std::string& value) const;
+
     };
 
     struct STATISKIT_CORE_API DiscreteSampleSpace : public UnivariateSampleSpace
