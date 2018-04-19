@@ -196,7 +196,7 @@ del CategoricalUnivariateDistribution.get_values
 def wrapper(f):
     @wraps(f)
     def __init__(self, *args, **kwargs):
-        f(self, args)
+        f(self, [str(arg) for arg in args])
         for attr in list(kwargs.keys()):
             if hasattr(self, attr):
                 setattr(self, attr, kwargs.pop(attr))
