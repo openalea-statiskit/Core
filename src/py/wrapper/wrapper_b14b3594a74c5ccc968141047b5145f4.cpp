@@ -8,6 +8,12 @@ namespace autowig
     {
         public:
             
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > (result);
+            }
+                        
             virtual ::statiskit::MultivariateDistributionEstimation::estimated_type const * get_estimated() const
             { return this->get_override("get_estimated")(); }
                         

@@ -25,10 +25,12 @@ void wrapper_49e18be963b9503a942009b04ff7e676()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::PoissonDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_46bfaaee922a5586aadf5200139bca9c)() const = &::statiskit::LazyEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation > > class_49e18be963b9503a942009b04ff7e676("_LazyEstimation_49e18be963b9503a942009b04ff7e676", "", boost::python::no_init);
     class_49e18be963b9503a942009b04ff7e676.def(boost::python::init<  >(""));
     class_49e18be963b9503a942009b04ff7e676.def(boost::python::init< class ::statiskit::PoissonDistribution const * >(""));
     class_49e18be963b9503a942009b04ff7e676.def(boost::python::init< class ::statiskit::LazyEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_49e18be963b9503a942009b04ff7e676.def("copy", method_pointer_46bfaaee922a5586aadf5200139bca9c, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::PoissonDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
     {

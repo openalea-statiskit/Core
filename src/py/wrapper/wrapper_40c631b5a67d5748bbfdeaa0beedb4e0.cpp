@@ -25,10 +25,12 @@ void wrapper_40c631b5a67d5748bbfdeaa0beedb4e0()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::BinomialDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_d6209a392daf52c787c283337e60992a)() const = &::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation > > class_40c631b5a67d5748bbfdeaa0beedb4e0("_LazyEstimation_40c631b5a67d5748bbfdeaa0beedb4e0", "", boost::python::no_init);
     class_40c631b5a67d5748bbfdeaa0beedb4e0.def(boost::python::init<  >(""));
     class_40c631b5a67d5748bbfdeaa0beedb4e0.def(boost::python::init< class ::statiskit::BinomialDistribution const * >(""));
     class_40c631b5a67d5748bbfdeaa0beedb4e0.def(boost::python::init< class ::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_40c631b5a67d5748bbfdeaa0beedb4e0.def("copy", method_pointer_d6209a392daf52c787c283337e60992a, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::BinomialDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
     {

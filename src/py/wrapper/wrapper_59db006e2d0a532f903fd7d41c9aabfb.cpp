@@ -25,10 +25,12 @@ void wrapper_59db006e2d0a532f903fd7d41c9aabfb()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::SingularDistributionEstimation, struct ::std::default_delete< struct ::statiskit::SingularDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::SingularDistribution, ::statiskit::SingularDistributionEstimation >::*method_pointer_072da179189554b298514722c6863f96)() const = &::statiskit::LazyEstimation< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::SingularDistributionEstimation > > class_59db006e2d0a532f903fd7d41c9aabfb("_LazyEstimation_59db006e2d0a532f903fd7d41c9aabfb", "", boost::python::no_init);
     class_59db006e2d0a532f903fd7d41c9aabfb.def(boost::python::init<  >(""));
     class_59db006e2d0a532f903fd7d41c9aabfb.def(boost::python::init< struct ::statiskit::SingularDistribution const * >(""));
     class_59db006e2d0a532f903fd7d41c9aabfb.def(boost::python::init< class ::statiskit::LazyEstimation< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation > const & >(""));
+    class_59db006e2d0a532f903fd7d41c9aabfb.def("copy", method_pointer_072da179189554b298514722c6863f96, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation > >::is_class)
     {

@@ -33,6 +33,7 @@ void wrapper_4e58a130fe9e52ffa312f3e583614e93()
     double  (::statiskit::UnivariateConditionalData::*method_pointer_53ae0ea110b759638cd974670309ca13)() const = &::statiskit::UnivariateConditionalData::compute_total;
     boost::python::class_< class ::statiskit::UnivariateConditionalData, autowig::Held< class ::statiskit::UnivariateConditionalData >::Type > class_4e58a130fe9e52ffa312f3e583614e93("UnivariateConditionalData", "", boost::python::no_init);
     class_4e58a130fe9e52ffa312f3e583614e93.def(boost::python::init< struct ::statiskit::MultivariateData const &, ::statiskit::Index const &, ::statiskit::Indices const & >(""));
+    class_4e58a130fe9e52ffa312f3e583614e93.def(boost::python::init< struct ::statiskit::UnivariateData const &, struct ::statiskit::MultivariateData const & >(""));
     class_4e58a130fe9e52ffa312f3e583614e93.def(boost::python::init< class ::statiskit::UnivariateConditionalData const & >(""));
     class_4e58a130fe9e52ffa312f3e583614e93.def("__len__", method_pointer_891c77abd74058eb896acde63c8c306e, "");
     class_4e58a130fe9e52ffa312f3e583614e93.def("__iter__", method_pointer_22bc4df12bff5c14934cfd818d1859b5, "");

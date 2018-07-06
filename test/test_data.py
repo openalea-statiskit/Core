@@ -75,6 +75,7 @@ class TestData(unittest.TestCase):
         data = self._data.extract(0, 1)
         self.assertEqual(len(data), len(self._data))
 
+    @attr(osx = False)
     def test_cdf_plot(self):
         """Test univariate data cdf plot"""
         for component in self._data.components:

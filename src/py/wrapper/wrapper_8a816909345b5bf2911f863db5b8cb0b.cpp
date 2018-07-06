@@ -32,7 +32,6 @@ void wrapper_8a816909345b5bf2911f863db5b8cb0b()
     void  (::statiskit::WeightedData< ::statiskit::MultivariateData >::Generator::*method_pointer_29ca89a65c145b51b49d5ff023beda12)(double const &) = &::statiskit::WeightedData< struct ::statiskit::MultivariateData >::Generator::weight;
     boost::python::class_< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData >::Generator, autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData >::Generator >::Type, boost::python::bases< struct ::statiskit::MultivariateData::Generator > > class_8a816909345b5bf2911f863db5b8cb0b("Generator", "", boost::python::no_init);
     class_8a816909345b5bf2911f863db5b8cb0b.def(boost::python::init< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > * >(""));
-    class_8a816909345b5bf2911f863db5b8cb0b.def(boost::python::init< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData >::Generator const & >(""));
     class_8a816909345b5bf2911f863db5b8cb0b.def("weight", method_pointer_29ca89a65c145b51b49d5ff023beda12, "");
 
     if(autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::MultivariateData >::Generator >::is_class)

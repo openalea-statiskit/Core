@@ -29,7 +29,6 @@ void wrapper_839b61ecb09d54819eb38cf69dde50bb()
     class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::std::set< int, struct ::std::less< int >, class ::std::allocator< int > > const & >(""));
     class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::std::set< int, struct ::std::less< int >, class ::std::allocator< int > > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const & >(""));
     class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< class ::statiskit::UnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const & >(""));
-    class_839b61ecb09d54819eb38cf69dde50bb.def(boost::python::init< struct ::statiskit::QuantitativeUnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > const & >(""));
 
     if(autowig::Held< struct ::statiskit::QuantitativeUnivariateFrequencyDistribution< struct ::statiskit::DiscreteUnivariateDistribution > >::is_class)
     {

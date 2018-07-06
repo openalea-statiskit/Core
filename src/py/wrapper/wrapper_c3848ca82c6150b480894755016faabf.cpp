@@ -42,6 +42,7 @@ void wrapper_c3848ca82c6150b480894755016faabf()
     void  (::statiskit::MultivariateDataFrame::*method_pointer_ce2cebc7034858dabbda327fb270350c)(::statiskit::Index const &) = &::statiskit::MultivariateDataFrame::remove_event;
     boost::python::class_< class ::statiskit::MultivariateDataFrame, autowig::Held< class ::statiskit::MultivariateDataFrame >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::MultivariateDataFrame, struct ::statiskit::MultivariateData > > > class_c3848ca82c6150b480894755016faabf("MultivariateDataFrame", "", boost::python::no_init);
     class_c3848ca82c6150b480894755016faabf.def(boost::python::init<  >(""));
+    class_c3848ca82c6150b480894755016faabf.def(boost::python::init< struct ::statiskit::MultivariateSampleSpace const & >(""));
     class_c3848ca82c6150b480894755016faabf.def(boost::python::init< class ::statiskit::MultivariateDataFrame const & >(""));
     class_c3848ca82c6150b480894755016faabf.def("set_sample_space", method_pointer_ceb65df6fb445fa2846e8bb4a96abc30, "");
     class_c3848ca82c6150b480894755016faabf.def("get_nb_components", method_pointer_3d40300675955653b701c20d2aa3e360, "");

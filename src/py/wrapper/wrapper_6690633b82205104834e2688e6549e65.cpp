@@ -32,7 +32,6 @@ void wrapper_6690633b82205104834e2688e6549e65()
     void  (::statiskit::WeightedData< ::statiskit::UnivariateData >::Generator::*method_pointer_846983cd69f05156a63294108734944e)(double const &) = &::statiskit::WeightedData< struct ::statiskit::UnivariateData >::Generator::weight;
     boost::python::class_< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData >::Generator, autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData >::Generator >::Type, boost::python::bases< struct ::statiskit::UnivariateData::Generator > > class_6690633b82205104834e2688e6549e65("Generator", "", boost::python::no_init);
     class_6690633b82205104834e2688e6549e65.def(boost::python::init< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData > * >(""));
-    class_6690633b82205104834e2688e6549e65.def(boost::python::init< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData >::Generator const & >(""));
     class_6690633b82205104834e2688e6549e65.def("weight", method_pointer_846983cd69f05156a63294108734944e, "");
 
     if(autowig::Held< class ::statiskit::WeightedData< struct ::statiskit::UnivariateData >::Generator >::is_class)

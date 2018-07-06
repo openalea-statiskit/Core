@@ -9,6 +9,7 @@
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>
 #include <boost/random/normal_distribution.hpp>
+#include <boost/math/distributions/logistic.hpp>
 #include <boost/random/gamma_distribution.hpp>
 #include <boost/random/beta_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -23,6 +24,8 @@ namespace statiskit
     struct STATISKIT_CORE_API UnivariateDistribution
     {	
         typedef UnivariateData data_type;
+
+        virtual ~UnivariateDistribution() = 0;
 
     	/// \brief Get the number of parameters of the distribution.
         virtual unsigned int get_nb_parameters() const = 0;
@@ -116,6 +119,57 @@ namespace statiskit
         virtual std::set< std::string > get_values() const = 0;
     };
     
+
+    struct STATISKIT_CORE_API BinaryDistribution : public PolymorphicCopy< UnivariateDistribution, BinaryDistribution, CategoricalUnivariateDistribution >
+    {
+        public:
+            BinaryDistribution();
+            BinaryDistribution(const std::string& value, const std::string& reference_value);
+            //BinaryDistribution(const std::set< std::string >& values);
+            BinaryDistribution(const std::string& value, const std::string& reference_value, const double& pi);
+            //BinaryDistribution(const std::set< std::string >& values, const double& pi);
+            BinaryDistribution(const BinaryDistribution& binary);
+
+            /// \brief Get the number of parameters of the binary distribution.
+            virtual unsigned int get_nb_parameters() const;
+
+            /** \brief Compute the log-probability of a value.
+             *
+             * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ \ln P\left(S = s\right) \f$.
+             * \param value The considered value.
+             * */         
+            virtual double ldf(const std::string& value) const;
+            
+            /** \brief Compute the probability of a value
+             *
+             * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ P\left(S = s\right) \f$.
+             * \param value The considered value.
+             * */         
+            virtual double pdf(const std::string& value) const;
+            
+            /** \brief Compute the probability of a value
+             *
+             * \details Let \f$c \in \mathcal{S} \f$ denote the value, \f$ P\left(S = s\right) \f$.
+             * \param value The considered value.
+             * */         
+            virtual double pdf(const int& position) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            /// \brief Get the set of categories (string) \f$ \mathcal{S} \f$.
+            virtual std::set< std::string > get_values() const;
+
+            double get_pi() const;
+            void set_pi(const double& pi);
+
+            //virtual std::unique_ptr< UnivariateDistribution > copy() const;
+
+        protected:
+            std::string _value;
+            std::string _reference_value;
+            double _pi;
+    };
+
     /** \brief This class NominalDistribution represents the distribution of a random nominal component \f$ S\f$. The support is a finite non-ordered set of categories (string) \f$ \mathcal{S} \f$ and we have \f$ \sum_{s\in \mathcal{S}} P(S=s) = 1\f$.
      * 
      * */
@@ -203,6 +257,9 @@ namespace statiskit
     class STATISKIT_CORE_API  HierarchicalDistribution : public PolymorphicCopy< UnivariateDistribution, HierarchicalDistribution, CategoricalUnivariateDistribution >
     {
         public:
+            typedef std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator const_iterator;
+
+            HierarchicalDistribution();
             HierarchicalDistribution(const HierarchicalSampleSpace& hss);
             HierarchicalDistribution(const HierarchicalDistribution& hd);
             ~HierarchicalDistribution();
@@ -220,11 +277,27 @@ namespace statiskit
             virtual std::set< std::string > get_values() const;
 
             double internal_ldf(const std::string& value) const;
+            double internal_pdf(const std::string& value) const;
+
+            const_iterator cbegin() const;
+            const_iterator cend() const;
+            unsigned int index(const std::string& value) const;
+
+            const CategoricalUnivariateDistribution* get_distribution(const std::string& value) const;
+            void set_distribution(const std::string& value, const CategoricalUnivariateDistribution& distribution);
+
+            const std::string parent(const std::string& value) const;
 
         protected:
             std::map< std::string, CategoricalUnivariateDistribution* > _tree_distribution;
             std::map< std::string, std::string > _parents; 
             std::set< std::string > _values;
+
+            inline void check_internal(const std::string& value) const;
+
+            // typedef std::map< std::string, CategoricalUnivariateDistribution* >::iterator iterator;
+            // iterator begin();
+            // iterator end();
     };    
  
     template<class T> struct QuantitativeUnivariateFrequencyDistribution : PolymorphicCopy< UnivariateDistribution, QuantitativeUnivariateFrequencyDistribution< T >, UnivariateFrequencyDistribution< T > >
@@ -1315,12 +1388,73 @@ namespace statiskit
             double _sigma;
     };
 
+    /** \brief This class NonStandardStudentDistribution represents a Student distribution</a>.
+     * 
+     * \details The Student distribution is an univariate continuous distribution.
+     *         The support is the set of real values \f$\mathbb{R}\f$.
+     * */   
+    class STATISKIT_CORE_API StudentDistribution : public PolymorphicCopy< UnivariateDistribution, StudentDistribution, ContinuousUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a non-standardized Student distribution with
+             *
+             * - \f$\nu = 1.\f$,
+             *
+             * i.e. a standard Cauchy distribution.
+             * */
+            StudentDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for non-standardized Student distribution instantiation with specified \f$\mu\f$, \f$\sigma\f$ and \f$\nu\f$ parameters.
+             *
+             * \param nu The specified degree of freedom parameter \f$ \nu \in \mathbb{R}_+^* \f$.
+             * */            
+            StudentDistribution(const double& nu);
+            
+            /// \brief A copy constructor
+            StudentDistribution(const StudentDistribution& student);
+
+            /** \brief Returns the number of parameters of the Student distribution
+             *
+             * \details The number of parameters of a Student distribution is \f$1\f$ (\f$\nu\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+            
+            /// \brief Get the value of the shape parameter nu.
+            const double& get_nu() const;
+            
+            /// \brief Set the value of the shape parameter nu.
+            void set_nu(const double& nu);            
+             
+            virtual double ldf(const double& value) const;
+                      
+            virtual double pdf(const double& value) const;
+                        
+            virtual double cdf(const double& value) const;
+
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            /// \brief Get the mean of Student distribution \f$ E(X) = \mu \f$ if \f$ \nu > 1 \f$ and undefined otherwise.
+            virtual double get_mean() const;
+
+            /// \brief Get the variance of Student distribution \f$ V(X) = \frac{\nu}{\nu-2} \f$ if \f$ \nu >2 \f$,  \f$ V(X) = \infty \f$ if \f$ 1 < \nu \leq 2\f$ and undefined otherwise.
+            virtual double get_variance() const;
+
+        protected:
+            double _nu;
+    };
+
     /** \brief This class NonStandardStudentDistribution represents a <a href="https://en.wikipedia.org/wiki/Student's_t-distribution#Non-standardized_Student.27s_t-distribution">non standardized Student distribution</a>.
      * 
      * \details The non-standardized Student distribution is an univariate continuous distribution.
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */   
-    class STATISKIT_CORE_API NonStandardStudentDistribution : public PolymorphicCopy< UnivariateDistribution, NonStandardStudentDistribution, ContinuousUnivariateDistribution >
+    class STATISKIT_CORE_API NonStandardStudentDistribution : public StudentDistribution
     {
         public:
             /** \brief The default constructor
@@ -1364,13 +1498,7 @@ namespace statiskit
             const double& get_sigma() const;
             
             /// \brief Set the value of the scale parameter sigma.
-            void set_sigma(const double& sigma);
-            
-			/// \brief Get the value of the shape parameter nu.
-            const double& get_nu() const;
-            
-            /// \brief Set the value of the shape parameter nu.
-            void set_nu(const double& nu);            
+            void set_sigma(const double& sigma);           
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
 		     *
@@ -1395,7 +1523,7 @@ namespace statiskit
 		     *			\f]		     
 		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
 		     * \param value The considered value \f$x\f$.
-		     * */             
+		     * */              
             virtual double pdf(const double& value) const;
             
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
@@ -1449,163 +1577,16 @@ namespace statiskit
         protected:
             double _mu;
             double _sigma;
-            double _nu;
     };
 
-    /** \brief This class GeneralizedStudentDistribution represents a <a href="https://en.wikipedia.org/wiki/Noncentral_t-distribution">non central Student distribution</a> which is also non standardized.
-     * 
-     * \details A random component $W=\sigma T + \mu$ is said to follow a generalized Student distribution if $T$ follows a non-central distribution.
-     *			The generalized Student distribution is an univariate continuous distribution.
-     *         The support is the set of real values \f$\mathbb{R}\f$.
-     * */   
-    class STATISKIT_CORE_API GeneralizedStudentDistribution : public PolymorphicCopy< UnivariateDistribution, GeneralizedStudentDistribution, ContinuousUnivariateDistribution >
-    {
-        public:
-            /** \brief The default constructor
-             *
-             * \details The default constructor instantiate a generalized Student distribution with
-             *
-             * - \f$\mu = 0.\f$,
-             * - \f$\sigma = 1.\f$,
-             * - \f$\nu = 1.\f$,
-             * - \f$\delta = 0.\f$,
-             *
-             * i.e. a standard Cauchy distribution.
-             * */
-            GeneralizedStudentDistribution();
-            
-            /** \brief An alternative constructor
-             *
-             * \details This constructor is usefull for generalized Student distribution instantiation with specified \f$\mu\f$, \f$\sigma\f$, \f$\nu\f$ and \f$\delta\f$ parameters.
-             *
-             * \param mu The specified location parameter \f$ \mu \in \mathbb{R} \f$.
-             * \param sigma The specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
-             * \param nu The specified degree of freedom parameter \f$ \nu \in \mathbb{R}_+^* \f$.
-             * \param delta The specified non-centrality parameter \f$ \delta \in \mathbb{R} \f$.
-             * */            
-            GeneralizedStudentDistribution(const double& mu, const double& sigma, const double& nu, const double& delta);
-            
-            /// \brief A copy constructor
-            GeneralizedStudentDistribution(const GeneralizedStudentDistribution& gstudent);
-
-            /** \brief Returns the number of parameters of the generalized Student distribution
-             *
-             * \details The number of parameters of a generalized Student distribution is \f$4\f$ (\f$\mu\f$, \f$\sigma\f$, \f$\nu\f$ and \f$\delta\f$).
-             * */
-            virtual unsigned int get_nb_parameters() const;
-        	
-        	/// \brief Get the value of the location parameter mu.
-            const double& get_mu() const;
-            
-            /// \brief Set the value of the location parameter mu.
-            void set_mu(const double& mu);
-
-			/// \brief Get the value of the scale parameter sigma.
-            const double& get_sigma() const;
-            
-            /// \brief Set the value of the scale parameter sigma.
-            void set_sigma(const double& sigma);
-            
-			/// \brief Get the value of the shape parameter nu.
-            const double& get_nu() const;
-            
-            /// \brief Set the value of the shape parameter nu.
-            void set_nu(const double& nu);            
-        	
-        	/// \brief Get the value of the location parameter delta.
-            const double& get_delta() const;
-            
-            /// \brief Set the value of the location parameter delta.
-            void set_delta(const double& delta);      
-                  
-			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
-		     *
-		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the ldf is computed as 
-		     *			\f[
-		     * 				 \ln f(x) = ,
-		     *			\f]
-		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
-		     * \param value The considered value \f$x\f$.
-		     * */ 
-            virtual double ldf(const double& value) const;
-            
-			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
-		     *
-		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the pdf is defined by 
-		     *			\f[
-		     * 				 f(x) =  \displaystyle f(x)={\frac {\nu ^{\frac {\nu }{2}}\Gamma (\nu +1)\exp \left(-{\frac {\mu ^{2}}{2}}\right)}{2^{\nu }(\nu +x^{2})^{\frac {\nu }{2}}\Gamma ({\frac {\nu }{2}})}}\left\{{\sqrt {2}}\mu x{\frac {{}_{1}F_{1}\left({\frac {\nu }{2}}+1;\,{\frac {3}{2}};\,{\frac {\mu ^{2}x^{2}}{2(\nu +x^{2})}}\right)}{(\nu +x^{2})\Gamma ({\frac {\nu +1}{2}})}}+{\frac {{}_{1}F_{1}\left({\frac {\nu +1}{2}};\,{\frac {1}{2}};\,{\frac {\mu ^{2}x^{2}}{2(\nu +x^{2})}}\right)}{{\sqrt {\nu +x^{2}}}\Gamma ({\frac {\nu }{2}}+1)}}\right\},
-		     *			\f]
-		     * and computed as
-		     *			\f[
-		     * 				 f(x) =  \left\lbrace \frac{\nu}{\nu+\left( \frac{x-\mu}{\sqrt{\nu}\sigma}\right)^2} \right\rbrace^{\frac{1+\nu}{2}} \Bigg/ \left\lbrace \sqrt{\nu}\sigma \; \textnormal{beta}(0.5\nu, \; 0.5) \right\rbrace ,
-		     *			\f]		     
-		     * where [\f$\textnormal{beta}(a,b)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/beta_function.html) is the beta  function implemented in the Boost.Math library.
-		     * \param value The considered value \f$x\f$.
-		     * */             
-            virtual double pdf(const double& value) const;
-            
-			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
-		     *
-		     * \details Let \f$x \in \mathbb{R} \f$ denote the value, the cdf is given by
-		     *			\f[
-		     * 				 P(X \leq x) = \left\{
-			 *								\begin{array}{ll}
-			 *								   z & x \leq \mu, \\
-			 *								   1- z & x > \mu,
-			 *								\end{array}
-			 *								\right.
-		     *			\f]
-		     * where \f$ z \f$ is computed as
-		     *			\f[
-		     * 				 z = \left\{
-			 *								\begin{array}{ll}
-			 *								 \displaystyle 0.5 * \textnormal{ibeta} \left( 0.5 \nu, \; 0.5, \frac{\nu}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right) & \nu < 2 \left( \frac{x-\mu}{\sigma} \right)^2 , \\
-			 *								 \displaystyle 0.5 * \textnormal{ibetac} \left( 0.5, \; 0.5 \nu, \frac{\left( \frac{x-\mu}{\sigma} \right)^2}{\nu+\left( \frac{x-\mu}{\sigma} \right)^2} \right)   & \textnormal{otherwise},
-			 *								\end{array}
-			 *								\right.
-		     *			\f]		     
-		     * where [\f$\textnormal{ibeta}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_function.html) is the normalized incomplete beta function and [\f$\textnormal{ibetac}(a,b,x)\f$](http://www.boost.org/doc/libs/1_52_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibetac_function.html) is its complement, both implemented in the Boost.Math library. 
-		     * \param value The considered value \f$x\f$.
-		     * */             
-            virtual double cdf(const double& value) const;
-
-			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			 *  The quantile for non-standardized Student distribution is computed as 
-		     *			\f[
-		     * 				 x = \left\{
-			 *								\begin{array}{ll}
-			 *								\displaystyle  \mu - \sigma \left\lbrace \nu \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2p) }  \right\rbrace^{0.5}  & p < 0.5, \\
-			 *								  \mu                        & p = 0.5, \\
-			 *								 \displaystyle  \mu + \sigma \left\lbrace \nu  \frac{1-\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) }{\textnormal{ibeta\_inv}(0.5 \nu, \; 0.5, \; 2-2p) } \right\rbrace^{0.5}  & p > 0.5,
-			 *								\end{array}
-			 *								\right.
-		     *			\f]		
-		     * where [\f$\textnormal{ibeta\_inv}(a,b,x)\f$](http://www.boost.org/doc/libs/1_37_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/sf_beta/ibeta_inv_function.html) is the incomplete Beta function inverse implemented in the Boost.Math library.	
-			 * */
-            virtual double quantile(const double& p) const;
-
-            virtual std::unique_ptr< UnivariateEvent > simulate() const;
-
-			/// \brief Get the mean of non-standardized Student distribution \f$ E(X) = \mu \f$ if \f$ \nu > 1 \f$ and undefined otherwise.
-            virtual double get_mean() const;
-
-			/// \brief Get the variance of non-standardized Student distribution \f$ V(X) = \frac{\nu}{\nu-2} \f$ if \f$ \nu >2 \f$,  \f$ V(X) = \infty \f$ if \f$ 1 < \nu \leq 2\f$ and undefined otherwise.
-            virtual double get_variance() const;
-
-        protected:
-            double _mu;
-            double _sigma;
-            double _nu;
-            double _delta;
-    };
         
-    /** \brief This class GumbelMaxDistribution represents a [Gumbel distribution](https://en.wikipedia.org/wiki/Gumbel_distribution) (maximum).
+    /** \brief This class GumbelDistribution represents a [Gumbel distribution](https://en.wikipedia.org/wiki/Gumbel_distribution) (maximum).
      * 
      * \details The Gumbel distribution (maximum) is an univariate continuous distribution.
      * 		   It is also called extreme value type I distribution (maximum).
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * */                
-    class STATISKIT_CORE_API GumbelMaxDistribution : public PolymorphicCopy< UnivariateDistribution, GumbelMaxDistribution, ContinuousUnivariateDistribution >
+    class STATISKIT_CORE_API GumbelDistribution : public PolymorphicCopy< UnivariateDistribution, GumbelDistribution, ContinuousUnivariateDistribution >
     {
         public:
             /** \brief The default constructor
@@ -1615,7 +1596,7 @@ namespace statiskit
              * - \f$ \mu = 0.\f$,
              * - \f$ \sigma = 1.\f$. 
              * */
-            GumbelMaxDistribution();
+            GumbelDistribution();
             
             /** \brief An alternative constructor
              *
@@ -1624,14 +1605,14 @@ namespace statiskit
              * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
              * \param sigma the specified scale parameter\f$ \sigma \in \mathbb{R}_+^* \f$.
              * */            
-            GumbelMaxDistribution(const double& mu, const double& sigma);
+            GumbelDistribution(const double& mu, const double& sigma);
             
             /// \brief A copy constructor
-            GumbelMaxDistribution(const GumbelMaxDistribution& gumbel_max);
+            GumbelDistribution(const GumbelDistribution& gumbel_max);
 
-            /** \brief Returns the number of parameters of the GumbelMax distribution
+            /** \brief Returns the number of parameters of the Gumbel distribution
              *
-             * \details The number of parameters of a GumbelMax distribution is \f$2\f$ (\f$\mu\f$ and \f$\sigma\f$).
+             * \details The number of parameters of a Gumbel distribution is \f$2\f$ (\f$\mu\f$ and \f$\sigma\f$).
              * */
             virtual unsigned int get_nb_parameters() const;
         	
@@ -1678,16 +1659,16 @@ namespace statiskit
             virtual double cdf(const double& value) const;
 
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			 *  The quantile for GumbelMax distribution is computed as \f$ x = \mu - \sigma \ln \lbrace - \ln (p) \rbrace  \f$.		
+			 *  The quantile for Gumbel distribution is computed as \f$ x = \mu - \sigma \ln \lbrace - \ln (p) \rbrace  \f$.		
 			 * */
             virtual double quantile(const double& p) const;
 
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-			///  \brief Get mean of GumbelMax distribution \f$ E(X) = \mu + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
+			///  \brief Get mean of Gumbel distribution \f$ E(X) = \mu + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
             virtual double get_mean() const;
 
-			/// \brief Get variance of GumbelMax distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
+			/// \brief Get variance of Gumbel distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
             virtual double get_variance() const;
 
         protected:
@@ -1695,7 +1676,7 @@ namespace statiskit
             double _sigma;
     };
     
-    /** \brief This class GumbelMinDistribution represents a Gumbel distribution (minimum).
+    /** \brief This class GompertzDistribution represents a Gumbel distribution (minimum).
      * 
      * \details A random component \f$X\f$ is said to folloow a Gumbel distribution (minimum) if \f$Y=-X\f$ follows a Gumbel distribution (maximum).
      *         The Gumbel distribution (minimum) is an univariate continuous distribution.
@@ -1703,7 +1684,7 @@ namespace statiskit
      *         The support is the set of real values \f$\mathbb{R}\f$.
      * @see statiskit::GumbelMaxDistribution
      * */                
-    class STATISKIT_CORE_API GumbelMinDistribution : public PolymorphicCopy< UnivariateDistribution, GumbelMinDistribution, ContinuousUnivariateDistribution >
+    class STATISKIT_CORE_API GompertzDistribution : public PolymorphicCopy< UnivariateDistribution, GompertzDistribution, ContinuousUnivariateDistribution >
     {
         public:
             /** \brief The default constructor
@@ -1713,7 +1694,7 @@ namespace statiskit
              * - \f$ \mu = 0.\f$,
              * - \f$ \sigma = 1.\f$. 
              * */
-            GumbelMinDistribution();
+            GompertzDistribution();
             
             /** \brief An alternative constructor
              *
@@ -1722,10 +1703,10 @@ namespace statiskit
              * \param mu the specified location parameter \f$ \mu \in \mathbb{R} \f$.
              * \param sigma the specified scale parameter \f$ \sigma \in \mathbb{R}_+^* \f$.
              * */            
-            GumbelMinDistribution(const double& mu, const double& sigma);
+            GompertzDistribution(const double& mu, const double& sigma);
             
             /// \brief A copy constructor
-            GumbelMinDistribution(const GumbelMinDistribution& gumbel_min);
+            GompertzDistribution(const GompertzDistribution& gumbel_min);
 
             /** \brief Returns the number of parameters of the Gumbel distribution (minimum).
              *
@@ -1776,16 +1757,16 @@ namespace statiskit
             virtual double cdf(const double& value) const;
 
 			/** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-			 *  The quantile for GumbelMin distribution is computed as \f$ x = \mu + \sigma \ln \lbrace - \ln (1-p) \rbrace  \f$.		
+			 *  The quantile for Gompertz distribution is computed as \f$ x = \mu + \sigma \ln \lbrace - \ln (1-p) \rbrace  \f$.		
 			 * */
             virtual double quantile(const double& p) const;
 
             virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-			///  \brief Get mean of GumbelMin distribution \f$ E(X) = - \mu + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
+			///  \brief Get mean of Gompertz distribution \f$ E(X) = - \mu + \sigma \gamma\f$, where [\f$\gamma\f$](http://www.boost.org/doc/libs/1_40_0/libs/math/doc/sf_and_dist/html/math_toolkit/toolkit/internals1/constants.html) is the Euler's constant implemented in Boost.Math library.
             virtual double get_mean() const;
 
-			/// \brief Get variance of GumbelMin distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
+			/// \brief Get variance of Gompertz distribution \f$ V(X) = \pi^2 \sigma^2 / 6 \f$.
             virtual double get_variance() const;
 
         protected:
@@ -2009,6 +1990,8 @@ namespace statiskit
     {
         typedef UnivariateDistribution response_type;
         
+        virtual ~UnivariateConditionalDistribution() = 0;
+
         /// \Brief This is an operation of conditioning that returns the conditional distribution \f$ Y \vert \boldsymbol{X} = \boldsymbol{x} \f$.
         virtual const UnivariateDistribution* operator() (const MultivariateEvent& event) const = 0;
 
@@ -2027,19 +2010,30 @@ namespace statiskit
     }; 
     
     struct STATISKIT_CORE_API CategoricalUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {};
+    {
+        typedef CategoricalEvent event_type;
+        typedef CategoricalUnivariateDistribution response_type; 
+    };
     
     struct STATISKIT_CORE_API DiscreteUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {};        
+    {
+        typedef DiscreteEvent event_type;
+        typedef DiscreteUnivariateDistribution response_type; 
+    };        
     
     struct STATISKIT_CORE_API ContinuousUnivariateConditionalDistribution : UnivariateConditionalDistribution
-    {};      
+    {
+        typedef ContinuousEvent event_type;
+        typedef ContinuousUnivariateDistribution response_type; 
+    };      
 
     struct STATISKIT_CORE_API MultivariateDistribution
     {
         typedef MultivariateData data_type;
         typedef UnivariateDistribution marginal_type;
             
+        virtual ~MultivariateDistribution() = 0;
+
         /// \brief Get the number of components of the distribution.
         virtual Index get_nb_components() const = 0;
 
@@ -2184,6 +2178,8 @@ namespace statiskit
     struct STATISKIT_CORE_API MultivariateConditionalDistribution
     {
         typedef MultivariateDistribution response_type;
+        
+        virtual ~MultivariateConditionalDistribution() = 0;
         
         virtual Index get_nb_components() const = 0;
 
@@ -2350,5 +2346,7 @@ namespace statiskit
     typedef std::vector< ContinuousMultivariateDistribution* > ContinuousMultivariateDistributionVector;
 }
 
+#ifndef AUTOWIG
 #include "distribution.hpp"
+#endif
 #endif

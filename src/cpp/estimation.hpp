@@ -28,6 +28,10 @@ namespace statiskit
         }
 
     template<class D, class B>    
+        std::unique_ptr< typename B::copy_type > LazyEstimation< D, B >::copy() const
+        { return std::make_unique< LazyEstimation< D, B > >(*this); }
+
+    template<class D, class B>    
         typename B::estimated_type const * LazyEstimation< D, B >::get_estimated() const
         { return _estimated; }
 

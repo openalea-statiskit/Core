@@ -25,10 +25,12 @@ void wrapper_423ed9cbac44541cb53a4cf80e6e15d5()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::SingularDistributionEstimation, struct ::std::default_delete< struct ::statiskit::SingularDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::MultinomialSingularDistribution, ::statiskit::SingularDistributionEstimation >::*method_pointer_d853579033215139818e8452c7f0b180)() const = &::statiskit::LazyEstimation< class ::statiskit::MultinomialSingularDistribution, struct ::statiskit::SingularDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< class ::statiskit::MultinomialSingularDistribution, struct ::statiskit::SingularDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::MultinomialSingularDistribution, struct ::statiskit::SingularDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::SingularDistributionEstimation > > class_423ed9cbac44541cb53a4cf80e6e15d5("_LazyEstimation_423ed9cbac44541cb53a4cf80e6e15d5", "", boost::python::no_init);
     class_423ed9cbac44541cb53a4cf80e6e15d5.def(boost::python::init<  >(""));
     class_423ed9cbac44541cb53a4cf80e6e15d5.def(boost::python::init< class ::statiskit::MultinomialSingularDistribution const * >(""));
     class_423ed9cbac44541cb53a4cf80e6e15d5.def(boost::python::init< class ::statiskit::LazyEstimation< class ::statiskit::MultinomialSingularDistribution, struct ::statiskit::SingularDistributionEstimation > const & >(""));
+    class_423ed9cbac44541cb53a4cf80e6e15d5.def("copy", method_pointer_d853579033215139818e8452c7f0b180, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::MultinomialSingularDistribution, struct ::statiskit::SingularDistributionEstimation > >::is_class)
     {

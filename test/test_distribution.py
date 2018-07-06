@@ -78,7 +78,7 @@ class AbstractTestContinuousUnivariateDistribution(AbstractTestUnivariateDistrib
         data = self._dist.simulation(1000)
         self.assertAlmostEqual(abs(data.location - self._dist.mean) / data.location, self._epsilon, delta=self._delta)
         self.assertAlmostEqual(abs(data.dispersion - self._dist.variance) / data.dispersion, self._epsilon, delta=self._delta)
-        
+
 class AbstractTestMultivariateDistribution(AbstractTestDistribution):
 
     pass

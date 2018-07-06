@@ -25,10 +25,12 @@ void wrapper_2ee8bfaab59653a08d72e8d97ec7b5dd()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::DiscreteUnivariateDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_a9bf223f29c1590b90e0963f774b6cd8)() const = &::statiskit::LazyEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation > > class_2ee8bfaab59653a08d72e8d97ec7b5dd("_LazyEstimation_2ee8bfaab59653a08d72e8d97ec7b5dd", "", boost::python::no_init);
     class_2ee8bfaab59653a08d72e8d97ec7b5dd.def(boost::python::init<  >(""));
     class_2ee8bfaab59653a08d72e8d97ec7b5dd.def(boost::python::init< struct ::statiskit::DiscreteUnivariateDistribution const * >(""));
     class_2ee8bfaab59653a08d72e8d97ec7b5dd.def(boost::python::init< class ::statiskit::LazyEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_2ee8bfaab59653a08d72e8d97ec7b5dd.def("copy", method_pointer_a9bf223f29c1590b90e0963f774b6cd8, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
     {

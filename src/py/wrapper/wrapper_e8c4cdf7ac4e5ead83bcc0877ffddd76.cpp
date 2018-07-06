@@ -25,10 +25,12 @@ void wrapper_e8c4cdf7ac4e5ead83bcc0877ffddd76()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::CategoricalUnivariateMixtureDistribution, ::statiskit::CategoricalUnivariateDistributionEstimation >::*method_pointer_0704b07ace4850ad8b0a02121dea38c5)() const = &::statiskit::LazyEstimation< struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::CategoricalUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::CategoricalUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::CategoricalUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::CategoricalUnivariateDistributionEstimation > > class_e8c4cdf7ac4e5ead83bcc0877ffddd76("_LazyEstimation_e8c4cdf7ac4e5ead83bcc0877ffddd76", "", boost::python::no_init);
     class_e8c4cdf7ac4e5ead83bcc0877ffddd76.def(boost::python::init<  >(""));
     class_e8c4cdf7ac4e5ead83bcc0877ffddd76.def(boost::python::init< struct ::statiskit::CategoricalUnivariateMixtureDistribution const * >(""));
     class_e8c4cdf7ac4e5ead83bcc0877ffddd76.def(boost::python::init< class ::statiskit::LazyEstimation< struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::CategoricalUnivariateDistributionEstimation > const & >(""));
+    class_e8c4cdf7ac4e5ead83bcc0877ffddd76.def("copy", method_pointer_0704b07ace4850ad8b0a02121dea38c5, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< struct ::statiskit::CategoricalUnivariateMixtureDistribution, struct ::statiskit::CategoricalUnivariateDistributionEstimation > >::is_class)
     {

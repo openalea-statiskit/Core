@@ -27,6 +27,7 @@ void wrapper_fe5c14ebd9715db583a8fcea54e1d965()
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::class_< class ::statiskit::WeightedMultivariateData, autowig::Held< class ::statiskit::WeightedMultivariateData >::Type, boost::python::bases< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::WeightedMultivariateData, class ::statiskit::WeightedData< struct ::statiskit::MultivariateData > > > > class_fe5c14ebd9715db583a8fcea54e1d965("WeightedMultivariateData", "", boost::python::no_init);
     class_fe5c14ebd9715db583a8fcea54e1d965.def(boost::python::init< struct ::statiskit::MultivariateData const * >(""));
+    class_fe5c14ebd9715db583a8fcea54e1d965.def(boost::python::init< struct ::statiskit::MultivariateData const *, class ::std::vector< double, class ::std::allocator< double > > const & >(""));
     class_fe5c14ebd9715db583a8fcea54e1d965.def(boost::python::init< class ::statiskit::WeightedMultivariateData const & >(""));
 
     if(autowig::Held< class ::statiskit::WeightedMultivariateData >::is_class)

@@ -35,6 +35,7 @@ namespace statiskit
     {
         typedef UnivariateData data_type;
         typedef UnivariateDistribution estimated_type;
+        typedef UnivariateDistributionEstimation copy_type; 
 
         virtual ~UnivariateDistributionEstimation() = 0;
 
@@ -60,6 +61,8 @@ namespace statiskit
             LazyEstimation(D const * estimated);
             LazyEstimation(const LazyEstimation< D, B >& estimation);
             virtual ~LazyEstimation();
+
+            virtual std::unique_ptr< typename B::copy_type > copy() const;
 
             virtual typename B::estimated_type const * get_estimated() const;
 
@@ -272,10 +275,13 @@ namespace statiskit
         typedef MultivariateData data_type;
         typedef MultivariateDistribution estimated_type;
         typedef UnivariateDistributionEstimation marginal_type;
+        typedef MultivariateDistributionEstimation copy_type; 
 
         virtual ~MultivariateDistributionEstimation() = 0;
 
         virtual estimated_type const * get_estimated() const = 0;
+
+        virtual std::unique_ptr< MultivariateDistributionEstimation > copy() const = 0;
         
         struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         {
@@ -328,10 +334,13 @@ namespace statiskit
     {
         typedef UnivariateConditionalData data_type;
         typedef ::statiskit::UnivariateConditionalDistribution estimated_type;
-        
+        typedef UnivariateConditionalDistributionEstimation copy_type;
+
         virtual ~UnivariateConditionalDistributionEstimation() = 0;
 
         virtual estimated_type const * get_estimated() const = 0;
+
+        virtual std::unique_ptr< UnivariateConditionalDistributionEstimation > copy() const = 0;
 
         struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
@@ -374,10 +383,13 @@ namespace statiskit
     {
         typedef MultivariateConditionalData data_type;
         typedef ::statiskit::MultivariateConditionalDistribution estimated_type;
+        typedef MultivariateConditionalDistributionEstimation copy_type;
         
         virtual ~MultivariateConditionalDistributionEstimation() = 0;
 
         virtual estimated_type const * get_estimated() const = 0;
+
+        virtual std::unique_ptr< MultivariateConditionalDistributionEstimation > copy() const = 0;
 
         struct STATISKIT_CORE_API Estimator : public statiskit::Estimator
         { 
@@ -420,5 +432,7 @@ namespace statiskit
     typedef ContinuousMultivariateConditionalDistributionSelection::CriterionEstimator ContinuousMultivariateConditionalDistributionCriterionEstimator;  
 }
 
+#ifndef AUTOWIG
 #include "estimation.hpp"
+#endif
 #endif

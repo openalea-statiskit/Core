@@ -9,8 +9,10 @@ from .__core.statiskit import (_ShiftedDistribution,
                                  _UnivariateFrequencyDistribution,
                                  _QuantitativeUnivariateFrequencyDistribution,
                                  CategoricalUnivariateDistribution,
+                                     BinaryDistribution,
                                      NominalDistribution,
                                      OrdinalDistribution,
+                                     HierarchicalDistribution,
                                      CategoricalUnivariateMixtureDistribution,
                                  DiscreteUnivariateDistribution,
                                      DiscreteUnivariateFrequencyDistribution,
@@ -28,6 +30,12 @@ from .__core.statiskit import (_ShiftedDistribution,
                                      UnivariateHistogramDistribution,
                                      NormalDistribution,
                                      LogisticDistribution,
+                                     LaplaceDistribution,
+                                     CauchyDistribution,
+                                     StudentDistribution,
+                                     NonStandardStudentDistribution,
+                                     GumbelDistribution,
+                                     GompertzDistribution,
                                      GammaDistribution,
                                      BetaDistribution,
                                      ContinuousUnivariateMixtureDistribution,
@@ -78,8 +86,10 @@ from .sample_space import (NominalSampleSpace,
                            OrdinalSampleSpace)
 from ._tools import float_str, remove_latex
 
-__all__ = ['NominalDistribution',
+__all__ = ['BinaryDistribution',
+           'NominalDistribution',
            'OrdinalDistribution',
+           'HierarchicalDistribution',
            'DiscreteUnivariateFrequencyDistribution',
            'PoissonDistribution',
            'BinomialDistribution',
@@ -92,6 +102,12 @@ __all__ = ['NominalDistribution',
            'UnivariateHistogramDistribution',
            'NormalDistribution',
            'LogisticDistribution',
+           'LaplaceDistribution',
+           'CauchyDistribution',
+           'StudentDistribution',
+           'NonStandardStudentDistribution',
+           'GumbelDistribution',
+           'GompertzDistribution',
            'GammaDistribution',
            'BetaDistribution',
            'SplittingDistribution',
@@ -206,7 +222,10 @@ def wrapper(f):
 
 NominalDistribution.__init__ = wrapper(NominalDistribution.__init__)
 OrdinalDistribution.__init__ = wrapper(OrdinalDistribution.__init__)
-del wrapper
+#HierarchicalDistribution.__init__ = wrapper(HierarchicalDistribution.__init__)
+
+BinaryDistribution.pi = property(BinaryDistribution.get_pi, BinaryDistribution.set_pi)
+del BinaryDistribution.get_pi, BinaryDistribution.set_pi
 
 OrdinalDistribution.rank = property(OrdinalDistribution.get_rank, OrdinalDistribution.set_rank)
 del OrdinalDistribution.get_rank, OrdinalDistribution.set_rank
@@ -808,7 +827,7 @@ NormalDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return "r$\mathcal{N}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+    return r"$\mathcal{N}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
 
 NormalDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -820,14 +839,14 @@ NormalDistribution.sigma = property(NormalDistribution.get_sigma, NormalDistribu
 del NormalDistribution.get_sigma, NormalDistribution.set_sigma
 
 def __repr__(self):
-    return "L(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+    return "Lo(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
 
 LogisticDistribution.__str__ = __repr__
 LogisticDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return "r$\mathcal{L}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+    return r"$\mathcal{Lo}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
 
 LogisticDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -839,6 +858,120 @@ LogisticDistribution.sigma = property(LogisticDistribution.get_sigma, LogisticDi
 del LogisticDistribution.get_sigma, LogisticDistribution.set_sigma
 
 def __repr__(self):
+    return "La(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+
+LaplaceDistribution.__str__ = __repr__
+LaplaceDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{La}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+
+LaplaceDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+LaplaceDistribution.mu = property(LaplaceDistribution.get_mu, LaplaceDistribution.set_mu)
+del LaplaceDistribution.get_mu, LaplaceDistribution.set_mu
+
+LaplaceDistribution.sigma = property(LaplaceDistribution.get_sigma, LaplaceDistribution.set_sigma)
+del LaplaceDistribution.get_sigma, LaplaceDistribution.set_sigma
+
+def __repr__(self):
+    return "C(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+
+CauchyDistribution.__str__ = __repr__
+CauchyDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{C}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+
+CauchyDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+CauchyDistribution.mu = property(CauchyDistribution.get_mu, CauchyDistribution.set_mu)
+del CauchyDistribution.get_mu, CauchyDistribution.set_mu
+
+CauchyDistribution.sigma = property(CauchyDistribution.get_sigma, CauchyDistribution.set_sigma)
+del CauchyDistribution.get_sigma, CauchyDistribution.set_sigma
+
+def __repr__(self):
+    return "T(" + float_str(self.nu) + ')'
+
+StudentDistribution.__str__ = __repr__
+StudentDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{T}\left(" + float_str(self.nu) + r'\right)$'
+
+StudentDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+StudentDistribution.nu = property(StudentDistribution.get_nu, StudentDistribution.set_nu)
+del StudentDistribution.get_nu, StudentDistribution.set_nu
+
+def __repr__(self):
+    return "nsT(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ', ' + float_str(self.nu) + ')'
+
+NonStandardStudentDistribution.__str__ = __repr__
+NonStandardStudentDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{nsT}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ', ' + float_str(self.nu) + r'\right)$'
+
+NonStandardStudentDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+NonStandardStudentDistribution.mu = property(NonStandardStudentDistribution.get_mu, NonStandardStudentDistribution.set_mu)
+del NonStandardStudentDistribution.get_mu, NonStandardStudentDistribution.set_mu
+
+NonStandardStudentDistribution.sigma = property(NonStandardStudentDistribution.get_sigma, NonStandardStudentDistribution.set_sigma)
+del NonStandardStudentDistribution.get_sigma, NonStandardStudentDistribution.set_sigma
+
+#########################################################
+# bla bla                                               #
+#########################################################
+
+def __repr__(self):
+    return "Gu(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+
+GumbelDistribution.__str__ = __repr__
+GumbelDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{C}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+
+GumbelDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+GumbelDistribution.mu = property(GumbelDistribution.get_mu, GumbelDistribution.set_mu)
+del GumbelDistribution.get_mu, GumbelDistribution.set_mu
+
+GumbelDistribution.sigma = property(GumbelDistribution.get_sigma, GumbelDistribution.set_sigma)
+del GumbelDistribution.get_sigma, GumbelDistribution.set_sigma
+
+def __repr__(self):
+    return "Go(" + float_str(self.mu) + ', ' + float_str(self.sigma) + ')'
+
+GompertzDistribution.__str__ = __repr__
+GompertzDistribution.__repr__ = __repr__
+del __repr__
+
+def _repr_latex_(self):
+    return r"$\mathcal{C}\left(" + float_str(self.mu) + ', ' + float_str(self.sigma) + r'\right)$'
+
+GompertzDistribution._repr_latex_ = _repr_latex_
+del _repr_latex_
+
+GompertzDistribution.mu = property(GompertzDistribution.get_mu, GompertzDistribution.set_mu)
+del GompertzDistribution.get_mu, GompertzDistribution.set_mu
+
+GompertzDistribution.sigma = property(GompertzDistribution.get_sigma, GompertzDistribution.set_sigma)
+del GompertzDistribution.get_sigma, GompertzDistribution.set_sigma
+def __repr__(self):
     return "Gamma(" + float_str(self.alpha) + ', ' + float_str(self.beta) + ')'
 
 GammaDistribution.__str__ = __repr__
@@ -846,7 +979,7 @@ GammaDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return "r$\Gamma\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
+    return r"$\Gamma\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
 
 GammaDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -865,7 +998,7 @@ BetaDistribution.__repr__ = __repr__
 del __repr__
 
 def _repr_latex_(self):
-    return "r$\Beta\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
+    return r"$\Beta\left(" + float_str(self.alpha) + ', ' + float_str(self.beta) + r'\right)$'
 
 BetaDistribution._repr_latex_ = _repr_latex_
 del _repr_latex_
@@ -905,7 +1038,9 @@ def wrapper_probability(f):
 MultivariateDistribution.probability = wrapper_probability(MultivariateDistribution.probability)
 
 def simulation(self, size):
-    return from_list(*list(map(list, list(zip(*[self.simulate() for index in range(size)])))))
+    events = [self.simulate() for index in range(size)]
+    data = from_list(*list(map(list, list(zip(*events)))))
+    return data
 
 MultivariateDistribution.simulation = simulation
 del simulation
@@ -1143,7 +1278,7 @@ def wrapper_call(f):
             for index, component in enumerate(events):
                 event[index] = self.explanatory_space[index](component)
         if not isinstance(event, MultivariateEvent):
-            raise TypeError('\'event\' parameter')            
+            raise TypeError('\'event\' parameter') 
         return f(self, event)
     return __call__
 

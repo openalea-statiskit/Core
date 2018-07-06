@@ -2,6 +2,9 @@
 
 namespace statiskit
 { 
+    UnivariateData::~UnivariateData()
+    {}
+
     Index UnivariateData::size() const
     {
         Index index = 0;
@@ -165,6 +168,9 @@ namespace statiskit
         }
         return maximum;
     }
+
+    UnivariateData::Generator::~Generator()
+    {}
 
     unsigned int NamedData::__index = 0;
 
@@ -357,6 +363,9 @@ namespace statiskit
         { throw proxy_connection_error(); }
         return 1;
     }
+
+    MultivariateData::~MultivariateData()
+    {}
     
     Index MultivariateData::size() const
     {
@@ -382,11 +391,23 @@ namespace statiskit
         return total;
     }
 
+    MultivariateData::Generator::~Generator()
+    {}
 
     MultivariateDataFrame::MultivariateDataFrame()
     {
         _sample_space = new SampleSpace(this);
         _components.clear();
+    }
+
+    MultivariateDataFrame::MultivariateDataFrame(const MultivariateSampleSpace& sample_space) : MultivariateDataFrame()
+    {
+        _components.clear();
+        for(Index index = 0, max_index = sample_space.size(); index < max_index; ++index)
+        {
+             UnivariateDataFrame* data = new UnivariateDataFrame(*(sample_space.get(index)));
+            _components.push_back(data); 
+        }
     }
 
     MultivariateDataFrame::MultivariateDataFrame(const MultivariateDataFrame& data)
@@ -780,6 +801,9 @@ namespace statiskit
     WeightedUnivariateData::WeightedUnivariateData(const WeightedUnivariateData& data)
     { init(data); }
 
+    WeightedUnivariateData::WeightedUnivariateData(const UnivariateData* data, const std::vector< double >& weights)
+    { init(data, weights); }
+
     WeightedUnivariateData::~WeightedUnivariateData()
     {}
 
@@ -791,6 +815,9 @@ namespace statiskit
 
     WeightedMultivariateData::WeightedMultivariateData(const WeightedMultivariateData& data)
     { init(data); }
+
+    WeightedMultivariateData::WeightedMultivariateData(const MultivariateData* data, const std::vector< double >& weights)
+    { init(data, weights); }
 
     WeightedMultivariateData::~WeightedMultivariateData()
     {}
@@ -840,6 +867,17 @@ namespace statiskit
     {
        _response = data.extract(response).release();
        _explanatories = data.extract(explanatories).release();
+    }
+
+    UnivariateConditionalData::UnivariateConditionalData(const UnivariateData& response_data, const MultivariateData& explanatories_data)
+    {
+        if(response_data.size() == explanatories_data.size())
+        {
+            _response = response_data.copy().release();
+            _explanatories = explanatories_data.copy().release();
+        }
+        else
+        { throw size_error("response_data", response_data.size(), explanatories_data.size()); }
     }
 
     UnivariateConditionalData::UnivariateConditionalData(const UnivariateConditionalData& data)

@@ -8,6 +8,12 @@ namespace autowig
     {
         public:
             
+            virtual class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > > (result);
+            }
+                        
             virtual ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * get_estimated() const
             { return this->get_override("get_estimated")(); }
                         
@@ -42,8 +48,10 @@ void wrapper_bf2c6deebd8e55f3824ecd5cf9312434()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     ::statiskit::UnivariateConditionalDistributionEstimation::estimated_type const * (::statiskit::UnivariateConditionalDistributionEstimation::*method_pointer_c18e0a4c85e9560fa63a48b370681cca)() const = &::statiskit::UnivariateConditionalDistributionEstimation::get_estimated;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistributionEstimation > >  (::statiskit::UnivariateConditionalDistributionEstimation::*method_pointer_7d21d7a9db0b54beb12be25dbd45dc87)() const = &::statiskit::UnivariateConditionalDistributionEstimation::copy;
     boost::python::class_< autowig::Wrap_bf2c6deebd8e55f3824ecd5cf9312434, autowig::Held< autowig::Wrap_bf2c6deebd8e55f3824ecd5cf9312434 >::Type, boost::noncopyable > class_bf2c6deebd8e55f3824ecd5cf9312434("UnivariateConditionalDistributionEstimation", "", boost::python::no_init);
     class_bf2c6deebd8e55f3824ecd5cf9312434.def("get_estimated", boost::python::pure_virtual(method_pointer_c18e0a4c85e9560fa63a48b370681cca), boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
+    class_bf2c6deebd8e55f3824ecd5cf9312434.def("copy", boost::python::pure_virtual(method_pointer_7d21d7a9db0b54beb12be25dbd45dc87), "");
     if(autowig::Held< struct ::statiskit::UnivariateConditionalDistributionEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_bf2c6deebd8e55f3824ecd5cf9312434 >::Type, autowig::Held< struct ::statiskit::UnivariateConditionalDistributionEstimation >::Type >();

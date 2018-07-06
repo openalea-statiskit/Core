@@ -25,10 +25,12 @@ void wrapper_3b2e19fa74a45eb49f08742886108635()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::GeometricDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::*method_pointer_987331533ec95ef299bec4217d054eae)() const = &::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::DiscreteUnivariateDistributionEstimation > > class_3b2e19fa74a45eb49f08742886108635("_LazyEstimation_3b2e19fa74a45eb49f08742886108635", "", boost::python::no_init);
     class_3b2e19fa74a45eb49f08742886108635.def(boost::python::init<  >(""));
     class_3b2e19fa74a45eb49f08742886108635.def(boost::python::init< class ::statiskit::GeometricDistribution const * >(""));
     class_3b2e19fa74a45eb49f08742886108635.def(boost::python::init< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > const & >(""));
+    class_3b2e19fa74a45eb49f08742886108635.def("copy", method_pointer_987331533ec95ef299bec4217d054eae, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::GeometricDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation > >::is_class)
     {

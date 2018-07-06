@@ -25,10 +25,12 @@ void wrapper_281a291cf9465a1e9af25cbee1cf5bad()
     boost::python::object module_fa414b05d29e5f4ea0b6d6cb5cf81b01(boost::python::handle<  >(boost::python::borrowed(PyImport_AddModule(name_fa414b05d29e5f4ea0b6d6cb5cf81b01.c_str()))));
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
+    class ::std::unique_ptr< struct ::statiskit::UnivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::UnivariateDistributionEstimation > >  (::statiskit::LazyEstimation< ::statiskit::UnivariateHistogramDistribution, ::statiskit::ContinuousUnivariateDistributionEstimation >::*method_pointer_7f553b151400504591c3f5ee1cf1e65e)() const = &::statiskit::LazyEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation >::copy;
     boost::python::class_< class ::statiskit::LazyEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation >, autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::Type, boost::python::bases< struct ::statiskit::ContinuousUnivariateDistributionEstimation > > class_281a291cf9465a1e9af25cbee1cf5bad("_LazyEstimation_281a291cf9465a1e9af25cbee1cf5bad", "", boost::python::no_init);
     class_281a291cf9465a1e9af25cbee1cf5bad.def(boost::python::init<  >(""));
     class_281a291cf9465a1e9af25cbee1cf5bad.def(boost::python::init< class ::statiskit::UnivariateHistogramDistribution const * >(""));
     class_281a291cf9465a1e9af25cbee1cf5bad.def(boost::python::init< class ::statiskit::LazyEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > const & >(""));
+    class_281a291cf9465a1e9af25cbee1cf5bad.def("copy", method_pointer_7f553b151400504591c3f5ee1cf1e65e, "");
 
     if(autowig::Held< class ::statiskit::LazyEstimation< class ::statiskit::UnivariateHistogramDistribution, struct ::statiskit::ContinuousUnivariateDistributionEstimation > >::is_class)
     {

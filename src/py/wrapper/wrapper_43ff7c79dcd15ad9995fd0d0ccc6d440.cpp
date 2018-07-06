@@ -8,6 +8,12 @@ namespace autowig
     {
         public:
             
+            virtual class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > >  copy() const
+            {
+                 ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > ::element_type* result = this->get_override("copy")();
+                 return ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > > (result);
+            }
+                        
             virtual ::statiskit::MultivariateDistributionEstimation::estimated_type const * get_estimated() const
             { return this->get_override("get_estimated")(); }
                         
@@ -42,8 +48,10 @@ void wrapper_43ff7c79dcd15ad9995fd0d0ccc6d440()
     boost::python::scope().attr("statiskit") = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     boost::python::scope scope_fa414b05d29e5f4ea0b6d6cb5cf81b01 = module_fa414b05d29e5f4ea0b6d6cb5cf81b01;
     ::statiskit::MultivariateDistributionEstimation::estimated_type const * (::statiskit::MultivariateDistributionEstimation::*method_pointer_123ca6ff048a55c3916851be0f12a662)() const = &::statiskit::MultivariateDistributionEstimation::get_estimated;
+    class ::std::unique_ptr< struct ::statiskit::MultivariateDistributionEstimation, struct ::std::default_delete< struct ::statiskit::MultivariateDistributionEstimation > >  (::statiskit::MultivariateDistributionEstimation::*method_pointer_6b2ddebe29b356369027219f55c1bc79)() const = &::statiskit::MultivariateDistributionEstimation::copy;
     boost::python::class_< autowig::Wrap_43ff7c79dcd15ad9995fd0d0ccc6d440, autowig::Held< autowig::Wrap_43ff7c79dcd15ad9995fd0d0ccc6d440 >::Type, boost::noncopyable > class_43ff7c79dcd15ad9995fd0d0ccc6d440("MultivariateDistributionEstimation", "", boost::python::no_init);
     class_43ff7c79dcd15ad9995fd0d0ccc6d440.def("get_estimated", boost::python::pure_virtual(method_pointer_123ca6ff048a55c3916851be0f12a662), boost::python::return_value_policy< boost::python::reference_existing_object >(), "");
+    class_43ff7c79dcd15ad9995fd0d0ccc6d440.def("copy", boost::python::pure_virtual(method_pointer_6b2ddebe29b356369027219f55c1bc79), "");
     if(autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::is_class)
     {
         boost::python::implicitly_convertible< autowig::Held< autowig::Wrap_43ff7c79dcd15ad9995fd0d0ccc6d440 >::Type, autowig::Held< struct ::statiskit::MultivariateDistributionEstimation >::Type >();

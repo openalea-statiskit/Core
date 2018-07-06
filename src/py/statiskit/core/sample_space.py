@@ -7,6 +7,7 @@ from .__core.statiskit import (encoding_type,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,
                                                     OrdinalSampleSpace,
+                                                    HierarchicalSampleSpace,
                                                  DiscreteSampleSpace,
                                                     IntegerSampleSpace,
                                                  ContinuousSampleSpace,
@@ -22,7 +23,7 @@ from .controls import *
 from .event import *
 from ._tools import remove_latex
 
-__all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
+__all__ = ['NominalSampleSpace', 'OrdinalSampleSpace', 'HierarchicalSampleSpace',
            'IntegerSampleSpace',
            'RealSampleSpace',
            'VectorSampleSpace']
@@ -90,7 +91,7 @@ del _repr_latex_
 def wrapper(f):
     @wraps(f)
     def get_values(self):
-        return [CategoricalElementaryEvent(value) for value in f(self)]
+        return [value for value in f(self)] #return [CategoricalElementaryEvent(value) for value in f(self)]
     return get_values
 
 CategoricalSampleSpace.values = property(wrapper(CategoricalSampleSpace.get_values))
@@ -128,6 +129,8 @@ del NominalSampleSpace.get_reference, NominalSampleSpace.set_reference
 
 OrdinalSampleSpace.ordered = property(OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered)
 del OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered
+
+
 
 def __call__(self, event):
     """Convert a representation of an event into a discrete event
