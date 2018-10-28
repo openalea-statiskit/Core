@@ -9,7 +9,13 @@
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/random/binomial_distribution.hpp>
 #include <boost/random/normal_distribution.hpp>
+
+#include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/logistic.hpp>
+#include <boost/math/distributions/laplace.hpp>
+#include <boost/math/distributions/students_t.hpp>
+#include <boost/math/distributions/extreme_value.hpp>
+
 #include <boost/random/gamma_distribution.hpp>
 #include <boost/random/beta_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -1773,6 +1779,101 @@ namespace statiskit
             double _mu;
             double _sigma;
     };
+
+
+    /** \brief This class represents a exponential distribution.
+     * 
+     * \details The exponential distribution is an univariate continuous distribution.
+     *          The support is the set of positive real values \f$\mathbb{R}_+^*\f$.
+     * */                
+    class STATISKIT_CORE_API ExponentialDistribution : public PolymorphicCopy< UnivariateDistribution, ExponentialDistribution, ContinuousUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a Exponential distribution with
+             *
+             * - \f$ \lambda = 1.\f$,
+             * */
+            ExponentialDistribution();
+            
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for exponential distribution instantiation with specified \f$\lambda\f$ parameter.
+             *
+             * \param lambda the specified scale parameter \f$ \lambda \in \mathbb{R}_+^* \f$.
+             * */            
+            ExponentialDistribution(const double& lambda);
+            
+            /// \brief A copy constructor
+            ExponentialDistribution(const ExponentialDistribution& exponential);
+
+            /// \brief A destructor
+            virtual ~ExponentialDistribution();
+
+            /** \brief Returns the number of parameters of the exponential distribution.
+             *
+             * \details The number of parameters of an exponential distribution is \f$1\f$ (\f$lambda\f$).
+             * */
+            virtual unsigned int get_nb_parameters() const;
+            
+            /// \brief Get the value of the scale parameter \f$\lambda\f$.
+            const double& get_lambda() const;
+            
+            /// \brief Set the value of the scale parameter \f$\lambda\f$.
+            void set_lambda(const double& lambda);
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               \ln f(x) =  \ln \lambda - \lambda x.
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */ 
+            virtual double ldf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               f(x) =  \lambda \exp \left( -\lambda x\right).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double pdf(const double& value) const;
+            
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               P(X \leq x) = 1- \exp \left( -\lambda x\right).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double cdf(const double& value) const;
+
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+             *
+             *  \details Let \f$x \in \mathbb{R}^{+}_{*} \f$ denote the value to compute and $p \in \left(0,1\right)$ denote a given probability, 
+             *           \f[
+             *               x = -\ln (1-p) / \lambda
+             *           \f]       
+             * */
+            virtual double quantile(const double& p) const;
+
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
+
+            ///  \brief Get mean of the Gamma distribution \f$ E(X) = \frac{\alpha}{\beta}\f$ 
+            virtual double get_mean() const;
+
+            /// \brief Get variance of the Gamma distribution \f$ V(X) = \frac{\alpha}{\beta^2} \f$.
+            virtual double get_variance() const;
+
+        protected:
+            double _lambda;
+    };
+
 
     /** \brief This class represents a Gamma distribution.
      * 

@@ -1372,17 +1372,39 @@ namespace statiskit
         _sigma = sigma;
     }
 
+    // double NormalDistribution::ldf(const double& value) const
+    // { return - 1 / 2. * (pow((value - _mu) / _sigma, 2) + log(pow(_sigma, 2)) + log(2 * boost::math::constants::pi< double >())); }
+
+    // double NormalDistribution::pdf(const double& value) const
+    // { return exp(ldf(value)); }
+
+    // double NormalDistribution::cdf(const double& value) const
+    // { return 0.5 * erfc( (_mu - value) / (_sigma * boost::math::constants::root_two<double>()  )); }
+
+    // double NormalDistribution::quantile(const double& p) const
+    // { return _mu - _sigma * boost::math::constants::root_two<double>() * boost::math::erfc_inv(2 * p); 
+
+
     double NormalDistribution::ldf(const double& value) const
-    { return - 1 / 2. * (pow((value - _mu) / _sigma, 2) + log(pow(_sigma, 2)) + log(2 * boost::math::constants::pi< double >())); }
+    { return log(pdf(value)); }
 
     double NormalDistribution::pdf(const double& value) const
-    { return exp(ldf(value)); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double NormalDistribution::cdf(const double& value) const
-    { return 0.5 * erfc( (_mu - value) / (_sigma * boost::math::constants::root_two<double>()  )); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
+    }
 
     double NormalDistribution::quantile(const double& p) const
-    { return _mu - _sigma * boost::math::constants::root_two<double>() * boost::math::erfc_inv(2 * p); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
+    }
 
     std::unique_ptr< UnivariateEvent > NormalDistribution::simulate() const
     {
@@ -1626,19 +1648,19 @@ namespace statiskit
 
     double LogisticDistribution::pdf(const double& value) const
     { 
-        boost::math::logistic_distribution<> dist(_mu, _sigma);
+        boost::math::logistic dist(_mu, _sigma);
         return boost::math::pdf(dist, value); 
     }
 
     double LogisticDistribution::cdf(const double& value) const
     { 
-        boost::math::logistic_distribution<> dist(_mu, _sigma);
+        boost::math::logistic dist(_mu, _sigma);
         return boost::math::cdf(dist, value); 
     }
 
     double LogisticDistribution::quantile(const double& p) const
     { 
-        boost::math::logistic_distribution<> dist(_mu, _sigma);
+        boost::math::logistic dist(_mu, _sigma);
         return boost::math::quantile(dist, p); 
     }
 
@@ -1693,26 +1715,47 @@ namespace statiskit
         _sigma = sigma;
     }
 
-    double LaplaceDistribution::ldf(const double& value) const
-    { return -fabs(value-_mu) / _sigma - log(2*_sigma); }
+    // double LaplaceDistribution::ldf(const double& value) const
+    // { return -fabs(value-_mu) / _sigma - log(2*_sigma); }
     
+    // double LaplaceDistribution::pdf(const double& value) const
+    // { return  exp(-fabs(value-_mu) / _sigma) / (2*_sigma); }
+
+    // double LaplaceDistribution::cdf(const double& value) const
+    // {
+    // 	if (value < _mu)
+    // 	{ return 0.5 * exp( (value - _mu) / _sigma); } 
+    // 	else
+    // 	{ return 1 - 0.5 * exp( (_mu - value) / _sigma); }
+    // }
+
+    // double LaplaceDistribution::quantile(const double& p) const
+    // {
+    // 	if (p < 0.5)
+    // 	{ return _mu + _sigma * log(2*p); } 
+    // 	else
+    // 	{ return _mu - _sigma * log(2-2*p); }
+    // }
+
+    double LaplaceDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
     double LaplaceDistribution::pdf(const double& value) const
-    { return  exp(-fabs(value-_mu) / _sigma) / (2*_sigma); }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double LaplaceDistribution::cdf(const double& value) const
-    {
-    	if (value < _mu)
-    	{ return 0.5 * exp( (value - _mu) / _sigma); } 
-    	else
-    	{ return 1 - 0.5 * exp( (_mu - value) / _sigma); }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
     }
 
     double LaplaceDistribution::quantile(const double& p) const
-    {
-    	if (p < 0.5)
-    	{ return _mu + _sigma * log(2*p); } 
-    	else
-    	{ return _mu - _sigma * log(2-2*p); }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
     }
 
     std::unique_ptr< UnivariateEvent > LaplaceDistribution::simulate() const
@@ -1812,39 +1855,60 @@ namespace statiskit
         _nu = nu;
     }    
 
-    double StudentDistribution::ldf(const double& value) const
-    { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow(value, 2) )  ) - 0.5*log(_nu) - log( boost::math::beta(_nu*0.5, 0.5) ); }
+    // double StudentDistribution::ldf(const double& value) const
+    // { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow(value, 2) )  ) - 0.5*log(_nu) - log( boost::math::beta(_nu*0.5, 0.5) ); }
     
+    // double StudentDistribution::pdf(const double& value) const
+    // { return pow( _nu/(_nu + pow(value, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * boost::math::beta(_nu*0.5, 0.5) ); }
+
+    // double StudentDistribution::cdf(const double& value) const
+    // {
+    //     double z;
+    //     if(_nu < 2 * pow(value, 2) )
+    //     { z = boost::math::ibeta(_nu * 0.5, 0.5, _nu / (_nu + pow(value, 2))) * 0.5; }
+    //     else
+    //     { z = boost::math::ibetac(0.5, _nu * 0.5, pow(value, 2) / (_nu + pow(value, 2))) * 0.5; }
+    //     if(value > 0)
+    //     { return 1-z; }
+    //     else
+    //     {return z; }
+    // }
+
+    // double StudentDistribution::quantile(const double& p) const
+    // {
+    //     double x, q;
+    //     if(p < 0.5)
+    //     { 
+    //         x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*p);
+    //         q = -pow(_nu*(1-x)/x, 0.5); 
+    //     }
+    //     else if(p >= 0.5)
+    //     { 
+    //         x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*(1-p));
+    //         q = pow(_nu*(1-x)/x, 0.5); 
+    //     }
+    //     return q;         
+    // }
+
+    double StudentDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
     double StudentDistribution::pdf(const double& value) const
-    { return pow( _nu/(_nu + pow(value, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * boost::math::beta(_nu*0.5, 0.5) ); }
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::pdf(dist, value); 
+    }
 
     double StudentDistribution::cdf(const double& value) const
-    {
-        double z;
-        if(_nu < 2 * pow(value, 2) )
-        { z = boost::math::ibeta(_nu * 0.5, 0.5, _nu / (_nu + pow(value, 2))) * 0.5; }
-        else
-        { z = boost::math::ibetac(0.5, _nu * 0.5, pow(value, 2) / (_nu + pow(value, 2))) * 0.5; }
-        if(value > 0)
-        { return 1-z; }
-        else
-        {return z; }
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::cdf(dist, value); 
     }
 
     double StudentDistribution::quantile(const double& p) const
-    {
-        double x, q;
-        if(p < 0.5)
-        { 
-            x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*p);
-            q = -pow(_nu*(1-x)/x, 0.5); 
-        }
-        else if(p >= 0.5)
-        { 
-            x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*(1-p));
-            q = pow(_nu*(1-x)/x, 0.5); 
-        }
-        return q;         
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::quantile(dist, p); 
     }
 
     std::unique_ptr< UnivariateEvent > StudentDistribution::simulate() const
@@ -1973,17 +2037,38 @@ namespace statiskit
         _sigma = sigma;
     }
 
-    double GumbelDistribution::ldf(const double& value) const
-    { return (_mu - value) / _sigma - exp((_mu - value) / _sigma) - log(_sigma); }
+    // double GumbelDistribution::ldf(const double& value) const
+    // { return (_mu - value) / _sigma - exp((_mu - value) / _sigma) - log(_sigma); }
     
+    // double GumbelDistribution::pdf(const double& value) const
+    // { return exp( (_mu - value) / _sigma - exp((_mu - value) / _sigma) ) / _sigma ; }
+
+    // double GumbelDistribution::cdf(const double& value) const
+    // { return  exp( - exp((_mu - value) / _sigma) ); }
+
+    // double GumbelDistribution::quantile(const double& p) const
+    // { return _mu - _sigma * log( -log(p) ); }
+
+    double GumbelDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
     double GumbelDistribution::pdf(const double& value) const
-    { return exp( (_mu - value) / _sigma - exp((_mu - value) / _sigma) ) / _sigma ; }
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double GumbelDistribution::cdf(const double& value) const
-    { return  exp( - exp((_mu - value) / _sigma) ); }
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
+    }
 
     double GumbelDistribution::quantile(const double& p) const
-    { return _mu - _sigma * log( -log(p) ); }
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
+    }
 
     std::unique_ptr< UnivariateEvent > GumbelDistribution::simulate() const
     {        
@@ -2060,6 +2145,77 @@ namespace statiskit
     double GompertzDistribution::get_variance() const
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
      
+    ExponentialDistribution::ExponentialDistribution()
+    { _lambda = 1.; }
+
+    ExponentialDistribution::ExponentialDistribution(const double& lambda)
+    { set_lambda(lambda); }
+
+    ExponentialDistribution::ExponentialDistribution(const ExponentialDistribution& exponential)
+    { _lambda = exponential._lambda; }
+
+    ExponentialDistribution::~ExponentialDistribution()
+    {}
+
+    unsigned int ExponentialDistribution::get_nb_parameters() const
+    { return 1; }
+
+    const double& ExponentialDistribution::get_lambda() const
+    { return _lambda; }
+
+    void ExponentialDistribution::set_lambda(const double& lambda)
+    {
+        if(lambda <= 0.)
+        { throw lower_bound_error("lambda", lambda, 0., true); } 
+        _lambda = lambda;
+    }
+
+    double ExponentialDistribution::ldf(const double& value) const
+    { 
+        double l;
+        if(value <= 0.)
+        { l = -1 * std::numeric_limits< double >::infinity();; }
+        else
+        { l = log(_lambda) - _lambda * value; }
+        return l;
+    }
+
+    double ExponentialDistribution::pdf(const double& value) const
+    { 
+        double p;
+        if(value <= 0.)            
+        { p = 0.; }
+        else
+        { p = _lambda * exp(-_lambda * value);; }
+        return p;
+    }
+
+    double ExponentialDistribution::cdf(const double& value) const
+    {
+        double c;
+        if(value <= 0.)
+        { c = 0.; }
+        else
+        { c = 1 - exp(-_lambda * value); }
+        return c;
+    }
+
+    double ExponentialDistribution::quantile(const double& p) const
+    { return -log(1-p)/_lambda; }
+
+    std::unique_ptr< UnivariateEvent > ExponentialDistribution::simulate() const
+    {
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double ExponentialDistribution::get_mean() const
+    { return 1/_lambda; }
+
+    double ExponentialDistribution::get_variance() const
+    { return 1/pow(_lambda, 2); }
+
     GammaDistribution::GammaDistribution()
     {
         _alpha = 1.;
