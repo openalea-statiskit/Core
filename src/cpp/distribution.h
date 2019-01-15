@@ -1978,107 +1978,107 @@ namespace statiskit
 
 
 
-    // /** \brief This class represents a uniform distribution.
-    //  * 
-    //  * \details The uniform distribution is an univariate continuous distribution.
-    //  *          The support is the interval \f$[\alpha,\beta]\f$ where \f$\alpha\f$ and \f$\beta\f$ are two real values such that \f$\alpha<\beta\f$.
-    //  * */                
-    // class STATISKIT_CORE_API UniformDistribution : public PolymorphicCopy< UnivariateDistribution, UniformDistribution, ContinuousUnivariateDistribution >
-    // {
-    //     public:
-    //         /** \brief The default constructor
-    //          *
-    //          * \details The default constructor instantiate a uniform distribution with
-    //          *
-    //          * - \f$ \alpha = 0.\f$,
-    //          * - \f$ \beta = 1.\f$. 
-    //          * */
-    //         UniformDistribution();
+    /** \brief This class represents a uniform distribution.
+     * 
+     * \details The uniform distribution is an univariate continuous distribution.
+     *          The support is the interval \f$[\alpha,\beta]\f$ where \f$\alpha\f$ and \f$\beta\f$ are two real values such that \f$\alpha<\beta\f$.
+     * */                
+    class STATISKIT_CORE_API UniformDistribution : public PolymorphicCopy< UnivariateDistribution, UniformDistribution, ContinuousUnivariateDistribution >
+    {
+        public:
+            /** \brief The default constructor
+             *
+             * \details The default constructor instantiate a uniform distribution with
+             *
+             * - \f$ \alpha = 0.\f$,
+             * - \f$ \beta = 1.\f$. 
+             * */
+            UniformDistribution();
             
-    //         /** \brief An alternative constructor
-    //          *
-    //          * \details This constructor is usefull for uniform distribution instantiation with specified \f$\alpha\f$ and \f$\beta\f$ parameters.
-    //          *
-    //          * \param alpha the specified support parameter \f$ \alpha \in \mathbb{R} \f$.
-    //          * \param beta the specified support parameter \f$ \beta \in \mathbb{R} \f$ such that \f$\alpha<\beta\f$.
-    //          * */            
-    //         UniformDistribution(const double& alpha, const double& beta);
+            /** \brief An alternative constructor
+             *
+             * \details This constructor is usefull for uniform distribution instantiation with specified \f$\alpha\f$ and \f$\beta\f$ parameters.
+             *
+             * \param alpha the specified support parameter \f$ \alpha \in \mathbb{R} \f$.
+             * \param beta the specified support parameter \f$ \beta \in \mathbb{R} \f$ such that \f$\alpha<\beta\f$.
+             * */            
+            UniformDistribution(const double& alpha, const double& beta);
             
-    //         /// \brief A copy constructor
-    //         UniformDistribution(const UniformDistribution& uniform);
+            /// \brief A copy constructor
+            UniformDistribution(const UniformDistribution& uniform);
 
-    //         /// \brief A destructor
-    //         virtual ~UniformDistribution();
+            /// \brief A destructor
+            virtual ~UniformDistribution();
 
-    //         /** \brief Returns the number of parameters of the uniform distribution.
-    //          *
-    //          * \details The number of parameters is \f$2\f$.
-    //          * */
-    //         virtual unsigned int get_nb_parameters() const;
+            /** \brief Returns the number of parameters of the uniform distribution.
+             *
+             * \details The number of parameters is \f$2\f$.
+             * */
+            virtual unsigned int get_nb_parameters() const;
             
-    //         /// \brief Get the value of the support parameter \f$\alpha\f$.
-    //         const double& get_alpha() const;
+            /// \brief Get the value of the support parameter \f$\alpha\f$.
+            const double& get_alpha() const;
             
-    //         /// \brief Set the value of the support parameter \f$\alpha\f$.
-    //         void set_alpha(const double& mu);
+            /// \brief Set the value of the support parameter \f$\alpha\f$.
+            void set_alpha(const double& mu);
 
-    //         /// \brief Get the value of the support parameter \f$\beta\f$.
-    //         const double& get_beta() const;
+            /// \brief Get the value of the support parameter \f$\beta\f$.
+            const double& get_beta() const;
             
-    //         /// \brief Set the value of the support parameter \f$\beta\f$.
-    //         void set_beta(const double& sigma);
+            /// \brief Set the value of the support parameter \f$\beta\f$.
+            void set_beta(const double& sigma);
             
-    //         * \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
-    //          *
-    //          * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
-    //          *          \f[
-    //          *               \ln f(x) = \ln \{ \boldsymbol{1}_{[\alpha,\beta]}(x) \} - \ln (\beta-\alpha).
-    //          *          \f]
-    //          * \param value The considered value \f$x\f$.
-    //          *  
-    //         virtual double ldf(const double& value) const;
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::ldf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               \ln f(x) = \ln \{ \boldsymbol{1}_{[\alpha,\beta]}(x) \} - \ln (\beta-\alpha).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             *  */
+            virtual double ldf(const double& value) const;
             
-    //         /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
-    //          *
-    //          * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
-    //          *          \f[
-    //          *               f(x) = \frac{1}{\beta-\alpha} \boldsymbol{1}_{[\alpha,\beta]}(x).
-    //          *          \f]
-    //          * \param value The considered value \f$x\f$.
-    //          * */             
-    //         virtual double pdf(const double& value) const;
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::pdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               f(x) = \frac{1}{\beta-\alpha} \boldsymbol{1}_{[\alpha,\beta]}(x).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double pdf(const double& value) const;
             
-    //         /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
-    //          *
-    //          * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
-    //          *          \f[
-    //          *               P(X \leq x) = \frac{x-\alpha}{\beta-\alpha} \boldsymbol{1}_{(\alpha,\beta)}(x) + \boldsymbol{1}_{[\beta,+\infty)}(x).
-    //          *          \f]
-    //          * \param value The considered value \f$x\f$.
-    //          * */             
-    //         virtual double cdf(const double& value) const;
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::cdf()
+             *
+             * \details Let \f$x \in \mathbb{R} \f$ denote the value, 
+             *          \f[
+             *               P(X \leq x) = \frac{x-\alpha}{\beta-\alpha} \boldsymbol{1}_{(\alpha,\beta)}(x) + \boldsymbol{1}_{[\beta,+\infty)}(x).
+             *          \f]
+             * \param value The considered value \f$x\f$.
+             * */             
+            virtual double cdf(const double& value) const;
 
-    //         /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
-    //          *
-    //          *  \details Let \f$x \in \mathbb{R}^{+}_{*} \f$ denote the value to compute and $p \in \left(0,1\right)$ denote a given probability, 
-    //          *           \f[
-    //          *               x = \alpha + p (\beta-\alpha) 
-    //          *           \f]       
-    //          * */
-    //         virtual double quantile(const double& p) const;
+            /** \brief \copybrief statiskit::ContinuousUnivariateDistribution::quantile()
+             *
+             *  \details Let \f$x \in \mathbb{R}^{+}_{*} \f$ denote the value to compute and $p \in \left(0,1\right)$ denote a given probability, 
+             *           \f[
+             *               x = \alpha + p (\beta-\alpha) 
+             *           \f]       
+             * */
+            virtual double quantile(const double& p) const;
 
-    //         virtual std::unique_ptr< UnivariateEvent > simulate() const;
+            virtual std::unique_ptr< UnivariateEvent > simulate() const;
 
-    //         ///  \brief Get mean of the beta distribution \f$ E(X) = \frac{1}{2} (\alpha+\beta)\f$ 
-    //         virtual double get_mean() const;
+            ///  \brief Get mean of the beta distribution \f$ E(X) = \frac{1}{2} (\alpha+\beta)\f$ 
+            virtual double get_mean() const;
 
-    //         /// \brief Get variance of the beta distribution \f$ V(X) = \frac{1}{12} (\alpha-\beta)^2 \f$.
-    //         virtual double get_variance() const;
+            /// \brief Get variance of the beta distribution \f$ V(X) = \frac{1}{12} (\alpha-\beta)^2 \f$.
+            virtual double get_variance() const;
 
-    //     protected:
-    //         double _alpha;
-    //         double _beta;
-    // };
+        protected:
+            double _alpha;
+            double _beta;
+    };
 
 
 
