@@ -31,9 +31,9 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
                                 self._dist.quantile(self._pmax) + 1,
                                 num=self._num,
                                 dtype=numpy.int):
-            self.assertAlmostEqual(self._dist.cdf(v - 1) + self._dist.pdf(v), self._dist.cdf(v))
-            if not self._dist.pdf(v) == 0:
-                self.assertAlmostEqual(math.log(self._dist.pdf(v)), self._dist.ldf(v))
+            self.assertAlmostEqual(self._dist.cdf(int(v) - 1) + self._dist.pdf(int(v)), self._dist.cdf(int(v)))
+            if not self._dist.pdf(int(v)) == 0:
+                self.assertAlmostEqual(math.log(self._dist.pdf(int(v))), self._dist.ldf(int(v)))
 
     def test_quantile(self):
         """Test quantile computation"""
