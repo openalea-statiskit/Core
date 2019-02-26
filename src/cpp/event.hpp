@@ -1,3 +1,4 @@
+#ifndef AUTOWIG
 #ifndef STATISKIT_CORE_EVENT_HPP
 #define STATISKIT_CORE_EVENT_HPP
 
@@ -124,4 +125,6 @@ namespace statiskit
         std::unique_ptr< UnivariateEvent > IntervalCensoredEvent< E >::copy() const
         { return std::make_unique< IntervalCensoredEvent< E > >(*this); }
 }
+
+#endif
 #endif

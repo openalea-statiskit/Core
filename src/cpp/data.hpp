@@ -1,3 +1,4 @@
+#ifndef AUTOWIG
 #ifndef STATISKIT_CORE_DATA_HPP
 #define STATISKIT_CORE_DATA_HPP
 
@@ -313,4 +314,5 @@ namespace statiskit
         { return std::make_unique< DataIntervalMask< D > >(*this); }*/
 }
 
+#endif
 #endif

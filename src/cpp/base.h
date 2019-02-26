@@ -196,9 +196,5 @@ namespace statiskit
         };
 }
 
-#if !defined(_WIN32) && !defined(WIN32)
-namespace std { template<typename T, typename... Args> unique_ptr<T> make_unique(Args&&... args); }
-#endif
-
 #include "base.hpp"
 #endif

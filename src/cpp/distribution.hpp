@@ -1,3 +1,4 @@
+#ifndef AUTOWIG
 #ifndef STATISKIT_CORE_DISTRIBUTION_HPP
 #define STATISKIT_CORE_DISTRIBUTION_HPP
 
@@ -624,4 +625,5 @@ namespace statiskit
         }
 }
 
+#endif
 #endif

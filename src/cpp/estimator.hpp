@@ -1,3 +1,4 @@
+#ifndef AUTOWIG
 #ifndef STATISKIT_CORE_ESTIMATOR_HPP
 #define STATISKIT_CORE_ESTIMATOR_HPP
 
@@ -734,4 +735,5 @@ namespace statiskit
         }
 }
 
+#endif
 #endif

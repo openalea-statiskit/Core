@@ -13,10 +13,6 @@ namespace statiskit
     template<class T, class B, class D>
         PolymorphicCopy< T, B, D >::~PolymorphicCopy()
         {}
-
-    template<class T, class B, class D>
-        std::unique_ptr< T > PolymorphicCopy< T, B, D >::copy() const
-        { return std::make_unique< B >(static_cast< B const& >(*this)); }
              
     namespace __impl
     {
@@ -224,14 +220,5 @@ namespace statiskit
             return status;
         }
 }
-
-#if !defined(_WIN32) && !defined(WIN32)
-namespace std
-{
-    template<typename T, typename... Args>
-        std::unique_ptr<T> make_unique(Args&&... args)
-        { return std::unique_ptr<T>(new T(std::forward<Args>(args)...)); }
-}
-#endif
 
 #endif

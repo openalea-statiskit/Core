@@ -13,7 +13,7 @@ __all__ = ['read_csv', 'from_list', 'from_pandas']
 def read_csv(filepath, sep=None, header=False, **kwargs):
     """
     """
-    if sep and not isinstance(sep, basestring):
+    if sep and not isinstance(sep, str):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'r') as filehandler:
         lines = filehandler.readlines()
@@ -39,7 +39,7 @@ def write_csv(data, filepath, sep=' ', header=False, censored=True):
     """
     if not isinstance(data, MultivariateDataFrame):
         raise TypeError('\'data\' parameter')
-    if not isinstance(sep, basestring):
+    if not isinstance(sep, str):
         raise TypeError('\'sep\' parameter')
     with open(filepath, 'w') as filehandler:
         if header:

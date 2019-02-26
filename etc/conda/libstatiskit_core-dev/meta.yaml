@@ -1,0 +1,27 @@
+package:
+  name: libstatiskit_core-dev
+  version: {{ GIT_DESCRIBE_VERSION }}
+
+source:
+  path: ../../..
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+
+about:
+  home: http://statiskit-stl.readthedocs.org
+  license: Apache License 2.0
+  summary: C++ Development Files for Basic Utilities for Statistical Analyses
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - libtoolchain
+    - libtoolchain-dev
+  host:
+    - libstatiskit_stl-dev
+    - libstatiskit_linalg-dev
+  run:
+    - {{ pin_compatible('libstatiskit_stl-dev', exact=True) }}
+    - {{ pin_compatible('libstatiskit_linalg-dev', exact=True) }}

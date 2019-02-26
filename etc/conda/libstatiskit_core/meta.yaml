@@ -1,0 +1,25 @@
+package:
+  name: libstatiskit_core
+  version: {{ GIT_DESCRIBE_VERSION }}
+
+source:
+  path: ../../..
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+  
+about:
+  home: http://statiskit-core.readthedocs.io/
+  license: Apache License 2.0
+  summary: A C++ Library of Basic Utilities for Statistical Analyses
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - libtoolchain
+  host:
+    - libstatiskit_core-dev
+  run:
+    - {{ pin_compatible('libstatiskit_stl', exact=True) }}
+    - {{ pin_compatible('libstatiskit_linalg', exact=True) }}

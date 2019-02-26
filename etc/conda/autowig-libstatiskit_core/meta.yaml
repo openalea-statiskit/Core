@@ -1,0 +1,36 @@
+package:
+  name: autowig-libstatiskit_core
+  version: {{ GIT_DESCRIBE_VERSION }}
+
+source:
+  path: ../../..
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+  detect_binary_files_with_prefix: False
+  ignore_prefix_files: True
+  
+about:
+  home: http://statiskit-stl.readthedocs.org
+  license: Apache License 2.0
+  summary: C++ Development Files for Basic Utilities for Statistical Analyses
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - libtoolchain
+    - libtoolchain-dev
+    - autowig-toolchain
+    - autowig-libstatiskit_stl
+    - autowig-libstatiskit_linalg
+  host:
+    - autowig-libstatiskit_stl
+    - autowig-libstatiskit_linalg
+    - libstatiskit_core-dev
+    - python
+  run:
+    - {{ pin_compatible('libstatiskit_core-dev', exact=True) }}
+    - {{ pin_compatible('autowig-libstatiskit_stl', exact=True) }}
+    - {{ pin_compatible('autowig-libstatiskit_linalg', exact=True) }}
+    - python
