@@ -1,12 +1,12 @@
 package:
   name: python-statiskit_core
-  version: "1.0.0"
+  version: {{ GIT_DESCRIBE_VERSION }}
 
 source:
   path: ../../..
 
 build:
-  number: 0
+  number: {{ GIT_DESCRIBE_NUMBER }}
 
 about:
   home: http://statiskit-core.readthedocs.io
@@ -14,15 +14,20 @@ about:
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - libtoolchain
     - python-toolchain
-    - libboost_python-dev
-    - libstatiskit_core
+  host:
+    - libpybind11-dev
+    - libstatiskit_stl-dev
+    - libstatiskit_stl
+    - libstatiskit_linalg-dev
+    - libstatiskit_linalg
     - python
   run:
-    - libstatiskit_core
-    - python-statiskit_linalg
-    - python-statiskit_stl
+    - {{ pin_compatible('libstatiskit_stl', exact=True) }}
+    - {{ pin_compatible('libstatiskit_linalg', exact=True) }}
     - python
 
 test:                                               
