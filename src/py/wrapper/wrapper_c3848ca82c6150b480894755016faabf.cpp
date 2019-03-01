@@ -24,6 +24,7 @@ void wrapper_c3848ca82c6150b480894755016faabf(pybind11::module& module)
 
     pybind11::class_<class ::statiskit::MultivariateDataFrame, autowig::HolderType< class ::statiskit::MultivariateDataFrame >::Type, struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateData, class ::statiskit::MultivariateDataFrame, struct ::statiskit::MultivariateData > > class_c3848ca82c6150b480894755016faabf(module, "MultivariateDataFrame", "");
     class_c3848ca82c6150b480894755016faabf.def(pybind11::init<  >());
+    class_c3848ca82c6150b480894755016faabf.def(pybind11::init< struct ::statiskit::MultivariateSampleSpace const & >());
     class_c3848ca82c6150b480894755016faabf.def(pybind11::init< class ::statiskit::MultivariateDataFrame const & >());
     class_c3848ca82c6150b480894755016faabf.def("set_sample_space", method_pointer_ceb65df6fb445fa2846e8bb4a96abc30, "");
     class_c3848ca82c6150b480894755016faabf.def("get_nb_components", method_pointer_3d40300675955653b701c20d2aa3e360, "");

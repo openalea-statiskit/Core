@@ -10,7 +10,13 @@ namespace statiskit
 
     template<class D>
         WeightedData< D >::~WeightedData()
-        {}
+        {
+            if(_data)
+            { 
+                delete _data;
+                _data = nullptr;
+            }
+        }
 
     template<class D>
         const typename D::sample_space_type* WeightedData< D >::get_sample_space() const
@@ -49,7 +55,7 @@ namespace statiskit
     template<class D>
         void WeightedData< D >::init(const D* data)
         { 
-            _data = data; 
+            _data = data->copy().release(); 
             _weights = std::vector< double >();
             std::unique_ptr< typename D::Generator > generator = data->generator();
             while(generator->is_valid())
@@ -62,8 +68,28 @@ namespace statiskit
     template<class D>
         void WeightedData< D >::init(const WeightedData< D >& data)
         { 
-            _data = data._data; 
+            _data = data._data->copy().release(); 
             _weights = data._weights;
+        }
+
+    template<class D>
+        void WeightedData< D >::init(const D* data, const std::vector< double >& weights)
+        { 
+            _data = data->copy().release(); 
+            _weights = std::vector< double >();
+            // std::unique_ptr< typename D::Generator > generator = data->generator();
+            // while(generator->is_valid())
+            // {
+            //     _weights.push_back(1.);
+            //     ++(*generator);
+            // }
+            if(data->size() == weights.size())
+            {
+                for(Index i = 0; i < weights.size(); ++i)
+                { _weights.push_back(weights[i]); }
+            }
+            else
+            { throw size_error("weights", data->size(), weights.size()); }
         }
 
     template<class D>

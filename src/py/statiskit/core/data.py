@@ -7,10 +7,11 @@ from . import _core
 from .__core.statiskit import (UnivariateData,
                                  WeightedUnivariateData,
                                  NamedData,
-                                   UnivariateDataFrame, 
                                MultivariateData,
-                                 WeightedMultivariateData,
                                  MultivariateDataFrame,
+                               _WeightedData,
+                                    UnivariateDataFrame,
+                                    WeightedMultivariateData,
                                UnivariateConditionalData,
                                MultivariateConditionalData,
                                Indices)
@@ -24,6 +25,10 @@ __all__ = ['UnivariateDataFrame',
            'WeightedUnivariateData',
            'MultivariateDataFrame',
            'WeightedMultivariateData']
+
+for cls in _WeightedData:
+    cls.data = property(cls.get_data)
+    del cls.get_data
 
 UnivariateData.sample_space = property(UnivariateData.get_sample_space)
 MultivariateData.sample_space = property(MultivariateData.get_sample_space)
@@ -96,6 +101,7 @@ def wrapper_set_name(f):
 
 NamedData.name = property(NamedData.get_name, wrapper_set_name(NamedData.set_name))
 del wrapper_set_name, NamedData.get_name, NamedData.set_name
+
 
 class Events(object):
 
@@ -360,7 +366,7 @@ class Components(object):
     def __init__(self, data):
         self._data = data
 
-    def __len__(self, data):
+    def __len__(self):
         return len(self._data.sample_space)
 
     def __iter__(self):

@@ -1,12 +1,15 @@
 import math
 from functools import wraps
 
+from statiskit import stl 
+
 from . import _core
 from .__core.statiskit import (encoding_type,
                                              UnivariateSampleSpace,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,
                                                     OrdinalSampleSpace,
+                                                    HierarchicalSampleSpace,
                                                  DiscreteSampleSpace,
                                                     IntegerSampleSpace,
                                                  ContinuousSampleSpace,
@@ -22,7 +25,7 @@ from .controls import *
 from .event import *
 from ._tools import remove_latex
 
-__all__ = ['NominalSampleSpace', 'OrdinalSampleSpace',
+__all__ = ['NominalSampleSpace', 'OrdinalSampleSpace', 'HierarchicalSampleSpace',
            'IntegerSampleSpace',
            'RealSampleSpace',
            'VectorSampleSpace']
@@ -90,7 +93,7 @@ del _repr_latex_
 def wrapper(f):
     @wraps(f)
     def get_values(self):
-        return [CategoricalElementaryEvent(value) for value in f(self)]
+        return [value for value in f(self)] #return [CategoricalElementaryEvent(value) for value in f(self)]
     return get_values
 
 CategoricalSampleSpace.values = property(wrapper(CategoricalSampleSpace.get_values))
@@ -114,6 +117,24 @@ def wrapper_encoding(f, g):
 CategoricalSampleSpace.encoding = property(*wrapper_encoding(CategoricalSampleSpace.get_encoding, CategoricalSampleSpace.set_encoding))
 del CategoricalSampleSpace.get_encoding, CategoricalSampleSpace.set_encoding, wrapper_encoding
 
+def wrapper(f):
+    @wraps(f)
+    def __init__(self, *args):
+        f(self, stl.SetLessString(*args))
+    return __init__
+
+NominalSampleSpace.__init__ = wrapper(NominalSampleSpace.__init__)
+del wrapper
+
+def wrapper(f):
+    @wraps(f)
+    def __init__(self, *args):
+        f(self, stl.VectorString(*args))
+    return __init__
+
+OrdinalSampleSpace.__init__ = wrapper(OrdinalSampleSpace.__init__)
+del wrapper
+
 NominalSampleSpace.reference = property(NominalSampleSpace.get_reference, NominalSampleSpace.set_reference)
 del NominalSampleSpace.get_reference, NominalSampleSpace.set_reference
 
@@ -126,8 +147,16 @@ del NominalSampleSpace.get_reference, NominalSampleSpace.set_reference
 # OrdinalSampleSpace.ordered = property(wrapper(OrdinalSampleSpace.get_ordered))
 # del wrapper, OrdinalSampleSpace.get_ordered
 
-OrdinalSampleSpace.ordered = property(OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered)
+def wrapper(f):
+    @wraps(f)
+    def set_ordered(self, args):
+        f(self, stl.VectorString(*args))
+    return set_ordered
+
+OrdinalSampleSpace.ordered = property(OrdinalSampleSpace.get_ordered, wrapper(OrdinalSampleSpace.set_ordered))
 del OrdinalSampleSpace.get_ordered, OrdinalSampleSpace.set_ordered
+
+
 
 def __call__(self, event):
     """Convert a representation of an event into a discrete event

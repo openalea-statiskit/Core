@@ -7,6 +7,7 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
+            using ::statiskit::MultivariateConditionalDistribution::MultivariateConditionalDistribution;
 
             typedef class ::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >  return_type_5602cdbf2c275bce8b45653e1d25ff61;
             virtual return_type_5602cdbf2c275bce8b45653e1d25ff61 copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_5602cdbf2c275bce8b45653e1d25ff61, class_type, copy, ); };
@@ -37,10 +38,10 @@ void wrapper_6d1d52249a4c562691e57f68df4bcc06(pybind11::module& module)
 
     pybind11::class_<struct ::statiskit::MultivariateConditionalDistribution, autowig::Trampoline, autowig::HolderType< struct ::statiskit::MultivariateConditionalDistribution >::Type > class_6d1d52249a4c562691e57f68df4bcc06(module, "MultivariateConditionalDistribution", "");
     class_6d1d52249a4c562691e57f68df4bcc06.def("get_nb_components", method_pointer_5c154b63f1c35786827ec4701044e25a, "");
-    class_6d1d52249a4c562691e57f68df4bcc06.def("__call__", method_pointer_3285f0544f0e5aada41213932efa56a7, pybind11::return_value_policy::reference_internal, ":Parameter:\n    `event` (:cpp:class:`::statiskit::MultivariateEvent`) - Undocumented\n\n:Return Type:\n    :cpp:class:`::statiskit::MultivariateDistribution`\n\n");
+    class_6d1d52249a4c562691e57f68df4bcc06.def("__call__", method_pointer_3285f0544f0e5aada41213932efa56a7, pybind11::return_value_policy::reference_internal, "");
     class_6d1d52249a4c562691e57f68df4bcc06.def("loglikelihood", method_pointer_7e3a06a6af745947b31f4facd34b7010, "");
-    class_6d1d52249a4c562691e57f68df4bcc06.def("get_explanatory_space", method_pointer_7efcb466ce8a5d1094143e91829eeb72, pybind11::return_value_policy::reference_internal, ":Return Type:\n    :cpp:class:`::statiskit::MultivariateSampleSpace`\n\n");
-    class_6d1d52249a4c562691e57f68df4bcc06.def("get_nb_parameters", method_pointer_645f02f88f8b570697bc8d8b93b48d3b, ":Return Type:\n    :cpp:any:`unsigned` int\n\n");
+    class_6d1d52249a4c562691e57f68df4bcc06.def("get_explanatory_space", method_pointer_7efcb466ce8a5d1094143e91829eeb72, pybind11::return_value_policy::reference_internal, "");
+    class_6d1d52249a4c562691e57f68df4bcc06.def("get_nb_parameters", method_pointer_645f02f88f8b570697bc8d8b93b48d3b, "");
     class_6d1d52249a4c562691e57f68df4bcc06.def("copy", method_pointer_5602cdbf2c275bce8b45653e1d25ff61, "");
 
 }

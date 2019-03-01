@@ -1,4 +1,5 @@
 #include "sample_space.h"
+#include "data.h"
 
 namespace statiskit
 {
@@ -39,7 +40,7 @@ namespace statiskit
                 switch(event->get_event())
                 {
                     case ELEMENTARY:
-                        compatible = _values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value()) != _values.cend();
+                        compatible = is_compatible_value(static_cast< const CategoricalElementaryEvent* >(event)->get_value()); //_values.find(static_cast< const CategoricalElementaryEvent* >(event)->get_value()) != _values.cend();
                         break;
                     case CENSORED:
                         {
@@ -48,7 +49,7 @@ namespace statiskit
                             compatible = true;
                             while(compatible && it != ite)
                             {
-                                compatible = _values.find(*it) != _values.cend();
+                                compatible = is_compatible_value(*it);
                                 ++it;
                             }
                         }
@@ -61,6 +62,9 @@ namespace statiskit
         }
         return compatible;
     }
+
+    bool CategoricalSampleSpace::is_compatible_value(const std::string& value) const
+    { return _values.find(value) != _values.end(); }
 
     NominalSampleSpace::NominalSampleSpace(const std::set< std::string >& values) : CategoricalSampleSpace(values)
     { 
@@ -304,6 +308,171 @@ namespace statiskit
 
     std::unique_ptr< NominalSampleSpace > OrdinalSampleSpace::as_nominal() const
     { return std::make_unique< NominalSampleSpace >(_values); }
+
+
+    HierarchicalSampleSpace::HierarchicalSampleSpace(const CategoricalSampleSpace& root_sample_space) : CategoricalSampleSpace(root_sample_space.get_values())
+    {
+        _tree_sample_space[""] = static_cast< CategoricalSampleSpace* >(root_sample_space.copy().release()); 
+        for(std::set< std::string >::const_iterator it = root_sample_space.get_values().cbegin(), it_end = root_sample_space.get_values().cend(); it != it_end; ++it)
+        { _parents[*it] = ""; }
+    }
+
+    HierarchicalSampleSpace::HierarchicalSampleSpace(const HierarchicalSampleSpace& p_sample_space) : CategoricalSampleSpace(p_sample_space.get_values())
+    { 
+        //_tree_sample_space = p_sample_space._tree_sample_space;
+        _tree_sample_space.clear();
+        for(std::map< std::string, CategoricalSampleSpace* >::const_iterator it = p_sample_space.cbegin(), it_end = p_sample_space.cend(); it != it_end; ++it)
+        { _tree_sample_space[it->first] = static_cast< CategoricalSampleSpace* >(it->second->copy().release());; }
+        _parents = p_sample_space._parents;
+    }
+
+    HierarchicalSampleSpace::~HierarchicalSampleSpace()
+    { 
+        for(std::map< std::string, CategoricalSampleSpace* >::iterator it = _tree_sample_space.begin(), it_end = _tree_sample_space.end(); it != it_end; ++it)
+        { delete it->second; }
+        _tree_sample_space.clear();
+    }
+
+    ordering_type HierarchicalSampleSpace::get_ordering() const
+    {
+        // std::map< std::string, CategoricalSampleSpace* >::const_iterator it = _tree_sample_space.cbegin(), it_end = _tree_sample_space.cend();
+        // ordering_type ordering = it->second->get_ordering();
+        // if(ordering != PARTIAL)
+        // {
+        //     ++it;
+        //     while(it != it_end && ordering == it->second->get_ordering())
+        //     { ++it; }
+        // }
+        // if(it != it_end)
+        // { ordering = PARTIAL; }
+        // return ordering;
+        return PARTIAL;
+    }
+
+    void HierarchicalSampleSpace::set_encoding(const encoding_type& encoding)
+    {}
+
+    Eigen::RowVectorXd HierarchicalSampleSpace::encode(const std::string& value) const
+    {
+        Eigen::RowVectorXd dummy; // TODO
+        throw not_implemented_error("encode");
+        return dummy;
+    }
+
+    void HierarchicalSampleSpace::partition(const std::string& leave, const CategoricalSampleSpace& sample_space)
+    {
+        if(CategoricalSampleSpace::is_compatible_value(leave))
+        {  
+            const std::set< std::string >& values = sample_space.get_values();
+            std::set< std::string >::const_iterator it = values.cbegin(), it_end = values.cend();
+            while(it != it_end && !is_compatible_value(*it))
+            { ++it; }
+            if(it == it_end)
+            {
+                _values.erase(leave);
+                _values.insert(values.cbegin(), values.cend());
+                _tree_sample_space[leave] = static_cast< CategoricalSampleSpace* >(sample_space.copy().release()); 
+                for(std::set< std::string >::const_iterator it = sample_space.get_values().cbegin(), it_end = sample_space.get_values().cend(); it != it_end; ++it)
+                { _parents[*it] = leave; }                
+            }    
+            else
+            { throw in_set_error("leave", *it, __impl::keys(_tree_sample_space)); }
+        }    
+        else
+        { throw in_set_error("leave", leave, _values, false); }
+    }
+
+    UnivariateConditionalData HierarchicalSampleSpace::split(const std::string& non_leave, const UnivariateConditionalData& data) const
+    {
+        MultivariateDataFrame explanatories_data(*(data.get_explanatories()->get_sample_space()));
+        UnivariateDataFrame response_data(*((_tree_sample_space.find(non_leave))->second));
+
+        std::map< std::string, std::string > new_leaves;
+        for(std::set< std::string >::const_iterator it = _values.begin(), it_end = _values.cend(); it != it_end; ++it)
+        { new_leaves[*it] = children(non_leave, *it); }
+
+        std::unique_ptr< UnivariateConditionalData::Generator > generator = data.generator();
+        std::vector< double > weights;
+        while(generator->is_valid())
+        {
+            const CategoricalElementaryEvent* response_event = static_cast< const CategoricalElementaryEvent* >(generator->response()->copy().release());
+            if(response_event)
+            {
+                std::string new_response = new_leaves.find(response_event->get_value())->second;
+                if(new_response != "")
+                {
+                    CategoricalElementaryEvent* new_response_event = new CategoricalElementaryEvent(new_response);
+                    response_data.add_event(new_response_event);
+                    delete new_response_event;
+                    weights.push_back(generator->weight());
+                    explanatories_data.add_event(generator->explanatories());
+                }
+            }
+            ++(*generator);
+        }
+        UnivariateDataFrame* resp_data = new UnivariateDataFrame(response_data);
+        WeightedUnivariateData weighted_response_data(resp_data, weights);
+        delete resp_data;
+        UnivariateConditionalData new_data(weighted_response_data, explanatories_data);
+        return new_data;
+    }
+
+    std::string HierarchicalSampleSpace::children(const std::string& non_leave, const std::string& leave) const
+    {
+        std::map< std::string, std::string >::const_iterator it_par = _parents.find(leave);
+        std::map< std::string, CategoricalSampleSpace* >::const_iterator it = _tree_sample_space.find(non_leave);
+        if(it_par != _parents.cend())
+        {
+            if(it != _tree_sample_space.cend())
+            {
+                while(it_par->second != "" && it_par->second != non_leave)
+                { it_par = _parents.find(it_par->second); }
+            }
+            else
+            { throw in_set_error("non-leave", non_leave, __impl::keys(_tree_sample_space), false); }
+        }
+        else
+        { throw in_set_error("leave", leave, __impl::keys(_parents), false); }
+        if(it_par->second == non_leave)
+        { return it_par->first; }
+        else
+        { return ""; }
+    }
+
+    std::unique_ptr< UnivariateSampleSpace > HierarchicalSampleSpace::copy() const
+    { return std::make_unique< HierarchicalSampleSpace >(*this); }
+
+    HierarchicalSampleSpace::const_iterator HierarchicalSampleSpace::cbegin() const
+    { return _tree_sample_space.cbegin(); }
+
+    HierarchicalSampleSpace::const_iterator HierarchicalSampleSpace::cend() const
+    { return _tree_sample_space.cend(); }
+            
+    const CategoricalSampleSpace* HierarchicalSampleSpace::get_sample_space(const std::string& value)
+    { return _tree_sample_space[value]; }
+
+    std::map< std::string, std::string > HierarchicalSampleSpace::get_parents() const
+    { return _parents; }
+
+    // const std::string HierarchicalSampleSpace::get_parent(const std::string& value)
+    // {
+    //     std::map< std::string, std::string >::const_iterator it = _parents.find(value);
+    //     if(it != _parents.cend())
+    //     { return _parents.find(value)->second; }
+    //     else
+    //     { throw in_set_error("value", value, __impl::keys(_parents)); }
+    // }
+
+    bool HierarchicalSampleSpace::is_compatible_value(const std::string& value) const
+    {
+        bool compatible = CategoricalSampleSpace::is_compatible_value(value);
+        if(!compatible)
+        {
+            if(value != "")
+            { compatible = (_tree_sample_space.find(value) != _tree_sample_space.end()); }
+        }
+        return compatible;
+    }
 
     outcome_type DiscreteSampleSpace::get_outcome() const
     { return DISCRETE; }
@@ -667,7 +836,7 @@ namespace statiskit
     Index MultivariateSampleSpace::encode() const
     {
         Index _size = 0;
-        for(Index index = 0, max_index = size(); index< max_index; ++index)
+        for(Index index = 0, max_index = size(); index < max_index; ++index)
         {
             const UnivariateSampleSpace* sample_space = get(index);
             if(sample_space->get_outcome() == CATEGORICAL)
@@ -764,7 +933,7 @@ namespace statiskit
     }
 
     Index VectorSampleSpace::size() const
-    { return _sample_spaces.size(); }
+    {return _sample_spaces.size(); }
 
     const UnivariateSampleSpace* VectorSampleSpace::get(const Index& index) const
     { return _sample_spaces[index]; }

@@ -23,12 +23,9 @@ env:
 matrix:
   exclude:
     - os: osx
-      env: CONDA_RECIPE=etc/conda/libstatiskit_core-wig
+      env: CONDA_RECIPE=etc/conda/autowig-libstatiskit_core
     - os: windows
-      env: CONDA_RECIPE=etc/conda/libstatiskit_core-wig
-  allow_failures:
-    - os: windows
-      env: CONDA_RECIPE=etc/conda/python-statiskit_core
+      env: CONDA_RECIPE=etc/conda/autowig-libstatiskit_core
 
 before_install:
   - git clone https://github.com/StatisKit/travis-ci.git --depth=1

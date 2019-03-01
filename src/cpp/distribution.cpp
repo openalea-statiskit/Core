@@ -3,6 +3,9 @@
 
 namespace statiskit
 {
+    UnivariateDistribution::~UnivariateDistribution()
+    {}
+
     double UnivariateDistribution::loglikelihood(const UnivariateData& data) const
     {
         double llh = 0.;
@@ -11,9 +14,8 @@ namespace statiskit
         { 
             double weight = generator->weight();
             if(weight > 0.)
-            { llh += generator->weight() * probability(generator->event(), true); }
+            { llh += weight * probability(generator->event(), true); }
             ++(*generator);
-
         }
         return llh;
     }
@@ -66,6 +68,104 @@ namespace statiskit
         return p;
     }
 
+    BinaryDistribution::BinaryDistribution()
+    {}
+
+    BinaryDistribution::BinaryDistribution(const std::string& value, const std::string& reference_value)
+    {
+        if(value != reference_value)
+        {
+            _value = value;
+            _reference_value = reference_value;
+            _pi = 0.5;
+        }
+        else
+        { throw "value and refrence_value must be different"; } //TODO error
+    }
+
+    // BinaryDistribution::BinaryDistribution(const std::set< std::string >& values)
+    // {
+    //     if(values.size() == 2)
+    //     {
+    //         _value = *(values.begin());
+    //         _reference_value = *(values.end());
+    //     }
+    //     else
+    //     { throw size_error("values", values.size(), 2); }
+    // }
+
+    BinaryDistribution::BinaryDistribution(const std::string& value, const std::string& reference_value, const double& pi) : BinaryDistribution(value, reference_value) 
+    { set_pi(pi); }
+
+    // BinaryDistribution::BinaryDistribution(const std::set< std::string >& values, const double& pi) : BinaryDistribution(values)
+    // { set_pi(pi); }
+
+    BinaryDistribution::BinaryDistribution(const BinaryDistribution& binary)
+    {
+        _value = binary._value;
+        _reference_value = binary._reference_value;
+        _pi = binary._pi;
+    }
+
+    unsigned int BinaryDistribution::get_nb_parameters() const
+    { return 1; }
+         
+    double BinaryDistribution::ldf(const std::string& value) const
+    { return log(pdf(value)); }
+
+    double BinaryDistribution::pdf(const std::string& value) const
+    {
+        if(value == _value)
+        { return _pi; }
+        else if(value == _reference_value)
+        { return 1-_pi; }
+        else
+        { throw in_set_error("value", value, get_values()); }
+    }
+     
+    double BinaryDistribution::pdf(const int& position) const
+    {
+        if(position == 0)
+        { return _pi; }
+        else if(position == 1)
+        { return 1-_pi; }
+        else
+        { 
+            std::set< int > positions;
+            positions.insert(0);
+            positions.insert(1);
+            throw in_set_error("position", position, positions); 
+        }        
+    }
+
+    std::unique_ptr< UnivariateEvent > BinaryDistribution::simulate() const
+    {
+        double sp = boost::uniform_01<boost::mt19937&>(__impl::get_random_generator())();
+        if(sp < _pi)
+        { return std::make_unique< CategoricalElementaryEvent >(_value); }
+        else
+        { return std::make_unique< CategoricalElementaryEvent >(_reference_value); }
+    }
+
+    std::set< std::string > BinaryDistribution::get_values() const
+    {
+        std::set< std::string > values;
+        values.insert(_value);
+        values.insert(_reference_value);
+        return values;
+    }
+
+    double BinaryDistribution::get_pi() const
+    { return _pi; }
+
+    void BinaryDistribution::set_pi(const double& pi)
+    {
+        if(pi >= 0 && pi <= 1)
+        { _pi = pi; }
+        else
+        { throw interval_error("pi", pi, 0, 1, std::make_pair(false, false)); }  
+    }
+
     NominalDistribution::NominalDistribution(const std::set< std::string >& values)
     { init(values); }
 
@@ -116,14 +216,28 @@ namespace statiskit
     
     double OrdinalDistribution::cdf(const std::string& value) const
     {
-        double p = 0.;
-        std::set< std::string >::const_iterator it = _values.find(value);
-        if(it != _values.cend())
+        // double p = 0.;
+        // std::set< std::string >::const_iterator it = _values.find(value);
+        // if(it != _values.cend())
+        // {
+        //     for(Index size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
+        //     { p += _pi[size]; }
+        // }
+        // return p;
+
+        Index rank_value = _rank[distance(_values.cbegin(), _values.find(value))];
+        if(rank_value == (_rank.size()-1))
+        { return 1; }
+        else
         {
-            for(Index size = 0, max_size = _rank[distance(_values.cbegin(), it)]; size <= max_size; ++size)
-            { p += _pi[size]; }
+            double p = 0.;
+            for(Index i = 0; i < _rank.size(); ++i)
+            {
+                if(_rank[i] <= rank_value)
+                    { p += _pi[i]; }
+            }
+            return p;            
         }
-        return p;
     }
 
     std::string OrdinalDistribution::quantile(const double& p) const
@@ -221,6 +335,210 @@ namespace statiskit
 
         for(Index j=0; j<_pi.size(); ++j)
         { _pi[j] = _ordered_pi[_rank[j]]; }
+    }
+
+    HierarchicalDistribution::HierarchicalDistribution()
+    {}
+
+    HierarchicalDistribution::HierarchicalDistribution(const HierarchicalSampleSpace& hss)
+    {
+        for(HierarchicalSampleSpace::const_iterator it = hss.cbegin(), it_end = hss.cend(); it != it_end; ++it)
+        {
+            switch(it->second->get_ordering())
+            {
+                case NONE:
+                    _tree_distribution[it->first] = new NominalDistribution(it->second->get_values());
+                    break;
+                case TOTAL:
+                    _tree_distribution[it->first] = new OrdinalDistribution(static_cast< OrdinalSampleSpace* >(it->second)->get_ordered());
+                    break;
+                case PARTIAL:
+                    _tree_distribution[it->first] = new HierarchicalDistribution(*(static_cast< HierarchicalSampleSpace* >(it->second)));
+                    break;
+            }
+            // for(std::set< std::string >::const_iterator it2 = it->second->get_values().cbegin(), it2_end = it->second->get_values().cend(); it2 != it2_end; ++it2)
+            // { _parents[*it2] = it->first; }
+        }
+        _values = hss.get_values();
+        _parents = hss.get_parents();
+    }
+
+    HierarchicalDistribution::HierarchicalDistribution(const HierarchicalDistribution& hd)
+    { _tree_distribution =  hd._tree_distribution; }
+
+    HierarchicalDistribution::~HierarchicalDistribution()
+    {
+        std::map< std::string, CategoricalUnivariateDistribution* >::iterator it, it_end = _tree_distribution.end();
+        for(it = _tree_distribution.begin(); it != it_end; ++it)
+        { 
+            if(it->second)
+            {
+                delete it->second;
+                it->second = nullptr;
+            }
+        } 
+    }
+
+    unsigned int HierarchicalDistribution::get_nb_parameters() const
+    {
+        unsigned int nb_parameters = 0;
+        for(std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it = _tree_distribution.cbegin(), it_end = _tree_distribution.cend(); it != it_end; ++it)
+        { nb_parameters += it->second->get_nb_parameters(); }
+        return nb_parameters;
+    }
+
+    std::unique_ptr< UnivariateEvent > HierarchicalDistribution::simulate() const
+    {
+        std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find("");
+        std::set< std::string >::const_iterator it_leave;
+        std::string value;
+        if(it_dist != _tree_distribution.cend())
+        {
+            value = (static_cast< CategoricalElementaryEvent* >((it_dist->second->simulate()).get()))->get_value();
+            it_leave = _values.find(value);
+            while(it_leave == _values.cend())
+            {
+                it_dist = _tree_distribution.find(value);
+                if(it_dist != _tree_distribution.cend())
+                {
+                    value = (static_cast< CategoricalElementaryEvent* >((it_dist->second->simulate()).get()))->get_value();
+                    it_leave = _values.find(value);
+                }
+                else
+                { throw std::runtime_error("internal error"); }
+            }
+        }
+        else
+        { throw std::runtime_error("internal error"); }
+        return std::make_unique< CategoricalElementaryEvent >(value);
+    }
+   
+    double HierarchicalDistribution::ldf(const std::string& value) const
+    {
+        double l;
+        std::set< std::string >::const_iterator it = _values.find(value);
+        if(it != _values.cend())
+        {   
+            std::map< std::string, std::string >::const_iterator it_par = _parents.find(value);
+            if(it_par != _parents.cend())
+            {
+                std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find(it_par->second);
+                if(it_dist != _tree_distribution.cend())
+                {
+                    l = (it_dist->second)->ldf(value); 
+                    std::string current_value = it_par->second;
+                    while(current_value != "")
+                    {
+                        l += internal_ldf(current_value);
+                        it_par = _parents.find(current_value);
+                        if(it_par != _parents.cend())
+                        { current_value = it_par->second; }
+                        else
+                        { throw std::runtime_error("internal error"); }
+                    }                        
+
+                }
+                else
+                { throw std::runtime_error("internal error"); }  
+            }
+            else
+            { throw std::runtime_error("internal error"); }
+        }
+        else
+        { throw in_set_error("value", value, _values); }    
+        return l;
+    }
+
+    double HierarchicalDistribution::pdf(const std::string& value) const
+    { return exp(ldf(value)); }
+
+    double HierarchicalDistribution::pdf(const int& position) const
+    {
+        std::set< std::string >::const_iterator it = _values.cbegin();
+        if(position >= 0 && position < _values.size())
+        { std::advance(it, position); }
+        else
+        { throw interval_error("position", position, 0, _values.size()-1, std::make_pair(false,false)); }
+        return pdf(*it);
+    }
+            
+    std::set< std::string > HierarchicalDistribution::get_values() const
+    { return _values; }
+
+    double HierarchicalDistribution::internal_ldf(const std::string& value) const
+    {
+        check_internal(value);
+        double l;
+        if(value == "")
+        { l = 0; }
+        else
+        {
+            std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it = _tree_distribution.find(value);
+            if(it != _tree_distribution.cend())
+            {
+                std::map< std::string, std::string >::const_iterator it_par = _parents.find(value);
+                if(it_par != _parents.cend())
+                {
+                    std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator it_dist = _tree_distribution.find(it_par->second);
+                    if(it_dist != _tree_distribution.cend())
+                    { l = (it_dist->second)->ldf(value); }
+                    else
+                    { throw std::runtime_error("internal error"); }
+                }
+                else
+                { throw std::runtime_error("internal error"); }
+            }
+            else
+            { throw in_set_error("value", value, __impl::keys(_tree_distribution)); }         
+        } 
+        return l;       
+    }
+    double HierarchicalDistribution::internal_pdf(const std::string& value) const
+    { return exp(internal_ldf(value)); }
+
+    HierarchicalDistribution::const_iterator HierarchicalDistribution::cbegin() const
+    { return _tree_distribution.cbegin(); }
+
+    HierarchicalDistribution::const_iterator HierarchicalDistribution::cend() const
+    { return _tree_distribution.cend(); }
+
+    const CategoricalUnivariateDistribution* HierarchicalDistribution::get_distribution(const std::string& value) const
+    {
+        check_internal(value);
+        return _tree_distribution.find(value)->second;
+    }
+
+    void HierarchicalDistribution::set_distribution(const std::string& value, const CategoricalUnivariateDistribution& distribution)
+    {
+        check_internal(value);
+        _tree_distribution[value] = static_cast< CategoricalUnivariateDistribution* >(distribution.copy().release());
+    }
+
+    const std::string HierarchicalDistribution::parent(const std::string& value) const
+    {
+        std::map< std::string, std::string >::const_iterator it = _parents.find(value);
+        if(it != _parents.cend())
+        { return it->second; }
+        else
+        { throw in_set_error("value", value, __impl::keys(_parents), false); }
+    }
+
+    inline void HierarchicalDistribution::check_internal(const std::string& value) const
+    {
+        if(_tree_distribution.find(value) == _tree_distribution.cend())
+        { throw in_set_error("value", value, __impl::keys(_tree_distribution), false); }
+    }
+
+    // HierarchicalDistribution::iterator HierarchicalDistribution::begin()
+    // { return _tree_distribution.begin(); }
+
+    // HierarchicalDistribution::iterator HierarchicalDistribution::end()
+    // { return _tree_distribution.end(); }
+
+    unsigned int HierarchicalDistribution::index(const std::string& value) const
+    {
+        check_internal(value);
+        return std::distance(_tree_distribution.cbegin(), _tree_distribution.find(value));
     }
 
     double DiscreteUnivariateDistribution::probability(const UnivariateEvent* event, const bool& logarithm) const
@@ -1054,17 +1372,39 @@ namespace statiskit
         _sigma = sigma;
     }
 
+    // double NormalDistribution::ldf(const double& value) const
+    // { return - 1 / 2. * (pow((value - _mu) / _sigma, 2) + log(pow(_sigma, 2)) + log(2 * boost::math::constants::pi< double >())); }
+
+    // double NormalDistribution::pdf(const double& value) const
+    // { return exp(ldf(value)); }
+
+    // double NormalDistribution::cdf(const double& value) const
+    // { return 0.5 * erfc( (_mu - value) / (_sigma * boost::math::constants::root_two<double>()  )); }
+
+    // double NormalDistribution::quantile(const double& p) const
+    // { return _mu - _sigma * boost::math::constants::root_two<double>() * boost::math::erfc_inv(2 * p); 
+
+
     double NormalDistribution::ldf(const double& value) const
-    { return - 1 / 2. * (pow((value - _mu) / _sigma, 2) + log(pow(_sigma, 2)) + log(2 * boost::math::constants::pi< double >())); }
+    { return log(pdf(value)); }
 
     double NormalDistribution::pdf(const double& value) const
-    { return exp(ldf(value)); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double NormalDistribution::cdf(const double& value) const
-    { return 0.5 * erfc( (_mu - value) / (_sigma * boost::math::constants::root_two<double>()  )); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
+    }
 
     double NormalDistribution::quantile(const double& p) const
-    { return _mu - _sigma * boost::math::constants::root_two<double>() * boost::math::erfc_inv(2 * p); }
+    { 
+        boost::math::normal dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
+    }
 
     std::unique_ptr< UnivariateEvent > NormalDistribution::simulate() const
     {
@@ -1291,17 +1631,38 @@ namespace statiskit
         _sigma = sigma;
     }
 
+    // double LogisticDistribution::ldf(const double& value) const
+    // { return -2*log(cosh(0.5 * (value - _mu) / _sigma)) - log(4 * _sigma); }//(_mu-value)/_sigma - log(sigma) - 2*log(1+exp((_mu-value)/_sigma )); }
+
+    // double LogisticDistribution::pdf(const double& value) const
+    // { return  1/ (4. * _sigma * pow(cosh(0.5 * (value - _mu) / _sigma), 2) ); }
+
+    // double LogisticDistribution::cdf(const double& value) const
+    // { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _sigma)); }
+
+    // double LogisticDistribution::quantile(const double& p) const
+    // { return _mu - _sigma * log(1 / p - 1); }
+
     double LogisticDistribution::ldf(const double& value) const
-    { return -2*log(cosh(0.5 * (value - _mu) / _sigma)) - log(4 * _sigma); }//(_mu-value)/_sigma - log(sigma) - 2*log(1+exp((_mu-value)/_sigma )); }
+    { return log(pdf(value)); }
 
     double LogisticDistribution::pdf(const double& value) const
-    { return  1/ (4. * _sigma * pow(cosh(0.5 * (value - _mu) / _sigma), 2) ); }
+    { 
+        boost::math::logistic dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double LogisticDistribution::cdf(const double& value) const
-    { return 0.5 * (1 + tanh(0.5 * (value - _mu) / _sigma)); }
+    { 
+        boost::math::logistic dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
+    }
 
     double LogisticDistribution::quantile(const double& p) const
-    { return _mu - _sigma * log(1 / p - 1); }
+    { 
+        boost::math::logistic dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
+    }
 
     std::unique_ptr< UnivariateEvent > LogisticDistribution::simulate() const
     {       
@@ -1354,26 +1715,47 @@ namespace statiskit
         _sigma = sigma;
     }
 
-    double LaplaceDistribution::ldf(const double& value) const
-    { return abs(_mu - value) / _sigma - log(2*_sigma); }
+    // double LaplaceDistribution::ldf(const double& value) const
+    // { return -fabs(value-_mu) / _sigma - log(2*_sigma); }
     
+    // double LaplaceDistribution::pdf(const double& value) const
+    // { return  exp(-fabs(value-_mu) / _sigma) / (2*_sigma); }
+
+    // double LaplaceDistribution::cdf(const double& value) const
+    // {
+    // 	if (value < _mu)
+    // 	{ return 0.5 * exp( (value - _mu) / _sigma); } 
+    // 	else
+    // 	{ return 1 - 0.5 * exp( (_mu - value) / _sigma); }
+    // }
+
+    // double LaplaceDistribution::quantile(const double& p) const
+    // {
+    // 	if (p < 0.5)
+    // 	{ return _mu + _sigma * log(2*p); } 
+    // 	else
+    // 	{ return _mu - _sigma * log(2-2*p); }
+    // }
+
+    double LaplaceDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
     double LaplaceDistribution::pdf(const double& value) const
-    { return  0.5 * exp( abs(_mu - value) / _sigma) / _sigma; }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
 
     double LaplaceDistribution::cdf(const double& value) const
-    {
-    	if (value < _mu)
-    	{ return 0.5 * exp( (value - _mu) / _sigma); } 
-    	else
-    	{ return 1 - 0.5 * exp( (_mu - value) / _sigma); }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
     }
 
     double LaplaceDistribution::quantile(const double& p) const
-    {
-    	if (p < 0.5)
-    	{ return _mu + _sigma * log(2*p); } 
-    	else
-    	{ return _mu - _sigma * log(2-2*p); }
+    { 
+        boost::math::laplace dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
     }
 
     std::unique_ptr< UnivariateEvent > LaplaceDistribution::simulate() const
@@ -1451,25 +1833,125 @@ namespace statiskit
     double CauchyDistribution::get_variance() const
     { return std::numeric_limits< double >::quiet_NaN(); }
 
-    NonStandardStudentDistribution::NonStandardStudentDistribution() 
+    StudentDistribution::StudentDistribution() 
+    {_nu = 1.; }
+
+    StudentDistribution::StudentDistribution(const double& nu) 
+    { _nu = nu; }
+
+    StudentDistribution::StudentDistribution(const StudentDistribution& student)
+    { _nu = student._nu; }
+
+    unsigned int StudentDistribution::get_nb_parameters() const
+    { return 1; }
+    
+    const double& StudentDistribution::get_nu() const
+    { return _nu; }
+
+    void StudentDistribution::set_nu(const double& nu)
+    {
+        if(nu <= 0.)
+        { throw lower_bound_error("nu", nu, 0., true); }
+        _nu = nu;
+    }    
+
+    // double StudentDistribution::ldf(const double& value) const
+    // { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow(value, 2) )  ) - 0.5*log(_nu) - log( boost::math::beta(_nu*0.5, 0.5) ); }
+    
+    // double StudentDistribution::pdf(const double& value) const
+    // { return pow( _nu/(_nu + pow(value, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * boost::math::beta(_nu*0.5, 0.5) ); }
+
+    // double StudentDistribution::cdf(const double& value) const
+    // {
+    //     double z;
+    //     if(_nu < 2 * pow(value, 2) )
+    //     { z = boost::math::ibeta(_nu * 0.5, 0.5, _nu / (_nu + pow(value, 2))) * 0.5; }
+    //     else
+    //     { z = boost::math::ibetac(0.5, _nu * 0.5, pow(value, 2) / (_nu + pow(value, 2))) * 0.5; }
+    //     if(value > 0)
+    //     { return 1-z; }
+    //     else
+    //     {return z; }
+    // }
+
+    // double StudentDistribution::quantile(const double& p) const
+    // {
+    //     double x, q;
+    //     if(p < 0.5)
+    //     { 
+    //         x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*p);
+    //         q = -pow(_nu*(1-x)/x, 0.5); 
+    //     }
+    //     else if(p >= 0.5)
+    //     { 
+    //         x = boost::math::ibeta_inv(_nu*0.5, 0.5, 2*(1-p));
+    //         q = pow(_nu*(1-x)/x, 0.5); 
+    //     }
+    //     return q;         
+    // }
+
+    double StudentDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
+    double StudentDistribution::pdf(const double& value) const
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::pdf(dist, value); 
+    }
+
+    double StudentDistribution::cdf(const double& value) const
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::cdf(dist, value); 
+    }
+
+    double StudentDistribution::quantile(const double& p) const
+    { 
+        boost::math::students_t dist(_nu);
+        return boost::math::quantile(dist, p); 
+    }
+
+    std::unique_ptr< UnivariateEvent > StudentDistribution::simulate() const
+    {        
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double StudentDistribution::get_mean() const
+    {
+        if(_nu>1.)
+        { return 0.; }
+        else
+        { return std::numeric_limits< double >::quiet_NaN(); }
+    }
+
+    double StudentDistribution::get_variance() const
+    {
+        if(_nu>2.)
+        { return _nu/(_nu-2.); }
+        else if(_nu>1.)
+        { return std::numeric_limits< double >::infinity(); } 
+        else
+        { return std::numeric_limits< double >::quiet_NaN(); }
+    }
+
+    NonStandardStudentDistribution::NonStandardStudentDistribution() : StudentDistribution()
     {
         _mu = 0.;
         _sigma = 1.;
-        _nu = 1.;
     }
 
-    NonStandardStudentDistribution::NonStandardStudentDistribution(const double& mu, const double& sigma, const double& nu) 
+    NonStandardStudentDistribution::NonStandardStudentDistribution(const double& mu, const double& sigma, const double& nu) : StudentDistribution(nu)
     {
         _mu = mu;
         _sigma = sigma;
-        _nu = nu;
     }
 
-    NonStandardStudentDistribution::NonStandardStudentDistribution(const NonStandardStudentDistribution& nsstudent)
+    NonStandardStudentDistribution::NonStandardStudentDistribution(const NonStandardStudentDistribution& nsstudent) : StudentDistribution(nsstudent)
     {
         _mu = nsstudent._mu;
         _sigma = nsstudent._sigma;
-        _nu = nsstudent._nu;
     }
 
     unsigned int NonStandardStudentDistribution::get_nb_parameters() const
@@ -1489,46 +1971,19 @@ namespace statiskit
         if(sigma <= 0.)
         { throw lower_bound_error("sigma", sigma, 0., true); }
         _sigma = sigma;
-    }
-    
-    const double& NonStandardStudentDistribution::get_nu() const
-    { return _nu; }
-
-    void NonStandardStudentDistribution::set_nu(const double& nu)
-    {
-        if(nu <= 0.)
-        { throw lower_bound_error("nu", nu, 0., true); }
-        _nu = nu;
     }    
 
     double NonStandardStudentDistribution::ldf(const double& value) const
-    { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow((value-_mu)/_sigma, 2) )  ) - 0.5*log(_nu) - log(_sigma) - log(boost::math::beta(_nu*0.5, 0.5) ); }
+    { return log(pdf(value)); }
     
     double NonStandardStudentDistribution::pdf(const double& value) const
-    { return pow( _nu/(_nu + pow((value-_mu)/_sigma, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * _sigma * boost::math::beta(_nu*0.5, 0.5) ); }
+    { return StudentDistribution::pdf( (value - _mu) / _sigma ) / _sigma; }
 
     double NonStandardStudentDistribution::cdf(const double& value) const
-    {
-    	double z;
-    	if(_nu < 2*(value-_mu)/_sigma)
-    	{ z = boost::math::ibeta(_nu * 0.5, 0.5, _nu / (_nu + pow((value - _mu) / _sigma, 2))) * 0.5; }
-    	else
-    	{ z = boost::math::ibetac(0.5, _nu * 0.5, pow((value - _mu) / _sigma, 2) / (_nu + pow((value - _mu) / _sigma, 2))) * 0.5; }
-    	if(value>_mu)
-    	{ return 1-z; }
-    	else
-    	{return z; }
-    }
+    { return StudentDistribution::cdf( (value - _mu) / _sigma ); }
 
     double NonStandardStudentDistribution::quantile(const double& p) const
-    { 
-    	if(p<0.5)
-    	{ return _mu - _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) ) ; }
-    	else if(p>0.5)
-    	{ return _mu; }
-    	else
-    	{ return _mu + _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) ); }   	 
-    }
+    { return _mu + _sigma * StudentDistribution::quantile(p); }
 
     std::unique_ptr< UnivariateEvent > NonStandardStudentDistribution::simulate() const
     {        
@@ -1538,260 +1993,229 @@ namespace statiskit
     }
 
     double NonStandardStudentDistribution::get_mean() const
-    {
-    	if(_nu>1.)
-    	{ return _mu; }
-    	else
-    	{ return std::numeric_limits< double >::quiet_NaN(); }
-    }
+    { return _mu + _sigma * StudentDistribution::get_mean(); }
 
     double NonStandardStudentDistribution::get_variance() const
-    {
-    	if(_nu>2.)
-    	{ return _nu/(_nu-2.); }
-    	else if(_nu>1.)
-    	{ return std::numeric_limits< double >::infinity(); } 
-    	else
-    	{ return std::numeric_limits< double >::quiet_NaN(); }
-    }
+    { return pow(_sigma, 2) * StudentDistribution::get_variance(); }
 
-    GeneralizedStudentDistribution::GeneralizedStudentDistribution() 
-    {
-        _mu = 0.;
-        _sigma = 1.;
-        _nu = 1.;
-        _delta = 0.;
-    }
+ 
 
-    GeneralizedStudentDistribution::GeneralizedStudentDistribution(const double& mu, const double& sigma, const double& nu, const double& delta) 
-    {
-        _mu = mu;
-        _sigma = sigma;
-        _nu = nu;
-        _delta = delta;
-    }
-
-    GeneralizedStudentDistribution::GeneralizedStudentDistribution(const GeneralizedStudentDistribution& gstudent)
-    {
-        _mu = gstudent._mu;
-        _sigma = gstudent._sigma;
-        _nu = gstudent._nu;
-        _delta = gstudent._delta;
-    }
-
-    unsigned int GeneralizedStudentDistribution::get_nb_parameters() const
-    { return 4; }
-
-    const double& GeneralizedStudentDistribution::get_mu() const
-    { return _mu; }
-
-    void GeneralizedStudentDistribution::set_mu(const double& mu)
-    { _mu = mu; }
-
-    const double& GeneralizedStudentDistribution::get_sigma() const
-    { return _sigma; }
-
-    void GeneralizedStudentDistribution::set_sigma(const double& sigma)
-    {
-        if(sigma <= 0.)
-        { throw lower_bound_error("sigma", sigma, 0., true); }
-        _sigma = sigma;
-    }
-    
-    const double& GeneralizedStudentDistribution::get_nu() const
-    { return _nu; }
-
-    void GeneralizedStudentDistribution::set_nu(const double& nu)
-    {
-        if(nu <= 0.)
-        { throw lower_bound_error("nu", nu, 0., true); }
-        _nu = nu;
-    }    
-
-    const double& GeneralizedStudentDistribution::get_delta() const
-    { return _delta; }
-
-    void GeneralizedStudentDistribution::set_delta(const double& delta)
-    { _delta = delta; }
-    
-    double GeneralizedStudentDistribution::ldf(const double& value) const
-    { return (1+_nu) * 0.5 * ( log(_nu) - log(_nu + pow((value-_mu)/_sigma, 2) )  ) - 0.5*log(_nu) - log(_sigma) - log(boost::math::beta(_nu*0.5, 0.5) ); }
-    
-    double GeneralizedStudentDistribution::pdf(const double& value) const
-    { return pow( _nu/(_nu + pow((value-_mu)/_sigma, 2)) , (1+_nu) * 0.5 ) / ( pow(_nu,0.5) * _sigma * boost::math::beta(_nu*0.5, 0.5) ); }
-
-    double GeneralizedStudentDistribution::cdf(const double& value) const
-    {
-    	double z;
-    	if(_nu < 2*(value-_mu)/_sigma)
-    	{ z = boost::math::ibeta(_nu * 0.5, 0.5, _nu/(_nu+pow((value-_mu)/_sigma, 2) ) ) * 0.5; }
-    	else
-    	{ z = boost::math::ibetac(0.5, _nu*0.5, pow((value-_mu)/_sigma, 2)/(_nu+pow((value-_mu)/_sigma, 2) ) ) * 0.5; }
-    	if(value>_mu)
-    	{ return 1-z; }
-    	else
-    	{return z; }
-    }
-
-    double GeneralizedStudentDistribution::quantile(const double& p) const
-    { 
-    	if(p<0.5)
-    	{ return _mu - _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2*p) ) ; }
-    	else if(p>0.5)
-    	{ return _mu; }
-    	else
-    	{ return _mu + _sigma * ( _nu * ( 1-boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) )/boost::math::ibeta_invb(_nu*0.5, 0.5, 2-2*p) ); }   	 
-    }
-
-    std::unique_ptr< UnivariateEvent > GeneralizedStudentDistribution::simulate() const
-    {        
-        boost::uniform_01<> dist;
-        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
-        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
-    }
-
-    double GeneralizedStudentDistribution::get_mean() const
-    {
-    	if(_nu>1.)
-    	{ return _mu; }
-    	else
-    	{ return std::numeric_limits< double >::quiet_NaN(); }
-    }
-
-    double GeneralizedStudentDistribution::get_variance() const
-    {
-    	if(_nu>2.)
-    	{ return _nu/(_nu-2.); }
-    	else if(_nu>1.)
-    	{ return std::numeric_limits< double >::infinity(); } 
-    	else
-    	{ return std::numeric_limits< double >::quiet_NaN(); }
-    }
-
-    GumbelMaxDistribution::GumbelMaxDistribution() 
+    GumbelDistribution::GumbelDistribution() 
     {
         _mu = 0.;
         _sigma = 1.;
     }
 
-    GumbelMaxDistribution::GumbelMaxDistribution(const double& mu, const double& sigma) 
+    GumbelDistribution::GumbelDistribution(const double& mu, const double& sigma) 
     {
         _mu = mu;
         _sigma = sigma;
     }
 
-    GumbelMaxDistribution::GumbelMaxDistribution(const GumbelMaxDistribution& gumbel_max)
+    GumbelDistribution::GumbelDistribution(const GumbelDistribution& gumbel_max)
     {
         _mu = gumbel_max._mu;
         _sigma = gumbel_max._sigma;
     }
 
-    unsigned int GumbelMaxDistribution::get_nb_parameters() const
+    unsigned int GumbelDistribution::get_nb_parameters() const
     { return 2; }
 
-    const double& GumbelMaxDistribution::get_mu() const
+    const double& GumbelDistribution::get_mu() const
     { return _mu; }
 
-    void GumbelMaxDistribution::set_mu(const double& mu)
+    void GumbelDistribution::set_mu(const double& mu)
     { _mu = mu; }
 
-    const double& GumbelMaxDistribution::get_sigma() const
+    const double& GumbelDistribution::get_sigma() const
     { return _sigma; }
 
-    void GumbelMaxDistribution::set_sigma(const double& sigma)
+    void GumbelDistribution::set_sigma(const double& sigma)
     {
         if(sigma <= 0.)
         { throw lower_bound_error("sigma", sigma, 0., true); }
         _sigma = sigma;
     }
 
-    double GumbelMaxDistribution::ldf(const double& value) const
-    { return (_mu - value) / _sigma - exp((_mu - value) / _sigma) - log(_sigma); }
+    // double GumbelDistribution::ldf(const double& value) const
+    // { return (_mu - value) / _sigma - exp((_mu - value) / _sigma) - log(_sigma); }
     
-    double GumbelMaxDistribution::pdf(const double& value) const
-    { return exp( (_mu - value) / _sigma - exp((_mu - value) / _sigma) ) / _sigma ; }
+    // double GumbelDistribution::pdf(const double& value) const
+    // { return exp( (_mu - value) / _sigma - exp((_mu - value) / _sigma) ) / _sigma ; }
 
-    double GumbelMaxDistribution::cdf(const double& value) const
-    { return  exp( - exp((_mu - value) / _sigma) ); }
+    // double GumbelDistribution::cdf(const double& value) const
+    // { return  exp( - exp((_mu - value) / _sigma) ); }
 
-    double GumbelMaxDistribution::quantile(const double& p) const
-    { return _mu - _sigma * log( -log(p) ); }
+    // double GumbelDistribution::quantile(const double& p) const
+    // { return _mu - _sigma * log( -log(p) ); }
 
-    std::unique_ptr< UnivariateEvent > GumbelMaxDistribution::simulate() const
+    double GumbelDistribution::ldf(const double& value) const
+    { return log(pdf(value)); }
+
+    double GumbelDistribution::pdf(const double& value) const
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::pdf(dist, value); 
+    }
+
+    double GumbelDistribution::cdf(const double& value) const
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::cdf(dist, value); 
+    }
+
+    double GumbelDistribution::quantile(const double& p) const
+    { 
+        boost::math::extreme_value dist(_mu, _sigma);
+        return boost::math::quantile(dist, p); 
+    }
+
+    std::unique_ptr< UnivariateEvent > GumbelDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
         boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
-    double GumbelMaxDistribution::get_mean() const
+    double GumbelDistribution::get_mean() const
     { return _mu + _sigma * boost::math::constants::euler<double>(); }
 
-    double GumbelMaxDistribution::get_variance() const
+    double GumbelDistribution::get_variance() const
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
     
-    GumbelMinDistribution::GumbelMinDistribution() 
+    GompertzDistribution::GompertzDistribution() 
     {
         _mu = 0.;
         _sigma = 1.;
     }
 
-    GumbelMinDistribution::GumbelMinDistribution(const double& mu, const double& sigma) 
+    GompertzDistribution::GompertzDistribution(const double& mu, const double& sigma) 
     {
         _mu = mu;
         _sigma = sigma;
     }
 
-    GumbelMinDistribution::GumbelMinDistribution(const GumbelMinDistribution& gumbel_min)
+    GompertzDistribution::GompertzDistribution(const GompertzDistribution& gumbel_min)
     {
         _mu = gumbel_min._mu;
         _sigma = gumbel_min._sigma;
     }
 
-    unsigned int GumbelMinDistribution::get_nb_parameters() const
+    unsigned int GompertzDistribution::get_nb_parameters() const
     { return 2; }
 
-    const double& GumbelMinDistribution::get_mu() const
+    const double& GompertzDistribution::get_mu() const
     { return _mu; }
 
-    void GumbelMinDistribution::set_mu(const double& mu)
+    void GompertzDistribution::set_mu(const double& mu)
     { _mu = mu; }
 
-    const double& GumbelMinDistribution::get_sigma() const
+    const double& GompertzDistribution::get_sigma() const
     { return _sigma; }
 
-    void GumbelMinDistribution::set_sigma(const double& sigma)
+    void GompertzDistribution::set_sigma(const double& sigma)
     {
         if(sigma <= 0.)
         { throw lower_bound_error("sigma", sigma, 0., true); }
         _sigma = sigma;
     }
 
-    double GumbelMinDistribution::ldf(const double& value) const
+    double GompertzDistribution::ldf(const double& value) const
     { return (value - _mu) / _sigma - exp( (value - _mu) / _sigma) - log(_sigma); }
     
-    double GumbelMinDistribution::pdf(const double& value) const
+    double GompertzDistribution::pdf(const double& value) const
     { return exp( (value - _mu)/ _sigma - exp( (value - _mu)/ _sigma) ) / _sigma ; }
 
-    double GumbelMinDistribution::cdf(const double& value) const
+    double GompertzDistribution::cdf(const double& value) const
     { return  1 - exp( - exp((value - _mu) / _sigma) ); }
 
-    double GumbelMinDistribution::quantile(const double& p) const
+    double GompertzDistribution::quantile(const double& p) const
     { return _mu + _sigma * log( -log(1-p) ); }
 
-    std::unique_ptr< UnivariateEvent > GumbelMinDistribution::simulate() const
+    std::unique_ptr< UnivariateEvent > GompertzDistribution::simulate() const
     {        
         boost::uniform_01<> dist;
         boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
         return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
     }
 
-    double GumbelMinDistribution::get_mean() const
-    { return - _mu + _sigma * boost::math::constants::euler<double>(); }
+    double GompertzDistribution::get_mean() const
+    { return _mu - _sigma * boost::math::constants::euler<double>(); }
 
-    double GumbelMinDistribution::get_variance() const
+    double GompertzDistribution::get_variance() const
     { return pow(_sigma *  boost::math::constants::pi<double>(), 2) / 6.; }
      
+    ExponentialDistribution::ExponentialDistribution()
+    { _lambda = 1.; }
+
+    ExponentialDistribution::ExponentialDistribution(const double& lambda)
+    { set_lambda(lambda); }
+
+    ExponentialDistribution::ExponentialDistribution(const ExponentialDistribution& exponential)
+    { _lambda = exponential._lambda; }
+
+    ExponentialDistribution::~ExponentialDistribution()
+    {}
+
+    unsigned int ExponentialDistribution::get_nb_parameters() const
+    { return 1; }
+
+    const double& ExponentialDistribution::get_lambda() const
+    { return _lambda; }
+
+    void ExponentialDistribution::set_lambda(const double& lambda)
+    {
+        if(lambda <= 0.)
+        { throw lower_bound_error("lambda", lambda, 0., true); } 
+        _lambda = lambda;
+    }
+
+    double ExponentialDistribution::ldf(const double& value) const
+    { 
+        double l;
+        if(value <= 0.)
+        { l = -1 * std::numeric_limits< double >::infinity();; }
+        else
+        { l = log(_lambda) - _lambda * value; }
+        return l;
+    }
+
+    double ExponentialDistribution::pdf(const double& value) const
+    { 
+        double p;
+        if(value <= 0.)            
+        { p = 0.; }
+        else
+        { p = _lambda * exp(-_lambda * value);; }
+        return p;
+    }
+
+    double ExponentialDistribution::cdf(const double& value) const
+    {
+        double c;
+        if(value <= 0.)
+        { c = 0.; }
+        else
+        { c = 1 - exp(-_lambda * value); }
+        return c;
+    }
+
+    double ExponentialDistribution::quantile(const double& p) const
+    { return -log(1-p)/_lambda; }
+
+    std::unique_ptr< UnivariateEvent > ExponentialDistribution::simulate() const
+    {
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(quantile(simulator()));
+    }
+
+    double ExponentialDistribution::get_mean() const
+    { return 1/_lambda; }
+
+    double ExponentialDistribution::get_variance() const
+    { return 1/pow(_lambda, 2); }
+
     GammaDistribution::GammaDistribution()
     {
         _alpha = 1.;
@@ -1980,19 +2404,29 @@ namespace statiskit
     double UnivariateConditionalDistribution::loglikelihood(const UnivariateConditionalData& data) const
     {
         double llh = 0.;
+        Index index = 0;
         std::unique_ptr< UnivariateConditionalData::Generator > generator = data.generator();
         while(generator->is_valid() && boost::math::isfinite(llh))
-        { 
+        {
+            ++index;
             double weight = generator->weight();
             if(weight > 0.)
             {
                 const UnivariateDistribution* distribution = this->operator() (*(generator->explanatories()));
                 llh += weight * distribution->probability(generator->response(), true);
+                //std::cout << "weight = " << weight << std::endl;
+                //std::cout << "proba = " << distribution->probability(generator->response(), true) << std::endl;
             }
             ++(*generator);
         }
         return llh;        
     }
+
+    UnivariateConditionalDistribution::~UnivariateConditionalDistribution()
+    {}
+
+    MultivariateDistribution::~MultivariateDistribution()
+    {}
 
     double MultivariateDistribution::loglikelihood(const MultivariateData& data) const
     {
@@ -2301,6 +2735,9 @@ namespace statiskit
         return p;
     }
 
+    MultivariateConditionalDistribution::~MultivariateConditionalDistribution()
+    {}
+    
     double MultivariateConditionalDistribution::loglikelihood(const MultivariateConditionalData& data) const
     {
         double llh = 0.;

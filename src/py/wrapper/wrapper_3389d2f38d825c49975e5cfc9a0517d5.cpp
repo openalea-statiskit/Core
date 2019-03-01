@@ -2,15 +2,15 @@
 
 namespace autowig
 {
-    typedef ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, ::statiskit::NonStandardStudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution > class_type;
+    typedef ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, ::statiskit::StudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution > class_type;
 
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, ::statiskit::NonStandardStudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution >::PolymorphicCopy;
+            using ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, ::statiskit::StudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution >::PolymorphicCopy;
 
-            typedef class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  return_type_1149c8b9c3b4558dac0f58ae74742b4f;
-            virtual return_type_1149c8b9c3b4558dac0f58ae74742b4f copy() const override { PYBIND11_OVERLOAD_UNIQUE_PTR(return_type_1149c8b9c3b4558dac0f58ae74742b4f, class_type, copy, ); };
+            typedef class ::std::unique_ptr< struct ::statiskit::UnivariateDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateDistribution > >  return_type_0388db40fe585921af9148fd9208197d;
+            virtual return_type_0388db40fe585921af9148fd9208197d copy() const override { PYBIND11_OVERLOAD_UNIQUE_PTR(return_type_0388db40fe585921af9148fd9208197d, class_type, copy, ); };
             typedef double  return_type_17d4a13bc764561299d331907516003f;
             virtual return_type_17d4a13bc764561299d331907516003f get_variance() const override { PYBIND11_OVERLOAD_PURE(return_type_17d4a13bc764561299d331907516003f, class_type, get_variance, ); };
             typedef double  return_type_cb42091f4cb35419b13eb0e0c27eb470;
@@ -42,9 +42,9 @@ namespace autowig
 namespace autowig {
 }
 
-void wrapper_e148ab9362cf5609ac98763b3a12ca5e(pybind11::module& module)
+void wrapper_3389d2f38d825c49975e5cfc9a0517d5(pybind11::module& module)
 {
 
-    pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::NonStandardStudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::NonStandardStudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type, struct ::statiskit::ContinuousUnivariateDistribution > class_e148ab9362cf5609ac98763b3a12ca5e(module, "_PolymorphicCopy_e148ab9362cf5609ac98763b3a12ca5e", "");
+    pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::StudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::StudentDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type, struct ::statiskit::ContinuousUnivariateDistribution > class_3389d2f38d825c49975e5cfc9a0517d5(module, "_PolymorphicCopy_3389d2f38d825c49975e5cfc9a0517d5", "");
 
 }

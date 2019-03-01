@@ -29,6 +29,20 @@ namespace statiskit
             }
 
         template<class T>
+            std::string to_string(const std::set< T >& s, const unsigned int& width)
+            {
+                std::string str = "{";
+                for(typename std::set< T >::const_iterator it = s.begin(), it_end = s.end(); it != it_end; ++it)
+                {
+                    if(it != s.begin())
+                    { str += ", "; }
+                    str += to_string(*it, width);
+                }
+                str += "}";
+                return str;
+            }            
+
+        template<class T>
             T normalize(const T& input, const bool& logarithm)
             {
                 T output = T(input.begin(), input.end());
@@ -74,6 +88,15 @@ namespace statiskit
             { lhs.insert(*it); }
         }
 
+        template<class U, class V> 
+        std::set< U > keys(const std::map< U, V >& map)
+        {
+            std::set< U > set;
+            for(typename std::map< U, V >::const_iterator it = map.cbegin(), it_end = map.cend(); it != it_end; ++it)
+            { set.insert(it->first); }
+            return set;
+        }
+
     }
 
     template<typename T, typename L>
@@ -86,6 +109,10 @@ namespace statiskit
 
     template<typename T, typename L, typename U>
         interval_error::interval_error(const std::string& parameter, const T& value, const L& lower, const U& upper, const std::pair<bool, bool>& strict) : parameter_error(parameter, __impl::to_string(value) + " not " + std::string("strictly", 0, 8*strict.first) + " superior to " + __impl::to_string(lower) + " and " + std::string("strictly", 0, 8*strict.second) + " inferior to " + __impl::to_string(upper))
+        {}
+
+    template<typename T, typename L>
+        in_set_error::in_set_error(const std::string& parameter, const T& value, const std::set< L >& values, const bool& in) : parameter_error(parameter, __impl::to_string(value) + std::string(" not", 0, 4 * !in) + " in " + __impl::to_string(values))
         {}
 
     template<typename T>

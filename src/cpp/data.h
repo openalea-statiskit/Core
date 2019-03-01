@@ -17,8 +17,12 @@ namespace statiskit
         typedef UnivariateEvent event_type;
         typedef WeightedUnivariateData weighted_type;
 
+        virtual ~UnivariateData() = 0;
+
         struct STATISKIT_CORE_API Generator
         {
+            virtual ~Generator() = 0;
+            
             virtual bool is_valid() const = 0;
 
             virtual Generator& operator++() = 0;
@@ -46,7 +50,7 @@ namespace statiskit
             NamedData();
             NamedData(const std::string& name);
             NamedData(const NamedData& named_data);
-            ~NamedData();
+            virtual ~NamedData();
 
             const std::string& get_name() const;
             void set_name(const std::string& name);
@@ -115,8 +119,12 @@ namespace statiskit
         typedef MultivariateEvent event_type;
         typedef WeightedMultivariateData weighted_type;
 
+        virtual ~MultivariateData() = 0;
+
         struct STATISKIT_CORE_API Generator
         {
+            virtual ~Generator() = 0;
+
             virtual bool is_valid() const = 0;
 
             virtual Generator& operator++() = 0;
@@ -145,6 +153,7 @@ namespace statiskit
     {
         public:
             MultivariateDataFrame();
+            MultivariateDataFrame(const MultivariateSampleSpace& sample_space);
             MultivariateDataFrame(const MultivariateDataFrame& data);
             virtual ~MultivariateDataFrame();
 
@@ -361,12 +370,14 @@ namespace statiskit
 
             void init(const D* data);
             void init(const WeightedData< D >& data);
+            void init(const D* data, const std::vector< double >& weights);
     };
 
     class STATISKIT_CORE_API WeightedUnivariateData : public PolymorphicCopy< UnivariateData, WeightedUnivariateData, WeightedData< UnivariateData > >
     {
         public:
             WeightedUnivariateData(const UnivariateData* data);
+            WeightedUnivariateData(const UnivariateData* data, const std::vector< double >& weights);
             WeightedUnivariateData(const WeightedUnivariateData& data);
             virtual ~WeightedUnivariateData();
 
@@ -378,6 +389,7 @@ namespace statiskit
     {
         public:
             WeightedMultivariateData(const MultivariateData* data);
+            WeightedMultivariateData(const MultivariateData* data, const std::vector< double >& weights);
             WeightedMultivariateData(const WeightedMultivariateData& data);
             virtual ~WeightedMultivariateData();
 
@@ -471,6 +483,7 @@ namespace statiskit
             };
 
             UnivariateConditionalData(const MultivariateData& data, const Index& response, const Indices& explanatories);
+            UnivariateConditionalData(const UnivariateData& response_data, const MultivariateData& explanatories_data);
             UnivariateConditionalData(const UnivariateConditionalData& data);
             virtual ~UnivariateConditionalData();
 
@@ -608,5 +621,7 @@ namespace statiskit
     };*/
 }
 
+#ifndef AUTOWIG
 #include "data.hpp"
+#endif
 #endif

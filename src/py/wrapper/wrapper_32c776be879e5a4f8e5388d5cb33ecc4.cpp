@@ -7,6 +7,7 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
+            using ::statiskit::DiscreteMultivariateConditionalDistribution::DiscreteMultivariateConditionalDistribution;
 
             typedef class ::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >  return_type_5602cdbf2c275bce8b45653e1d25ff61;
             virtual return_type_5602cdbf2c275bce8b45653e1d25ff61 copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_5602cdbf2c275bce8b45653e1d25ff61, class_type, copy, ); };

@@ -375,6 +375,7 @@ namespace statiskit
     {
         typedef MultivariateData data_type;
         typedef SingularDistribution estimated_type;
+        typedef SingularDistributionEstimation copy_type;
 
         virtual ~SingularDistributionEstimation() = 0;
 
@@ -597,5 +598,7 @@ namespace statiskit
     typedef MixtureSingularDistributionEMEstimation::Estimator MixtureSingularDistributionEMEstimator;
 }
 
+#ifndef AUTOWIG
 #include "estimator.hpp"
+#endif
 #endif
