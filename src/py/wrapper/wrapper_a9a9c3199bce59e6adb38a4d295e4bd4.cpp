@@ -1,0 +1,16 @@
+#include "_core.h"
+
+struct ::statiskit::MultivariateConditionalDistribution & (::std::unique_ptr< ::statiskit::MultivariateConditionalDistribution, ::std::default_delete< ::statiskit::MultivariateConditionalDistribution > >::*method_pointer_57d744987cae50abaa24d11686bac7e1)()const= &::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::operator*;
+::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateConditionalDistribution, ::std::default_delete< ::statiskit::MultivariateConditionalDistribution > >::*method_pointer_113eb434e6435a1cb1b69e9a5968156f)()const= &::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::get;
+::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateConditionalDistribution, ::std::default_delete< ::statiskit::MultivariateConditionalDistribution > >::*method_pointer_53414920af06544fa37150ab0e3fea1a)()= &::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::release;
+void  (::std::unique_ptr< ::statiskit::MultivariateConditionalDistribution, ::std::default_delete< ::statiskit::MultivariateConditionalDistribution > >::*method_pointer_502ff3ec6edf57d69f296b3bc78eaf81)(::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::pointer )= &::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::reset;
+void  (::std::unique_ptr< ::statiskit::MultivariateConditionalDistribution, ::std::default_delete< ::statiskit::MultivariateConditionalDistribution > >::*method_pointer_2e89df31091b5ebd95fe4a5029302351)(class ::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > > &)= &::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > >::swap;
+
+namespace autowig {
+    void method_decorator_57d744987cae50abaa24d11686bac7e1(class ::std::unique_ptr< struct ::statiskit::MultivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::MultivariateConditionalDistribution > > const & instance, const struct ::statiskit::MultivariateConditionalDistribution & param_out) { instance.operator*() = param_out; }
+}
+
+void wrapper_a9a9c3199bce59e6adb38a4d295e4bd4(pybind11::module& module)
+{
+
+}

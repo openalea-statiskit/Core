@@ -1,0 +1,16 @@
+#include "_core.h"
+
+struct ::statiskit::UnivariateDispersionEstimation::Estimator & (::std::unique_ptr< ::statiskit::UnivariateDispersionEstimation::Estimator, ::std::default_delete< ::statiskit::UnivariateDispersionEstimation::Estimator > >::*method_pointer_2c576a0de12e5757a80589a7ad84a2ec)()const= &::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::operator*;
+::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::pointer  (::std::unique_ptr< ::statiskit::UnivariateDispersionEstimation::Estimator, ::std::default_delete< ::statiskit::UnivariateDispersionEstimation::Estimator > >::*method_pointer_9273931b727e5ab383fd2cb00794411d)()const= &::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::get;
+::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::pointer  (::std::unique_ptr< ::statiskit::UnivariateDispersionEstimation::Estimator, ::std::default_delete< ::statiskit::UnivariateDispersionEstimation::Estimator > >::*method_pointer_1d97a533a0155d7db038d6c5bf23c85a)()= &::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::release;
+void  (::std::unique_ptr< ::statiskit::UnivariateDispersionEstimation::Estimator, ::std::default_delete< ::statiskit::UnivariateDispersionEstimation::Estimator > >::*method_pointer_43020adef29250a09cb49314bdb5f1bc)(::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::pointer )= &::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::reset;
+void  (::std::unique_ptr< ::statiskit::UnivariateDispersionEstimation::Estimator, ::std::default_delete< ::statiskit::UnivariateDispersionEstimation::Estimator > >::*method_pointer_cfe38226ba98503f93eb21a51157b7be)(class ::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > > &)= &::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > >::swap;
+
+namespace autowig {
+    void method_decorator_2c576a0de12e5757a80589a7ad84a2ec(class ::std::unique_ptr< struct ::statiskit::UnivariateDispersionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::UnivariateDispersionEstimation::Estimator > > const & instance, const struct ::statiskit::UnivariateDispersionEstimation::Estimator & param_out) { instance.operator*() = param_out; }
+}
+
+void wrapper_3a465479f748511898cc3d6b13455141(pybind11::module& module)
+{
+
+}

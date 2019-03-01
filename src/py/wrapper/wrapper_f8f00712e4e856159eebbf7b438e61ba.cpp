@@ -1,0 +1,16 @@
+#include "_core.h"
+
+class ::statiskit::MultivariateDispersionEstimation & (::std::unique_ptr< ::statiskit::MultivariateDispersionEstimation, ::std::default_delete< ::statiskit::MultivariateDispersionEstimation > >::*method_pointer_c0bff0bcb0eb52ed88f82356f31276ad)()const= &::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::operator*;
+::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateDispersionEstimation, ::std::default_delete< ::statiskit::MultivariateDispersionEstimation > >::*method_pointer_ad5449e8a63a50788615aad206315d22)()const= &::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::get;
+::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateDispersionEstimation, ::std::default_delete< ::statiskit::MultivariateDispersionEstimation > >::*method_pointer_a454dd6923cc51aa8372c3f69da49a51)()= &::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::release;
+void  (::std::unique_ptr< ::statiskit::MultivariateDispersionEstimation, ::std::default_delete< ::statiskit::MultivariateDispersionEstimation > >::*method_pointer_57c48eb1b4d457728adbc12ddb4077a1)(::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::pointer )= &::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::reset;
+void  (::std::unique_ptr< ::statiskit::MultivariateDispersionEstimation, ::std::default_delete< ::statiskit::MultivariateDispersionEstimation > >::*method_pointer_fa9efd0f14fb5d348fd7b04230c41e98)(class ::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > > &)= &::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > >::swap;
+
+namespace autowig {
+    void method_decorator_c0bff0bcb0eb52ed88f82356f31276ad(class ::std::unique_ptr< class ::statiskit::MultivariateDispersionEstimation, struct ::std::default_delete< class ::statiskit::MultivariateDispersionEstimation > > const & instance, const class ::statiskit::MultivariateDispersionEstimation & param_out) { instance.operator*() = param_out; }
+}
+
+void wrapper_f8f00712e4e856159eebbf7b438e61ba(pybind11::module& module)
+{
+
+}

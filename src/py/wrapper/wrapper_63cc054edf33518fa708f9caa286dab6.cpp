@@ -1,0 +1,16 @@
+#include "_core.h"
+
+struct ::statiskit::UnivariateConditionalDistribution & (::std::unique_ptr< ::statiskit::UnivariateConditionalDistribution, ::std::default_delete< ::statiskit::UnivariateConditionalDistribution > >::*method_pointer_7cb30d6e3c1b5f23851bbd588e0e219c)()const= &::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::operator*;
+::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::pointer  (::std::unique_ptr< ::statiskit::UnivariateConditionalDistribution, ::std::default_delete< ::statiskit::UnivariateConditionalDistribution > >::*method_pointer_f2f0171106a55a1b8ce3e8734b2ddd78)()const= &::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::get;
+::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::pointer  (::std::unique_ptr< ::statiskit::UnivariateConditionalDistribution, ::std::default_delete< ::statiskit::UnivariateConditionalDistribution > >::*method_pointer_c49ec961210156dbbc080076aa609885)()= &::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::release;
+void  (::std::unique_ptr< ::statiskit::UnivariateConditionalDistribution, ::std::default_delete< ::statiskit::UnivariateConditionalDistribution > >::*method_pointer_b528072c99e353e98929d9ed7e1b0fb4)(::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::pointer )= &::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::reset;
+void  (::std::unique_ptr< ::statiskit::UnivariateConditionalDistribution, ::std::default_delete< ::statiskit::UnivariateConditionalDistribution > >::*method_pointer_bfc31dd572e65f8a9cb3ebcb397cbdb1)(class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > &)= &::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > >::swap;
+
+namespace autowig {
+    void method_decorator_7cb30d6e3c1b5f23851bbd588e0e219c(class ::std::unique_ptr< struct ::statiskit::UnivariateConditionalDistribution, struct ::std::default_delete< struct ::statiskit::UnivariateConditionalDistribution > > const & instance, const struct ::statiskit::UnivariateConditionalDistribution & param_out) { instance.operator*() = param_out; }
+}
+
+void wrapper_63cc054edf33518fa708f9caa286dab6(pybind11::module& module)
+{
+
+}

@@ -1,0 +1,16 @@
+#include "_core.h"
+
+struct ::statiskit::MultivariateLocationEstimation::Estimator & (::std::unique_ptr< ::statiskit::MultivariateLocationEstimation::Estimator, ::std::default_delete< ::statiskit::MultivariateLocationEstimation::Estimator > >::*method_pointer_bb01f707748457378190e827a422c293)()const= &::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::operator*;
+::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateLocationEstimation::Estimator, ::std::default_delete< ::statiskit::MultivariateLocationEstimation::Estimator > >::*method_pointer_20b42075fee252d184aa27889f73c5bd)()const= &::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::get;
+::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::pointer  (::std::unique_ptr< ::statiskit::MultivariateLocationEstimation::Estimator, ::std::default_delete< ::statiskit::MultivariateLocationEstimation::Estimator > >::*method_pointer_ebbf6170287b54598855a16918107319)()= &::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::release;
+void  (::std::unique_ptr< ::statiskit::MultivariateLocationEstimation::Estimator, ::std::default_delete< ::statiskit::MultivariateLocationEstimation::Estimator > >::*method_pointer_80e06e6b900a577f8cf326763c1731c7)(::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::pointer )= &::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::reset;
+void  (::std::unique_ptr< ::statiskit::MultivariateLocationEstimation::Estimator, ::std::default_delete< ::statiskit::MultivariateLocationEstimation::Estimator > >::*method_pointer_09669bed5fec571aa7b8e248708435d0)(class ::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > > &)= &::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > >::swap;
+
+namespace autowig {
+    void method_decorator_bb01f707748457378190e827a422c293(class ::std::unique_ptr< struct ::statiskit::MultivariateLocationEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::MultivariateLocationEstimation::Estimator > > const & instance, const struct ::statiskit::MultivariateLocationEstimation::Estimator & param_out) { instance.operator*() = param_out; }
+}
+
+void wrapper_41e33df7e8f15f9498a49fd08b35a4fc(pybind11::module& module)
+{
+
+}
