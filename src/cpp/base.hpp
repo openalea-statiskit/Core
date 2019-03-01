@@ -1,3 +1,4 @@
+#ifndef AUTOWIG
 #ifndef STATISKIT_CORE_BASE_HPP
 #define STATISKIT_CORE_BASE_HPP
 
@@ -6,13 +7,13 @@
 
 namespace statiskit
 {
-    template<class T, class B, class D>
-        PolymorphicCopy< T, B, D >::PolymorphicCopy() : D()
+    template<class T, class D, class B>
+        PolymorphicCopy< T, D, B >::PolymorphicCopy(const PolymorphicCopy< T, D, B>& other) : B(other)
         {}
 
-    template<class T, class B, class D>
-        PolymorphicCopy< T, B, D >::~PolymorphicCopy()
-        {}
+    template<class T, class D, class B>
+        std::unique_ptr< T > PolymorphicCopy< T, D, B >::copy() const
+        { return std::make_unique< D >(static_cast< const D& >(*this)); }
              
     namespace __impl
     {
@@ -221,4 +222,5 @@ namespace statiskit
         }
 }
 
+#endif
 #endif

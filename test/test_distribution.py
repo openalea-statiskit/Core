@@ -24,6 +24,7 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
     _num = 10
     _pmin = 0.025
     _pmax = 0.975
+    _simulate = 10000
 
     def test_pdf_ldf_cdf(self):
         """Test probability distribution function and related functions"""
@@ -44,7 +45,7 @@ class AbstractTestDiscreteUnivariateDistribution(AbstractTestUnivariateDistribut
 
     def test_moments(self):
         """Test moments"""
-        data = self._dist.simulation(1000)
+        data = self._dist.simulation(self._simulate)
         self.assertAlmostEqual(abs(data.location - self._dist.mean) / data.location, self._epsilon, delta=self._delta)
         self.assertAlmostEqual(abs(data.dispersion - self._dist.variance) / data.dispersion, self._epsilon, delta=self._delta)
 

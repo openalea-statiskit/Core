@@ -12,7 +12,8 @@ from .__core.statiskit import (UnivariateData,
                                  WeightedMultivariateData,
                                  MultivariateDataFrame,
                                UnivariateConditionalData,
-                               MultivariateConditionalData)
+                               MultivariateConditionalData,
+                               Indices)
 
 from .controls import controls
 from .event import outcome_type
@@ -215,13 +216,13 @@ def pdf_plot(self, axes=None, **kwargs):
         kwargs['norm'] = norm
     else:
         raise TypeError('\'norm\' parameter')
-    if sample_space.outcome is outcome_type.CATEGORICAL:
+    if sample_space.outcome == outcome_type.CATEGORICAL:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
         axes = estimation.estimated.pdf_plot(axes=axes, **kwargs)
-    elif sample_space.outcome is outcome_type.DISCRETE:
+    elif sample_space.outcome == outcome_type.DISCRETE:
         estimation = frequency_estimation(data = self, **kwargs.pop('frequency', dict(lazy=True)))
         axes = estimation.estimated.pdf_plot(axes=axes, pmin=0., pmax=1., **kwargs)
-    elif sample_space.outcome is outcome_type.CONTINUOUS:
+    elif sample_space.outcome == outcome_type.CONTINUOUS:
         fmt = kwargs.pop('fmt', '|')
         if fmt == '|':
             estimation = histogram_estimation(self, **kwargs.pop('histogram', dict(algo='irr' if self.total > 700. else 'reg', lazy=True)))
@@ -289,7 +290,9 @@ def wrapper_extract(f):
             args = [index if index >= 0 else index + len(self.components) for index in args]
             if len(args) == 1:
                 args = args.pop()
-            return f(self, args)
+                return f(self, args)
+            else:
+                return f(self, Indices(*args))
         else:
             if "response" in kwargs:
                 response = kwargs.pop("response")

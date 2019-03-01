@@ -49,8 +49,9 @@ namespace statiskit
 
     template<class T, class D, class B=T> struct PolymorphicCopy : public B
     {
-        PolymorphicCopy();
-        virtual ~PolymorphicCopy();
+        using B::B;
+        PolymorphicCopy(const PolymorphicCopy<T, D, B>& other);
+        virtual ~PolymorphicCopy() = default;
          
         virtual std::unique_ptr< T > copy() const;
     };

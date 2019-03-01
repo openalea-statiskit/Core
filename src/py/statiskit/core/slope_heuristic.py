@@ -1,11 +1,30 @@
 from functools import wraps
 
+from statiskit import stl
+
 from . import _core
 from .__core.statiskit import SlopeHeuristic, _SlopeHeuristicSelection
 
 from .optionals import pyplot
 
 __all__ = ['SlopeHeuristic']
+
+def wrapper(f):
+    @wraps(f)
+    def __init__(self, *args):
+        if len(args) == 0:
+            return f(self)
+        elif len(args) == 1:
+            return f(self, args[0])
+        else:
+            args = list(args)
+            args[0] = stl.SetLessDouble(*args[0])
+            args[1] = stl.VectorDouble(*args[1])
+            return f(self, *args)
+    return __init__
+
+SlopeHeuristic.__init__ = wrapper(SlopeHeuristic.__init__)
+del wrapper
 
 class Proxy(object):
 

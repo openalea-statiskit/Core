@@ -2,6 +2,7 @@ from functools import wraps
 import math
 
 from statiskit import linalg
+from statiskit import stl
 
 from . import _core
 from .__core.statiskit import (_ShiftedDistribution,
@@ -12,6 +13,7 @@ from .__core.statiskit import (_ShiftedDistribution,
                                      NominalDistribution,
                                      OrdinalDistribution,
                                      CategoricalUnivariateMixtureDistribution,
+                                 CategoricalUnivariateDistributionVector,
                                  DiscreteUnivariateDistribution,
                                      DiscreteUnivariateFrequencyDistribution,
                                      PoissonDistribution,
@@ -23,6 +25,7 @@ from .__core.statiskit import (_ShiftedDistribution,
                                          BetaBinomialDistribution,
                                          BetaNegativeBinomialDistribution,
                                      DiscreteUnivariateMixtureDistribution,
+                                 DiscreteUnivariateDistributionVector,
                                  ContinuousUnivariateDistribution,
                                      ContinuousUnivariateFrequencyDistribution,
                                      UnivariateHistogramDistribution,
@@ -31,21 +34,27 @@ from .__core.statiskit import (_ShiftedDistribution,
                                      GammaDistribution,
                                      BetaDistribution,
                                      ContinuousUnivariateMixtureDistribution,
+                                 ContinuousUnivariateDistributionVector,
                                MultivariateDistribution,
                                  # _IndependentMultivariateDistribution,
                                  MixedMultivariateMixtureDistribution,
                                  CategoricalMultivariateDistribution,
                                      # CategoricalIndependentMultivariateDistribution,
                                      CategoricalMultivariateMixtureDistribution,
+                                 CategoricalMultivariateDistributionVector,
                                  DiscreteMultivariateDistribution,
                                      SplittingDistribution,
                                      # DiscreteIndependentMultivariateDistribution,
                                      DiscreteMultivariateMixtureDistribution,
+                                 DiscreteMultivariateDistributionVector,
+
                                  ContinuousMultivariateDistribution,
                                      MultinormalDistribution,
                                      DirichletDistribution,
                                      # ContinuousIndependentMultivariateDistribution,
                                      ContinuousMultivariateMixtureDistribution,
+                                 ContinuousMultivariateDistributionVector,
+                             MultivariateDistributionVector,
                                _MixtureDistribution, _UnivariateMixtureDistribution, _QuantitativeUnivariateMixtureDistribution, _MultivariateMixtureDistribution,
                                UnivariateConditionalDistribution,
                                    CategoricalUnivariateConditionalDistribution,
@@ -140,7 +149,7 @@ def wrapper_probability(f):
     return probability
 
 UnivariateDistribution.probability = wrapper_probability(UnivariateDistribution.probability)
-OrdinalDistribution.probability = wrapper_probability(OrdinalDistribution.probability)
+# OrdinalDistribution.probability = wrapper_probability(OrdinalDistribution.probability)
 
 def simulation(self, size):
     if isinstance(self, NominalDistribution):
@@ -197,7 +206,7 @@ del CategoricalUnivariateDistribution.get_values
 def wrapper(f):
     @wraps(f)
     def __init__(self, *args, **kwargs):
-        f(self, args)
+        f(self, stl.SetLessString(*args))
         for attr in list(kwargs.keys()):
             if hasattr(self, attr):
                 setattr(self, attr, kwargs.pop(attr))
@@ -206,6 +215,18 @@ def wrapper(f):
     return __init__
 
 NominalDistribution.__init__ = wrapper(NominalDistribution.__init__)
+
+def wrapper(f):
+    @wraps(f)
+    def __init__(self, *args, **kwargs):
+        f(self, stl.VectorString(*args))
+        for attr in list(kwargs.keys()):
+            if hasattr(self, attr):
+                setattr(self, attr, kwargs.pop(attr))
+            else:
+                raise AttributeError("'" + self.__class__.__name__ + "' object has no attribute '" + attr + "'")
+    return __init__
+
 OrdinalDistribution.__init__ = wrapper(OrdinalDistribution.__init__)
 del wrapper
 
@@ -243,6 +264,8 @@ def cdf_plot(self, axes=None, fmt='|', **kwargs):
         width = kwargs.pop('width', .8)
         if not 0 < width <= 1.:
             raise ValueError('\'width\' parameter must be strictly superior to 0. and inferior to 1.')
+        kwargs.pop('pmin', None)
+        kwargs.pop('pmax', None)
         axes.bar([q-width/2. for q in x], y, width, align='center', **kwargs)
     else:
         axes.plot(x, y, fmt, **kwargs)
@@ -773,7 +796,7 @@ def pdf_plot(self, axes=None, fmt='|', fill=True, **kwargs):
     # color = kwargs.pop('color', axes._get_lines.get_next_color())
     if '|' in fmt:
         for lc, rc, d in zip(bins[:-1], bins[1:], densities):
-            axes.bar(left=lc, height=d, width=rc-lc, bottom=0., facecolor=color, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge', **kwargs)
+            axes.bar(x=lc, height=d, width=rc-lc, bottom=0., facecolor=color, edgecolor=kwargs.pop('edgecolor', 'k'), align='edge', **kwargs)
         fmt = fmt.replace('|', '')
     if 'o' in fmt:
         axes.plot(bins[:-1], densities, 'o', color=color, alpha=alpha)
@@ -949,11 +972,11 @@ del _repr_latex_
 DirichletDistribution.alpha = property(DirichletDistribution.get_alpha, DirichletDistribution.set_alpha)
 del DirichletDistribution.get_alpha, DirichletDistribution.set_alpha
 
-# def statiskit_independent_multivariate_distribution_decorator(cls):
+# def statiskit_independent_Multivariate_distribution_decorator(cls):
 #     pass
 
 # for cls in _IndependentMultivariateDistribution:
-#     statiskit_independent_multivariate_distribution_decorator(cls)
+#     statiskit_independent_Multivariate_distribution_decorator(cls)
 
 # def IndependentMultivariateDistribution(*args):
 #     if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
@@ -1065,7 +1088,7 @@ def statiskit_univariate_mixture_distribution_decorator(cls):
 for cls in _UnivariateMixtureDistribution:
     statiskit_univariate_mixture_distribution_decorator(cls)
 
-def statiskit_multivariate_mixture_distribution_decorator(cls):
+def statiskit_Multivariate_mixture_distribution_decorator(cls):
 
     def wrapper_posterior(f):
         @wraps(f)
@@ -1099,7 +1122,7 @@ def statiskit_multivariate_mixture_distribution_decorator(cls):
     cls.uncertainty = wrapper_uncertainty(cls.uncertainty)
 
 for cls in _MultivariateMixtureDistribution:
-    statiskit_multivariate_mixture_distribution_decorator(cls)
+    statiskit_Multivariate_mixture_distribution_decorator(cls)
 
 def MixtureDistribution(*args, **kwargs):
     if 'pi' in kwargs:
@@ -1109,20 +1132,20 @@ def MixtureDistribution(*args, **kwargs):
     if not isinstance(pi, linalg.Vector):
         pi = linalg.Vector(pi)
     if all(isinstance(arg, CategoricalUnivariateDistribution) for arg in args):
-        return CategoricalUnivariateMixtureDistribution(args, pi)
+        return CategoricalUnivariateMixtureDistribution(CategoricalUnivariateDistributionVector(*args), pi)
     elif all(isinstance(arg, DiscreteUnivariateDistribution) for arg in args):
-        return DiscreteUnivariateMixtureDistribution(args, pi)
+        return DiscreteUnivariateMixtureDistribution(DiscreteUnivariateDistributionVector(*args), pi)
     elif all(isinstance(arg, ContinuousUnivariateDistribution) for arg in args):
-        return ContinuousUnivariateMixtureDistribution(args, pi)
+        return ContinuousUnivariateMixtureDistribution(ContinuousUnivariateDistributionVector(*args), pi)
     elif all(isinstance(arg, MultivariateDistribution) for arg in args):
         if all(isinstance(arg, CategoricalMultivariateDistribution) for arg in args):
-            return CategoricalMultivariateMixtureDistribution(args, pi)
+            return CategoricalMultivariateMixtureDistribution(CategoricalMultivariateDistributionVector(*args), pi)
         elif all(isinstance(arg, DiscreteMultivariateDistribution) for arg in args):
-            return DiscreteMultivariateMixtureDistribution(args, pi)
+            return DiscreteMultivariateMixtureDistribution(DiscreteMultivariateDistributionVector(*args), pi)
         elif all(isinstance(arg, ContinuousMultivariateDistribution) for arg in args):
-            return ContinuousMultivariateMixtureDistribution(args, pi)
+            return ContinuousMultivariateMixtureDistribution(ContinuousMultivariateDistributionVector(*args), pi)
         else:
-            return MixedMultivariateMixtureDistribution(args, pi)
+            return MixedMultivariateMixtureDistribution(MultivariateDistributionVector(*args), pi)
     else:
         raise TypeError('\'args\' parameter')
 

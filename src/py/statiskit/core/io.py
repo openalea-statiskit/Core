@@ -2,6 +2,8 @@ import warnings
 from tempfile import NamedTemporaryFile
 import os
 
+from statiskit import stl
+
 from . import _core
 
 from .controls import controls
@@ -103,7 +105,7 @@ def from_list(*data, **kwargs):
                     except:
                         nbstr += 1
             if nbstr > nbint + nbflt:
-                sample_spaces.append(NominalSampleSpace([value.strip() for value in _data]))
+                sample_spaces.append(NominalSampleSpace(stl.SetLessString(*[value.strip() for value in _data])))
             elif nbint > nbstr + nbflt:
                 sample_spaces.append(controls.ZZ)
             elif nbflt > nbstr + nbint:

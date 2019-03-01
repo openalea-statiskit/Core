@@ -353,11 +353,11 @@ def frequency_estimation(data, **kwargs):
         outcome = data.sample_space.outcome
         kwargs['mult'] = False
     elif isinstance(data, MultivariateData):
-        if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
+        if all(component.sample_space.outcome == outcome_type.CATEGORICAL for component in data.components):
             outcome = outcome_type.CATEGORICAL
-        elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
+        elif all(component.sample_space.outcome == outcome_type.DISCRETE for component in data.components):
             outcome = outcome_type.DISCRETE
-        elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
+        elif all(component.sample_space.outcome == outcome_type.CONTINUOUS for component in data.components):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
@@ -367,19 +367,19 @@ def frequency_estimation(data, **kwargs):
         data = None
     else:
         raise TypeError('\'data\' parameter')
-    mult = kwargs.pop('mult', outcome is outcome_type.MIXED)
+    mult = kwargs.pop('mult', outcome == outcome_type.MIXED)
     if mult:
         raise NotImplementedError()
     else:
         if outcome == outcome_type.CATEGORICAL:
-            mapping = dict(mle = CategoricalUnivariateDistributionEstimation.Estimator)
+            mapping = dict(ml = CategoricalUnivariateDistributionEstimation.Estimator)
         elif outcome == outcome_type.DISCRETE:
-            mapping = dict(mle = DiscreteUnivariateFrequencyDistributionEstimation.Estimator)
+            mapping = dict(ml = DiscreteUnivariateFrequencyDistributionEstimation.Estimator)
         elif outcome == outcome_type.CONTINUOUS:
-            mapping = dict(mle = ContinuousUnivariateFrequencyDistributionEstimation.Estimator)
+            mapping = dict(ml = ContinuousUnivariateFrequencyDistributionEstimation.Estimator)
         else:
             raise ValueError('\'outcome\' parameter')
-    return _estimation('mle', data, mapping, **kwargs)
+    return _estimation('ml', data, mapping, **kwargs)
 
 BinomialDistributionMLEstimation.Estimator.force = property(BinomialDistributionMLEstimation.Estimator.get_force, BinomialDistributionMLEstimation.Estimator.set_force)
 del BinomialDistributionMLEstimation.Estimator.get_force, BinomialDistributionMLEstimation.Estimator.set_force
@@ -393,7 +393,7 @@ def binomial_estimation(algo='ml', data=None, **kwargs):
                             mm = BinomialDistributionMMEstimation.Estimator),
                        **kwargs)
 
-def poisson_estimation(algo='mle', data=None, **kwargs):
+def poisson_estimation(algo='ml', data=None, **kwargs):
     """
     """
     return _estimation(algo, 
@@ -529,11 +529,11 @@ def independent_multivariate_distribution_estimation_decorator(cls):
 
 # def independent_estimation(data, **kwargs):
 #     if isinstance(data, MultivariateData):
-#         if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
+#         if all(component.sample_space.outcome == outcome_type.CATEGORICAL for component in data.components):
 #             mapping = dict(dflt = CategoricalIndependentMultivariateDistributionEstimation.Estimator)
-#         elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
+#         elif all(component.sample_space.outcome == outcome_type.DISCRETE for component in data.components):
 #             mapping = dict(dflt = DiscreteIndependentMultivariateDistributionEstimation.Estimator)
-#         elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
+#         elif all(component.sample_space.outcome == outcome_type.CONTINUOUS for component in data.components):
 #             mapping = dict(dflt = ContinuousIndependentMultivariateDistributionEstimation.Estimator)
 #         else:
 #             mapping = dict(dflt = MixedIndependentMultivariateDistributionEstimation.Estimator)
@@ -568,11 +568,11 @@ def mixture_estimation(data, algo='em', **kwargs):
         outcome = data.sample_space.outcome
         kwargs['mult'] = False
     elif isinstance(data, MultivariateData):
-        if all(component.sample_space.outcome is outcome_type.CATEGORICAL for component in data.components):
+        if all(component.sample_space.outcome == outcome_type.CATEGORICAL for component in data.components):
             outcome = outcome_type.CATEGORICAL
-        elif all(component.sample_space.outcome is outcome_type.DISCRETE for component in data.components):
+        elif all(component.sample_space.outcome == outcome_type.DISCRETE for component in data.components):
             outcome = outcome_type.DISCRETE
-        elif all(component.sample_space.outcome is outcome_type.CONTINUOUS for component in data.components):
+        elif all(component.sample_space.outcome == outcome_type.CONTINUOUS for component in data.components):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
@@ -582,27 +582,27 @@ def mixture_estimation(data, algo='em', **kwargs):
         data = None
     else:
         raise TypeError('\'data\' parameter')
-    mult = kwargs.pop('mult', outcome is outcome_type.MIXED)
+    mult = kwargs.pop('mult', outcome == outcome_type.MIXED)
     if mult:
-        if outcome is outcome_type.MIXED:
+        if outcome == outcome_type.MIXED:
             mapping = dict(em = MixedMultivariateMixtureDistributionEMEstimation.Estimator)
-        elif outcome is outcome_type.CATEGORICAL:
+        elif outcome == outcome_type.CATEGORICAL:
             mapping = dict(em = CategoricalMultivariateMixtureDistributionEMEstimation.Estimator)
-        elif outcome is outcome_type.DISCRETE:
+        elif outcome == outcome_type.DISCRETE:
             if kwargs.pop('singular', False):
                 mapping = dict(em = DiscreteMultivariateMixtureDistributionEMEstimation.Estimator)
             else:
                 mapping = dict(em = MixtureSingularDistributionEMEstimation.Estimator)
-        elif outcome is outcome_type.CONTINUOUS:
+        elif outcome == outcome_type.CONTINUOUS:
             mapping = dict(em = ContinuousMultivariateMixtureDistributionEMEstimation.Estimator)
     else:
-        if outcome is outcome_type.MIXED:
+        if outcome == outcome_type.MIXED:
             raise ValueError('\'mult\' parameter')
-        elif outcome is outcome_type.CATEGORICAL:
+        elif outcome == outcome_type.CATEGORICAL:
             mapping = dict(em = CategoricalUnivariateMixtureDistributionEMEstimation.Estimator)
-        elif outcome is outcome_type.DISCRETE:
+        elif outcome == outcome_type.DISCRETE:
             mapping = dict(em = DiscreteUnivariateMixtureDistributionEMEstimation.Estimator)
-        elif outcome is outcome_type.CONTINUOUS:
+        elif outcome == outcome_type.CONTINUOUS:
             mapping = dict(em = MixedMultivariateMixtureDistributionEMEstimation.Estimator)
     return _estimation(algo, data, mapping, **kwargs)
 
@@ -616,9 +616,9 @@ def shifted_estimation(data, **kwargs):
         raise TypeError('\'data\' parameter')
     if outcome in [outcome_type.MIXED, outcome_type.CATEGORICAL]:
         raise ValueError('\'mult\' parameter')
-    elif outcome is outcome_type.DISCRETE:
+    elif outcome == outcome_type.DISCRETE:
         mapping = dict(a = DiscreteUnivariateShiftedDistributionEstimation.Estimator)
-    elif outcome is outcome_type.CONTINUOUS:
+    elif outcome == outcome_type.CONTINUOUS:
         mapping = dict(a = ContinuousUnivariateShiftedDistributionEstimation.Estimator)
     return _estimation('a', data, mapping, **kwargs)
 
@@ -643,11 +643,11 @@ def selection(data, algo="criterion", *args, **kwargs):
         outcome = data.sample_space.outcome
         kwargs['multivariate'] = False
     elif isinstance(data, MultivariateData):
-        if all(sample_space.outcome is outcome_type.CATEGORICAL for sample_space in data.sample_space):
+        if all(sample_space.outcome == outcome_type.CATEGORICAL for sample_space in data.sample_space):
             outcome = outcome_type.CATEGORICAL
-        elif all(sample_space.outcome is outcome_type.DISCRETE for sample_space in data.sample_space):
+        elif all(sample_space.outcome == outcome_type.DISCRETE for sample_space in data.sample_space):
             outcome = outcome_type.DISCRETE
-        elif all(sample_space.outcome is outcome_type.CONTINUOUS for sample_space in data.sample_space):
+        elif all(sample_space.outcome == outcome_type.CONTINUOUS for sample_space in data.sample_space):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
@@ -657,11 +657,11 @@ def selection(data, algo="criterion", *args, **kwargs):
         kwargs['multivariate'] = False
         kwargs['conditional'] = True
     elif isinstance(data, MultivariateConditionalData):
-        if all(sample_space.outcome is outcome_type.CATEGORICAL for sample_space in data.responses.sample_space):
+        if all(sample_space.outcome == outcome_type.CATEGORICAL for sample_space in data.responses.sample_space):
             outcome = outcome_type.CATEGORICAL
-        elif all(sample_space.outcome is outcome_type.DISCRETE for sample_space in data.responses.sample_space):
+        elif all(sample_space.outcome == outcome_type.DISCRETE for sample_space in data.responses.sample_space):
             outcome = outcome_type.DISCRETE
-        elif all(sample_space.outcome is outcome_type.CONTINUOUS for sample_space in data.responses.sample_space):
+        elif all(sample_space.outcome == outcome_type.CONTINUOUS for sample_space in data.responses.sample_space):
             outcome = outcome_type.CONTINUOUS
         else:
             outcome = outcome_type.MIXED
@@ -672,45 +672,45 @@ def selection(data, algo="criterion", *args, **kwargs):
         data = None
     else:
         raise TypeError('\'data\' parameter')
-    multivariate = kwargs.pop('multivariate', outcome is outcome_type.MIXED)
+    multivariate = kwargs.pop('multivariate', outcome == outcome_type.MIXED)
     conditional = kwargs.pop('conditional', False)
     if multivariate:
         if conditional:
-            if outcome is outcome_type.MIXED:
+            if outcome == outcome_type.MIXED:
                 mapping = dict(criterion = MixedMultivariateConditionalDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CATEGORICAL:
+            elif outcome == outcome_type.CATEGORICAL:
                 mapping = dict(criterion = CategoricalMultivariateConditionalDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.DISCRETE:
+            elif outcome == outcome_type.DISCRETE:
                 mapping = dict(criterion = DiscreteMultivariateConditionalDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CONTINUOUS:
+            elif outcome == outcome_type.CONTINUOUS:
                 mapping = dict(criterion = ContinuousMultivariateConditionalDistributionSelection.CriterionEstimator)
         else:
-            if outcome is outcome_type.MIXED:
+            if outcome == outcome_type.MIXED:
                 mapping = dict(criterion = MixedMultivariateDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CATEGORICAL:
+            elif outcome == outcome_type.CATEGORICAL:
                 mapping = dict(criterion = CategoricalMultivariateDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.DISCRETE:
+            elif outcome == outcome_type.DISCRETE:
                 mapping = dict(criterion = DiscreteMultivariateDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CONTINUOUS:
+            elif outcome == outcome_type.CONTINUOUS:
                 mapping = dict(criterion = ContinuousMultivariateDistributionSelection.CriterionEstimator)
     else:
         if conditional:
-            if outcome is outcome_type.MIXED:
+            if outcome == outcome_type.MIXED:
                 raise ValueError('\'multivariate\' parameter')
-            elif outcome is outcome_type.CATEGORICAL:
+            elif outcome == outcome_type.CATEGORICAL:
                 mapping = dict(criterion = CategoricalUnivariateConditionalDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.DISCRETE:
+            elif outcome == outcome_type.DISCRETE:
                 mapping = dict(criterion = DiscreteUnivariateConditionalDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CONTINUOUS:
+            elif outcome == outcome_type.CONTINUOUS:
                 mapping = dict(criterion = ContinuousUnivariateConditionalDistributionSelection.CriterionEstimator)
         else:
-            if outcome is outcome_type.MIXED:
+            if outcome == outcome_type.MIXED:
                 raise ValueError('\'multivariate\' parameter')
-            elif outcome is outcome_type.CATEGORICAL:
+            elif outcome == outcome_type.CATEGORICAL:
                 mapping = dict(criterion = CategoricalUnivariateDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.DISCRETE:
+            elif outcome == outcome_type.DISCRETE:
                 mapping = dict(criterion = DiscreteUnivariateDistributionSelection.CriterionEstimator)
-            elif outcome is outcome_type.CONTINUOUS:
+            elif outcome == outcome_type.CONTINUOUS:
                 mapping = dict(criterion = ContinuousUnivariateDistributionSelection.CriterionEstimator)
     return _estimation(algo, data, mapping, **kwargs)
 

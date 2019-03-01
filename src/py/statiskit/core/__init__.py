@@ -14,3 +14,5 @@ from .singular import *
 from .slope_heuristic import *
 from .estimation import *
 from .indicator import *
+
+from .stl import *

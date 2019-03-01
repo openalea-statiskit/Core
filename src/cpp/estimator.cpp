@@ -102,19 +102,20 @@ namespace statiskit
         }
         else
         { curr = prev; }
-        if(curr > prev)
-        {
-            do
-            {
-                prev = curr;
-                --kappa;
-                if(!lazy)
-                { static_cast< BinomialDistributionMLEstimation* >(estimation.get())->_iterations.push_back(kappa); }
-                binomial->set_kappa(kappa);
-                binomial->set_pi(mean/double(kappa));
-                curr = binomial->loglikelihood(data);
-                ++its;
-            } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
+        if(curr > prev) {
+            if (mean/(kappa-1) >= 0.0 && mean/(kappa-1) <= 1.0) {
+                do
+                {
+                    prev = curr;
+                    --kappa;
+                    if(!lazy)
+                    { static_cast< BinomialDistributionMLEstimation* >(estimation.get())->_iterations.push_back(kappa); }
+                    binomial->set_kappa(kappa);
+                    binomial->set_pi(mean/double(kappa));
+                    curr = binomial->loglikelihood(data);
+                    ++its;
+                } while(run(its, __impl::reldiff(prev, curr)) && curr > prev);
+            }
             if(curr < prev)
             {
                 ++kappa;
@@ -126,7 +127,6 @@ namespace statiskit
         }
         else
         {
-            ++kappa;
             curr = prev;
             do
             {
