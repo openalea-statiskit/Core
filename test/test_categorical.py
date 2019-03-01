@@ -92,6 +92,7 @@ class TestOrdinal(TestNominal):
       win=True,
       level=1)
 class TestHierarchical(unittest.TestCase, AbstractTestUnivariateDistribution):
+    
     _ordinal_space = core.OrdinalSampleSpace('C', 'B', 'A')
     _nominal_space = core.NominalSampleSpace('Ba', 'Bb', 'Bc')
     _hierarchical_space = core.HierarchicalSampleSpace(_ordinal_space)

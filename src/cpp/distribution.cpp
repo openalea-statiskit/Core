@@ -2357,12 +2357,12 @@ namespace statiskit
 
     double BetaDistribution::ldf(const double& value) const
     { 
-        double p;
+        double l;
         if(value < 0. || value > 1.)
-        { p = 0.; }
+        { l = -1 * std::numeric_limits< double >::infinity(); }
         else
-        { p = boost::math::lgamma(_alpha + _beta) - boost::math::lgamma(_alpha) - boost::math::lgamma(_beta) + (_alpha - 1) * log(value) + (_beta - 1) * log(1 - value); }
-        return p;
+        { l = boost::math::lgamma(_alpha + _beta) - boost::math::lgamma(_alpha) - boost::math::lgamma(_beta) + (_alpha - 1) * log(value) + (_beta - 1) * log(1 - value); }
+        return l;
     }
 
     double BetaDistribution::pdf(const double& value) const
@@ -2377,12 +2377,17 @@ namespace statiskit
 
     double BetaDistribution::cdf(const double& value) const
     {
-        double p;
-        if(value < 0. || value > 1.)
-        { p = 0.; }
+        double c;
+        if(value < 0.)
+        { c = 0.; }
         else
-        { p = boost::math::ibeta(_alpha, _beta, value); }
-        return p;
+        {
+            if(value > 1.)
+            { c = 1.; }
+            else
+            { c = boost::math::ibeta(_alpha, _beta, value); } 
+        }
+        return c;
     }
 
     double BetaDistribution::quantile(const double& p) const
@@ -2400,6 +2405,99 @@ namespace statiskit
 
     double BetaDistribution::get_variance() const
     { return _alpha * _beta / (pow(_alpha + _beta, 2) * (_alpha + _beta + 1)); }
+
+
+    UniformDistribution::UniformDistribution()
+    {
+        _alpha = 0.;
+        _beta = 1.;
+    }
+
+    UniformDistribution::UniformDistribution(const double& alpha, const double& beta)
+    {
+        set_alpha(alpha);
+        set_beta(beta);
+    }
+
+    UniformDistribution::UniformDistribution(const UniformDistribution& uniform)
+    {
+        _alpha = uniform._alpha;
+        _beta = uniform._beta;
+    }
+
+    UniformDistribution::~UniformDistribution()
+    {}
+
+    unsigned int UniformDistribution::get_nb_parameters() const
+    { return 2; }
+
+    const double& UniformDistribution::get_alpha() const
+    { return _alpha; }
+
+    void UniformDistribution::set_alpha(const double& alpha)
+    {_alpha = alpha; }
+
+    const double& UniformDistribution::get_beta() const
+    { return _beta; }
+
+    void UniformDistribution::set_beta(const double& beta)
+    {
+        if(beta <= _alpha)
+        { throw lower_bound_error("beta", beta, _alpha, true); } 
+        _beta = beta;
+    }
+
+    double UniformDistribution::ldf(const double& value) const
+    { 
+        double l;
+        if(value < _alpha || value > _beta)
+        { l = -1 * std::numeric_limits< double >::infinity(); }
+        else
+        { l = -log(_beta - _alpha); }
+        return l;
+    }
+
+    double UniformDistribution::pdf(const double& value) const
+    { 
+        double p;
+        if(value < _alpha || value > _beta)            
+        { p = 0.; }
+        else
+        { p = 1/(_beta - _alpha); }
+        return p;
+    }
+
+    double UniformDistribution::cdf(const double& value) const
+    {
+        double c;
+        if(value <= _alpha)
+        { c = 0.; }
+        else 
+        {
+            if (value >= _beta)
+            { c = 1.; }
+            else
+            { c = (value - _alpha)/(_beta - _alpha); }
+        }
+        return c;
+    }
+
+    double UniformDistribution::quantile(const double& p) const
+    { return _alpha + p * (_beta - _alpha); }
+
+    std::unique_ptr< UnivariateEvent > UniformDistribution::simulate() const
+    {
+        boost::uniform_01<> dist;
+        boost::variate_generator<boost::mt19937&, boost::uniform_01<> > simulator(__impl::get_random_generator(), dist);
+        return std::make_unique< ContinuousElementaryEvent >(_alpha + (_beta - _alpha) * simulator());
+    }
+
+    double UniformDistribution::get_mean() const
+    { return 0.5 * (_alpha + _beta); }
+
+    double UniformDistribution::get_variance() const
+    { return pow(_beta - _alpha, 2)/12.; }
+    
 
     double UnivariateConditionalDistribution::loglikelihood(const UnivariateConditionalData& data) const
     {
