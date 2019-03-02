@@ -5,6 +5,7 @@ from statiskit import stl
 
 from . import _core
 from .__core.statiskit import (encoding_type,
+                               SampleSpaceVector,
                                              UnivariateSampleSpace,
                                                  CategoricalSampleSpace,
                                                     NominalSampleSpace,
@@ -391,6 +392,19 @@ def wrapper_get(f):
     
 MultivariateSampleSpace.__getitem__ = wrapper_get(MultivariateSampleSpace.get)
 del MultivariateSampleSpace.get
+
+def wrapper(f):
+    @wraps(f)
+    def __init__(self, *args):
+        if len(args) == 1 and isinstance(args[0], self.__class__):
+            f(self, args[0])
+        else:
+            f(self, SampleSpaceVector(*args))
+    return __init__
+
+VectorSampleSpace.__init__ = wrapper(VectorSampleSpace.__init__)
+del wrapper
+
 
 def wrapper_set(f):
     @wraps(f)

@@ -319,19 +319,19 @@ def wrapper_extract(f):
                     kwargs['explanatories'] = [index for index in range(len(self.components)) if index not in responses]
                 else:
                     raise ValueError()
-            explanatories = [index if index >= 0 else index + len(self.components) for index in kwargs.pop('explanatories')]
+            explanatories = Indices(*[index if index >= 0 else index + len(self.components) for index in kwargs.pop('explanatories')])
             if not all(0 <= index < len(self.components) for index in explanatories):
                 raise IndexError(self.__class__.__name__ + " explanatory component indices out of range")
             if 'response' in kwargs:
                 return UnivariateConditionalData(self, response, explanatories)
             elif "responses" in kwargs:
-                return MultivariateConditionalData(self, responses, explanatories)
+                return MultivariateConditionalData(self, Indices(*responses), explanatories)
             else:
                 responses = [index for index in range(len(self.components)) if not index in explanatories]
                 if len(responses) == 1:
                     return self.extract(explanatories=explanatories, response=responses.pop())
                 else:
-                    return self.extract(explanatories=explanatories, responses=responses)
+                    return self.extract(explanatories=explanatories, responses=Indices(*responses))
     return extract
 
 MultivariateData.extract = wrapper_extract(MultivariateData.extract)

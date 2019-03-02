@@ -262,6 +262,7 @@ namespace statiskit
             std::vector< UnivariateSampleSpace* > _sample_spaces;
     };
 
+    typedef std::vector< UnivariateSampleSpace* > SampleSpaceVector;
 }
 
 #endif

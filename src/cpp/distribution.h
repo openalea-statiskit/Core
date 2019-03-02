@@ -260,7 +260,7 @@ namespace statiskit
             std::vector< Index > _rank;
     };
 
-    class STATISKIT_CORE_API  HierarchicalDistribution : public PolymorphicCopy< UnivariateDistribution, HierarchicalDistribution, CategoricalUnivariateDistribution >
+    class STATISKIT_CORE_API HierarchicalDistribution : public PolymorphicCopy< UnivariateDistribution, HierarchicalDistribution, CategoricalUnivariateDistribution >
     {
         public:
             typedef std::map< std::string, CategoricalUnivariateDistribution* >::const_iterator const_iterator;
@@ -299,7 +299,7 @@ namespace statiskit
             std::map< std::string, std::string > _parents; 
             std::set< std::string > _values;
 
-            inline void check_internal(const std::string& value) const;
+            void check_internal(const std::string& value) const;
 
             // typedef std::map< std::string, CategoricalUnivariateDistribution* >::iterator iterator;
             // iterator begin();

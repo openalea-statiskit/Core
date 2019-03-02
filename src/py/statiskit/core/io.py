@@ -30,7 +30,7 @@ def read_csv(filepath, sep=None, header=False, weights = False, **kwargs):
         for index, event in enumerate(line.split(sep)):
             data[index].append(str(event.strip().strip('"').strip("'")))
     if weights:
-        weights = [float(weight) for weight in data.pop(-1)]
+        weights = stl.VectorDouble(*[float(weight) for weight in data.pop(-1)])
         if header:
             names.pop(-1)
     data = from_list(*data, **kwargs)
@@ -108,7 +108,7 @@ def from_list(*data, **kwargs):
     else:
         sample_spaces = []
         outcomes = kwargs.pop('outcomes', [None] * len(data))
-        outcomes = [outcome if outcome is None or isinstance(outcome, outcome_type) else outcome_type.names[outcome] for outcome in outcomes]
+        outcomes = [outcome if outcome is None or isinstance(outcome, outcome_type) else getattr(outcome_type, outcome) for outcome in outcomes]
         for index, _data in enumerate(data):
             nbstr = 0
             nbint = 0

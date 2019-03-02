@@ -523,7 +523,7 @@ namespace statiskit
         { throw in_set_error("value", value, __impl::keys(_parents), false); }
     }
 
-    inline void HierarchicalDistribution::check_internal(const std::string& value) const
+    void HierarchicalDistribution::check_internal(const std::string& value) const
     {
         if(_tree_distribution.find(value) == _tree_distribution.cend())
         { throw in_set_error("value", value, __impl::keys(_tree_distribution), false); }
