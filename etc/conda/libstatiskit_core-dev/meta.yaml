@@ -22,7 +22,8 @@ requirements:
   host:
     - libstatiskit_stl-dev
     - libstatiskit_linalg-dev
-    - libboost_core-dev
+    - libboost-dev
   run:
     - {{ pin_compatible('libstatiskit_stl-dev', exact=True) }}
     - {{ pin_compatible('libstatiskit_linalg-dev', exact=True) }}
+    - {{ pin_compatible('libboost-dev', exact=True) }}
