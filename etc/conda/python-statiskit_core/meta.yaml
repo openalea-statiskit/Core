@@ -22,13 +22,16 @@ requirements:
   host:
     - libpybind11-dev
     - libstatiskit_stl-dev
-    - libstatiskit_stl
+    - python-statiskit_stl
     - libstatiskit_linalg-dev
-    - libstatiskit_linalg
+    - python-statiskit_linalg
+    - libstatiskit_core-dev
+    - libstatiskit_core
     - python
   run:
-    - {{ pin_compatible('libstatiskit_stl', exact=True) }}
-    - {{ pin_compatible('libstatiskit_linalg', exact=True) }}
+    - {{ pin_compatible('python-statiskit_stl', exact=True) }}
+    - {{ pin_compatible('python-statiskit_linalg', exact=True) }}
+    - {{ pin_compatible('libstatiskit_core', exact=True) }}
     - python
 
 test:                                               

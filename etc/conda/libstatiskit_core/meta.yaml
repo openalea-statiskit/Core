@@ -19,6 +19,8 @@ requirements:
     - {{ compiler('cxx') }}
     - libtoolchain
   host:
+    - libstatiskit_stl
+    - libstatiskit_linalg
     - libstatiskit_core-dev
   run:
     - {{ pin_compatible('libstatiskit_stl', exact=True) }}
