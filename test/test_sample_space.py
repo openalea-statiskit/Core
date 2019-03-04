@@ -34,7 +34,7 @@ class TestSampleSpace(unittest.TestCase):
         del cls._data
 
 @attr(linux=True,
-      osx=True,
+      osx=False,
       win=True,
       level=1)
 class TestNominalSampleSpace(unittest.TestCase):
@@ -60,7 +60,7 @@ class TestNominalSampleSpace(unittest.TestCase):
         del cls._space
 
 @attr(linux=True,
-      osx=True,
+      osx=False,
       win=True,
       level=1)
 class TestOrdinalSampleSpace(unittest.TestCase):
