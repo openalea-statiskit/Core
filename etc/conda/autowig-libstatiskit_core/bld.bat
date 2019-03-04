@@ -1,6 +1,6 @@
 echo ON
 
-scons cpp-dev --prefix=%LIBRARY_PREFIX% -j%CPU_COUNT%
+scons autowig --prefix=%LIBRARY_PREFIX% -j%CPU_COUNT% --autowig-no-wrappers
 if errorlevel 1 exit 1
 
 echo OFF

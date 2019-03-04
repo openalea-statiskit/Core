@@ -83,7 +83,7 @@ class TestOrdinalSampleSpace(unittest.TestCase):
         del cls._space
 
 @attr(linux=True,
-      osx=True,
+      osx=False,
       win=True,
       level=1)
 class TestHierarchicalSampleSpace(unittest.TestCase):
