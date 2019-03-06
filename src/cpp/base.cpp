@@ -102,7 +102,10 @@ namespace statiskit
 
     Schedule::Schedule()
     {}
-    
+
+    Schedule::Schedule(const Schedule& schedule)
+    {}
+
     Schedule::~Schedule()
     {}
 
