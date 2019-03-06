@@ -100,6 +100,9 @@ namespace statiskit
     nullptr_error::nullptr_error(const std::string& parameter) : parameter_error(parameter, "cannot be set to nullptr")
     {}
 
+    Schedule::Schedule()
+    {}
+    
     Schedule::~Schedule()
     {}
 

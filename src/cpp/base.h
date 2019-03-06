@@ -155,7 +155,6 @@ namespace statiskit
 
     struct STATISKIT_CORE_API Schedule
     {
-        Schedule() = default;
         virtual ~Schedule() = 0;
 
         virtual double operator() (const double& stage) const = 0;
