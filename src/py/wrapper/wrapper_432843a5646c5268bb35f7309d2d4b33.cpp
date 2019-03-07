@@ -9,7 +9,7 @@ namespace autowig
         public:
             using ::statiskit::Selection< ::statiskit::ContinuousMultivariateDistribution, struct ::statiskit::ContinuousMultivariateDistributionEstimation >::Estimator::Estimator;
 
-            typedef class ::std::unordered_set< unsigned long int, struct ::std::hash< unsigned long int >, struct ::std::equal_to< unsigned long int >, class ::std::allocator< unsigned long int > >  return_type_c82d383b9d4b56a280155ae882087ecb;
+            typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_c82d383b9d4b56a280155ae882087ecb;
             virtual return_type_c82d383b9d4b56a280155ae882087ecb children() const override { PYBIND11_OVERLOAD(return_type_c82d383b9d4b56a280155ae882087ecb, class_type, children, ); };
             typedef double  return_type_eb86c0375a50572bbae183092f4fdcaa;
             typedef struct ::statiskit::MultivariateDistribution const * param_eb86c0375a50572bbae183092f4fdcaa_0_type;

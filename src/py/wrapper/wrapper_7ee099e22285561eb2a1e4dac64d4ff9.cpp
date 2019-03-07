@@ -9,7 +9,7 @@ namespace autowig
         public:
             using ::statiskit::Selection< ::statiskit::ContinuousUnivariateConditionalDistribution, struct ::statiskit::ContinuousUnivariateConditionalDistributionEstimation >::Estimator::Estimator;
 
-            typedef class ::std::unordered_set< unsigned long int, struct ::std::hash< unsigned long int >, struct ::std::equal_to< unsigned long int >, class ::std::allocator< unsigned long int > >  return_type_4c55f907bce55349844e6cc78c19f098;
+            typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_4c55f907bce55349844e6cc78c19f098;
             virtual return_type_4c55f907bce55349844e6cc78c19f098 children() const override { PYBIND11_OVERLOAD(return_type_4c55f907bce55349844e6cc78c19f098, class_type, children, ); };
             typedef double  return_type_327da71272ea5094808d7deb45c022e6;
             typedef struct ::statiskit::UnivariateConditionalDistribution const * param_327da71272ea5094808d7deb45c022e6_0_type;
