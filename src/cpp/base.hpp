@@ -8,6 +8,10 @@
 namespace statiskit
 {
     template<class T, class D, class B>
+        PolymorphicCopy< T, D, B >::PolymorphicCopy() : B()
+        {}
+
+    template<class T, class D, class B>
         PolymorphicCopy< T, D, B >::PolymorphicCopy(const PolymorphicCopy< T, D, B>& other) : B(other)
         {}
 

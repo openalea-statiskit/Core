@@ -49,7 +49,7 @@ namespace statiskit
 
     template<class T, class D, class B=T> struct PolymorphicCopy : public B
     {
-        using B::B;
+        PolymorphicCopy();
         PolymorphicCopy(const PolymorphicCopy<T, D, B>& other);
         virtual ~PolymorphicCopy() = default;
          
