@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::MultivariateSampleSpace::MultivariateSampleSpace;
 
             typedef class ::std::unique_ptr< struct ::statiskit::MultivariateSampleSpace, struct ::std::default_delete< struct ::statiskit::MultivariateSampleSpace > >  return_type_40d149de873956828c7a7bb6efb1b291;
             virtual return_type_40d149de873956828c7a7bb6efb1b291 copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_40d149de873956828c7a7bb6efb1b291, class_type, copy, ); };
@@ -41,7 +40,6 @@ void wrapper_faed70c01c41556a87ba6c938ce7c777(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::MultivariateSampleSpace, autowig::Trampoline, autowig::HolderType< struct ::statiskit::MultivariateSampleSpace >::Type > class_faed70c01c41556a87ba6c938ce7c777(module, "MultivariateSampleSpace", "");
-    class_faed70c01c41556a87ba6c938ce7c777.def(pybind11::init<  >());
     class_faed70c01c41556a87ba6c938ce7c777.def("__len__", method_pointer_34b56241180a545dbbc2cc99f5f4650e, "");
     class_faed70c01c41556a87ba6c938ce7c777.def("get", method_pointer_89faf58ffa485b8fafccbd250d1fe75d, pybind11::return_value_policy::reference_internal, "");
     class_faed70c01c41556a87ba6c938ce7c777.def("is_compatible", method_pointer_817740fe51f5581ca0b50fe3fdee1e78, "");

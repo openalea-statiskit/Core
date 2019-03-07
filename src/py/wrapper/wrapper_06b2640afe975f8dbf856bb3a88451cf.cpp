@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_ca4ace19940e584a9d9874ea517d3698;
             virtual return_type_ca4ace19940e584a9d9874ea517d3698 children() const override { PYBIND11_OVERLOAD(return_type_ca4ace19940e584a9d9874ea517d3698, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_06b2640afe975f8dbf856bb3a88451cf(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator >::Type, struct ::statiskit::DiscreteUnivariateDistributionEstimation::Estimator > class_06b2640afe975f8dbf856bb3a88451cf(module, "Estimator", "");
-    class_06b2640afe975f8dbf856bb3a88451cf.def(pybind11::init<  >());
     class_06b2640afe975f8dbf856bb3a88451cf.def("__len__", method_pointer_dadf8b529f475bada70e94fa2d10fbf0, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("get_estimator", method_pointer_28de231ff729594dac57dfda306b3b32, pybind11::return_value_policy::reference_internal, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("set_estimator", method_pointer_04cdbc7ec82057368ad722125ac29266, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("add_estimator", method_pointer_fe97198c58045d729542b4e01963ec13, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("remove_estimator", method_pointer_4a30e310a40c52158292918774e58316, "");
-    class_06b2640afe975f8dbf856bb3a88451cf.def("_scoring", static_cast<double (class ::statiskit::Selection< struct ::statiskit::DiscreteUnivariateDistribution, struct ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator::*)( struct ::statiskit::UnivariateDistribution const *,  struct ::statiskit::UnivariateData const & ) const>(&autowig::Publicist::scoring), "");
+    class_06b2640afe975f8dbf856bb3a88451cf.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::DiscreteUnivariateDistribution, ::statiskit::DiscreteUnivariateDistributionEstimation >::Estimator::*) (struct ::statiskit::UnivariateDistribution const *, struct ::statiskit::UnivariateData const &) const >(&autowig::Publicist::scoring), "");
 
 }

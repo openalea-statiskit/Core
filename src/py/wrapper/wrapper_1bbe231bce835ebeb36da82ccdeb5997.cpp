@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::CategoricalUnivariateConditionalDistribution, struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_b29f44482fce5d5ea16b45d1fa08f72f;
             virtual return_type_b29f44482fce5d5ea16b45d1fa08f72f children() const override { PYBIND11_OVERLOAD(return_type_b29f44482fce5d5ea16b45d1fa08f72f, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_1bbe231bce835ebeb36da82ccdeb5997(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::CategoricalUnivariateConditionalDistribution, struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::CategoricalUnivariateConditionalDistribution, struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation >::Estimator >::Type, struct ::statiskit::CategoricalUnivariateConditionalDistributionEstimation::Estimator > class_1bbe231bce835ebeb36da82ccdeb5997(module, "Estimator", "");
-    class_1bbe231bce835ebeb36da82ccdeb5997.def(pybind11::init<  >());
     class_1bbe231bce835ebeb36da82ccdeb5997.def("__len__", method_pointer_b802ccc39dcd5c0e835211836ab7d59d, "");
     class_1bbe231bce835ebeb36da82ccdeb5997.def("get_estimator", method_pointer_e274930ea2dc5ab1bc443203a08ceddc, pybind11::return_value_policy::reference_internal, "");
     class_1bbe231bce835ebeb36da82ccdeb5997.def("set_estimator", method_pointer_50b5354942d657baa64f803083675e1d, "");
     class_1bbe231bce835ebeb36da82ccdeb5997.def("add_estimator", method_pointer_d3aa394a479f5aec8684a5608ca72448, "");
     class_1bbe231bce835ebeb36da82ccdeb5997.def("remove_estimator", method_pointer_6dd5e7e30c8252828df26a594edfa560, "");
-    class_1bbe231bce835ebeb36da82ccdeb5997.def("_scoring", &autowig::Publicist::scoring, "");
+    class_1bbe231bce835ebeb36da82ccdeb5997.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::CategoricalUnivariateConditionalDistribution, ::statiskit::CategoricalUnivariateConditionalDistributionEstimation >::Estimator::*) (struct ::statiskit::UnivariateConditionalDistribution const *, class ::statiskit::UnivariateConditionalData const &) const >(&autowig::Publicist::scoring), "");
 
 }

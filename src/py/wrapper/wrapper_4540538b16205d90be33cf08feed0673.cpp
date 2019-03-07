@@ -38,7 +38,6 @@ void wrapper_4540538b16205d90be33cf08feed0673(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::MultivariateDistribution, autowig::Trampoline, autowig::HolderType< struct ::statiskit::MultivariateDistribution >::Type > class_4540538b16205d90be33cf08feed0673(module, "MultivariateDistribution", "");
-    class_4540538b16205d90be33cf08feed0673.def(pybind11::init<  >());
     class_4540538b16205d90be33cf08feed0673.def("get_nb_components", method_pointer_6bbdbd5137365f409e51be059aaa5dec, "Get the number of components of the distribution.\n\n:Return Type:\n    :cpp:any:`unsigned` long int\n\n");
     class_4540538b16205d90be33cf08feed0673.def("get_nb_parameters", method_pointer_d6b37eb7a2815c508032d7111fe27b25, "Get the number of parameters of the distribution.\n\n:Return Type:\n    :cpp:any:`unsigned` int\n\n");
     class_4540538b16205d90be33cf08feed0673.def("probability", method_pointer_1b1aa04affe25769a45aa61f808a0a19, "");

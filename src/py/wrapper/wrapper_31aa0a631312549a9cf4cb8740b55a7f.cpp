@@ -32,6 +32,5 @@ void wrapper_31aa0a631312549a9cf4cb8740b55a7f(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::DiscreteMultivariateDistribution, autowig::Trampoline, autowig::HolderType< struct ::statiskit::DiscreteMultivariateDistribution >::Type, struct ::statiskit::MultivariateDistribution > class_31aa0a631312549a9cf4cb8740b55a7f(module, "DiscreteMultivariateDistribution", "");
-    class_31aa0a631312549a9cf4cb8740b55a7f.def(pybind11::init<  >());
 
 }

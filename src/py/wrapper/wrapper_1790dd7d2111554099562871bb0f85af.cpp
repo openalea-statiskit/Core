@@ -28,5 +28,6 @@ void wrapper_1790dd7d2111554099562871bb0f85af(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, class ::statiskit::UnivariateDataFrame, struct ::statiskit::UnivariateData >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateData, class ::statiskit::UnivariateDataFrame, struct ::statiskit::UnivariateData > >::Type, struct ::statiskit::UnivariateData > class_1790dd7d2111554099562871bb0f85af(module, "_PolymorphicCopy_1790dd7d2111554099562871bb0f85af", "");
+    class_1790dd7d2111554099562871bb0f85af.def(pybind11::init<  >());
 
 }

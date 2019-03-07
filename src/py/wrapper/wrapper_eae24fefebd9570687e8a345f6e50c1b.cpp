@@ -46,5 +46,6 @@ void wrapper_eae24fefebd9570687e8a345f6e50c1b(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::CauchyDistribution, struct ::statiskit::ContinuousUnivariateDistribution >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::UnivariateDistribution, class ::statiskit::CauchyDistribution, struct ::statiskit::ContinuousUnivariateDistribution > >::Type, struct ::statiskit::ContinuousUnivariateDistribution > class_eae24fefebd9570687e8a345f6e50c1b(module, "_PolymorphicCopy_eae24fefebd9570687e8a345f6e50c1b", "");
+    class_eae24fefebd9570687e8a345f6e50c1b.def(pybind11::init<  >());
 
 }

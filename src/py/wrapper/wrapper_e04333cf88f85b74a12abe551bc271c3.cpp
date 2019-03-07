@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::MultivariateDistribution, struct ::statiskit::MultivariateDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_1863dd311c78529ba677c48bf437e4ae;
             virtual return_type_1863dd311c78529ba677c48bf437e4ae children() const override { PYBIND11_OVERLOAD(return_type_1863dd311c78529ba677c48bf437e4ae, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_e04333cf88f85b74a12abe551bc271c3(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::MultivariateDistribution, struct ::statiskit::MultivariateDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::MultivariateDistribution, struct ::statiskit::MultivariateDistributionEstimation >::Estimator >::Type, struct ::statiskit::MultivariateDistributionEstimation::Estimator > class_e04333cf88f85b74a12abe551bc271c3(module, "Estimator", "");
-    class_e04333cf88f85b74a12abe551bc271c3.def(pybind11::init<  >());
     class_e04333cf88f85b74a12abe551bc271c3.def("__len__", method_pointer_3d106d53e52b5f76b1661aaf45332fdc, "");
     class_e04333cf88f85b74a12abe551bc271c3.def("get_estimator", method_pointer_c5573a36cd255e53ab0672174b4c832d, pybind11::return_value_policy::reference_internal, "");
     class_e04333cf88f85b74a12abe551bc271c3.def("set_estimator", method_pointer_8efc2bfaeba458bb82dbf642db09164c, "");
     class_e04333cf88f85b74a12abe551bc271c3.def("add_estimator", method_pointer_c634120ddeca53f8ba4c707c3b2db56e, "");
     class_e04333cf88f85b74a12abe551bc271c3.def("remove_estimator", method_pointer_7b06d63408b65cdbbddf887e73437104, "");
-    class_e04333cf88f85b74a12abe551bc271c3.def("_scoring", &autowig::Publicist::scoring, "");
+    class_e04333cf88f85b74a12abe551bc271c3.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::MultivariateDistribution, ::statiskit::MultivariateDistributionEstimation >::Estimator::*) (struct ::statiskit::MultivariateDistribution const *, struct ::statiskit::MultivariateData const &) const >(&autowig::Publicist::scoring), "");
 
 }

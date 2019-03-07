@@ -32,5 +32,6 @@ void wrapper_7510c84a2e4c5022ac15bd97a576d4b0(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::DirichletDistribution, struct ::statiskit::ContinuousMultivariateDistribution >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::MultivariateDistribution, class ::statiskit::DirichletDistribution, struct ::statiskit::ContinuousMultivariateDistribution > >::Type, struct ::statiskit::ContinuousMultivariateDistribution > class_7510c84a2e4c5022ac15bd97a576d4b0(module, "_PolymorphicCopy_7510c84a2e4c5022ac15bd97a576d4b0", "");
+    class_7510c84a2e4c5022ac15bd97a576d4b0.def(pybind11::init<  >());
 
 }

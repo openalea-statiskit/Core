@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::CategoricalMultivariateDistribution, struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_def090d4b953521f8c2bc7b02153b148;
             virtual return_type_def090d4b953521f8c2bc7b02153b148 children() const override { PYBIND11_OVERLOAD(return_type_def090d4b953521f8c2bc7b02153b148, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_5a3d233a5dc55aaba123c4eb5cd6e502(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::CategoricalMultivariateDistribution, struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::CategoricalMultivariateDistribution, struct ::statiskit::CategoricalMultivariateDistributionEstimation >::Estimator >::Type, struct ::statiskit::CategoricalMultivariateDistributionEstimation::Estimator > class_5a3d233a5dc55aaba123c4eb5cd6e502(module, "Estimator", "");
-    class_5a3d233a5dc55aaba123c4eb5cd6e502.def(pybind11::init<  >());
     class_5a3d233a5dc55aaba123c4eb5cd6e502.def("__len__", method_pointer_8a70218c19c85c61a675c59c5e170794, "");
     class_5a3d233a5dc55aaba123c4eb5cd6e502.def("get_estimator", method_pointer_057b6efe62bf5455adb4babbd3c6d7b1, pybind11::return_value_policy::reference_internal, "");
     class_5a3d233a5dc55aaba123c4eb5cd6e502.def("set_estimator", method_pointer_c18ded6290b358be8850f8d8daae8a6e, "");
     class_5a3d233a5dc55aaba123c4eb5cd6e502.def("add_estimator", method_pointer_2ec80de535e75c4e8725ce514b4cdf92, "");
     class_5a3d233a5dc55aaba123c4eb5cd6e502.def("remove_estimator", method_pointer_4e44b3e085ff51c1b0633f02b4bd9988, "");
-    class_5a3d233a5dc55aaba123c4eb5cd6e502.def("_scoring", &autowig::Publicist::scoring, "");
+    class_5a3d233a5dc55aaba123c4eb5cd6e502.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::CategoricalMultivariateDistribution, ::statiskit::CategoricalMultivariateDistributionEstimation >::Estimator::*) (struct ::statiskit::MultivariateDistribution const *, struct ::statiskit::MultivariateData const &) const >(&autowig::Publicist::scoring), "");
 
 }

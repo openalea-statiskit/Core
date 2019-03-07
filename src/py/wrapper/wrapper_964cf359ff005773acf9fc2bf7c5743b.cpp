@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::DiscreteMultivariateConditionalDistribution, struct ::statiskit::DiscreteMultivariateConditionalDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_cc937d079d9f5df3a0af0c0ca425c038;
             virtual return_type_cc937d079d9f5df3a0af0c0ca425c038 children() const override { PYBIND11_OVERLOAD(return_type_cc937d079d9f5df3a0af0c0ca425c038, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_964cf359ff005773acf9fc2bf7c5743b(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::DiscreteMultivariateConditionalDistribution, struct ::statiskit::DiscreteMultivariateConditionalDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::DiscreteMultivariateConditionalDistribution, struct ::statiskit::DiscreteMultivariateConditionalDistributionEstimation >::Estimator >::Type, struct ::statiskit::DiscreteMultivariateConditionalDistributionEstimation::Estimator > class_964cf359ff005773acf9fc2bf7c5743b(module, "Estimator", "");
-    class_964cf359ff005773acf9fc2bf7c5743b.def(pybind11::init<  >());
     class_964cf359ff005773acf9fc2bf7c5743b.def("__len__", method_pointer_ac2822c95c21522d8b8765da0facf1f6, "");
     class_964cf359ff005773acf9fc2bf7c5743b.def("get_estimator", method_pointer_f0e84d56824152fcbca92bf618404904, pybind11::return_value_policy::reference_internal, "");
     class_964cf359ff005773acf9fc2bf7c5743b.def("set_estimator", method_pointer_5eb59769d7a857799bed2ea2528f1144, "");
     class_964cf359ff005773acf9fc2bf7c5743b.def("add_estimator", method_pointer_ac0a56cc16ba513a87f266a002e8ef40, "");
     class_964cf359ff005773acf9fc2bf7c5743b.def("remove_estimator", method_pointer_5d62b69050735063bfab83f64099b288, "");
-    class_964cf359ff005773acf9fc2bf7c5743b.def("_scoring", &autowig::Publicist::scoring, "");
+    class_964cf359ff005773acf9fc2bf7c5743b.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::DiscreteMultivariateConditionalDistribution, ::statiskit::DiscreteMultivariateConditionalDistributionEstimation >::Estimator::*) (struct ::statiskit::MultivariateConditionalDistribution const *, class ::statiskit::MultivariateConditionalData const &) const >(&autowig::Publicist::scoring), "");
 
 }

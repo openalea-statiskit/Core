@@ -42,6 +42,7 @@ void wrapper_09fa62065c8f5098af0f7db57ad3e6a9(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::SingularDistributionEstimation::Estimator, class ::statiskit::Selection< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::CriterionEstimator, class ::statiskit::Selection< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::Estimator >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::SingularDistributionEstimation::Estimator, class ::statiskit::Selection< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::CriterionEstimator, class ::statiskit::Selection< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::Estimator > >::Type, class ::statiskit::Selection< struct ::statiskit::SingularDistribution, struct ::statiskit::SingularDistributionEstimation >::Estimator > class_09fa62065c8f5098af0f7db57ad3e6a9(module, "_PolymorphicCopy_09fa62065c8f5098af0f7db57ad3e6a9", "");
-    class_09fa62065c8f5098af0f7db57ad3e6a9.def("_scoring", &autowig::Publicist::scoring, "");
+    class_09fa62065c8f5098af0f7db57ad3e6a9.def(pybind11::init<  >());
+    class_09fa62065c8f5098af0f7db57ad3e6a9.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::SingularDistribution, ::statiskit::SingularDistributionEstimation >::Estimator::*) (struct ::statiskit::SingularDistribution const *, struct ::statiskit::MultivariateData const &) const >(&autowig::Publicist::scoring), "");
 
 }

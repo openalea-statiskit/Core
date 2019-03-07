@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::UnivariateData::UnivariateData;
 
             typedef class ::std::unique_ptr< struct ::statiskit::UnivariateData, struct ::std::default_delete< struct ::statiskit::UnivariateData > >  return_type_f924b25c6e335944a81f6073e12504ff;
             virtual return_type_f924b25c6e335944a81f6073e12504ff copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_f924b25c6e335944a81f6073e12504ff, class_type, copy, ); };
@@ -35,7 +34,6 @@ void wrapper_2513f8d88792503e97d2b3f6b8c31e6f(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::UnivariateData, autowig::Trampoline, autowig::HolderType< struct ::statiskit::UnivariateData >::Type > class_2513f8d88792503e97d2b3f6b8c31e6f(module, "UnivariateData", "");
-    class_2513f8d88792503e97d2b3f6b8c31e6f.def(pybind11::init<  >());
     class_2513f8d88792503e97d2b3f6b8c31e6f.def("__len__", method_pointer_ccb6e82201a6558e9733151230bbc9af, "");
     class_2513f8d88792503e97d2b3f6b8c31e6f.def("__iter__", method_pointer_a33919ff84f759e6b649d1aea1a76e87, "");
     class_2513f8d88792503e97d2b3f6b8c31e6f.def("get_sample_space", method_pointer_21507917363a580db5491fa57b8df73d, pybind11::return_value_policy::reference_internal, "");

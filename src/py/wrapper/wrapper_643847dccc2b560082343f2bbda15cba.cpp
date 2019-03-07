@@ -47,6 +47,6 @@ void wrapper_643847dccc2b560082343f2bbda15cba(pybind11::module& module)
     class_643847dccc2b560082343f2bbda15cba.def("set_epsilon", method_pointer_6e6f1365e441528193f7f948e6b69516, "");
     class_643847dccc2b560082343f2bbda15cba.def("get_maxits", method_pointer_9c57653b340c572ebca4d6870b9a5929, pybind11::return_value_policy::copy, "");
     class_643847dccc2b560082343f2bbda15cba.def("set_maxits", method_pointer_608f3fb772695ef394c55dd88cdfa408, "");
-    class_643847dccc2b560082343f2bbda15cba.def("_update", &autowig::Publicist::update, "");
+    class_643847dccc2b560082343f2bbda15cba.def("_update", static_cast< void  (::statiskit::SlopeHeuristicIWLSSolver::*) (class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const &, class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > &, class ::Eigen::Matrix< double, -1, -1, 0, -1, -1 > const &, class ::Eigen::Matrix< double, -1, 1, 0, -1, 1 > const &) const >(&autowig::Publicist::update), "");
 
 }

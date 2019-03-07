@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Schedule::Schedule;
 
             typedef class ::std::unique_ptr< struct ::statiskit::Schedule, struct ::std::default_delete< struct ::statiskit::Schedule > >  return_type_7b1ce88d04fc5ffb8e9402122cfa4883;
             virtual return_type_7b1ce88d04fc5ffb8e9402122cfa4883 copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_7b1ce88d04fc5ffb8e9402122cfa4883, class_type, copy, ); };
@@ -27,7 +26,6 @@ void wrapper_3ca8ff4e14d1580fa17364607bc956c4(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::Schedule, autowig::Trampoline, autowig::HolderType< struct ::statiskit::Schedule >::Type > class_3ca8ff4e14d1580fa17364607bc956c4(module, "Schedule", "");
-    class_3ca8ff4e14d1580fa17364607bc956c4.def(pybind11::init<  >());
     class_3ca8ff4e14d1580fa17364607bc956c4.def("__call__", method_pointer_004876688c73571590d218338cd011b5, "");
     class_3ca8ff4e14d1580fa17364607bc956c4.def("copy", method_pointer_7b1ce88d04fc5ffb8e9402122cfa4883, "");
 

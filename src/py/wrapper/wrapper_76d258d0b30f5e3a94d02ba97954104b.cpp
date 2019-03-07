@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::SingularDistribution::SingularDistribution;
 
             typedef class ::std::unique_ptr< struct ::statiskit::SingularDistribution, struct ::std::default_delete< struct ::statiskit::SingularDistribution > >  return_type_807318768a675f8fa96d2eb54a36c4df;
             virtual return_type_807318768a675f8fa96d2eb54a36c4df copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_807318768a675f8fa96d2eb54a36c4df, class_type, copy, ); };
@@ -39,7 +38,6 @@ void wrapper_76d258d0b30f5e3a94d02ba97954104b(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::SingularDistribution, autowig::Trampoline, autowig::HolderType< struct ::statiskit::SingularDistribution >::Type > class_76d258d0b30f5e3a94d02ba97954104b(module, "SingularDistribution", "");
-    class_76d258d0b30f5e3a94d02ba97954104b.def(pybind11::init<  >());
     class_76d258d0b30f5e3a94d02ba97954104b.def("get_nb_components", method_pointer_0d6cc8e9b1fb50da9e07aa24ca7b9901, "");
     class_76d258d0b30f5e3a94d02ba97954104b.def("get_nb_parameters", method_pointer_2c1d7ed64e3e5d1aa53e91bf74bfffd9, "");
     class_76d258d0b30f5e3a94d02ba97954104b.def("probability", method_pointer_acdea368f48f572bb000ce0a3e887539, "");

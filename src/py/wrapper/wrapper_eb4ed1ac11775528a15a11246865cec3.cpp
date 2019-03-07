@@ -25,5 +25,6 @@ void wrapper_eb4ed1ac11775528a15a11246865cec3(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::PolymorphicCopy< struct ::statiskit::Schedule, class ::statiskit::ExponentialSchedule, struct ::statiskit::Schedule >, autowig::Trampoline, autowig::HolderType< struct ::statiskit::PolymorphicCopy< struct ::statiskit::Schedule, class ::statiskit::ExponentialSchedule, struct ::statiskit::Schedule > >::Type, struct ::statiskit::Schedule > class_eb4ed1ac11775528a15a11246865cec3(module, "_PolymorphicCopy_eb4ed1ac11775528a15a11246865cec3", "");
+    class_eb4ed1ac11775528a15a11246865cec3.def(pybind11::init<  >());
 
 }

@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::Selection< ::statiskit::ContinuousMultivariateDistribution, struct ::statiskit::ContinuousMultivariateDistributionEstimation >::Estimator::Estimator;
 
             typedef class ::std::unordered_set< std::size_t, struct ::std::hash< std::size_t >, struct ::std::equal_to< std::size_t >, class ::std::allocator< std::size_t > >  return_type_c82d383b9d4b56a280155ae882087ecb;
             virtual return_type_c82d383b9d4b56a280155ae882087ecb children() const override { PYBIND11_OVERLOAD(return_type_c82d383b9d4b56a280155ae882087ecb, class_type, children, ); };
@@ -47,12 +46,11 @@ void wrapper_432843a5646c5268bb35f7309d2d4b33(pybind11::module& module)
 {
 
     pybind11::class_<class ::statiskit::Selection< struct ::statiskit::ContinuousMultivariateDistribution, struct ::statiskit::ContinuousMultivariateDistributionEstimation >::Estimator, autowig::Trampoline, autowig::HolderType< class ::statiskit::Selection< struct ::statiskit::ContinuousMultivariateDistribution, struct ::statiskit::ContinuousMultivariateDistributionEstimation >::Estimator >::Type, struct ::statiskit::ContinuousMultivariateDistributionEstimation::Estimator > class_432843a5646c5268bb35f7309d2d4b33(module, "Estimator", "");
-    class_432843a5646c5268bb35f7309d2d4b33.def(pybind11::init<  >());
     class_432843a5646c5268bb35f7309d2d4b33.def("__len__", method_pointer_807c80fd452557d9b51fc9ba6fe0fb51, "");
     class_432843a5646c5268bb35f7309d2d4b33.def("get_estimator", method_pointer_3331f973eb6f54cfbc3a92ac3b1ce848, pybind11::return_value_policy::reference_internal, "");
     class_432843a5646c5268bb35f7309d2d4b33.def("set_estimator", method_pointer_844a99ccd8035b3e821357f54f18b079, "");
     class_432843a5646c5268bb35f7309d2d4b33.def("add_estimator", method_pointer_2ed566579fdf57c184b491616d1dff20, "");
     class_432843a5646c5268bb35f7309d2d4b33.def("remove_estimator", method_pointer_c5fa489625b75bf18853395363cbdd64, "");
-    class_432843a5646c5268bb35f7309d2d4b33.def("_scoring", &autowig::Publicist::scoring, "");
+    class_432843a5646c5268bb35f7309d2d4b33.def("_scoring", static_cast< double  (::statiskit::Selection< ::statiskit::ContinuousMultivariateDistribution, ::statiskit::ContinuousMultivariateDistributionEstimation >::Estimator::*) (struct ::statiskit::MultivariateDistribution const *, struct ::statiskit::MultivariateData const &) const >(&autowig::Publicist::scoring), "");
 
 }

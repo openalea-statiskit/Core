@@ -55,6 +55,6 @@ void wrapper_14a9cd2a8d9a572e8c7d58d490e5269e(pybind11::module& module)
     class_14a9cd2a8d9a572e8c7d58d490e5269e.def("get_encoding", method_pointer_b6e426ab99cb5b86ade311bc3aceb9d3, "");
     class_14a9cd2a8d9a572e8c7d58d490e5269e.def("set_encoding", method_pointer_5ccffeb21f59579f833d8cfccb48fce9, "");
     class_14a9cd2a8d9a572e8c7d58d490e5269e.def("encode", method_pointer_8066b9427c14500d8e4b87e8f42da7e4, "");
-    class_14a9cd2a8d9a572e8c7d58d490e5269e.def("_is_compatible_value", &autowig::Publicist::is_compatible_value, "");
+    class_14a9cd2a8d9a572e8c7d58d490e5269e.def("_is_compatible_value", static_cast< bool  (::statiskit::CategoricalSampleSpace::*) (class ::std::basic_string< char, struct ::std::char_traits< char >, class ::std::allocator< char > > const &) const >(&autowig::Publicist::is_compatible_value), "");
 
 }

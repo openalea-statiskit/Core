@@ -39,7 +39,6 @@ void wrapper_6eb1ba92b1d158b09999c16267a2ec28(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::MultivariateDistributionEstimation::Estimator, autowig::Trampoline, autowig::HolderType< struct ::statiskit::MultivariateDistributionEstimation::Estimator >::Type, class ::statiskit::Estimator > class_6eb1ba92b1d158b09999c16267a2ec28(module, "Estimator", "");
-    class_6eb1ba92b1d158b09999c16267a2ec28.def(pybind11::init<  >());
     class_6eb1ba92b1d158b09999c16267a2ec28.def("__call__", method_pointer_0cfbeb46728f5e3393b2f59c4a91a99d, "");
     class_6eb1ba92b1d158b09999c16267a2ec28.def("copy", method_pointer_20397b66478a59f481c4e33cec98b652, "");
 

@@ -7,7 +7,6 @@ namespace autowig
     class Trampoline : public class_type
     {
         public:
-            using ::statiskit::SingularDistributionEstimation::Estimator::Estimator;
 
             typedef class ::std::unique_ptr< struct ::statiskit::SingularDistributionEstimation::Estimator, struct ::std::default_delete< struct ::statiskit::SingularDistributionEstimation::Estimator > >  return_type_8b02691f7b535adda732068708b90596;
             virtual return_type_8b02691f7b535adda732068708b90596 copy() const override { PYBIND11_OVERLOAD_PURE_UNIQUE_PTR(return_type_8b02691f7b535adda732068708b90596, class_type, copy, ); };
@@ -39,7 +38,6 @@ void wrapper_67cb5425a85056b38615b0d4e5c587b3(pybind11::module& module)
 {
 
     pybind11::class_<struct ::statiskit::SingularDistributionEstimation::Estimator, autowig::Trampoline, autowig::HolderType< struct ::statiskit::SingularDistributionEstimation::Estimator >::Type, class ::statiskit::Estimator > class_67cb5425a85056b38615b0d4e5c587b3(module, "Estimator", "");
-    class_67cb5425a85056b38615b0d4e5c587b3.def(pybind11::init<  >());
     class_67cb5425a85056b38615b0d4e5c587b3.def("__call__", method_pointer_ef6596d10b575b13b141d8bcf05ac09a, "");
     class_67cb5425a85056b38615b0d4e5c587b3.def("copy", method_pointer_8b02691f7b535adda732068708b90596, "");
 
