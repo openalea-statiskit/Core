@@ -53,6 +53,6 @@ void wrapper_06b2640afe975f8dbf856bb3a88451cf(pybind11::module& module)
     class_06b2640afe975f8dbf856bb3a88451cf.def("set_estimator", method_pointer_04cdbc7ec82057368ad722125ac29266, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("add_estimator", method_pointer_fe97198c58045d729542b4e01963ec13, "");
     class_06b2640afe975f8dbf856bb3a88451cf.def("remove_estimator", method_pointer_4a30e310a40c52158292918774e58316, "");
-    class_06b2640afe975f8dbf856bb3a88451cf.def("_scoring", &autowig::Publicist::scoring, "");
+    class_06b2640afe975f8dbf856bb3a88451cf.def("_scoring", static_cast<double (class_type::*)( struct ::statiskit::UnivariateDistribution const *,  struct ::statiskit::UnivariateData const & ) const>(&autowig::Publicist::scoring), "");
 
 }
