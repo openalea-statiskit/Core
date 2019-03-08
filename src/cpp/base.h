@@ -38,7 +38,7 @@
 #endif
 
 #ifdef NDEBUG
-#define BREAKPOINT 
+#define BREAKPOINT __pragma(message("BREAKPOINT found in file '" __FILE__ "' at line " STR(__LINE__)) " but not used");
 #else
 #include <csignal>
 #define BREAKPOINT std::raise(SIGINT);
