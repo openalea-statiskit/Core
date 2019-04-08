@@ -30,7 +30,7 @@ matrix:
       env: CONDA_RECIPE=etc/conda/python-statiskit_core
       
 before_install:
-  - git clone https://github.com/StatisKit/travis-ci.git --depth=1
+  - git clone https://github.com/openalea-statiskit/travis-ci.git --depth=1
   - cd travis-ci
   - ./before_install
 
